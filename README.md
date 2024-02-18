@@ -1,9 +1,9 @@
 ﻿# Boun SWE 2024 Group1
  This is the repository for Group1 of SWE course in Spring'24.
 
- ##About the Repository
+ ## About the Repository
 
- ##Contributors
+ ## Contributors
 Mehmet Efe Akça
 Aslı Gök
 Atakan Yaşar
