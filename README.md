@@ -4,6 +4,7 @@
  ## About the Repository
 
  ## Contributors
+```
 Mehmet Efe Akça
 Aslı Gök
 Atakan Yaşar
@@ -15,3 +16,4 @@ Ufuk Altıngulak
 Çağatay Çolak
 Yiğit Oktay
 Ege Uslu
+```
