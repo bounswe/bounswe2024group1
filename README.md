@@ -12,7 +12,7 @@ Boray Kasap
 Enes Başer
 Nazire Ata
 Yüksel Eren Şen
-Ufuk Altıngulak
+Ufuk Altunbulak
 Çağatay Çolak
 Yiğit Oktay
 Ege Uslu
