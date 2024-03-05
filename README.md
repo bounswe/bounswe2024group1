@@ -15,5 +15,5 @@ This repository will be updated throughout the semester.
 * Yüksel Eren Şen
 * Ufuk Altunbulak
 * Çağatay Çolak
-* Yiğit Oktay
+* Yiğit Memceroktay
 
