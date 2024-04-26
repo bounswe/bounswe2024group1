@@ -27,19 +27,35 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String firstName;
+    private String username;
+
     private String lastName;
     @Column(unique = true)
     private String email;
+
     private String password;
+    private String Bio;
+
+    private String country;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
+    public String getBio() {
+        return Bio;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+    public String getEmail() {
+        return email;
+    }
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

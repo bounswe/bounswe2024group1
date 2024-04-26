@@ -2,6 +2,7 @@ package com.group1.cuisines.controllers;
 
 import com.group1.cuisines.dao.request.SignInRequest;
 import com.group1.cuisines.dao.request.SignUpRequest;
+import com.group1.cuisines.dao.response.ApiResponse;
 import com.group1.cuisines.dao.response.AuthenticationTokenResponse;
 import com.group1.cuisines.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService; // Authentication service
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthenticationTokenResponse> signup(@RequestBody SignUpRequest request) {
+    @PostMapping("/signup") // Sign up endpoint
+    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signup(@RequestBody SignUpRequest request) {
 
-        return ResponseEntity.ok(authenticationService.signup(request));
+        return ResponseEntity.ok(authenticationService.signup(request)); // Return response
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<AuthenticationTokenResponse> signin(@RequestBody SignInRequest request) {
-        return ResponseEntity.ok(authenticationService.signin(request));
+    @PostMapping("/signin") // Sign in endpoint
+    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signin(@RequestBody SignInRequest request) {
+        return ResponseEntity.ok(authenticationService.signin(request)); // Return response
     }
 }
