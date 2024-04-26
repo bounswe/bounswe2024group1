@@ -24,15 +24,14 @@ public class SecurityConfiguration {
     private final UserService userService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers(("GET"), "/api/v1/resource").permitAll()
-
+                        .requestMatchers("/api/v1/auth/**").permitAll() // Permit all requests to "/api/v1/auth"
+                        .requestMatchers(("GET"), "/api/v1/**").permitAll() // Permit all GET requests
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // Require ADMIN role for "/api/v1/resources"
-                        .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider());
+                        .anyRequest().authenticated()) // Require authentication for all other requests
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Set session creation policy to STATELESS
+                .authenticationProvider(authenticationProvider()); // Set authentication provider
 
         return http.build();
     }
@@ -41,10 +40,10 @@ public class SecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    } // Password encoder
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider() { // Authentication provider
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userService.userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -52,7 +51,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)// Authentication manager
             throws Exception {
         return config.getAuthenticationManager();
     }
