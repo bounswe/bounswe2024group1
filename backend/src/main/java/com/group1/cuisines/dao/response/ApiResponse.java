@@ -1,4 +1,4 @@
-package com.group1.cuisines.dao.request;
+package com.group1.cuisines.dao.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignInRequest {
-    private String usernameOremail;
-    private String password;
-}
+    public class ApiResponse<T> {
+    private int status;
+    private String message;
+    private T data;
+
+
+    }
+
