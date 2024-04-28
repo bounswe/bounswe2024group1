@@ -1,0 +1,22 @@
+   _____ _____   ____  _    _ _____    __
+  / ____|  __ \ / __ \| |  | |  __ \  /_ |
+ | |  __| |__) | |  | | |  | | |__) |  | |
+ | | |_ |  _  /| |  | | |  | |  ___/   | |
+ | |__| | | \ \| |__| | |__| | |       | |
+  \_____|_|  \_\\____/ \____/|_|       |_|
+
+- Mehmet Efe Akca
+- Aslı Gok
+- Atakan Yasar
+- Boray Kasap
+- Enes Baser
+- Nazire Ata
+- Yuksel Eren Sen
+- Ufuk Altunbulak
+- Cagatay Colak
+- Yigit Memceroktay
+
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}
+
+--------------------------------------------------------------
