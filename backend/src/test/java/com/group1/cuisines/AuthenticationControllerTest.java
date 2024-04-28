@@ -45,7 +45,7 @@ public class AuthenticationControllerTest {
         ApiResponse<AuthenticationTokenResponse> apiResponse = new ApiResponse<>(401, "Failure", null);
         when(authenticationService.signin(signInRequest)).thenReturn(apiResponse);
         ResponseEntity<ApiResponse<AuthenticationTokenResponse>> responseEntity = authenticationController.signin(signInRequest);
-        assertEquals(200, responseEntity.getBody().getStatus(), "Status code does not match expected value on failed signin");
+        assertEquals(401, responseEntity.getBody().getStatus(), "Status code does not match expected value on failed signin");
         assertEquals(apiResponse, responseEntity.getBody(), "Response body does not match expected value on failed signin");
     }
 
@@ -81,7 +81,7 @@ public class AuthenticationControllerTest {
         ApiResponse<AuthenticationTokenResponse> apiResponse = new ApiResponse<>(409, "Failure", null);
         when(authenticationService.signup(signUpRequest)).thenReturn(apiResponse);
         ResponseEntity<ApiResponse<AuthenticationTokenResponse>> responseEntity = authenticationController.signup(signUpRequest);
-        assertEquals(200, responseEntity.getBody().getStatus(), "Status code does not match expected value on failed signup");
+        assertEquals(409, responseEntity.getBody().getStatus(), "Status code does not match expected value on failed signup");
         assertEquals(apiResponse, responseEntity.getBody(), "Response body does not match expected value on failed signup");
     }
 }
