@@ -58,6 +58,12 @@ public class WikidataService {
 
                 String image = soln.get("image").toString();
                 String countryOfOriginLabel = soln.get("countryOfOriginLabel").toString();
+                if(countryOfOriginLabel.contains("@en")) {
+                    countryOfOriginLabel = countryOfOriginLabel.substring(0, countryOfOriginLabel.indexOf("@en"));
+                }
+                if(dishLabel.contains("@en")) {
+                    dishLabel = dishLabel.substring(0, dishLabel.indexOf("@en"));
+                }
                 dishes.add(Dish.builder()
                         .dishId(dish)
                         .dishLabel(dishLabel)
@@ -78,7 +84,7 @@ public class WikidataService {
 
     }
 
-    @Scheduled(fixedRate = 300000,initialDelay = 5000)
+    @Scheduled(fixedRate = 3000000,initialDelay = 5000)
     public Mono<String> retrieveDishAndCuisineData() {
         String sparqlQuery = "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n" +
                 "PREFIX wd: <http://www.wikidata.org/entity/>\n" +
@@ -101,7 +107,6 @@ public class WikidataService {
             QueryExecution queryExecution = QueryExecutionFactory.sparqlService("https://query.wikidata.org/sparql", sparqlQuery);
             // Execute the query
             ResultSet results = queryExecution.execSelect();
-            logger.debug("executed");
 
             // Process the results
             while (results.hasNext()) {
