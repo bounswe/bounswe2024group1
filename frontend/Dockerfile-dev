@@ -1,0 +1,5 @@
+FROM node:18-alpine
+WORKDIR /app
+
+# expect a bind mount to be mounted at /app
+CMD ["yarn", "dev"]
