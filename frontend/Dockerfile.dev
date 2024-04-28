@@ -1,8 +1,8 @@
 FROM node:18-alpine
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install
 
 # expect a bind mount to be mounted at /app
 EXPOSE 5173
-CMD ["yarn", "dev", "--host", "0.0.0.0", "--strictPort"]
+
+VOLUME /app/node_modules
+CMD yarn && yarn dev --host 0.0.0.0 --strictPort --force
