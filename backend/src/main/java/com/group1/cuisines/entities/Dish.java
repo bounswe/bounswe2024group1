@@ -4,14 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Dish {
-    private String dishId;
-    private String dishLabel;
+    private String id;
+    private String name;
     private String image;
-    private String countryOfOriginLabel;
+    private String country;
+    private String ingredients;
 }

@@ -13,20 +13,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService; // Authentication service
 
     @PostMapping("/signup") // Sign up endpoint
-    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signup(@RequestBody SignUpRequest request) {
-
+    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signup(
+        @RequestBody SignUpRequest request
+    ) {
         return ResponseEntity.ok(authenticationService.signup(request)); // Return response
     }
 
-    @PostMapping("/signin") // Sign in endpoint
-    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signin(@RequestBody SignInRequest request) {
+    @PostMapping("/login") // Sign in endpoint
+    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signin(
+        @RequestBody SignInRequest request
+    ) {
         return ResponseEntity.ok(authenticationService.signin(request)); // Return response
     }
 }

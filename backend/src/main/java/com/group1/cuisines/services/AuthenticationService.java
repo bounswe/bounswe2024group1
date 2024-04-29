@@ -28,7 +28,7 @@ public class AuthenticationService {
         if (
             userRepository.existsByEmailOrUsername(
                 request.getEmail(),
-                request.getUserName()
+                request.getUsername()
             )
         ) {
             return new ApiResponse<>(
@@ -39,7 +39,7 @@ public class AuthenticationService {
         }
         User user = User.builder()
             .email(request.getEmail())
-            .username(request.getUserName())
+            .username(request.getUsername())
             .country(request.getCountry())
             .Bio(request.getBio())
             .password(passwordEncoder.encode(request.getPassword()))
@@ -64,8 +64,8 @@ public class AuthenticationService {
         try {
             User user = userRepository
                 .findByEmailOrUsername(
-                    request.getUsernameOremail(),
-                    request.getUsernameOremail()
+                    request.getUsernameOrEmail(),
+                    request.getUsernameOrEmail()
                 )
                 .orElseThrow(
                     () ->
@@ -75,7 +75,7 @@ public class AuthenticationService {
                 );
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    request.getUsernameOremail(),
+                    request.getUsernameOrEmail(),
                     request.getPassword()
                 )
             );

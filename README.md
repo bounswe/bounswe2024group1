@@ -39,6 +39,8 @@ We have `./frontend`, `./backend` and `./mobile` directories that each contain t
 
 Each codebase has its own readme file that explains how to get set up, run the application, and tests. In addition, it is recommended to use the docker-compose setup for development and local test of production builds. We utilize docker-compose to build and deploy the application as well.
 
+In addition, we have our OpenAPI specification at `swagger/openapi.yml`. A Swagger UI instance is available in our docker compose setup at `localhost:8081`.
+
 ## Docker Compose
 
 We have two docker compose setups:
