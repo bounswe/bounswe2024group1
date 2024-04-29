@@ -54,5 +54,7 @@
 
 **Note:** Make sure that before running backend-app in your local machine,you have to rearrange application.properties file in the src/main/resources directory(db USERNAME, PASSWORD, port if not default one etc). If not, please rearrange it before running the backend-app.
 
+## Resources
 
+* [About Maven Commands ](https://www.geeksforgeeks.org/maven-lifecycle-and-basic-maven-commands/)
 
