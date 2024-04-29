@@ -1,30 +1,80 @@
-# React + TypeScript + Vite
+# Semantic Browse for Cuisines Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project uses the Vite template for React with TypeScript.
 
-Currently, two official plugins are available:
+Before you get started, you'll need to have Node.js (v18.20.1) installed and you'll need to enable corepack:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-};
+```bash
+corepack enable
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+After that, you can install packages using
+
+```bash
+yarn install
+```
+
+## Development Server
+
+You can run the development server locally using:
+
+```bash
+yarn dev
+```
+
+## Docker
+
+You can find the Dockerfiles as `Dockerfile` and `Dockerfile.dev` respectively. We have two docker-compose setups.:
+
+1. identical to production, uses nginx to host the frontend at port 80, connect at `localhost:80`. nginx config lives in `nginx/nginx.conf`
+
+```bash
+docker-compose up -d
+```
+
+2. with hot reloading, uses the vite development server at port 5173, connect at `localhost:5173`
+
+```bash
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+With the hot reloading setup, you'll need to restart if you make any changes to package.json as the `node_modules` are fetched on start.
+
+## Linting and Formatting
+
+We use Prettier and ESLint for these purposes. You can run them using:
+
+```bash
+yarn lint
+yarn format
+```
+
+## Tests
+
+We use Vitest for testing. It's a library similar to Jest that uses Vite in its backend. This allows consistency across true build environments and the test environment.
+
+Start the test runner using:
+
+```bash
+yarn test
+```
+
+Run tests once:
+
+```bash
+yarn test run
+```
+
+## Hooks
+
+We have husky and lint-staged set up such that all staged files are linted and formatted and tests are run before committing.
+
+You can skip these checks using `--no-verify` (NOT RECOMMENDED).
+
+## Code
+
+We use React Router, TailwindCSS, and shadcn-ui.
+
+### Components
+
+We use shadcn's `shadcn-ui` component library. It will add components to our source which we can customize for our own use. Refer to [the docs](https://ui.shadcn.com/docs) for more information.
