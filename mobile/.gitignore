@@ -7,7 +7,7 @@ node_modules/
 .expo/
 dist/
 web-build/
-.src/
+
 # Native
 *.orig.*
 *.jks
@@ -33,3 +33,5 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+.src/
