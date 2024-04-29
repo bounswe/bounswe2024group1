@@ -34,4 +34,3 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-.src/
