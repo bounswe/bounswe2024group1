@@ -1,19 +1,24 @@
-version: '3.8'
+version: "3.8"
 services:
   db:
-    image: mysql:5.7
+    image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'cuisines-test'
-      MYSQL_ROOT_PASSWORD: 'admin'
+      MYSQL_DATABASE: "cuisines-test"
+      MYSQL_ROOT_PASSWORD: "admin"
     ports:
       - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
   app:
     build: .
+    platform: linux/amd64
     ports:
       - "8080:8080"
     environment:
+      DB_HOST: db
+      DB_NAME: cuisines-test
+      DB_USER: root
+      DB_PASSWORD: admin
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - db

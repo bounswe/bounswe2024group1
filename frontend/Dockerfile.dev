@@ -5,4 +5,10 @@ WORKDIR /app
 EXPOSE 5173
 
 VOLUME /app/node_modules
+
+RUN corepack enable
+
+# we can't pack dependencies or bind them as
+# the platform of the host and the container
+# are not the same.
 CMD yarn && yarn dev --host 0.0.0.0 --strictPort --force

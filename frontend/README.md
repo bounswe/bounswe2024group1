@@ -24,21 +24,7 @@ yarn dev
 
 ## Docker
 
-You can find the Dockerfiles as `Dockerfile` and `Dockerfile.dev` respectively. We have two docker-compose setups.:
-
-1. identical to production, uses nginx to host the frontend at port 80, connect at `localhost:80`. nginx config lives in `nginx/nginx.conf`
-
-```bash
-docker-compose up -d
-```
-
-2. with hot reloading, uses the vite development server at port 5173, connect at `localhost:5173`
-
-```bash
-docker-compose -f docker-compose.dev.yml up -d
-```
-
-With the hot reloading setup, you'll need to restart if you make any changes to package.json as the `node_modules` are fetched on start.
+You can find the Dockerfiles as `Dockerfile` and `Dockerfile.dev` respectively. Please refer to [the main README](../README.md) for more information on the Docker setup.
 
 ## Linting and Formatting
 

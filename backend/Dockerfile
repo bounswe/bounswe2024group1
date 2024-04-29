@@ -1,12 +1,30 @@
-# Use the official OpenJDK image as the base image
-FROM openjdk:17-jdk
+# Use a base image with Maven to build the Spring Boot application
+FROM maven:3.8.4 AS builder
 
-# Copy the built artifact into the image
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+# Set the working directory in the container
+WORKDIR /app
 
-# Set the port the container will listen on
+# Copy the Maven project file
+COPY pom.xml .
+
+# Download dependencies
+RUN mvn -B dependency:go-offline
+
+# Copy the entire project source
+COPY src ./src
+
+# Build the application JAR (Skip tests since they require db)
+RUN mvn -B package -DskipTests
+
+# Use a lighter base image for the runtime environment
+FROM openjdk:23-ea-17-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the JAR file from the previous stage
+COPY --from=builder /app/target/cuisines*.jar ./cuisines.jar
+
 EXPOSE 8080
-
-# Command to run the application
-ENTRYPOINT ["java","-jar","/app.jar"]
+# Command to run the application when the container starts
+CMD ["java", "-jar", "cuisines.jar"]
