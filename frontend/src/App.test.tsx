@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import App from "./App";
 
 vi.mock("zustand/middleware", () => ({
-  persist: (a) => a,
+  persist: (a: unknown) => a,
   createJSONStorage: () => null,
 }));
 

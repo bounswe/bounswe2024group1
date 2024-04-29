@@ -67,7 +67,7 @@ export const action = async ({
   }
 
   const redirectTo = formData.get("redirectTo") as string | null;
-  return redirect(redirectTo || "/") as unknown;
+  return redirect(redirectTo || "/") as Response;
 };
 
 export default function Login() {
