@@ -61,9 +61,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.1.1",
-  "os": [
-    "linux",
-    "darwin"
-  ]
+  "packageManager": "yarn@4.1.1"
 }

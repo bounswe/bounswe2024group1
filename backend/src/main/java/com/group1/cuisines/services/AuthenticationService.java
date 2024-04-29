@@ -22,44 +22,75 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public ApiResponse<AuthenticationTokenResponse> signup(SignUpRequest request) {
-        if(userRepository.existsByEmailOrUsername(request.getEmail(), request.getUserName())) {
-            return new ApiResponse<>(409, "Email or username already exists.", null);
+    public ApiResponse<AuthenticationTokenResponse> signup(
+        SignUpRequest request
+    ) {
+        if (
+            userRepository.existsByEmailOrUsername(
+                request.getEmail(),
+                request.getUserName()
+            )
+        ) {
+            return new ApiResponse<>(
+                409,
+                "Email or username already exists.",
+                null
+            );
         }
         User user = User.builder()
-                .email(request.getEmail())
-                .username(request.getUserName())
-                .country(request.getCountry())
-                .Bio(request.getBio())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .build();
-
+            .email(request.getEmail())
+            .username(request.getUserName())
+            .country(request.getCountry())
+            .Bio(request.getBio())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
+            .build();
 
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
 
-        return new ApiResponse<>(200, "User registered successfully.", AuthenticationTokenResponse.builder()
-
-                .token(token)
-                .build());
-
+        return new ApiResponse<>(
+            200,
+            "User registered successfully.",
+            AuthenticationTokenResponse.builder().token(token).build()
+        );
     }
 
-    public ApiResponse<AuthenticationTokenResponse>  signin(SignInRequest request) {
-        try{
-            User user = userRepository.findByEmailOrUsername(request.getUsernameOremail(), request.getUsernameOremail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsernameOremail(), request.getPassword()));
+    public ApiResponse<AuthenticationTokenResponse> signin(
+        SignInRequest request
+    ) {
+        try {
+            User user = userRepository
+                .findByEmailOrUsername(
+                    request.getUsernameOremail(),
+                    request.getUsernameOremail()
+                )
+                .orElseThrow(
+                    () ->
+                        new IllegalArgumentException(
+                            "Invalid email or password."
+                        )
+                );
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getUsernameOremail(),
+                    request.getPassword()
+                )
+            );
             String token = jwtService.generateToken(user);
-            return new ApiResponse<>(200, "User logged in successfully.", AuthenticationTokenResponse.builder()
-
-                    .token(token)
-                    .build());
+            return new ApiResponse<>(
+                200,
+                "User logged in successfully.",
+                AuthenticationTokenResponse.builder().token(token).build()
+            );
         } catch (Exception e) {
-            return new ApiResponse<>(401, "Invalid email or password.", null);
+            return new ApiResponse<>(
+                401,
+                "Invalid email/username or password.",
+                null
+            );
         }
     }
 }
