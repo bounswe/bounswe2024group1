@@ -2,6 +2,14 @@ version: "3.1"
 name: bounswe2024group1-dev
 
 services:
+  swagger-dev:
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON: /openapi.yaml
+    volumes:
+      - ./swagger/openapi.yml:/openapi.yaml
+    ports:
+      - "8081:8080"
   db-dev:
     image: mysql:latest
     environment:

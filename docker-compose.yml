@@ -3,6 +3,14 @@ name: bounswe2024group1
 # Production-like docker-compose setup
 
 services:
+  swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON: /openapi.yaml
+    volumes:
+      - ./swagger/openapi.yml:/openapi.yaml
+    ports:
+      - "8081:8080"
   db:
     image: mysql:latest
     environment:

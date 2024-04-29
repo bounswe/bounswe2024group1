@@ -1,4 +1,5 @@
 package com.group1.cuisines.services;
+
 import com.group1.cuisines.entities.Dish;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -23,68 +24,72 @@ public class WikidataService {
 
     private final WebClient webClient;
     private static final Logger logger = LoggerFactory.getLogger(WikidataService.class);
+
     public WikidataService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://query.wikidata.org/sparql").build();
     }
 
     public ArrayList<Dish> retrieveDishAndCuisineData(String parameter) {
-        String sparqlQuery = "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n" +
-                "PREFIX wd: <http://www.wikidata.org/entity/>\n" +
-                "PREFIX wikibase: <http://wikiba.se/ontology#>\n" +
-                "PREFIX bd: <http://www.bigdata.com/rdf#>\n" +
-                "SELECT ?dish ?dishLabel ?image ?countryOfOriginLabel WHERE { " +
-                "?dish wdt:P31 wd:Q746549; " +
-                "wdt:P18 ?image; " +
-                "wdt:P495 ?countryOfOrigin; " +
-                "wdt:P361 ?cuisine; " +
-                "wdt:P186 ?ingredient. " +
-                "SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". } " +
-                "} LIMIT 5000"; // Limited to 500 for testing result
+        String sparqlQuery = """
+                PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+                PREFIX wd: <http://www.wikidata.org/entity/>
+                PREFIX wikibase: <http://wikiba.se/ontology#>
+                PREFIX bd: <http://www.bigdata.com/rdf#>
+                SELECT ?dish ?dishLabel ?image ?countryOfOriginLabel WHERE {
+                    ?dish wdt:P31 wd:Q746549;
+                    wdt:P18 ?image;
+                    wdt:P495 ?countryOfOrigin;
+                    wdt:P361 ?cuisine;
+                    SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+                } LIMIT 5000""";
 
-        QueryExecution queryExecution = QueryExecutionFactory.sparqlService("https://query.wikidata.org/sparql", sparqlQuery);
+        QueryExecution queryExecution = QueryExecutionFactory.sparqlService("https://query.wikidata.org/sparql",
+                sparqlQuery);
+
         // Execute the query
         ResultSet results = queryExecution.execSelect();
-        logger.debug("executed");
+
         ArrayList<Dish> dishes = new ArrayList<>();
-        // Process the results
-        StringBuilder resultBuilder = new StringBuilder();
+
         while (results.hasNext()) {
             QuerySolution soln = results.nextSolution();
             // Access variables in the result
             String dishLabel = soln.get("dishLabel").toString();
-            if (dishLabel.toLowerCase().contains(parameter.toLowerCase())) {
+            String countryOfOriginLabel = soln.get("countryOfOriginLabel").toString();
+
+            // match search
+            if (dishLabel.toLowerCase().contains(parameter.toLowerCase())
+                    || countryOfOriginLabel.toLowerCase().contains(parameter.toLowerCase()) || parameter.isEmpty()) {
+
                 String dish = soln.get("dish").toString();
-
-
                 String image = soln.get("image").toString();
-                String countryOfOriginLabel = soln.get("countryOfOriginLabel").toString();
-                if(countryOfOriginLabel.contains("@en")) {
+
+                if (countryOfOriginLabel.contains("@en")) {
                     countryOfOriginLabel = countryOfOriginLabel.substring(0, countryOfOriginLabel.indexOf("@en"));
                 }
-                if(dishLabel.contains("@en")) {
+
+                if (dishLabel.contains("@en")) {
                     dishLabel = dishLabel.substring(0, dishLabel.indexOf("@en"));
                 }
+
                 dishes.add(Dish.builder()
-                        .dishId(dish)
-                        .dishLabel(dishLabel)
+                        .id(dish)
+                        .name(dishLabel)
                         .image(image)
-                        .countryOfOriginLabel(countryOfOriginLabel)
+                        .country(countryOfOriginLabel)
                         .build());
-                logger.info("Dish: {}, Dish Label: {}, Image: {}, Country of Origin: {}", dish, dishLabel, image, countryOfOriginLabel);
-                resultBuilder.append("Dish: ").append(dish).append(", Dish Label: ").append(dishLabel)
-                        .append(", Image: ").append(image).append(", Country of Origin: ").append(countryOfOriginLabel)
-                        .append("\n");
             }
         }
 
         // Close the query execution
         queryExecution.close();
+
         logger.info("Query executed successfully!");
         return dishes;
 
     }
 
-    @Scheduled(fixedRate = 3000000,initialDelay = 5000)
+    @Scheduled(fixedRate = 3000000, initialDelay = 5000)
     public Mono<String> retrieveDishAndCuisineData() {
         String sparqlQuery = "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n" +
                 "PREFIX wd: <http://www.wikidata.org/entity/>\n" +
@@ -99,12 +104,10 @@ public class WikidataService {
                 "SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". } " +
                 "} LIMIT 500"; // Limited to 500 for testing result
 
-
-
-
         // Return a Mono for asynchronous processing
-        Mono<String> mono =  Mono.fromCallable(() -> {
-            QueryExecution queryExecution = QueryExecutionFactory.sparqlService("https://query.wikidata.org/sparql", sparqlQuery);
+        Mono<String> mono = Mono.fromCallable(() -> {
+            QueryExecution queryExecution = QueryExecutionFactory.sparqlService("https://query.wikidata.org/sparql",
+                    sparqlQuery);
             // Execute the query
             ResultSet results = queryExecution.execSelect();
 
@@ -116,21 +119,18 @@ public class WikidataService {
                 String dishLabel = soln.get("dishLabel").toString();
                 String image = soln.get("image").toString();
                 String countryOfOriginLabel = soln.get("countryOfOriginLabel").toString();
-                logger.info("Dish: {}, Dish Label: {}, Image: {}, Country of Origin: {}", dish, dishLabel, image, countryOfOriginLabel);
+                logger.info("Dish: {}, Dish Label: {}, Image: {}, Country of Origin: {}", dish, dishLabel, image,
+                        countryOfOriginLabel);
             }
 
             // Close the query execution
             queryExecution.close();
             logger.info("Query executed successfully!");
             return "Query executed successfully!";
-        })
-                ;
+        });
         mono.subscribe();
         return mono;
 
-
-
     }
-
 
 }
