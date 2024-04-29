@@ -1,20 +1,100 @@
-import * as React from "react";
-import { Link } from "react-router-dom";
+import {
+  ActionFunctionArgs,
+  Form,
+  Link,
+  Navigate,
+  redirect,
+  useActionData,
+  useLocation,
+  useNavigation,
+} from "react-router-dom";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import useAuthStore, { signin } from "../services/auth";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  usernameOrEmail: z.string().email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+export const action = async ({
+  request,
+}: ActionFunctionArgs): Promise<
+  z.inferFlattenedErrors<typeof loginSchema> | Response
+> => {
+  const formData = await request.formData();
+  const usernameOrEmail = formData.get("usernameOrEmail") as string | null;
+  const password = formData.get("password") as string | null;
+
+  const parsed = loginSchema.safeParse({
+    usernameOrEmail,
+    password,
+  });
+
+  if (!parsed.success) {
+    return parsed.error.flatten();
+  }
+
+  try {
+    await signin(parsed.data);
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "message" in error &&
+      typeof error.message === "string"
+    ) {
+      return {
+        formErrors: [error.message],
+        fieldErrors: {},
+      };
+    } else {
+      return {
+        formErrors: ["An unknown error occurred"],
+        fieldErrors: {},
+      };
+    }
+  }
+
+  const redirectTo = formData.get("redirectTo") as string | null;
+  return redirect(redirectTo || "/") as unknown;
+};
 
 export default function Login() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const from = params.get("from") || "/";
+
+  const auth = useAuthStore();
+
+  const navigation = useNavigation();
+  const isLoggingIn = !!navigation.formData?.get("usernameOrEmail");
+
+  const actionData = useActionData() as
+    | Exclude<Awaited<ReturnType<typeof action>>, Response>
+    | undefined;
+
+  function getErrorLabel(field: keyof z.infer<typeof loginSchema>) {
+    return actionData && actionData.fieldErrors[field] ? (
+      <div className="text-sm text-red-500">
+        {actionData.fieldErrors[field]!.join("\n")}
+      </div>
+    ) : null;
+  }
+
   return (
     <Card className="mx-auto max-w-sm">
+      {auth.token && <Navigate to={from} />}
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
@@ -22,36 +102,45 @@ export default function Login() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <Form method="post" replace className="grid gap-4">
+          <input type="hidden" name="redirectTo" value={from} />
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="usernameOrEmail"
               type="email"
               placeholder="m@example.com"
               required
             />
           </div>
+          {getErrorLabel("usernameOrEmail")}
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-           <Link to="#" className="ml-auto inline-block text-sm underline">
+              {/* <Link to="#" className="ml-auto inline-block text-sm underline">
                 Forgot your password?
-              </Link>
+              </Link> */}
             </div>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          {getErrorLabel("password")}
+          {actionData && actionData.formErrors ? (
+            <div className="text-sm text-red-500">
+              {actionData.formErrors.join("\n")}
+            </div>
+          ) : null}
+          <Button loading={isLoggingIn} type="submit" className="w-full">
+            {isLoggingIn ? "Logging in..." : "Login"}
           </Button>
-        </div>
+        </Form>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/signup" className="underline">
             Sign up
-            </Link>
+          </Link>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
