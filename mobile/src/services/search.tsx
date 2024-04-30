@@ -1,17 +1,19 @@
 interface Dish {
-    id: string;
-    name: string;
-    country: string;
-    image: string;
+  id: string;
+  name: string;
+  country: string;
+  image: string;
+}
+
+const BASE_URL = "https://semantic-cuisine-staging-t3m52.ondigitalocean.app";
+
+export const searchDishes = async (query: string): Promise<Dish[]> => {
+  try {
+    const res = await fetch(
+      BASE_URL + "/api/v1/search/dishes?q=" + encodeURIComponent(query),
+    );
+    return await res.json();
+  } catch {
+    throw new Error("Failed to fetch dishes");
   }
-  
-  export const searchDishes = async (query: string): Promise<Dish[]> => {
-    try {
-      const res = await fetch(
-        "/api/v1/search/dishes?q=" + encodeURIComponent(query),
-      );
-      return await res.json();
-    } catch {
-      throw new Error("Failed to fetch dishes");
-    }
-  };
+};

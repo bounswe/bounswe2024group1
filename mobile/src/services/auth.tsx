@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+const BASE_URL = "https://semantic-cuisine-staging-t3m52.ondigitalocean.app";
 
 interface AuthState {
   /* null if logged out */
@@ -24,7 +25,7 @@ const useAuthStore = create<AuthState>()(
 export default useAuthStore;
 
 interface UserLogin {
-  email?: string;
+  usernameOrEmail?: string;
   password?: string;
 }
 /*
@@ -32,7 +33,7 @@ interface UserLogin {
  * Throws an error if unsuccessful
  */
 export const signin = async (login: UserLogin): Promise<void> => {
-  return fetch("/api/v1/users/login", {
+  return fetch(BASE_URL + "/api/v1/users/login", {
     method: "POST",
     body: JSON.stringify(login),
     headers: { "Content-Type": "application/json" },
@@ -66,7 +67,7 @@ interface SignupRequest {
 }
 
 export const signup = async (signup: SignupRequest): Promise<void> => {
-  return fetch("/api/v1/users/signup", {
+  return fetch(BASE_URL + "/api/v1/users/signup", {
     method: "POST",
     body: JSON.stringify(signup),
     headers: { "Content-Type": "application/json" },
@@ -85,4 +86,3 @@ export const signup = async (signup: SignupRequest): Promise<void> => {
       throw new Error("Unknown error");
     });
 };
- 

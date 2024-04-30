@@ -4,7 +4,7 @@
     "slug": "Semantic-Browse-Cuisines",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -12,9 +12,7 @@
       "backgroundColor": "#ffffff"
     },
     "experiments": { "tsconfigPaths": true },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

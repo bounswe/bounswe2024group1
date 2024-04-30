@@ -10,7 +10,7 @@ import {
   Image,
 } from "react-native";
 import { z } from "zod";
-import {navigation} from 'react-native'
+import { navigation } from "react-native";
 import useAuthStore, { signin } from "@/src/services/auth";
 
 const loginSchema = z.object({
@@ -24,8 +24,8 @@ export const LoginScreen = () => {
   const [password, setPassword] = useState("");
 
   // State variable to track password visibility
-   const navigation = useNavigation();
-  
+  const navigation = useNavigation();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [errors, setErrors] = useState({ email: [], password: [] });
@@ -34,25 +34,26 @@ export const LoginScreen = () => {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  
+
   const handleLogin = async () => {
-      
     setIsLoggingIn(true);
     try {
-      await signin({ email, password });
+      console.log({ email, password });
+      await signin({ usernameOrEmail: email, password });
+      console.log("success");
       setIsLoggingIn(false);
-      
+
       navigation.reset({
         index: 0,
-        routes: [{ name: 'HomeScreen' }],
+        routes: [{ name: "HomeScreen" }],
       });
     } catch (error) {
-        
+      console.log("Login failed", error);
       //Alert.alert('Login Error', error.message || 'Failed to login. Please check your credentials.');
       setIsLoggingIn(false);
     }
   };
- 
+
   return (
     <View className="w-screen h-screen bg-white flex-col justify-center px-6 ">
       <View>
@@ -65,6 +66,8 @@ export const LoginScreen = () => {
             <Text>Email</Text>
             <View className="p-2 rounded border-2 border-solid h-11 mt-2">
               <TextInput
+                textContentType="emailAddress"
+                autoCapitalize={"none"}
                 className="w-96"
                 placeholder="Type here to translate!"
                 onChangeText={(email) => setEmail(email)}

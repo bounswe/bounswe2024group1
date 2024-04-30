@@ -14,15 +14,16 @@ import Title from "@/src/components/Title";
 import { searchDishes } from "@/src/services/search";
 import DishCard from "@/src/components/Dish";
 
-
 export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [results, setResults] = useState([{name:'y',country:'y',image:'y'}])
+  const [results, setResults] = useState([
+    { name: "y", country: "y", image: "y" },
+  ]);
   const [searchFocused, setSearchFocused] = useState(false);
   return (
     <ScrollView className="w-screen bg-white p-6 overflow-y-scroll">
       <View className="pt-6">
-        <Title/>
+        <Title />
         <View
           className={` rounded-xl flex-row border-2 border-solid h-11 mt-10 + ${searchFocused ? "border-app-red" : "border-gray-400"}`}
         >
@@ -33,29 +34,31 @@ export const Home = () => {
             />
           </View>
           <TextInput
-            onSubmitEditing={()=>{setResults(searchDishes(searchInput))}}
+            onSubmitEditing={() => {
+              searchDishes(searchInput).then((res) => {
+                setResults(res);
+              });
+            }}
             onFocus={(searchFocused) => setSearchFocused(true)}
             onBlur={(searchFocused) => setSearchFocused(false)}
             className="w-96 pl-8"
-            
             onChangeText={(searchInput) => setSearchInput(searchInput)}
             //onSubmitEditing={search}
           />
         </View>
       </View>
-     <Trending/>
-     {results.map((dish)=> ( 
-      <DishCard
-      key={dish.name}
-      dish={{
-        name:dish.name,
-        description:dish.country,
-        image:dish.image
-      }}
-      />
-
-    ))}
-     <Popular/>
+      {/* <Trending /> */}
+      {results.map((dish) => (
+        <DishCard
+          key={dish.name}
+          dish={{
+            name: dish.name,
+            description: dish.country,
+            image: dish.image,
+          }}
+        />
+      ))}
+      <Popular />
     </ScrollView>
   );
 };

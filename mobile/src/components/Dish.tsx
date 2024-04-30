@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 interface Dish {
   name: string;
@@ -27,43 +27,46 @@ const DishCard = ({ dish }: { dish: Dish }) => {
 const styles = StyleSheet.create({
   container: {
     maxWidth: 400,
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "center",
+    marginTop: 16,
+    marginBottom: 16,
   },
   imageContainer: {
     marginBottom: -40, // Adjust based on your layout
-    width: '70%',
+    width: "70%",
     aspectRatio: 16 / 9,
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
+    zIndex: 100,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   card: {
-    backgroundColor: '#f3f3f3',
+    backgroundColor: "#f3f3f3",
     paddingTop: 40,
-    width: '100%',
+    width: "100%",
     borderRadius: 5,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     padding: 10,
   },
   description: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
     paddingHorizontal: 10,
   },
   linkContainer: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     padding: 10,
   },
   linkText: {
     fontSize: 14,
-    color: '#007aff',
+    color: "#007aff",
   },
 });
 
