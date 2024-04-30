@@ -23,7 +23,7 @@ import useAuthStore, { signin } from "../services/auth";
 import { z } from "zod";
 
 const loginSchema = z.object({
-  usernameOrEmail: z.string().email("Please enter a valid email"),
+  usernameOrEmail: z.string().min(1, "Username or email is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
@@ -106,11 +106,10 @@ export default function Login() {
           <Form method="post" replace className="grid gap-4">
             <input type="hidden" name="redirectTo" value={from} />
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email or username</Label>
               <Input
                 id="email"
                 name="usernameOrEmail"
-                type="email"
                 placeholder="m@example.com"
                 required
               />
