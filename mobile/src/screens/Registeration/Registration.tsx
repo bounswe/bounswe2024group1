@@ -87,17 +87,7 @@ export const Registration = () => {
               />
             </View>
           </View>
-            <View className="mt-2">
-            <Text>Surname</Text>
-            <View className="p-2 rounded border-2 border-solid h-11 mt-2">
-              <TextInput
-                textContentType="name"
-                autoCapitalize={"none"}
-                className="w-96"
-                placeholder="Type here to translate!"
-                onChangeText={(surName) => setLastname(surName)}
-              />
-            </View>
+          
           </View>
           <View className="mt-2">
             <Text>userName</Text>
