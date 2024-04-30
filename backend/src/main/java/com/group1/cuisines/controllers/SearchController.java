@@ -1,5 +1,6 @@
 package com.group1.cuisines.controllers;
 
+import com.group1.cuisines.dao.response.ApiResponse;
 import com.group1.cuisines.entities.Dish;
 import com.group1.cuisines.services.WikidataService;
 import java.util.ArrayList;
@@ -14,7 +15,11 @@ public class SearchController {
     private final WikidataService wikidataService;
 
     @GetMapping("/dishes")
-    public ArrayList<Dish> searchDishes(@RequestParam String q) {
-        return wikidataService.retrieveDishAndCuisineData(q);
+    public ApiResponse<ArrayList<Dish>> searchDishes(@RequestParam String q) {
+        return new ApiResponse<>(
+            200,
+            "Search completed",
+            wikidataService.retrieveDishAndCuisineData(q)
+        );
     }
 }

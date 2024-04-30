@@ -47,7 +47,6 @@ paths:
                     properties:
                       data:
                         type: object
-                        nullable: true
 
   /users/verify-email:
     post:
@@ -77,7 +76,6 @@ paths:
                     properties:
                       data:
                         type: object
-                        nullable: true
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -100,7 +98,75 @@ paths:
                     properties:
                       data:
                         type: object
-                        nullable: true
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/reset-password-request:
+    post:
+      tags:
+        - auth
+      summary: Request password reset
+      description:
+        A password reset link will be sent to the user's email if it exists.
+        The response must always be success (even if email does not exist).
+        This is to prevent email enumeration attacks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/reset-password:
+    post:
+      tags:
+        - auth
+      summary: Reset password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -333,7 +399,7 @@ paths:
                       data:
                         type: array
                         items:
-                          $ref: "#/components/schemas/UserSearchResult"
+                          $ref: "#/components/schemas/UserSummary"
 
   /search/dishes:
     get:
@@ -349,10 +415,12 @@ paths:
           name: cuisine
           schema:
             type: string
+            description: Comma separated list of cuisines
         - in: query
           name: foodType
           schema:
             type: string
+            description: Comma separated list of food types
       responses:
         "200":
           description: OK
@@ -405,6 +473,10 @@ paths:
           required: true
           schema:
             type: integer
+        - in: query
+          name: includeDishes
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -662,14 +734,61 @@ components:
           type: string
         bio:
           type: string
+        followersCount:
+          type: integer
         gender:
           type: string
-          enum: [male, female, neither]
+          enum: [male, female, unknown]
+        profilePicture:
+          type: string
+          format: uri
         diets:
           type: array
           items:
             type: string
-
+        recipeCount:
+          type: integer
+        bookmarks:
+          type: array
+          description: Only available when querying own profile.
+          items:
+            $ref: "#/components/schemas/RecipeSummary"
+        recipes:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeSummary"
+      examples:
+        - id: 1
+          username: "takoyaki_lover"
+          name: "Takoyaki Lover"
+          bio: "I love takoyaki!"
+          followersCount: 100
+          gender: unknown
+          profilePicture: "https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640"
+          diets: ["keto"]
+          recipeCount: 10
+          bookmarks:
+            - id: 1
+              name: "My Takoyaki Recipe"
+              description: "A delicious takoyaki recipe that I learned from my grandmother."
+              cookTime: 30
+              images:
+                - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+              rating: 4.5
+              dish:
+                id: "http://www.wikidata.org/entity/Q905527"
+                name: "takoyaki"
+          recipes:
+            - id: 1
+              name: "My Takoyaki Recipe"
+              description: "A delicious takoyaki recipe that I learned from my grandmother."
+              cookTime: 30
+              images:
+                - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+              rating: 4.5
+              dish:
+                id: "http://www.wikidata.org/entity/Q905527"
+                name: "takoyaki"
     UserSummary:
       type: object
       properties:
@@ -681,49 +800,45 @@ components:
           type: string
         followersCount:
           type: integer
+        profilePicture:
+          type: string
+          format: uri
         recipeCount:
           type: integer
         avgRating:
           type: number
           format: float
-
-    UserSearchResult:
-      type: object
-      properties:
-        id:
-          type: integer
-        username:
-          type: string
-        name:
-          type: string
-        bio:
-          type: string
-        followersCount:
-          type: integer
-        recipeCount:
-          type: integer
-        avgRating:
-          type: number
-          format: float
+      examples:
+        - id: 1
+          username: "takoyaki_lover"
+          name: "Takoyaki Lover"
+          followersCount: 100
+          profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          recipeCount: 10
+          avgRating: 4.5
 
     DishSearchResult:
       type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        image:
-          type: string
-          format: uri
+      $ref: "#/components/schemas/DishDetails"
+      examples:
+        - id: "http://www.wikidata.org/entity/Q905527"
+          name: "takoyaki"
+          description: "ball-shaped Japanese snack with octopus"
+          image: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          countries: "Japan"
+          ingredients: "wheat flour, green laver, octopus as food, beni shōga, katsuobushi, Welsh onion"
+          foodTypes: "konamono, octopus dish, yakimono"
+          cuisines: "Japanese cuisine"
 
     DishDetails:
       type: object
+      required:
+        - id
+        - name
+        - image
       properties:
         id:
-          type: integer
+          type: string
         name:
           type: string
         description:
@@ -731,14 +846,30 @@ components:
         image:
           type: string
           format: uri
+        countries:
+          type: string
+        ingredients:
+          type: string
+        foodTypes:
+          type: string
         cuisine:
           $ref: "#/components/schemas/CuisineSummary"
+        recipes:
+          type: array
+          description: Only returned when directly querying a dish.
+          items:
+            $ref: "#/components/schemas/RecipeSummary"
 
     CuisineDetails:
       type: object
+      required:
+        - id
+        - name
+        - description
+        - image
       properties:
         id:
-          type: integer
+          type: string
         name:
           type: string
         description:
@@ -753,6 +884,13 @@ components:
 
     RecipeSummary:
       type: object
+      required:
+        - id
+        - name
+        - description
+        - images
+        - rating
+        - author
       properties:
         id:
           type: integer
@@ -760,6 +898,9 @@ components:
           type: string
         description:
           type: string
+        cookTime:
+          type: integer
+          description: Cook time in minutes
         images:
           type: array
           items:
@@ -768,11 +909,45 @@ components:
         rating:
           type: number
           format: float
+        dish:
+          $ref: "#/components/schemas/DishSummary"
         author:
           $ref: "#/components/schemas/UserSummary"
+      examples:
+        - id: 1
+          name: "My Takoyaki Recipe"
+          description: "A delicious takoyaki recipe that I learned from my grandmother."
+          cookTime: "30 minutes"
+          images:
+            - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          rating: 4.5
+          dish:
+            id: "http://www.wikidata.org/entity/Q905527"
+            name: "takoyaki"
+            image: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          author:
+            id: 1
+            username: "takoyaki_lover"
+            name: "Takoyaki Lover"
+            followersCount: 100
+            profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+            recipeCount: 10
+            avgRating: 4.5
 
     RecipeDetails:
       type: object
+      required:
+        - id
+        - name
+        - description
+        - instructions
+        - ingredients
+        - images
+        - cookTime
+        - servingSize
+        - allergens
+        - ratingsCount
+        - author
       properties:
         id:
           type: integer
@@ -793,8 +968,6 @@ components:
           items:
             type: string
             format: uri
-        prepTime:
-          type: string
         cookTime:
           type: string
         servingSize:
@@ -807,13 +980,43 @@ components:
           $ref: "#/components/schemas/CuisineSummary"
         dish:
           $ref: "#/components/schemas/DishSummary"
-        rating:
+        avgRating:
           type: number
           format: float
         ratingsCount:
           type: integer
         author:
           $ref: "#/components/schemas/UserSummary"
+      examples:
+        - id: 1
+          name: "My Takoyaki Recipe"
+          description: "A delicious takoyaki recipe that I learned from my grandmother."
+          instructions:
+            - "Mix the batter."
+            - "Add the octopus."
+            - "Cook the takoyaki balls."
+          ingredients:
+            - "wheat flour"
+            - "green laver"
+            - "octopus as food"
+            - "beni shōga"
+            - "katsuobushi"
+            - "Welsh onion"
+          images:
+            - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          cookTime: "30 minutes"
+          servingSize: 4
+          allergens:
+            - "seafood"
+          cuisine:
+            id: 1
+            name: "Japanese"
+          dish:
+            id: "http://www.wikidata.org/entity/Q905527"
+            name: "takoyaki"
+            image: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          avgRating: 4.5
+          ratingsCount: 10
 
     NewRecipe:
       type: object
@@ -854,6 +1057,28 @@ components:
             type: string
         dishId:
           type: integer
+      examples:
+        - name: "My Takoyaki Recipe"
+          description: "A delicious takoyaki recipe that I learned from my grandmother."
+          instructions:
+            - "Mix the batter."
+            - "Add the octopus."
+            - "Cook the takoyaki balls."
+          ingredients:
+            - "wheat flour"
+            - "green laver"
+            - "octopus as food"
+            - "beni shōga"
+            - "katsuobushi"
+            - "Welsh onion"
+          images:
+            - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          prepTime: "10 minutes"
+          cookTime: "30 minutes"
+          servingSize: 4
+          allergens:
+            - "seafood"
+          dishId: 1
 
     CuisineSummary:
       type: object
@@ -862,6 +1087,9 @@ components:
           type: integer
         name:
           type: string
+      examples:
+        - id: 1
+          name: "Japanese"
 
     DishSummary:
       type: object
@@ -870,20 +1098,33 @@ components:
           type: integer
         name:
           type: string
+      examples:
+        - id: 1
+          name: "takoyaki"
 
     ApiResponse:
       type: object
       required:
-        - code
+        - status
       properties:
-        code:
+        status:
           type: integer
+          description: <300 indicates success, >=400 indicates error.
         data:
           type: object
         errors:
           type: array
           items:
             $ref: "#/components/schemas/ApiError"
+      examples:
+        - status: 200
+          data: { "message": "Success" }
+        - status: 400
+          errors:
+            - message: "Invalid email"
+              field: "email"
+            - message: "Invalid password"
+              field: "password"
 
     ApiError:
       type: object
@@ -894,6 +1135,7 @@ components:
           type: string
         field:
           type: string
+          description: If empty, indicates an error not related to any field.
   responses:
     OkResponse:
       description: OK
@@ -901,9 +1143,9 @@ components:
         application/json:
           schema:
             type: object
-            required: ["code"]
+            required: ["status"]
             properties:
-              code:
+              status:
                 type: integer
                 examples: [200]
               data:
@@ -916,7 +1158,7 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
                 examples: [201]
               data:
@@ -929,7 +1171,7 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
                 examples: [400]
               errors:
@@ -944,9 +1186,10 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
-                example: 401
+                examples:
+                  - 401
               errors:
                 type: array
                 items:
@@ -959,9 +1202,10 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
-                example: 403
+                examples:
+                  - 403
               errors:
                 type: array
                 items:
@@ -974,9 +1218,10 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
-                example: 404
+                examples:
+                  - 404
               errors:
                 type: array
                 items:
@@ -989,9 +1234,10 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
-                example: 409
+                examples:
+                  - 409
               errors:
                 type: array
                 items:
@@ -1004,9 +1250,10 @@ components:
           schema:
             type: object
             properties:
-              code:
+              status:
                 type: integer
-                example: 500
+                examples:
+                  - 500
               errors:
                 type: array
                 items:
