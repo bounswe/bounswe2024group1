@@ -95,7 +95,7 @@ export const LoginScreen = () => {
                 autoCapitalize={"none"}
                 className="w-96"
                 placeholder="Type here to translate!"
-                onChangeText={(surName) => setSurName(surName)}
+                onChangeText={(surName) => setLastname(surName)}
               />
             </View>
           </View>
