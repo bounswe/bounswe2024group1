@@ -93,54 +93,56 @@ export default function Login() {
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
-      {auth.token && <Navigate to={from} />}
-      <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form method="post" replace className="grid gap-4">
-          <input type="hidden" name="redirectTo" value={from} />
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="usernameOrEmail"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
-          </div>
-          {getErrorLabel("usernameOrEmail")}
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              {/* <Link to="#" className="ml-auto inline-block text-sm underline">
+    <div className="flex flex-1 items-center justify-center">
+      <Card className="mx-auto max-w-sm">
+        {auth.token && <Navigate to={from} />}
+        <CardHeader>
+          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form method="post" replace className="grid gap-4">
+            <input type="hidden" name="redirectTo" value={from} />
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="usernameOrEmail"
+                type="email"
+                placeholder="m@example.com"
+                required
+              />
+            </div>
+            {getErrorLabel("usernameOrEmail")}
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+                {/* <Link to="#" className="ml-auto inline-block text-sm underline">
                 Forgot your password?
               </Link> */}
+              </div>
+              <Input id="password" name="password" type="password" required />
             </div>
-            <Input id="password" name="password" type="password" required />
+            {getErrorLabel("password")}
+            {actionData && actionData.formErrors ? (
+              <div className="text-sm text-red-500">
+                {actionData.formErrors.join("\n")}
+              </div>
+            ) : null}
+            <Button loading={isLoggingIn} type="submit" className="w-full">
+              {isLoggingIn ? "Logging in..." : "Login"}
+            </Button>
+          </Form>
+          <div className="mt-4 text-center text-sm">
+            Don't have an account?{" "}
+            <Link to="/signup" className="underline">
+              Sign up
+            </Link>
           </div>
-          {getErrorLabel("password")}
-          {actionData && actionData.formErrors ? (
-            <div className="text-sm text-red-500">
-              {actionData.formErrors.join("\n")}
-            </div>
-          ) : null}
-          <Button loading={isLoggingIn} type="submit" className="w-full">
-            {isLoggingIn ? "Logging in..." : "Login"}
-          </Button>
-        </Form>
-        <div className="mt-4 text-center text-sm">
-          Don't have an account?{" "}
-          <Link to="/signup" className="underline">
-            Sign up
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

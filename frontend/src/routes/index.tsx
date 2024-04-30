@@ -4,6 +4,7 @@ import Signup, { action as signupAction } from "./signup";
 import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search, loader as searchLoader } from "./search";
+import { NavbarLayout } from "../components/NavbarLayout";
 
 export const routes: RouteObject[] = [
   {
@@ -17,7 +18,7 @@ export const routes: RouteObject[] = [
     Component: Signup,
   },
   {
-    path: "/search-dishes",
+    path: "/search",
     loader: searchLoader,
     Component: Search,
   },
@@ -31,5 +32,14 @@ export const routes: RouteObject[] = [
       await signout();
       return redirect("/");
     },
+  },
+];
+
+export const routeConfig: RouteObject[] = [
+  {
+    id: "root",
+    path: "/",
+    Component: NavbarLayout,
+    children: routes,
   },
 ];

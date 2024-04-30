@@ -106,81 +106,83 @@ export default function Signup() {
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
-      {auth.token && <Navigate to={from} />}
-      <CardHeader>
-        <CardTitle className="text-xl">Sign Up</CardTitle>
-        <CardDescription>
-          Enter your information to create an account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form method="POST" className="grid gap-4">
-          <input type="hidden" name="redirectTo" value={from} />
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="first-name">First name</Label>
-              <Input
-                name="firstName"
-                id="first-name"
-                placeholder="Max"
-                required
-              />
-              {getErrorLabel("firstName")}
+    <div className="flex flex-1 items-center justify-center">
+      <Card className="mx-auto max-w-sm">
+        {auth.token && <Navigate to={from} />}
+        <CardHeader>
+          <CardTitle className="text-xl">Sign Up</CardTitle>
+          <CardDescription>
+            Enter your information to create an account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form method="POST" className="grid gap-4">
+            <input type="hidden" name="redirectTo" value={from} />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="first-name">First name</Label>
+                <Input
+                  name="firstName"
+                  id="first-name"
+                  placeholder="Max"
+                  required
+                />
+                {getErrorLabel("firstName")}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="last-name">Last name</Label>
+                <Input
+                  name="lastName"
+                  id="last-name"
+                  placeholder="Robinson"
+                  required
+                />
+                {getErrorLabel("lastName")}
+              </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="last-name">Last name</Label>
+              <Label htmlFor="username">Username</Label>
+              <Input name="username" id="username" type="username" />
+              {getErrorLabel("username")}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
               <Input
-                name="lastName"
-                id="last-name"
-                placeholder="Robinson"
+                id="email"
+                type="email"
+                name="email"
+                placeholder="m@example.com"
                 required
               />
-              {getErrorLabel("lastName")}
+              {getErrorLabel("email")}
             </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="username">Username</Label>
-            <Input name="username" id="username" type="username" />
-            {getErrorLabel("username")}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="m@example.com"
-              required
-            />
-            {getErrorLabel("email")}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input name="password" id="password" type="password" />
-            {getErrorLabel("password")}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="country">Country</Label>
-            <Input name="country" id="country" type="country" />
-            {getErrorLabel("country")}
-          </div>
-          {actionData && actionData.formErrors ? (
-            <div className="text-sm text-red-500">
-              {actionData.formErrors.join("\n")}
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input name="password" id="password" type="password" />
+              {getErrorLabel("password")}
             </div>
-          ) : null}
-          <Button loading={isSigningUp} type="submit" className="w-full">
-            Create an account
-          </Button>
-        </Form>
-        <div className="mt-4 text-center text-sm">
-          Already have an account?{" "}
-          <Link to="/login" className="underline">
-            Sign in
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+            <div className="grid gap-2">
+              <Label htmlFor="country">Country</Label>
+              <Input name="country" id="country" type="country" />
+              {getErrorLabel("country")}
+            </div>
+            {actionData && actionData.formErrors ? (
+              <div className="text-sm text-red-500">
+                {actionData.formErrors.join("\n")}
+              </div>
+            ) : null}
+            <Button loading={isSigningUp} type="submit" className="w-full">
+              Create an account
+            </Button>
+          </Form>
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="underline">
+              Sign in
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

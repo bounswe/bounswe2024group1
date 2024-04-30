@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import { useId, useState } from "react";
-import { Label } from "./ui/label";
 
 export const SearchBar = () => {
   const id = useId();
@@ -18,14 +17,14 @@ export const SearchBar = () => {
         onSubmit={(e) => {
           e.preventDefault();
 
-          navigate("/search-dishes?q=" + encodeURIComponent(search));
+          navigate("/search?q=" + encodeURIComponent(search));
         }}
         className="flex gap-4"
       >
-        <Label htmlFor={id}>Search for dishes</Label>
         <Input
           onChange={(e) => setSearch(e.target.value)}
           value={search}
+          placeholder="Search for dishes..."
           type="text"
           id={id}
           name="search"

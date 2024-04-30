@@ -1,20 +1,12 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { routes } from "./routes";
+import { routeConfig } from "./routes";
+import { FullscreenLoading } from "./components/FullscreenLoading";
 
-const router = createBrowserRouter([
-  {
-    id: "root",
-    path: "/",
-    children: routes,
-  },
-]);
+const router = createBrowserRouter(routeConfig);
 
 function App() {
   return (
-    <RouterProvider
-      router={router}
-      fallbackElement={<p>Initial loading...</p>}
-    />
+    <RouterProvider router={router} fallbackElement={<FullscreenLoading />} />
   );
 }
 

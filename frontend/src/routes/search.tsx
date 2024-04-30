@@ -1,6 +1,5 @@
-import { Link, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 import { Dish } from "../components/Dish";
-import { SearchBar } from "../components/Search";
 import { searchDishes } from "../services/search";
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
@@ -13,17 +12,15 @@ export const Search = () => {
 
   return (
     <div className="container flex flex-col gap-2 py-8">
-      <Link to="/" className="text-blue-500">
-        Go Home
-      </Link>
-      <SearchBar />
-      <div className="mt-8 grid grid-cols-4 gap-8">
+      <h1 className="text-2xl font-bold ">Found {data.length} results</h1>
+      <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {data.map((dish) => (
           <Dish
-            key={dish.name}
+            key={dish.id}
             dish={{
               name: dish.name,
-              description: dish.country,
+              description: dish.description,
+              countries: dish.countries,
               image: dish.image,
             }}
           />
