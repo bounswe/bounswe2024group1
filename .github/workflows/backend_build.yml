@@ -32,28 +32,28 @@ jobs:
               java-version: '17'
 
           - name: Build Docker backend-dev Image
-            run: docker-compose -f docker-compose.dev.yml build db-dev
+            run: docker-compose -f ../docker-compose.dev.yml build db-dev
 
           - name: Run Docker backend-dev Container
-            run: docker-compose -f docker-compose.dev.yml up -d db-dev
+            run: docker-compose -f ../docker-compose.dev.yml up -d db-dev
 
           - name: Run Tests
             run: mvn clean test
 
           - name: Stop Docker backend-dev Container
-            run: docker-compose -f docker-compose.dev.yml down
+            run: docker-compose -f ../docker-compose.dev.yml down
             
           - name: Build Docker backend-prod Image
-            run: docker-compose -f docker-compose.yml build db
+            run: docker-compose -f ../docker-compose.yml build db
 
           - name: Run Docker backend-prod Container
-            run: docker-compose -f docker-compose.yml up -d db
+            run: docker-compose -f ../docker-compose.yml up -d db
 
           - name: Run Tests
             run: mvn clean test
 
           - name: Stop Docker backend-prod Container
-            run: docker-compose -f docker-compose.yml down
+            run: docker-compose -f ../docker-compose.yml down
 
 
             
