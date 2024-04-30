@@ -8,7 +8,7 @@ import Results from './src/screens/Results/Results';
 import { NavigationContainer } from '@react-navigation/native';
 import Title from './src/components/Title';
 import 'react-native-gesture-handler';
-
+import  Registration from '@/src/screens/Registeration/Registration'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +24,7 @@ export default function App() {
       }}
       initialRouteName='LoginScreen'>
       <Stack.Screen name="LoginScreen" component={LoginScreen}/>
+      <Stack.Screen name="Registration" component={Registration}/>
       <Stack.Screen name="HomeScreen" component={Home}/>
       <Stack.Screen name="Results" component={Results}/>
       </Stack.Navigator>

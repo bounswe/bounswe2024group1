@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  navigation,
 } from "react-native";
 import { z } from "zod";
-import { navigation } from "react-native";
+
 import useAuthStore, { signin } from "@/src/services/auth";
 
 const loginSchema = z.object({
@@ -67,7 +68,7 @@ export const LoginScreen = () => {
             <View className="p-2 rounded border-2 border-solid h-11 mt-2">
               <TextInput
                 textContentType="emailAddress"
-                autoCapitalize={"none"}
+                autoCapitalize="none"
                 className="w-96"
                 placeholder="Type here to translate!"
                 onChangeText={(email) => setEmail(email)}
@@ -114,6 +115,29 @@ export const LoginScreen = () => {
               </Text>
             </View>
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Registration");
+            }}
+            className="bg-app-red rounded h-11 justify-center items-center mt-5"
+            accessibilityLabel="Learn more about this purple button"
+          >
+            <Text className="text-base text-white">Sign Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "HomeScreen" }],
+              });
+            }}
+            className="bg-app-red rounded h-11 justify-center items-center mt-5"
+            accessibilityLabel="Learn more about this purple button"
+          >
+            <Text className="text-base text-white">
+              Continue without Loging in
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
