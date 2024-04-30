@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 const FilterOption = ({ label, isSelected, onPress }) => (
-  <TouchableOpacity style={isSelected ? styles.optionSelected : styles.option} onPress={onPress}>
-    <Text style={isSelected ? styles.optionTextSelected : styles.optionText}>{label}</Text>
+  <TouchableOpacity
+    style={isSelected ? styles.optionSelected : styles.option}
+    onPress={onPress}
+  >
+    <Text style={isSelected ? styles.optionTextSelected : styles.optionText}>
+      {label}
+    </Text>
   </TouchableOpacity>
 );
 
-const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) => {
+const FilterSection = ({
+  title,
+  options,
+  selectedOptions,
+  onSelectionChange,
+}) => {
   return (
     <View style={styles.filterSection}>
       <Text style={styles.filterTitle}>{title}</Text>
@@ -23,7 +33,7 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
   );
 };
 
-const Filter = () =>    {
+const Filter = () => {
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
@@ -31,7 +41,7 @@ const Filter = () =>    {
     setSelectedCuisines((prevSelection) =>
       prevSelection.includes(cuisine)
         ? prevSelection.filter((item) => item !== cuisine)
-        : [...prevSelection, cuisine]
+        : [...prevSelection, cuisine],
     );
   };
 
@@ -39,7 +49,7 @@ const Filter = () =>    {
     setSelectedProducts((prevSelection) =>
       prevSelection.includes(product)
         ? prevSelection.filter((item) => item !== product)
-        : [...prevSelection, product]
+        : [...prevSelection, product],
     );
   };
 
@@ -48,13 +58,13 @@ const Filter = () =>    {
       <Text style={styles.header}>Filters(2):</Text>
       <FilterSection
         title="Cuisine:"
-        options={['Korean', 'Italian', 'Turkish', 'Spanish', 'Mexican']}
+        options={["Korean", "Italian", "Turkish", "Spanish", "Mexican"]}
         selectedOptions={selectedCuisines}
         onSelectionChange={handleCuisineSelection}
       />
       <FilterSection
         title="Products:"
-        options={['Chicken', 'Beef', 'Seafood', 'Dairy', 'Vegetable']}
+        options={["Chicken", "Beef", "Seafood", "Dairy", "Vegetable"]}
         selectedOptions={selectedProducts}
         onSelectionChange={handleProductSelection}
       />
@@ -65,11 +75,11 @@ const Filter = () =>    {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   header: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   filterSection: {
@@ -77,31 +87,31 @@ const styles = StyleSheet.create({
   },
   filterTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   option: {
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 10,
     marginBottom: 5,
   },
   optionSelected: {
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#f00',
+    borderColor: "#f00",
     padding: 10,
     marginBottom: 5,
-    backgroundColor: '#f00',
+    backgroundColor: "#f00",
   },
   optionText: {
     fontSize: 14,
-    color: '#000',
+    color: "#000",
   },
   optionTextSelected: {
     fontSize: 14,
-    color: '#fff',
+    color: "#fff",
   },
 });
 

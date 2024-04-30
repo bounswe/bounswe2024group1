@@ -46,7 +46,6 @@ const FilterSection = ({
 const Results = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
-
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
