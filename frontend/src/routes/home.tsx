@@ -1,16 +1,12 @@
-import { useState } from "react";
+import { SearchBar } from "../components/SearchBar";
 
 export function IndexRoute() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <button
-        className="rounded-lg"
-        onClick={() => setCount((count) => count + 1)}
-      >
-        count is {count}
-      </button>
+      <div className="container flex flex-col gap-2 py-8">
+        <h1 className="mb-4 text-4xl font-bold">Welcome to Semantic Browse</h1>
+        <SearchBar />
+      </div>
     </>
   );
 }
