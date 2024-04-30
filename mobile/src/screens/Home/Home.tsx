@@ -16,9 +16,7 @@ import DishCard from "@/src/components/Dish";
 
 export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [results, setResults] = useState([
-    { name: "y", country: "y", image: "y" },
-  ]);
+  const [results, setResults] = useState([]);
   const [searchFocused, setSearchFocused] = useState(false);
   return (
     <ScrollView className="w-screen bg-white p-6 overflow-y-scroll">
@@ -50,15 +48,15 @@ export const Home = () => {
       {/* <Trending /> */}
       {results.map((dish) => (
         <DishCard
-          key={dish.name}
+          key={dish.id}
           dish={{
             name: dish.name,
-            description: dish.country,
+            description: dish.description,
             image: dish.image,
           }}
         />
       ))}
-      <Popular />
+      {/* <Popular /> */}
     </ScrollView>
   );
 };
