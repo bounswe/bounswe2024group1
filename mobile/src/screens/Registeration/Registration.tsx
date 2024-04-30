@@ -18,7 +18,7 @@ const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-export const LoginScreen = () => {
+export const Registration = () => {
   const [email, setEmail] = useState("");
   // State variable to hold the password
   const [password, setPassword] = useState("");
@@ -30,8 +30,8 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [errors, setErrors] = useState({ email: [], password: [] });
+
+  const [errors, setErrors] = useState({ email: [], password: [] })
   // Function to toggle the password visibility state
   const handleSignup = async () => {
     try {
@@ -60,7 +60,7 @@ export const LoginScreen = () => {
       <View>
         <View className="pl-10">
           <Text className="text-sm">Welcome back!👋</Text>
-          <Text className="fond-bold text-xl mt-1">Login to your account</Text>
+          <Text className="fond-bold text-xl mt-1">Sign Up</Text>
         </View>
         <View className="px-4">
         <View className="mt-2">
@@ -172,4 +172,4 @@ export const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default Registration;
