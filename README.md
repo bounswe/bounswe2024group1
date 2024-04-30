@@ -8,6 +8,8 @@ This is the repository for the Group1 of the Software Engineering course in Spri
 
 Please refer to the Wiki for more information.
 
+For deploying from scratch (for third-parties), please refer to the [Deployment From Scratch](#deployment-from-scratch) section.
+
 ## Contributors
 
 - Mehmet Efe Akça
@@ -41,7 +43,7 @@ Each codebase has its own readme file that explains how to get set up, run the a
 
 In addition, we have our OpenAPI specification at `swagger/openapi.yml`. A Swagger UI instance is available in our docker compose setup at `localhost:8081`.
 
-## Docker Compose
+### Docker Compose
 
 We have two docker compose setups:
 
@@ -61,13 +63,13 @@ docker-compose -f docker-compose.dev.yml up -d
 
 With the hot reloading setup, Vite dev server will hot reload all your changes, however you'll need to restart if you make any changes to package.json as the `node_modules` are fetched as part of the start command.
 
-## Development
+### Development
 
 For general development purposes, it is recommended to use the development docker compose setup mentioned above. Please refer to each project's repository for further detail on how to develop.
 
 ## Deployment
 
-We use DigitalOcean's App Platform with the DigitalOcean Container Registry. We have a single registry that all images are pulled from. The app platformwill automatically deploy the latest image from the registry when a push happens.
+We use DigitalOcean's App Platform with the DigitalOcean Container Registry. We have a single registry that all images are pulled from. The app platform will automatically deploy the latest image from the registry when a push happens.
 
 The deployment process is very simple. When following the sets, if two sets of commands are given, execute only the commands for the environment you're deploying to:
 
@@ -95,24 +97,24 @@ docker-compose build
 
 ```bash
 # for prod
-docker tag bounswe2024group1-web:latest registry.digitalocean.com/bounswe2024group1/web:latest
-docker tag bounswe2024group1-backend:latest registry.digitalocean.com/bounswe2024group1/backend:latest
+docker tag bounswe2024group1-web:latest registry.digitalocean.com/semantic-browse/web:latest
+docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend:latest
 
 # for staging
-docker tag bounswe2024group1-web:latest registry.digitalocean.com/bounswe2024group1/web-staging:latest
-docker tag bounswe2024group1-web:latest registry.digitalocean.com/bounswe2024group1/backend-staging:latest
+docker tag bounswe2024group1-web:latest registry.digitalocean.com/semantic-browse/web-staging:latest
+docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend-staging:latest
 ```
 
 3. Push images to the registry.
 
 ```bash
 # for prod
-docker push registry.digitalocean.com/bounswe2024group1/web:latest
-docker push registry.digitalocean.com/bounswe2024group1/backend:latest
+docker push registry.digitalocean.com/semantic-browse/web:latest
+docker push registry.digitalocean.com/semantic-browse/backend:latest
 
 # for staging
-docker push registry.digitalocean.com/bounswe2024group1/web-staging:latest
-docker push registry.digitalocean.com/bounswe2024group1/backend-staging:latest
+docker push registry.digitalocean.com/semantic-browse/web-staging:latest
+docker push registry.digitalocean.com/semantic-browse/backend-staging:latest
 ```
 
 This will trigger a deployment on the DigitalOcean backend.
@@ -148,3 +150,52 @@ doctl apps update --spec .do/app-staging.yml
 ```
 
 It is paramount that staging and prod are kept in sync. If you've made changes to the staging environment, make sure to update the prod environment as well.
+
+### Deployment From Scratch
+
+This part of the documentation is for a third party to deploy the application from scratch. This is not necessary for the team members working on the project.
+
+Almost all of our infrastructure is managed by DigitalOcean and declared in the app.yaml files. However, we have two things that must be manually set up:
+
+1. DigitalOcean Container Registry
+2. DB Containers
+
+#### DigitalOcean Container Registry
+
+To setup a new registry for this application, follow the steps below:
+
+1. Create a new registry in the DigitalOcean dashboard.
+2. Make sure it has enough space. (At least 1-2GB needed for staging and prod)
+3. (IMPORTANT) Change the repository references to be the new registry in the app.yaml files.
+4. (IMPORTANT) When deploying, change the registry references in the commands with the new registry. Our registry is called `semantic-browse` so rename that in the commands.
+
+#### DB Containers
+
+We use a mysql:latest container deployed on a Droplet for our database. To set this up, run the container with environment variables and a named volume for persistence. Make sure you use network host mode to listen on the public internet.
+
+Replace the variables with your secrets, make sure they're consistent with the declared environment variables in the app.yaml file.
+
+```bash
+docker run -d --name semantic-browse-db --network host -e MYSQL_ROOT_PASSWORD=<root-password> -e MYSQL_DATABASE=semantic_browse -e MYSQL_USER=semantic_browse -e MYSQL_PASSWORD=<user-password> -v semantic-browse-db:/var/lib/mysql mysql:latest
+```
+
+Expose this container to the internet using DigitalOcean's firewall rules.
+
+You can set up two dbs for staging and prod, that's the setup we have.
+
+#### Deploying the Application
+
+After you complete the previous two steps, you can use `doctl` to create a new app. Make sure you've updated the app spec files with the new registry references.
+
+> [!IMPORTANT]
+> You must not have any encrypted secrets in the app spec files on first creation. Please remove them when deploying our app.yaml files for the first time (i.e. `doctl apps create`)
+
+```bash
+# for prod
+doctl apps create --spec .do/app-prod.yml
+
+# for staging
+doctl apps create --spec .do/app-staging.yml
+```
+
+This will create the app and deploy it to the DigitalOcean App Platform. You can now follow the steps above in the normal deployment process to push images and deploy your first instance.
