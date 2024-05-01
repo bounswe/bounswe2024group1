@@ -1,5 +1,4 @@
 version: "3.3"
-name: bounswe2024group1
 # Production-like docker-compose setup
 
 services:
