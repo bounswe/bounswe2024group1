@@ -24,24 +24,9 @@ jobs:
         steps:
           - name: Checkout
             uses: actions/checkout@v4
-
-          - name: Set up Maven
-            uses: actions/setup-java@v4
-            with:
-              distribution: 'temurin'
-              java-version: '17'
             
-          - name: Build Docker backend-prod Image
-            run: docker compose -f docker-compose.yml build db
-
-          - name: Run Docker backend-prod Container
-            run: docker compose -f docker-compose.yml up -d db
-
-          - name: Run Tests
-            run: mvn clean test
-
-          - name: Stop Docker backend-prod Container
-            run: docker compose -f docker-compose.yml down
+          - name: Test with Maven
+            run: docker compose -f docker-compose.dev.yml run --rm backend-dev mvn test
 
 
             
