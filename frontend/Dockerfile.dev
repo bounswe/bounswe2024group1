@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 RUN adduser -D -s /bin/sh -u 1001 app
 RUN corepack enable
 USER app
@@ -13,5 +13,6 @@ COPY --chown=app:app . /app/
 
 EXPOSE 5173
 
-# We use Compose in watch mode.
+# We use Compose in watch mode which syncs files and
+# rebuilds on package.json changes
 CMD yarn dev --host 0.0.0.0 --strictPort --force

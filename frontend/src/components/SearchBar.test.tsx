@@ -9,7 +9,7 @@ vi.mock("@/services/search", () => {
   };
 });
 
-test("log in button goes to /login", async () => {
+test("searching something goes to /search", async () => {
   // Arrange
   const router = createMemoryRouter(routeConfig, {
     initialEntries: ["/"],
@@ -18,11 +18,16 @@ test("log in button goes to /login", async () => {
   render(<RouterProvider router={router} />);
 
   // Act
-  const button = screen.getAllByText("Log in");
-  fireEvent.click(button[0]);
+  const search = screen.getAllByPlaceholderText("Search for dishes...")[0];
+  screen.debug(search);
+  fireEvent.change(search, { target: { value: "hello" } });
+
+  const button = screen.getAllByRole("button", { name: /search/i })[0];
+  screen.debug(button);
+  fireEvent.click(button);
 
   // Assert
   await waitFor(() => {
-    expect(router.state.location.pathname).toBe("/login");
+    expect(router.state.location.pathname).toBe("/search");
   });
 });
