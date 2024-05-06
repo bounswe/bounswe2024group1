@@ -1,0 +1,7 @@
+{
+  "engines": {
+    "yarn": "run-commands-in-the-frontend-folder",
+    "npm": "run-commands-in-the-frontend-folder",
+    "node": "run-commands-in-the-frontend-folder"
+  }
+}

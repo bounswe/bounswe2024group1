@@ -1,4 +1,3 @@
-version: "3.1"
 name: bounswe2024group1
 # Production-like docker-compose setup
 
@@ -16,8 +15,6 @@ services:
     environment:
       MYSQL_DATABASE: "cuisines-test"
       MYSQL_ROOT_PASSWORD: "admin"
-    ports:
-      - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
   backend:

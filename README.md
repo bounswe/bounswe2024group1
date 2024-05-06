@@ -6,7 +6,7 @@ This is the repository for Group1 of SWE course in Spring'24.
 
 This is the repository for the Group1 of the Software Engineering course in Spring'24. The project is a web application that allows users to browse cuisines, dishes, and recipes. The application has a frontend, backend and mobile application. The frontend is a web application that allows users to browse cuisines and recipes. The backend is a REST API that serves the frontend and mobile application. The mobile application is a mobile application that allows users to browse cuisines and recipes.
 
-Please refer to the Wiki for more information.
+For common issues when developing, please check [Common Problems](#common-problems). Please refer to the Wiki for more information.
 
 For deploying from scratch (for third-parties), please refer to the [Deployment From Scratch](#deployment-from-scratch) section.
 
@@ -35,15 +35,19 @@ You should have Docker installed. Each project has its own requirements however 
 
 For deployment, you will need the [DigitalOcean CLI](https://docs.digitalocean.com/reference/doctl/how-to/install/) installed.
 
+We also use Compose Watch for development. For that, your Docker version needs to be at least `2.20.0`.
+
 ## Architecture
 
 We have `./frontend`, `./backend` and `./mobile` directories that each contain the respective codebase for the frontend, backend and mobile applications.
 
 Each codebase has its own readme file that explains how to get set up, run the application, and tests. In addition, it is recommended to use the docker-compose setup for development and local test of production builds. We utilize docker-compose to build and deploy the application as well.
 
-In addition, we have our OpenAPI specification at `swagger/openapi.yml`. A Swagger UI instance is available in our docker compose setup at `localhost:8081`.
+In addition, we have our OpenAPI specification at `swagger/openapi.yml`. A Swagger UI instance is available in our docker compose setup at `localhost:8081`. In the `mock.yml` file, we have a mock backend server that uses the API spec to generate fake responses.
 
 ### Docker Compose
+
+All of the following docker commands are to be run from the root directory (not `frontend` or `backend`).
 
 We have two docker compose setups:
 
@@ -52,16 +56,27 @@ We have two docker compose setups:
 To run the production-like setup, run:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 2. Development mode. uses the vite development server at port 5173 and exposes it at the same port. This setup will run a development setup that hot reloads the frontend code. The backend code is also run using `mvn spring-boot:run` which means it will reload on recompile. For further detail, refer to the backend README.
 
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f dev.yml up --watch
 ```
 
-With the hot reloading setup, Vite dev server will hot reload all your changes, however you'll need to restart if you make any changes to package.json as the `node_modules` are fetched as part of the start command.
+In addition, you can choose to use the mock API server which will create a mock API server using our API spec. This is useful for frontend development to continue when the backend is lagging behind or not available for some reason.
+
+```bash
+docker compose -f dev.yml -f mock.yml up --watch
+```
+
+> [!TIP]
+> Note that the `-d` and `--watch` flags can't be combined. If you'd like to run the compose setup detached, you will have to separately run Compose watch using `docker compose -f dev.yml watch`. This is needed for hot-reloading on the frontend.
+
+With the hot reloading setup, Vite dev server will hot reload all your changes, and the image will be rebuilt when `package.json` changes.
+
+To take down the compose setups, you can do a Ctrl+C in the terminal for the development setup or do `docker compose down`. If you're running the development setup in detached mode, you can do `docker compose -f dev.yml down`.
 
 ### Development
 
@@ -85,15 +100,18 @@ doctl registry login
 
 ### Deploying the Application
 
+> [!IMPORTANT]
+> Note that you need to use `docker compose` and NOT `docker-compose`. Dashed version is the older version that uses Python and may have conflicts with your local Python environment. We also don't provide `version` which may cause an error with the old Compose V1. For more details, please check [the Docker documentation](https://docs.docker.com/compose/intro/history/).
+
 When you're going to deploy only the application (no changes to infrastructre), you can follow the steps below:
 
-1. Build images using the docker-compose setup.
+1. Build images using the docker compose setup.
 
 ```bash
-docker-compose build
+docker compose build
 ```
 
-2. Tag images for the registry (assuming your project folder is `bounswe2024group1`).
+2. Tag images for the registry.
 
 ```bash
 # for prod
@@ -199,3 +217,22 @@ doctl apps create --spec .do/app-staging.yml
 ```
 
 This will create the app and deploy it to the DigitalOcean App Platform. You can now follow the steps above in the normal deployment process to push images and deploy your first instance.
+
+#### Common Problems
+
+##### Compose fails at "yarn install --immutable"
+
+- If the error has "lockfile would have been modified by this install, which is explicitly forbidden".
+
+The `yarn.lock` file is forbidden from changing within the Docker build. This ensures that the same packages are used locally as the ones used inside the Docker image. Solution: do a `yarn install` in the `frontend/` folder.
+
+##### "port is already allocated"
+
+You have something running that is listening on one of the ports of our services. Common reasons include:
+
+- You have the production or the development compose setup running and are trying to run the other one: Check what is running using `docker ps`, if you see other containers that are binding a required port, take them down using the appropriate docker compose command.
+- You have another application that is binding a required port. For now, we're binding `8081`, `8080` and `80` for the production setup; and `8081` and `5173` for the development setup.
+
+##### "no such file or directory"
+
+Make sure you run all docker compose commands in the root folder. Make sure you run all `yarn` commands in the `frontend` folder.
