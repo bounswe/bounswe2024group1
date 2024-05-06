@@ -1,0 +1,43 @@
+name: backend-staging-workflow
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - 'backend/**'
+      - docker-compose.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: backend        
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+          
+      - name: Test with Maven
+        run: docker compose -f docker-compose.dev.yml run --rm backend-dev mvn test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker compose -f docker-compose.yml build
+
+      - name: Tag Docker image
+        run: docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend-staging:latest
+
+      - name: Push Docker image
+        run: docker push registry.digitalocean.com/semantic-browse/backend-staging:latest
+
