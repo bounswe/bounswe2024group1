@@ -2,8 +2,8 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # cache package installs
-COPY yarn.lock package.json /app/
-RUN yarn install
+COPY .yarnrc.yml yarn.lock package.json /app/
+RUN yarn install --immutable
 
 COPY . /app
 RUN yarn build

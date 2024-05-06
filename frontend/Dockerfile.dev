@@ -1,14 +1,17 @@
 FROM node:18-alpine
-WORKDIR /app
+RUN adduser -D -s /bin/sh -u 1001 app
+RUN corepack enable
+USER app
 
-# expect a bind mount to be mounted at /app
+WORKDIR /app
+COPY --chown=app:app .yarnrc.yml package.json yarn.lock .
+RUN yarn install
+
+
+# Copy source files into application directory
+COPY --chown=app:app . /app/
+
 EXPOSE 5173
 
-VOLUME /app/node_modules
-
-RUN corepack enable
-
-# we can't pack dependencies or bind them as
-# the platform of the host and the container
-# are not the same.
-CMD yarn && yarn dev --host 0.0.0.0 --strictPort --force
+# We use Compose in watch mode.
+CMD yarn dev --host 0.0.0.0 --strictPort --force
