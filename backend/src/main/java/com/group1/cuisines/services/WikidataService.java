@@ -140,7 +140,7 @@ public class WikidataService {
                         .countries(countries)
                         .ingredients(ingredients)
                         .foodTypes(foodTypes)
-                        .cuisines(cuisines)
+                            .cuisine(cuisines)
                         .build()
                 );
             }
@@ -188,18 +188,18 @@ public class WikidataService {
                 String countryOfOriginLabel = soln
                     .get("countryOfOriginLabel")
                     .toString();
-                logger.info(
+              /*  logger.info(
                     "Dish: {}, Dish Label: {}, Image: {}, Country of Origin: {}",
                     dish,
                     dishLabel,
                     image,
                     countryOfOriginLabel
-                );
+                );*/
             }
 
             // Close the query execution
             queryExecution.close();
-            logger.info("Query executed successfully!");
+          //  logger.info("Query executed successfully!");
             return "Query executed successfully!";
         });
         mono.subscribe();
