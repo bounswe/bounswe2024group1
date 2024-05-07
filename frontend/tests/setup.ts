@@ -1,8 +1,6 @@
-import { expect, afterEach, vi } from "vitest";
+import { afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
-import * as matchers from "@testing-library/jest-dom/matchers";
-
-expect.extend(matchers);
+import "@testing-library/jest-dom/vitest";
 
 vi.mock("zustand/middleware", () => ({
   persist: (a: unknown) => a,
@@ -12,3 +10,21 @@ vi.mock("zustand/middleware", () => ({
 afterEach(() => {
   cleanup();
 });
+
+// happy-dom doesn't support submit events on buttons, so we need to
+// dispatch a submit event when a button is clicked
+const originalDispatchEvent = HTMLElement.prototype.dispatchEvent;
+HTMLElement.prototype.dispatchEvent = function (event): boolean {
+  const result = originalDispatchEvent.call(this, event);
+
+  if (
+    event.type === "click" &&
+    this.tagName === "BUTTON" &&
+    this.getAttribute("type") === "submit"
+  ) {
+    this.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true }),
+    );
+  }
+  return result;
+};

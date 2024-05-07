@@ -2,11 +2,13 @@
 
 This project uses the Vite template for React with TypeScript.
 
-Before you get started, you'll need to have Node.js (v18.20.1) installed and you'll need to enable corepack:
+Before you get started, you'll need to have Node.js (v20.12.1) installed and you'll need to enable corepack:
 
 ```bash
 corepack enable
 ```
+
+()
 
 After that, you can install packages using
 

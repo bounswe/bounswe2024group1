@@ -1,9 +1,17 @@
-import { test, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { routeConfig } from "./routes";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
+import { expect, test } from "vitest";
 
-vi.mock("@/services/search", () => {
-  return {
-    searchDishes: () => Promise.resolve([]),
-  };
+test("welcome test is shown", () => {
+  // Arrange
+  const router = createMemoryRouter(routeConfig, {
+    initialEntries: ["/"],
+  });
+
+  render(<RouterProvider router={router} />);
+
+  // Act
+  const welcomeText = screen.getByText("Welcome to Semantic Browse");
+  expect(welcomeText).toBeInTheDocument();
 });
-
-test("empty", () => {});
