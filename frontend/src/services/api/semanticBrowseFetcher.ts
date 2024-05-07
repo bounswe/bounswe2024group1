@@ -177,16 +177,19 @@ export const renderError = (
   }
   const errors = error.payload.errors;
 
-  const fieldErrors = errors.filter((e) => !!e.field);
-  const generalErrors = errors.filter((e) => !e.field);
+  const fieldErrors = errors
+    .filter((e) => !!e.field)
+    .map((e) => e.field + ": " + e.message);
+  const generalErrors = errors.filter((e) => !e.field).map((e) => e.message);
   const renderedString =
     errors.length > 0
       ? generalErrors.join("\n") +
-        "\n" +
-        (fieldErrors.length ? "Field errors:\n" + fieldErrors.join("\n") : "")
+        (fieldErrors.length
+          ? "\n\nField errors:\n" + fieldErrors.join("\n")
+          : "")
       : "Unknown error.";
 
-  return renderedString;
+  return renderedString.trim();
 };
 
 export const getFieldErrors = (
