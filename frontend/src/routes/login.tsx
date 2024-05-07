@@ -19,8 +19,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useAuthStore, { signin } from "../services/auth";
+import useAuthStore from "../services/auth";
 import { z } from "zod";
+import { fetchLogin } from "@/services/api/semanticBrowseComponents";
+import {
+  FetchError,
+  getFieldErrors,
+  renderError,
+} from "../services/api/semanticBrowseFetcher";
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().min(1, "Username or email is required"),
@@ -46,24 +52,15 @@ export const action = async ({
   }
 
   try {
-    await signin(parsed.data);
-  } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "message" in error &&
-      typeof error.message === "string"
-    ) {
-      return {
-        formErrors: [error.message],
-        fieldErrors: {},
-      };
-    } else {
-      return {
-        formErrors: ["An unknown error occurred"],
-        fieldErrors: {},
-      };
+    const response = await fetchLogin({ body: parsed.data });
+    if (response.data.token) {
+      useAuthStore.getState().setToken(response.data.token);
     }
+  } catch (error) {
+    return {
+      formErrors: [renderError(error as FetchError)],
+      fieldErrors: getFieldErrors(error as FetchError),
+    };
   }
 
   const redirectTo = formData.get("redirectTo") as string | null;
@@ -136,7 +133,7 @@ export default function Login() {
           </Form>
           <div className="mt-4 text-center text-sm">
             Don't have an account?{" "}
-            <Link to="/signup" className="underline">
+            <Link to="/signup?from=/login" className="underline">
               Sign up
             </Link>
           </div>

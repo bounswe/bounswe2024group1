@@ -20,7 +20,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
-import useAuthStore, { signup } from "../services/auth";
+import useAuthStore from "../services/auth";
+import { fetchSignup } from "../services/api/semanticBrowseComponents";
+import {
+  FetchError,
+  getFieldErrors,
+  renderError,
+} from "../services/api/semanticBrowseFetcher";
 
 const signupSchema = z.object({
   firstName: z.string().min(1),
@@ -59,24 +65,14 @@ export const action = async ({
   }
 
   try {
-    await signup(parsed.data);
+    await fetchSignup({
+      body: parsed.data,
+    });
   } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "message" in error &&
-      typeof error.message === "string"
-    ) {
-      return {
-        formErrors: [error.message],
-        fieldErrors: {},
-      };
-    } else {
-      return {
-        formErrors: ["An unknown error occurred"],
-        fieldErrors: {},
-      };
-    }
+    return {
+      formErrors: [renderError(error as FetchError)],
+      fieldErrors: getFieldErrors(error as FetchError),
+    };
   }
 
   const redirectTo = formData.get("redirectTo") as string | null;
