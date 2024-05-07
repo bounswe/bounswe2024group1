@@ -29,8 +29,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Authorize to with doctl
+        run: echo ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} | doctl auth init --context github-actions
+
+      - name: Login to Docker registry
+        run: doctl registry login --context github-actions
 
       - name: Build Docker image
         run: docker compose -f docker-compose.yml build
