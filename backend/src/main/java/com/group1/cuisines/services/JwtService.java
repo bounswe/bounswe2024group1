@@ -1,5 +1,6 @@
 package com.group1.cuisines.services;
 
+import com.group1.cuisines.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -48,6 +49,7 @@ public class JwtService {
         Map<String, Object> extraClaims,
         UserDetails userDetails
     ) { // This method is used to generate a JWT token
+
         return Jwts.builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
@@ -55,6 +57,7 @@ public class JwtService {
             .setExpiration(
                 new Date(System.currentTimeMillis() + 1000 * 60 * 24)
             ) // 24 hours
+
             .signWith(getSigningKey(), SignatureAlgorithm.HS256)
             .compact();
     }

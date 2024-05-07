@@ -1,5 +1,6 @@
 package com.group1.cuisines.config;
 
+import com.group1.cuisines.services.JwtService;
 import com.group1.cuisines.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +24,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     private final UserService userService;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -32,6 +37,7 @@ public class SecurityConfiguration {
                 request
                     .requestMatchers("/api/v1/auth/**")
                     .permitAll() // Permit all requests to "/api/v1/auth"
+                        .requestMatchers("/api/v2/test").authenticated()
                     .requestMatchers(("GET"), "/api/v1/**")
                     .permitAll() // Permit all GET requests
                     .requestMatchers("/api/v1/admin/**")
@@ -45,9 +51,11 @@ public class SecurityConfiguration {
                     )
             ) // Set session creation policy to STATELESS
             .authenticationProvider(authenticationProvider()); // Set authentication provider
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
