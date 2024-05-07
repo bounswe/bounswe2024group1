@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
           
       - name: Test with Maven
-        run: docker compose -f docker-compose.dev.yml run --rm backend-dev mvn test
+        run: docker compose -f dev.yml run --rm backend mvn test
 
   deploy:
     needs: test
@@ -36,7 +36,7 @@ jobs:
         run: doctl registry login --context github-actions
 
       - name: Build Docker image
-        run: docker compose -f docker-compose.yml build
+        run: docker compose build
 
       - name: Tag Docker image
         run: docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend-staging:latest
