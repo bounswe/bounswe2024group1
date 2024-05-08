@@ -20,7 +20,7 @@ export type LogoutError = Fetcher.ErrorWrapper<{
 
 export type LogoutResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -60,7 +60,7 @@ export type VerifyEmailError = Fetcher.ErrorWrapper<{
 
 export type VerifyEmailResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -119,7 +119,7 @@ export type ResendVerificationEmailError = Fetcher.ErrorWrapper<{
 
 export type ResendVerificationEmailResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -178,7 +178,7 @@ export type ResetPasswordRequestError = Fetcher.ErrorWrapper<{
 
 export type ResetPasswordRequestResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -248,7 +248,7 @@ export type ResetPasswordError = Fetcher.ErrorWrapper<{
 
 export type ResetPasswordResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -349,7 +349,7 @@ export type LoginError = Fetcher.ErrorWrapper<{
 
 export type LoginResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -392,7 +392,7 @@ export type GetUserByIdError = Fetcher.ErrorWrapper<{
 
 export type GetUserByIdResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -451,7 +451,7 @@ export type UpdateUserByIdError = Fetcher.ErrorWrapper<{
 
 export type UpdateUserByIdResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -465,6 +465,9 @@ export type UpdateUserByIdVariables = {
   pathParams: UpdateUserByIdPathParams;
 } & SemanticBrowseContext["fetcherOptions"];
 
+/**
+ * Can only update own profile
+ */
 export const fetchUpdateUserById = (
   variables: UpdateUserByIdVariables,
   signal?: AbortSignal,
@@ -478,6 +481,9 @@ export const fetchUpdateUserById = (
     UpdateUserByIdPathParams
   >({ url: "/users/{userId}", method: "put", ...variables, signal });
 
+/**
+ * Can only update own profile
+ */
 export const useUpdateUserById = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -511,7 +517,7 @@ export type GetUserFollowingError = Fetcher.ErrorWrapper<{
 
 export type GetUserFollowingResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -578,7 +584,7 @@ export type GetUserFollowersError = Fetcher.ErrorWrapper<{
 
 export type GetUserFollowersResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -634,6 +640,10 @@ export const useGetUserFollowers = <TData = GetUserFollowersResponse>(
   });
 };
 
+export type FollowUserPathParams = {
+  userId: number;
+};
+
 export type FollowUserError = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -645,12 +655,19 @@ export type FollowUserError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type FollowUserRequestBody = {
-  followingUserId?: number;
+export type FollowUserResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.UserProfile;
 };
 
 export type FollowUserVariables = {
-  body?: FollowUserRequestBody;
+  pathParams: FollowUserPathParams;
 } & SemanticBrowseContext["fetcherOptions"];
 
 export const fetchFollowUser = (
@@ -658,18 +675,18 @@ export const fetchFollowUser = (
   signal?: AbortSignal,
 ) =>
   semanticBrowseFetch<
-    Responses.OkResponse,
+    FollowUserResponse,
     FollowUserError,
-    FollowUserRequestBody,
+    undefined,
     {},
     {},
-    {}
-  >({ url: "/users/follow", method: "post", ...variables, signal });
+    FollowUserPathParams
+  >({ url: "/users/{userId}/follow", method: "post", ...variables, signal });
 
 export const useFollowUser = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Responses.OkResponse,
+      FollowUserResponse,
       FollowUserError,
       FollowUserVariables
     >,
@@ -678,7 +695,7 @@ export const useFollowUser = (
 ) => {
   const { fetcherOptions } = useSemanticBrowseContext();
   return reactQuery.useMutation<
-    Responses.OkResponse,
+    FollowUserResponse,
     FollowUserError,
     FollowUserVariables
   >({
@@ -686,6 +703,10 @@ export const useFollowUser = (
       fetchFollowUser({ ...fetcherOptions, ...variables }),
     ...options,
   });
+};
+
+export type UnfollowUserPathParams = {
+  userId: number;
 };
 
 export type UnfollowUserError = Fetcher.ErrorWrapper<
@@ -699,12 +720,19 @@ export type UnfollowUserError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type UnfollowUserRequestBody = {
-  followingUserId?: number;
+export type UnfollowUserResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.UserProfile;
 };
 
 export type UnfollowUserVariables = {
-  body?: UnfollowUserRequestBody;
+  pathParams: UnfollowUserPathParams;
 } & SemanticBrowseContext["fetcherOptions"];
 
 export const fetchUnfollowUser = (
@@ -712,18 +740,18 @@ export const fetchUnfollowUser = (
   signal?: AbortSignal,
 ) =>
   semanticBrowseFetch<
-    Responses.OkResponse,
+    UnfollowUserResponse,
     UnfollowUserError,
-    UnfollowUserRequestBody,
+    undefined,
     {},
     {},
-    {}
-  >({ url: "/users/unfollow", method: "post", ...variables, signal });
+    UnfollowUserPathParams
+  >({ url: "/users/{userId}/follow", method: "delete", ...variables, signal });
 
 export const useUnfollowUser = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Responses.OkResponse,
+      UnfollowUserResponse,
       UnfollowUserError,
       UnfollowUserVariables
     >,
@@ -732,7 +760,7 @@ export const useUnfollowUser = (
 ) => {
   const { fetcherOptions } = useSemanticBrowseContext();
   return reactQuery.useMutation<
-    Responses.OkResponse,
+    UnfollowUserResponse,
     UnfollowUserError,
     UnfollowUserVariables
   >({
@@ -753,7 +781,7 @@ export type SearchUsersError = Fetcher.ErrorWrapper<{
 
 export type SearchUsersResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -815,7 +843,7 @@ export type SearchDishesError = Fetcher.ErrorWrapper<{
 export type SearchDishesResponse = {
   data: Schemas.DishArray;
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -873,7 +901,7 @@ export type GetDishByIdError = Fetcher.ErrorWrapper<{
 
 export type GetDishByIdResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -936,7 +964,7 @@ export type GetCuisineByIdError = Fetcher.ErrorWrapper<{
 
 export type GetCuisineByIdResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -993,6 +1021,76 @@ export const useGetCuisineById = <TData = GetCuisineByIdResponse>(
   });
 };
 
+export type FollowCuisinePathParams = {
+  cuisineId: number;
+};
+
+export type FollowCuisineError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type FollowCuisineResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.CuisineDetails;
+};
+
+export type FollowCuisineVariables = {
+  pathParams: FollowCuisinePathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchFollowCuisine = (
+  variables: FollowCuisineVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    FollowCuisineResponse,
+    FollowCuisineError,
+    undefined,
+    {},
+    {},
+    FollowCuisinePathParams
+  >({
+    url: "/cuisines/{cuisineId}/follow",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useFollowCuisine = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      FollowCuisineResponse,
+      FollowCuisineError,
+      FollowCuisineVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useSemanticBrowseContext();
+  return reactQuery.useMutation<
+    FollowCuisineResponse,
+    FollowCuisineError,
+    FollowCuisineVariables
+  >({
+    mutationFn: (variables: FollowCuisineVariables) =>
+      fetchFollowCuisine({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
 export type GetRecipesForEntityQueryParams = {
   sort?: "recent" | "topRated";
   dishId?: number;
@@ -1006,7 +1104,7 @@ export type GetRecipesForEntityError = Fetcher.ErrorWrapper<{
 
 export type GetRecipesForEntityResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -1069,7 +1167,7 @@ export type CreateRecipeError = Fetcher.ErrorWrapper<{
 
 export type CreateRecipeResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -1128,7 +1226,7 @@ export type GetRecipeByIdError = Fetcher.ErrorWrapper<{
 
 export type GetRecipeByIdResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -1296,6 +1394,78 @@ export const useRateRecipe = (
   });
 };
 
+export type GetBookmarkersPathParams = {
+  recipeId: number;
+};
+
+export type GetBookmarkersError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetBookmarkersResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.UserArray;
+};
+
+export type GetBookmarkersVariables = {
+  pathParams: GetBookmarkersPathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchGetBookmarkers = (
+  variables: GetBookmarkersVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    GetBookmarkersResponse,
+    GetBookmarkersError,
+    undefined,
+    {},
+    {},
+    GetBookmarkersPathParams
+  >({
+    url: "/recipes/{recipeId}/bookmarks",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetBookmarkers = <TData = GetBookmarkersResponse>(
+  variables: GetBookmarkersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetBookmarkersResponse,
+      GetBookmarkersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useSemanticBrowseContext(options);
+  return reactQuery.useQuery<
+    GetBookmarkersResponse,
+    GetBookmarkersError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/recipes/{recipeId}/bookmarks",
+      operationId: "getBookmarkers",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetBookmarkers({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type BookmarkRecipePathParams = {
   recipeId: number;
 };
@@ -1321,7 +1491,7 @@ export const fetchBookmarkRecipe = (
     {},
     BookmarkRecipePathParams
   >({
-    url: "/recipes/{recipeId}/bookmark",
+    url: "/recipes/{recipeId}/bookmarks",
     method: "post",
     ...variables,
     signal,
@@ -1349,6 +1519,330 @@ export const useBookmarkRecipe = (
   });
 };
 
+export type UnbookmarkRecipePathParams = {
+  recipeId: number;
+};
+
+export type UnbookmarkRecipeError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
+
+export type UnbookmarkRecipeVariables = {
+  pathParams: UnbookmarkRecipePathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchUnbookmarkRecipe = (
+  variables: UnbookmarkRecipeVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    Responses.OkResponse,
+    UnbookmarkRecipeError,
+    undefined,
+    {},
+    {},
+    UnbookmarkRecipePathParams
+  >({
+    url: "/recipes/{recipeId}/bookmarks",
+    method: "delete",
+    ...variables,
+    signal,
+  });
+
+export const useUnbookmarkRecipe = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Responses.OkResponse,
+      UnbookmarkRecipeError,
+      UnbookmarkRecipeVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useSemanticBrowseContext();
+  return reactQuery.useMutation<
+    Responses.OkResponse,
+    UnbookmarkRecipeError,
+    UnbookmarkRecipeVariables
+  >({
+    mutationFn: (variables: UnbookmarkRecipeVariables) =>
+      fetchUnbookmarkRecipe({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetCommentsForRecipePathParams = {
+  recipeId: number;
+};
+
+export type GetCommentsForRecipeError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetCommentsForRecipeResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.CommentArray;
+};
+
+export type GetCommentsForRecipeVariables = {
+  pathParams: GetCommentsForRecipePathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchGetCommentsForRecipe = (
+  variables: GetCommentsForRecipeVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    GetCommentsForRecipeResponse,
+    GetCommentsForRecipeError,
+    undefined,
+    {},
+    {},
+    GetCommentsForRecipePathParams
+  >({
+    url: "/recipes/{recipeId}/comments",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetCommentsForRecipe = <TData = GetCommentsForRecipeResponse>(
+  variables: GetCommentsForRecipeVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetCommentsForRecipeResponse,
+      GetCommentsForRecipeError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useSemanticBrowseContext(options);
+  return reactQuery.useQuery<
+    GetCommentsForRecipeResponse,
+    GetCommentsForRecipeError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/recipes/{recipeId}/comments",
+      operationId: "getCommentsForRecipe",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetCommentsForRecipe({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AddCommentToRecipePathParams = {
+  recipeId: number;
+};
+
+export type AddCommentToRecipeError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
+
+export type AddCommentToRecipeResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.Comment;
+};
+
+export type AddCommentToRecipeRequestBody = {
+  comment?: string;
+};
+
+export type AddCommentToRecipeVariables = {
+  body?: AddCommentToRecipeRequestBody;
+  pathParams: AddCommentToRecipePathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchAddCommentToRecipe = (
+  variables: AddCommentToRecipeVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    AddCommentToRecipeResponse,
+    AddCommentToRecipeError,
+    AddCommentToRecipeRequestBody,
+    {},
+    {},
+    AddCommentToRecipePathParams
+  >({
+    url: "/recipes/{recipeId}/comments",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useAddCommentToRecipe = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      AddCommentToRecipeResponse,
+      AddCommentToRecipeError,
+      AddCommentToRecipeVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useSemanticBrowseContext();
+  return reactQuery.useMutation<
+    AddCommentToRecipeResponse,
+    AddCommentToRecipeError,
+    AddCommentToRecipeVariables
+  >({
+    mutationFn: (variables: AddCommentToRecipeVariables) =>
+      fetchAddCommentToRecipe({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type UpvoteCommentPathParams = {
+  recipeId: number;
+  commentId: number;
+};
+
+export type UpvoteCommentError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
+
+export type UpvoteCommentResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.Comment;
+};
+
+export type UpvoteCommentVariables = {
+  pathParams: UpvoteCommentPathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchUpvoteComment = (
+  variables: UpvoteCommentVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    UpvoteCommentResponse,
+    UpvoteCommentError,
+    undefined,
+    {},
+    {},
+    UpvoteCommentPathParams
+  >({
+    url: "/recipes/{recipeId}/comments/{commentId}/upvote",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useUpvoteComment = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      UpvoteCommentResponse,
+      UpvoteCommentError,
+      UpvoteCommentVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useSemanticBrowseContext();
+  return reactQuery.useMutation<
+    UpvoteCommentResponse,
+    UpvoteCommentError,
+    UpvoteCommentVariables
+  >({
+    mutationFn: (variables: UpvoteCommentVariables) =>
+      fetchUpvoteComment({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type RemoveUpvoteFromCommentPathParams = {
+  recipeId: number;
+  commentId: number;
+};
+
+export type RemoveUpvoteFromCommentError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
+
+export type RemoveUpvoteFromCommentResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.Comment;
+};
+
+export type RemoveUpvoteFromCommentVariables = {
+  pathParams: RemoveUpvoteFromCommentPathParams;
+} & SemanticBrowseContext["fetcherOptions"];
+
+export const fetchRemoveUpvoteFromComment = (
+  variables: RemoveUpvoteFromCommentVariables,
+  signal?: AbortSignal,
+) =>
+  semanticBrowseFetch<
+    RemoveUpvoteFromCommentResponse,
+    RemoveUpvoteFromCommentError,
+    undefined,
+    {},
+    {},
+    RemoveUpvoteFromCommentPathParams
+  >({
+    url: "/recipes/{recipeId}/comments/{commentId}/upvote",
+    method: "delete",
+    ...variables,
+    signal,
+  });
+
+export const useRemoveUpvoteFromComment = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      RemoveUpvoteFromCommentResponse,
+      RemoveUpvoteFromCommentError,
+      RemoveUpvoteFromCommentVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useSemanticBrowseContext();
+  return reactQuery.useMutation<
+    RemoveUpvoteFromCommentResponse,
+    RemoveUpvoteFromCommentError,
+    RemoveUpvoteFromCommentVariables
+  >({
+    mutationFn: (variables: RemoveUpvoteFromCommentVariables) =>
+      fetchRemoveUpvoteFromComment({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
 export type GetFeedQueryParams = {
   type: "explore" | "following";
 };
@@ -1360,7 +1854,7 @@ export type GetFeedError = Fetcher.ErrorWrapper<{
 
 export type GetFeedResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -1449,6 +1943,16 @@ export type QueryOperation =
       path: "/recipes/{recipeId}";
       operationId: "getRecipeById";
       variables: GetRecipeByIdVariables;
+    }
+  | {
+      path: "/recipes/{recipeId}/bookmarks";
+      operationId: "getBookmarkers";
+      variables: GetBookmarkersVariables;
+    }
+  | {
+      path: "/recipes/{recipeId}/comments";
+      operationId: "getCommentsForRecipe";
+      variables: GetCommentsForRecipeVariables;
     }
   | {
       path: "/feed";
