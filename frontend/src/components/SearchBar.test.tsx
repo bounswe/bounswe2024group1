@@ -17,11 +17,9 @@ test("searching something goes to /search", async () => {
 
   // Act
   const search = screen.getAllByPlaceholderText("Search for dishes...")[0];
-  screen.debug(search);
   fireEvent.change(search, { target: { value: "hello" } });
 
   const button = screen.getAllByRole("button", { name: /search/i })[0];
-  screen.debug(button);
   fireEvent.click(button);
 
   // Assert

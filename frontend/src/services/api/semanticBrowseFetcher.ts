@@ -31,15 +31,6 @@ export type SemanticBrowseFetcherOptions<
   signal?: AbortSignal;
 } & SemanticBrowseContext["fetcherOptions"];
 
-type CleanupInnerData<TData extends SuccessResponseObject> =
-  // remove inner record<string, any>
-  {
-    status: TData["status"];
-    data: Extract<TData["data"], unknown[]> extends never
-      ? TData["data"]
-      : Extract<TData["data"], unknown[]>;
-  };
-
 export async function semanticBrowseFetch<
   TData extends SuccessResponseObject,
   TError extends { status: number | "unknown"; payload: ErrorResponseObject },
@@ -61,7 +52,7 @@ export async function semanticBrowseFetch<
   THeaders,
   TQueryParams,
   TPathParams
->): Promise<CleanupInnerData<TData>> {
+>): Promise<TData> {
   try {
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
@@ -131,10 +122,10 @@ export async function semanticBrowseFetch<
         };
       }
 
-      return data as CleanupInnerData<TData>;
+      return data as TData;
     } else {
       // if it is not a json response, assume it is a blob and cast it to TData
-      return (await response.blob()) as unknown as CleanupInnerData<TData>;
+      return (await response.blob()) as unknown as TData;
     }
   } catch (e) {
     if (e instanceof Error) {

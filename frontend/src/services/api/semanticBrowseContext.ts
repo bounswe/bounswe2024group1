@@ -1,5 +1,6 @@
 import type { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 import { QueryOperation } from "./semanticBrowseComponents";
+import useAuthStore from "../auth";
 
 export type SemanticBrowseContext = {
   fetcherOptions: {
@@ -42,8 +43,15 @@ export function useSemanticBrowseContext<
     "queryKey" | "queryFn"
   >,
 ): SemanticBrowseContext {
+  const token = useAuthStore.getState().token;
   return {
-    fetcherOptions: {},
+    fetcherOptions: {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+    },
     queryOptions: {},
     queryKeyFn,
   };

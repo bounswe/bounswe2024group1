@@ -216,3 +216,18 @@ export type ErrorResponseObject = {
   status: 400 | 401 | 403 | 404 | 409 | 500;
   errors: ApiError[];
 };
+
+/**
+ * An array of dishes
+ */
+export type DishArray = DishDetails[];
+
+/**
+ * An array of recipes
+ */
+export type RecipeArray = RecipeDetails[];
+
+/**
+ * An array of users
+ */
+export type UserArray = UserSummary[];

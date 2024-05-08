@@ -517,7 +517,7 @@ export type GetUserFollowingResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.UserSummary[];
+  data: Schemas.UserArray;
 };
 
 export type GetUserFollowingVariables = {
@@ -584,7 +584,7 @@ export type GetUserFollowersResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.UserSummary[];
+  data: Schemas.UserArray;
 };
 
 export type GetUserFollowersVariables = {
@@ -759,7 +759,7 @@ export type SearchUsersResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.UserSummary[];
+  data: Schemas.UserArray;
 };
 
 export type SearchUsersVariables = {
@@ -813,6 +813,7 @@ export type SearchDishesError = Fetcher.ErrorWrapper<{
 }>;
 
 export type SearchDishesResponse = {
+  data: Schemas.DishArray;
   /**
    * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
    *
@@ -820,7 +821,6 @@ export type SearchDishesResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.DishDetails[];
 };
 
 export type SearchDishesVariables = {
@@ -1012,7 +1012,7 @@ export type GetRecipesForEntityResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.RecipeSummary[];
+  data: Schemas.RecipeArray;
 };
 
 export type GetRecipesForEntityVariables = {
@@ -1366,7 +1366,7 @@ export type GetFeedResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.RecipeSummary[];
+  data: Schemas.RecipeArray;
 };
 
 export type GetFeedVariables = {

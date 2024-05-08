@@ -310,9 +310,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/UserSummary"
+                        $ref: "#/components/schemas/UserArray"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -339,9 +337,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/UserSummary"
+                        $ref: "#/components/schemas/UserArray"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -417,9 +413,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/UserSummary"
+                        $ref: "#/components/schemas/UserArray"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -451,13 +445,11 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/DishDetails"
+                        $ref: "#/components/schemas/DishArray"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -550,9 +542,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/RecipeSummary"
+                        $ref: "#/components/schemas/RecipeArray"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -710,9 +700,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/RecipeSummary"
+                        $ref: "#/components/schemas/RecipeArray"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -1204,6 +1192,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ApiError"
+    DishArray:
+      description: An array of dishes
+      type: array
+      items:
+        $ref: "#/components/schemas/DishDetails"
+    RecipeArray:
+      description: An array of recipes
+      type: array
+      items:
+        $ref: "#/components/schemas/RecipeDetails"
+    UserArray:
+      description: An array of users
+      type: array
+      items:
+        $ref: "#/components/schemas/UserSummary"
   responses:
     OkResponse:
       description: OK
