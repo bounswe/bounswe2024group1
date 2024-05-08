@@ -13,6 +13,7 @@ import {
   getFieldErrors,
   renderError,
   semanticBrowseFetch,
+  setFormErrors,
 } from "./semanticBrowseFetcher";
 
 vi.stubGlobal("fetch", vi.fn());
@@ -267,6 +268,14 @@ const allErrors = {
   },
 } satisfies FetchError;
 
+const emptyError = {
+  status: 400,
+  payload: {
+    status: 400,
+    errors: [],
+  },
+} satisfies FetchError;
+
 describe("renderErrors", () => {
   it("should not throw ", () => {
     renderError(simpleError);
@@ -303,5 +312,84 @@ describe("getFieldErrors", () => {
       email: "Invalid email",
       password: "Password too short",
     });
+  });
+});
+
+// export const setFormErrors = <T extends FieldValues>(
+//   error: FetchError,
+//   setError: UseFormSetError<T>,
+// ) => {
+//   const fieldErrors = Object.entries(getFieldErrors(error));
+
+//   fieldErrors.forEach(([field, message]) => {
+//     setError(field as FieldPath<T>, { message });
+//   });
+
+//   const hasGeneralError = !!error?.payload?.errors?.filter((e) => !e.field)
+//     ?.length;
+//   if (hasGeneralError || !fieldErrors.length) {
+//     setError("root.serverError", { message: renderError(error, true) });
+//   }
+// };
+describe("setFormErrors", () => {
+  it("should set general errors", () => {
+    const setError = vi.fn();
+
+    setFormErrors(simpleError, setError);
+
+    expect(setError).toHaveBeenCalledWith("root.serverError", {
+      message: "Bad request",
+    });
+  });
+
+  it("should set field errors", () => {
+    const setError = vi.fn();
+
+    setFormErrors(formError, setError);
+
+    expect(setError).toHaveBeenCalledWith("email", {
+      message: "Invalid email",
+    });
+    expect(setError).toHaveBeenCalledWith("password", {
+      message: "Password too short",
+    });
+  });
+
+  it("should set general errors when there are field errors", () => {
+    const setError = vi.fn();
+
+    setFormErrors(allErrors, setError);
+
+    expect(setError).toHaveBeenCalledWith("email", {
+      message: "Invalid email",
+    });
+    expect(setError).toHaveBeenCalledWith("password", {
+      message: "Password too short",
+    });
+    expect(setError).toHaveBeenCalledWith("root.serverError", {
+      message: "Bad request",
+    });
+  });
+
+  it("should set serverError to unknown error when no errors are available", () => {
+    const setError = vi.fn();
+
+    setFormErrors(emptyError, setError);
+
+    expect(setError).toHaveBeenCalledWith("root.serverError", {
+      message: expect.stringContaining("Unknown error"),
+    });
+  });
+
+  it("should not set the serverError when only field errors are present", () => {
+    const setError = vi.fn();
+
+    setFormErrors(formError, setError);
+
+    expect(setError.mock.calls).toHaveLength(2);
+    expect(setError).not.toHaveBeenCalledWith(
+      "root.serverError",
+      expect.anything(),
+    );
   });
 });
