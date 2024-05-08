@@ -3,7 +3,7 @@ import Login, { action as loginAction } from "./login";
 import Signup, { action as signupAction } from "./signup";
 import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
-import { Search, loader as searchLoader } from "./search";
+import { Search } from "./search";
 import { NavbarLayout } from "../components/NavbarLayout";
 
 export const routes: RouteObject[] = [
@@ -19,7 +19,6 @@ export const routes: RouteObject[] = [
   },
   {
     path: "/search",
-    loader: searchLoader,
     Component: Search,
   },
   {

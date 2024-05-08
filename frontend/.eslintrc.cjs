@@ -7,7 +7,14 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "prettier",
   ],
-  ignorePatterns: ["dist", ".eslintrc.cjs"],
+  ignorePatterns: [
+    "dist",
+    ".eslintrc.cjs",
+    // auto-generated files are ignored
+    "src/services/api/semanticBrowseResponses.ts",
+    "src/services/api/semanticBrowseComponents.ts",
+    "src/services/api/semanticBrowseSchemas.ts",
+  ],
   parser: "@typescript-eslint/parser",
   plugins: ["react-refresh"],
   rules: {
