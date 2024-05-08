@@ -1,6 +1,6 @@
 import { RouteObject, redirect } from "react-router-dom";
-import Login, { action as loginAction } from "./login";
-import Signup, { action as signupAction } from "./signup";
+import Login from "./login";
+import Signup from "./signup";
 import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search } from "./search";
@@ -10,11 +10,9 @@ export const routes: RouteObject[] = [
   {
     path: "/login",
     Component: Login,
-    action: loginAction,
   },
   {
     path: "/signup",
-    action: signupAction,
     Component: Signup,
   },
   {

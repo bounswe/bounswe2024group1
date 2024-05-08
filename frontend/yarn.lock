@@ -394,6 +394,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/error-message@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@hookform/error-message@npm:2.0.1"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+    react-hook-form: ^7.0.0
+  checksum: 10c0/6b608bcdbd797ddb7c6cfc8c42b6bbac40066181a0c582b1f1a342bfa65fa7e8329cdb8e869a76e33988cd46fe8623d521ea597231b9d33e1f0ba3288e36c58e
+  languageName: node
+  linkType: hard
+
+"@hookform/resolvers@npm:^3.3.4":
+  version: 3.3.4
+  resolution: "@hookform/resolvers@npm:3.3.4"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: 10c0/f7a5b8ba59cbb0859e7a212bd5cbcbc70bbdddd21d4fbe9f4a96d149b5756470cb29857a50334d8c1c64392e21007ccf5288d26aa407431784d4006a2570cb36
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.14":
   version: 0.11.14
   resolution: "@humanwhocodes/config-array@npm:0.11.14"
@@ -3776,6 +3796,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:."
   dependencies:
+    "@hookform/error-message": "npm:^2.0.1"
+    "@hookform/resolvers": "npm:^3.3.4"
     "@openapi-codegen/cli": "npm:^2.0.2"
     "@openapi-codegen/typescript": "npm:^8.0.2"
     "@radix-ui/react-aspect-ratio": "npm:^1.0.3"
@@ -3813,7 +3835,7 @@ __metadata:
     prettier-plugin-tailwindcss: "npm:^0.5.14"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    react-query-swagger: "npm:^15.11.1"
+    react-hook-form: "npm:^7.51.4"
     react-router-dom: "npm:^6.23.0"
     tailwind-merge: "npm:^2.3.0"
     tailwindcss: "npm:^3.4.3"
@@ -3821,7 +3843,7 @@ __metadata:
     typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
     vitest: "npm:^1.5.2"
-    zod: "npm:^3.23.5"
+    zod: "npm:^3.23.7"
     zustand: "npm:^4.5.2"
   languageName: unknown
   linkType: soft
@@ -5381,15 +5403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nswag-portable@npm:13.20.0-v.17":
-  version: 13.20.0-v.17
-  resolution: "nswag-portable@npm:13.20.0-v.17"
-  bin:
-    nswag-portable: nswag-portable.js
-  checksum: 10c0/ee140d8e29748796999bfa829b879fc182a3c01141e12407024467f235d9626ecc0d5042b7029ec2fb57493d91dba4ff6730706de1b11170f9d1e3ef7313788a
-  languageName: node
-  linkType: hard
-
 "nwsapi@npm:^2.2.7":
   version: 2.2.9
   resolution: "nwsapi@npm:2.2.9"
@@ -6077,6 +6090,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.51.4":
+  version: 7.51.4
+  resolution: "react-hook-form@npm:7.51.4"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 10c0/73b585adb80bd99ae1fc21208e389fd9830f82c8c8bab4b6c4d5853f858a3259b8dc8fd4aa4608a0bd95bc69883c9332f2fa5e8c80dc17dbb2866de9744dbdb6
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -6095,23 +6117,6 @@ __metadata:
   version: 18.3.1
   resolution: "react-is@npm:18.3.1"
   checksum: 10c0/f2f1e60010c683479e74c63f96b09fb41603527cd131a9959e2aee1e5a8b0caf270b365e5ca77d4a6b18aae659b60a86150bb3979073528877029b35aecd2072
-  languageName: node
-  linkType: hard
-
-"react-query-swagger@npm:^15.11.1":
-  version: 15.11.1
-  resolution: "react-query-swagger@npm:15.11.1"
-  dependencies:
-    nswag-portable: "npm:13.20.0-v.17"
-  peerDependencies:
-    "@tanstack/react-query": "> 4.0"
-    "@tanstack/react-query-persist-client": ">4.2.0"
-    react: 17.x || 18.x
-    react-query: ">= 3.33 < 4.0"
-    typescript: "> 3.0"
-  bin:
-    react-query-swagger: cli.js
-  checksum: 10c0/f40917f7e32204ddbca377bcb9698918e0f19bb3ed231716e56467d8185a8c525b0985b5ed7ac4af56d6dcee55d48fa851e910dba124a33ddb3cd7f9075e0503
   languageName: node
   linkType: hard
 
@@ -7941,10 +7946,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.23.5":
-  version: 3.23.5
-  resolution: "zod@npm:3.23.5"
-  checksum: 10c0/5c74aefe2c0bc2f00d79c5a8724dae863054653bbad640964fdb009c52573349366fa70533f0dfcb912b007421294d437f063d466f9692eb77a2b620640c2794
+"zod@npm:^3.23.7":
+  version: 3.23.7
+  resolution: "zod@npm:3.23.7"
+  checksum: 10c0/c746d8882d4797597c945fea293dc69caba6de90b82037ca8ee8a1acaea8c5f8ce73492b4a5fac3100a11a99807737b2fcd51db93d9e9ca4d6b938faed67b6e3
   languageName: node
   linkType: hard
 

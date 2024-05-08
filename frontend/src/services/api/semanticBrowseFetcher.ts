@@ -1,3 +1,5 @@
+import { UseFormSetError, FieldValues, FieldPath } from "react-hook-form";
+
 import { SemanticBrowseContext } from "./semanticBrowseContext";
 import {
   ApiResponse,
@@ -162,16 +164,20 @@ const resolveUrl = (
 
 export const renderError = (
   error: ErrorWrapper<{ status: unknown; payload: ErrorResponseObject }>,
+  excludeFieldErrors: boolean = false,
 ): string => {
   if (!("errors" in error.payload)) {
     return error.payload?.["message"] ?? "Unknown error";
   }
-  const errors = error.payload.errors;
+  const errors = excludeFieldErrors
+    ? error.payload.errors.filter((e) => !e.field)
+    : error.payload.errors;
 
   const fieldErrors = errors
     .filter((e) => !!e.field)
     .map((e) => e.field + ": " + e.message);
   const generalErrors = errors.filter((e) => !e.field).map((e) => e.message);
+
   const renderedString =
     errors.length > 0
       ? generalErrors.join("\n") +
@@ -204,4 +210,21 @@ export const getFieldErrors = (
     },
     {} as Record<string, string>,
   );
+};
+
+export const setFormErrors = <T extends FieldValues>(
+  error: FetchError,
+  setError: UseFormSetError<T>,
+) => {
+  const fieldErrors = Object.entries(getFieldErrors(error));
+
+  fieldErrors.forEach(([field, message]) => {
+    setError(field as FieldPath<T>, { message });
+  });
+
+  const hasGeneralError = !!error?.payload?.errors?.filter((e) => !e.field)
+    ?.length;
+  if (hasGeneralError || !fieldErrors.length) {
+    setError("root.serverError", { message: renderError(error, true) });
+  }
 };

@@ -1,13 +1,6 @@
-import {
-  ActionFunctionArgs,
-  Form,
-  Link,
-  Navigate,
-  redirect,
-  useActionData,
-  useLocation,
-  useNavigation,
-} from "react-router-dom";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,54 +11,30 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import useAuthStore from "../services/auth";
 import { z } from "zod";
 import { fetchLogin } from "@/services/api/semanticBrowseComponents";
 import {
   FetchError,
-  getFieldErrors,
-  renderError,
+  setFormErrors,
 } from "../services/api/semanticBrowseFetcher";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../components/ui/form";
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().min(1, "Username or email is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
+  redirectTo: z.string().optional(),
 });
 
-export const action = async ({
-  request,
-}: ActionFunctionArgs): Promise<
-  z.inferFlattenedErrors<typeof loginSchema> | Response
-> => {
-  const formData = await request.formData();
-  const usernameOrEmail = formData.get("usernameOrEmail") as string | null;
-  const password = formData.get("password") as string | null;
-
-  const parsed = loginSchema.safeParse({
-    usernameOrEmail,
-    password,
-  });
-
-  if (!parsed.success) {
-    return parsed.error.flatten();
-  }
-
-  try {
-    const response = await fetchLogin({ body: parsed.data });
-    if (response.data.token) {
-      useAuthStore.getState().setToken(response.data.token);
-    }
-  } catch (error) {
-    return {
-      formErrors: [renderError(error as FetchError)],
-      fieldErrors: getFieldErrors(error as FetchError),
-    };
-  }
-
-  const redirectTo = formData.get("redirectTo") as string | null;
-  return redirect(redirectTo || "/") as Response;
-};
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const location = useLocation();
@@ -74,20 +43,39 @@ export default function Login() {
 
   const auth = useAuthStore();
 
-  const navigation = useNavigation();
-  const isLoggingIn = !!navigation.formData?.get("usernameOrEmail");
+  const form = useForm<LoginFormData>({
+    defaultValues: {
+      redirectTo: from,
+      password: "",
+      usernameOrEmail: "",
+    },
+    resolver: zodResolver(loginSchema),
+  });
 
-  const actionData = useActionData() as
-    | Exclude<Awaited<ReturnType<typeof action>>, Response>
-    | undefined;
+  const {
+    handleSubmit,
+    setError,
+    control,
+    formState: { isSubmitting },
+  } = form;
 
-  function getErrorLabel(field: keyof z.infer<typeof loginSchema>) {
-    return actionData && actionData.fieldErrors[field] ? (
-      <div className="text-sm text-red-500">
-        {actionData.fieldErrors[field]!.join("\n")}
-      </div>
-    ) : null;
-  }
+  const navigate = useNavigate();
+  const submit: SubmitHandler<LoginFormData> = async ({
+    redirectTo,
+    ...data
+  }): Promise<void> => {
+    try {
+      const response = await fetchLogin({
+        body: data,
+      });
+      if (response.data.token) {
+        useAuthStore.getState().setToken(response.data.token);
+        if (redirectTo) navigate(redirectTo);
+      }
+    } catch (e) {
+      setFormErrors(e as FetchError, setError);
+    }
+  };
 
   return (
     <div className="flex flex-1 items-center justify-center">
@@ -100,36 +88,54 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form method="post" replace className="grid gap-4">
-            <input type="hidden" name="redirectTo" value={from} />
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email or username</Label>
-              <Input
-                id="email"
-                name="usernameOrEmail"
-                placeholder="m@example.com"
-                required
+          <Form {...form}>
+            <form onSubmit={handleSubmit(submit)} className="grid gap-4">
+              <div className="grid gap-2">
+                <FormField
+                  control={control}
+                  name="usernameOrEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email or username</FormLabel>
+                      <FormControl>
+                        <Input placeholder="m@example.com" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        You can use your email or username to log in.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="password"
+                          autoComplete="current-password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                name="root.serverError"
+                render={() => <FormMessage />}
               />
-            </div>
-            {getErrorLabel("usernameOrEmail")}
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                {/* <Link to="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link> */}
-              </div>
-              <Input id="password" name="password" type="password" required />
-            </div>
-            {getErrorLabel("password")}
-            {actionData && actionData.formErrors ? (
-              <div className="text-sm text-red-500">
-                {actionData.formErrors.join("\n")}
-              </div>
-            ) : null}
-            <Button loading={isLoggingIn} type="submit" className="w-full">
-              {isLoggingIn ? "Logging in..." : "Login"}
-            </Button>
+              <Button loading={isSubmitting} type="submit" className="w-full">
+                {isSubmitting ? "Logging in..." : "Login"}
+              </Button>
+            </form>
           </Form>
           <div className="mt-4 text-center text-sm">
             Don't have an account?{" "}
