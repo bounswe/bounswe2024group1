@@ -40,7 +40,31 @@ public class UserService {
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return userRepository.findAll(); // Return all users if no search term is provided
         }
-            return userRepository.findByUsernameOrFirstNameOrLastNameContainingIgnoreCase(searchTerm);
+        return userRepository.findByUsernameOrFirstNameOrLastNameContainingIgnoreCase(searchTerm);
+    }
+
+    public boolean followUser(Integer userId, Integer followerId) {
+        if (userId.equals(followerId)) {
+            return false; // Prevent users from following themselves
         }
 
+        User userToBeFollowed = userRepository.findById(userId).orElse(null);
+        User followingUser = userRepository.findById(followerId).orElse(null);
+
+        if (userToBeFollowed != null && followingUser != null) {
+            // Check if the follow relationship already exists
+            if (!followingUser.getFollowing().contains(userToBeFollowed)) {
+                followingUser.getFollowing().add(userToBeFollowed);
+                userToBeFollowed.getFollowers().add(followingUser); // Ensure bidirectional relationship
+
+                userToBeFollowed.setFollowerCount(userToBeFollowed.getFollowerCount() + 1);
+                followingUser.setFollowingCount(followingUser.getFollowingCount() + 1);
+
+                userRepository.save(userToBeFollowed);
+                userRepository.save(followingUser);
+                return true;
+            }
+        }
+        return false;
+    }
 }
