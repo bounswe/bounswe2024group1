@@ -5,6 +5,7 @@ import com.group1.cuisines.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,11 +39,11 @@ public class SecurityConfiguration {
                     .requestMatchers("/api/v1/auth/**")
                     .permitAll() // Permit all requests to "/api/v1/auth"
                         .requestMatchers("/api/v2/test").authenticated()
-                    .requestMatchers(("GET"), "/api/v1/**")
+                    .requestMatchers(("GET"), "/**")
                     .permitAll() // Permit all GET requests
                     .requestMatchers("/api/v1/admin/**")
                     .hasRole("ADMIN") // Require ADMIN role for "/api/v1/resources"
-                    .anyRequest()
+                        .requestMatchers(HttpMethod.POST,"/**")
                     .authenticated()) // Require authentication for all other requests
             .sessionManagement(
                 manager ->
