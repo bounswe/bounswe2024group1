@@ -12,7 +12,7 @@ export type OkResponse = Schemas.SuccessResponseObject;
  */
 export type CreatedResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -26,7 +26,7 @@ export type CreatedResponse = {
  */
 export type BadRequestResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 400
    * @example 401
@@ -44,7 +44,7 @@ export type BadRequestResponse = {
  */
 export type UnauthorizedResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 400
    * @example 401
@@ -62,7 +62,7 @@ export type UnauthorizedResponse = {
  */
 export type ForbiddenResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 400
    * @example 401
@@ -80,7 +80,7 @@ export type ForbiddenResponse = {
  */
 export type NotFoundResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 400
    * @example 401
@@ -98,7 +98,7 @@ export type NotFoundResponse = {
  */
 export type ConflictResponse = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 400
    * @example 401

@@ -39,7 +39,7 @@ export type UserProfile = {
   diets?: string[];
   recipeCount?: number;
   /**
-   * Only available when querying own profile.
+   * Only available when querying the current user's profile.
    */
   bookmarks?: RecipeSummary[];
   recipes?: RecipeSummary[];
@@ -49,19 +49,19 @@ export type UserProfile = {
  * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5}
  */
 export type UserSummary = {
-  id?: number;
-  username?: string;
-  name?: string;
-  followersCount?: number;
+  id: number;
+  username: string;
+  name: string;
+  followersCount: number;
   /**
    * @format uri
    */
-  profilePicture?: string;
-  recipeCount?: number;
+  profilePicture: string;
+  recipeCount: number;
   /**
    * @format float
    */
-  avgRating?: number;
+  avgRating: number;
 };
 
 /**
@@ -93,11 +93,12 @@ export type CuisineDetails = {
    * @format uri
    */
   image: string;
+  isSelfFollowing?: boolean;
   dishes?: DishSummary[];
 };
 
 /**
- * @example {"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":"30 minutes","images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"},"author":{"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5}}
+ * @example {"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"avgRating":4.5,"ratingsCount":42,"selfRating":5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"},"author":{"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5}}
  */
 export type RecipeSummary = {
   id: number;
@@ -106,12 +107,14 @@ export type RecipeSummary = {
   /**
    * Cook time in minutes
    */
-  cookTime?: number;
+  cookTime: number;
   images: string[];
   /**
    * @format float
    */
-  rating: number;
+  avgRating: number;
+  ratingsCount: number;
+  selfRating?: number;
   dish?: DishSummary;
   author: UserSummary;
 };
@@ -136,6 +139,10 @@ export type RecipeDetails = {
    */
   avgRating?: number;
   ratingsCount: number;
+  /**
+   * The current user's rating for this recipe, if any.
+   */
+  selfRating?: number;
   author: UserSummary;
 };
 
@@ -171,6 +178,39 @@ export type DishSummary = {
   name: string;
 };
 
+export type Comment = {
+  id: number;
+  author: UserSummary;
+  recipeId?: number;
+  upvoteCount: number;
+  content: string;
+  hasSelfUpvoted: boolean;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+};
+
+/**
+ * An array of comments
+ */
+export type CommentArray = Comment[];
+
+/**
+ * An array of dishes
+ */
+export type DishArray = DishDetails[];
+
+/**
+ * An array of recipes
+ */
+export type RecipeArray = RecipeDetails[];
+
+/**
+ * An array of users
+ */
+export type UserArray = UserSummary[];
+
 /**
  * @example {"status":200,"data":{"message":"Success"}}
  * @example {"status":400,"errors":[{"message":"Invalid email","field":"email"},{"message":"Invalid password","field":"password"}]}
@@ -190,7 +230,7 @@ export type ApiError = {
  */
 export type SuccessResponseObject = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 200
    * @example 201
@@ -204,7 +244,7 @@ export type SuccessResponseObject = {
  */
 export type ErrorResponseObject = {
   /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritive the inner status over the HTTP status.
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
    *
    * @example 400
    * @example 401
@@ -216,18 +256,3 @@ export type ErrorResponseObject = {
   status: 400 | 401 | 403 | 404 | 409 | 500;
   errors: ApiError[];
 };
-
-/**
- * An array of dishes
- */
-export type DishArray = DishDetails[];
-
-/**
- * An array of recipes
- */
-export type RecipeArray = RecipeDetails[];
-
-/**
- * An array of users
- */
-export type UserArray = UserSummary[];
