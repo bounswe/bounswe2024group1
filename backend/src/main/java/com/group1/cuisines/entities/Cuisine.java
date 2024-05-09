@@ -31,7 +31,7 @@ public class Cuisine {
             joinColumns = @JoinColumn(name = "cuisine_id"),
             inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
-    @JsonIgnore
+
     private List<Dish> dishes = new ArrayList<>();
 
     @Override
