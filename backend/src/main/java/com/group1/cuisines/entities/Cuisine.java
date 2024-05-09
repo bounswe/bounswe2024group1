@@ -1,0 +1,33 @@
+package com.group1.cuisines.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.net.URL;
+import java.util.List;
+
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "cuisines")
+public class Cuisine {
+    @Id
+    private String id;
+    private String name;
+    private String description;
+    private URL wikipediaLink;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "cuisine_dish",
+            joinColumns = @JoinColumn(name = "cuisine_id"),
+            inverseJoinColumns = @JoinColumn(name = "dish_id")
+    )
+    private List<Dish> dishes;
+}
