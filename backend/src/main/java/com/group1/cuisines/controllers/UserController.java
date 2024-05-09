@@ -1,6 +1,7 @@
 package com.group1.cuisines.controllers;
 
 import com.group1.cuisines.entities.User;
+import com.group1.cuisines.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
+
     @GetMapping("/me")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails instanceof com.group1.cuisines.entities.User) {

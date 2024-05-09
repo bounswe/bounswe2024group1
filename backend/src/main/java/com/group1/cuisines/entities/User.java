@@ -36,6 +36,14 @@ public class User implements UserDetails {
 
     private String password;
     private String Bio;
+    @Builder.Default
+    private int followingCount = 0;
+
+    @Builder.Default
+    private int followerCount = 0;
+
+    @Builder.Default
+    private int recipeCount = 0;
 
     private String country;
 
