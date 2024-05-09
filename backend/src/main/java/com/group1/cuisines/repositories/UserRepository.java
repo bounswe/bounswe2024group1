@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByUsernameOrFirstNameOrLastNameContainingIgnoreCase(@Param("searchTerm") String searchTerm);
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
+    @Query("SELECT u.id FROM User u WHERE u.username = :username")
+    Integer findUserIdByUsername(@Param("username") String username);
     Optional<User> findByEmailOrUsername(String email, String username);
     boolean existsByEmailOrUsername(String email, String username);
 

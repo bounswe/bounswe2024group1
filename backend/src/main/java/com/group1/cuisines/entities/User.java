@@ -1,11 +1,6 @@
 package com.group1.cuisines.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Data
 @Builder
@@ -36,16 +34,45 @@ public class User implements UserDetails {
 
     private String password;
     private String Bio;
-    @Builder.Default
-    private int followingCount = 0;
+    @ManyToMany
+    @JoinTable(
+            name = "user_followers",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> followers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followers")
+    private Set<User> following = new HashSet<>();
 
     @Builder.Default
     private int followerCount = 0;
 
     @Builder.Default
+    private int followingCount = 0;
+
+    @Builder.Default
     private int recipeCount = 0;
 
+
+
     private String country;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);  // Use only the ID for hashCode
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        User other = (User) obj;
+        return Objects.equals(id, other.id);  // Compare only IDs for equality
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
