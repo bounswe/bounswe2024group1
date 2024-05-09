@@ -67,4 +67,29 @@ public class UserService {
         }
         return false;
     }
+    public boolean unfollowUser(Integer userId, Integer followerId) {
+        if (userId.equals(followerId)) {
+            return false; // Prevent users from unfollowing themselves
+        }
+
+        User userToBeUnfollowed = userRepository.findById(userId).orElse(null);
+        User followingUser = userRepository.findById(followerId).orElse(null);
+
+        if (userToBeUnfollowed != null && followingUser != null) {
+            // Check if the follow relationship exists
+            if (followingUser.getFollowing().contains(userToBeUnfollowed)) {
+                followingUser.getFollowing().remove(userToBeUnfollowed);
+                userToBeUnfollowed.getFollowers().remove(followingUser);
+
+                userToBeUnfollowed.setFollowerCount(userToBeUnfollowed.getFollowerCount() - 1);
+                followingUser.setFollowingCount(followingUser.getFollowingCount() - 1);
+
+                userRepository.save(userToBeUnfollowed);
+                userRepository.save(followingUser);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
