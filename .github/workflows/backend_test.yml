@@ -1,0 +1,32 @@
+name: backend-test
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - compose.yml
+      - dev.yml
+      - '.github/workflows/backend_test.yml'
+
+  pull_request:
+    branches:
+      - main
+      - staging
+      - develop
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      working-directory:
+        backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+            
+      - name: Test with Maven
+        run: docker compose -f dev.yml run --rm backend mvn test
+
+
+            
