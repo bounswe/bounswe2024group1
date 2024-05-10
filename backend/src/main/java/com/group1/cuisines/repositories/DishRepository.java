@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DishRepository extends JpaRepository<Dish,String> {
@@ -15,6 +16,7 @@ public interface DishRepository extends JpaRepository<Dish,String> {
     @Query("SELECT d FROM Dish d JOIN d.cuisines c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :cuisineName, '%'))")
     List<Dish> findByCuisinesName(@Param("cuisineName") String cuisineName);
     List<Dish> findByFoodTypesContainingIgnoreCase(String foodType);
+    Optional<Dish> findById(String id);
 
     @Query("SELECT d FROM Dish d JOIN d.cuisines c WHERE c.id = :cuisineId")
     List<Dish> findByCuisineId(@Param("cuisineId") String cuisineId);
