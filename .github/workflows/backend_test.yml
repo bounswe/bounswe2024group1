@@ -16,17 +16,17 @@ on:
 
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        env:
-            working-directory:
-                backend        
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
+  test:
+    runs-on: ubuntu-latest
+    env:
+      working-directory:
+        backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
             
-          - name: Test with Maven
-            run: docker compose -f dev.yml run --rm backend mvn test
+      - name: Test with Maven
+        run: docker compose -f dev.yml run --rm backend mvn test
 
 
             
