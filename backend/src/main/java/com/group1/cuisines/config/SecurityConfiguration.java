@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                     .requestMatchers("/api/v1/admin/**")
                     .hasRole("ADMIN") // Require ADMIN role for "/api/v1/resources"
                         .requestMatchers(HttpMethod.POST,"/**")
-                    .authenticated()) // Require authentication for all other requests
+                    .authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/**").authenticated()) // Require authentication for all other requests
             .sessionManagement(
                 manager ->
                     manager.sessionCreationPolicy(
