@@ -1,30 +1,20 @@
 name: backend-staging-workflow
 
 on:
+  workflow_run:
+    workflows: ["backend-test"]
+    types:
+      - completed
   push:
     branches:
       - staging
     paths:
       - 'backend/**'
-      - docker-compose.yml
+      - compose.yml
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      working-directory: backend        
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-          
-      - name: Test with Maven
-        run: docker compose -f dev.yml run --rm backend mvn test
-
   deploy:
-    needs: test
     runs-on: ubuntu-latest
-    env:
-      working-directory: backend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
