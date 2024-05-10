@@ -67,6 +67,21 @@ public class RecipeController {
         }
     }
 
+    @PostMapping("/recipes/{recipeId}/bookmarks")
+    public ResponseEntity<?> bookmarkRecipe(@PathVariable Integer recipeId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
 
+        String username = authentication.getName(); // Assuming the username can be obtained like this
+        boolean success = recipeService.bookmarkRecipe(recipeId, username);
+
+        if (success) {
+            return ResponseEntity.ok().body("Recipe bookmarked successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to bookmark recipe");
+        }
+    }
 
 }
