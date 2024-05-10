@@ -4,9 +4,9 @@ on:
   push:
     paths:
       - 'backend/**'
-      - docker-compose.yml
-      - docker-compose.dev.yml
-      - '.github/workflows/backend_build.yml'
+      - compose.yml
+      - dev.yml
+      - '.github/workflows/backend_test.yml'
 
   pull_request:
     branches:
