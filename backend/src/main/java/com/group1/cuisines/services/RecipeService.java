@@ -1,0 +1,118 @@
+package com.group1.cuisines.services;
+
+import com.group1.cuisines.dto.IngredientsDto;
+import com.group1.cuisines.dto.NewRecipeDto;
+import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.entities.*;
+import com.group1.cuisines.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+public class RecipeService {
+    @Autowired
+    private IngredientsRepository ingredientRepository;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
+    @Autowired
+    private DishRepository dishRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RatingRepository ratingRepository;
+
+    @Transactional
+    public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            throw new IllegalStateException("User not found");
+        }
+        Dish dish = dishRepository.findById(newRecipe.getDishId()).orElseThrow(
+                () -> new Exception("Dish with ID " + newRecipe.getDishId() + " not found")
+        );
+
+        Recipe recipe = Recipe.builder()
+                .title(newRecipe.getTitle())
+                .instructions(newRecipe.getInstructions())
+                .preparationTime(newRecipe.getPreparationTime())
+                .cookingTime(newRecipe.getCookingTime())
+                .servingSize(newRecipe.getServingSize())
+                .dish(dish)
+                .user(user.get())
+                .build();
+
+
+
+        // Handle ingredients
+        for (IngredientsDto ingredientDto : newRecipe.getIngredients()) {
+            Ingredient ingredient = Ingredient.builder()
+                    .name(ingredientDto.getName())
+                    .recipe(recipe) // Link ingredient to the recipe
+                    .build();
+            ingredientRepository.save(ingredient);
+            recipe.getIngredients().add(ingredient);
+        }
+        recipe = recipeRepository.save(recipe);
+        user.get().setRecipeCount(user.get().getRecipeCount() + 1);
+
+
+            return RecipeDetailDto.builder()
+                    .id(recipe.getId())
+                    .title(recipe.getTitle())
+                    .instructions(recipe.getInstructions())
+                    .preparationTime(recipe.getPreparationTime())
+                    .cookingTime(recipe.getCookingTime())
+                    .dishName(recipe.getDish().getName())
+                    .build();
+
+    }
+
+    public boolean deleteRecipe(Integer id, String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            return false;
+        }
+        Optional<Recipe> recipe = recipeRepository.findById(id);
+        if (recipe.isEmpty()){
+            return false;
+        }
+        if (recipe.get().getUser().getId() != user.get().getId()){
+            return false;
+        }
+        user.get().setRecipeCount(user.get().getRecipeCount() - 1);
+        recipeRepository.delete(recipe.get());
+
+        return true;
+    }
+
+    public boolean rateRecipe(Integer recipeId, String username, Integer ratingValue) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+
+        if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
+            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId());
+            if (existingRating != null) {
+                return false; // Indicates that the user has already rated
+            }
+            Rating rating = new Rating();
+            rating.setUser(user.get());
+            rating.setRecipe(recipe);
+            rating.setRatingValue(ratingValue);
+            ratingRepository.save(rating);
+            double newAverage = recipeRepository.findAverageByRecipeId(recipeId);
+            recipe.setAverageRating(newAverage);
+            recipeRepository.save(recipe);
+            return true;
+        }
+        return false;
+    }
+}

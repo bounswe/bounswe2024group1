@@ -2,9 +2,16 @@ package com.group1.cuisines.controllers;
 
 import com.group1.cuisines.dao.response.ApiResponse;
 import com.group1.cuisines.entities.Dish;
+import com.group1.cuisines.entities.User;
+import com.group1.cuisines.services.SearchService;
+import com.group1.cuisines.services.UserService;
 import com.group1.cuisines.services.WikidataService;
 import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,13 +20,27 @@ import org.springframework.web.bind.annotation.*;
 public class SearchController {
 
     private final WikidataService wikidataService;
+    private final SearchService searchService;
+    private final UserService userService;
+
+    @GetMapping("/users")
+    public ResponseEntity<?> searchUsers(@RequestParam(required = false) String q) {
+        List<User> users = userService.searchUsers(q);
+        if (users.isEmpty()) {
+            // Return a custom message with a "No Content" status when no users are found
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No users found");
+        }
+        return ResponseEntity.ok(users); // Return the list of users when found
+    }
 
     @GetMapping("/dishes")
-    public ApiResponse<ArrayList<Dish>> searchDishes(@RequestParam String q) {
+    public ApiResponse<List<Dish>> searchDishes(@RequestParam(required = false) String q,
+                                                @RequestParam(required = false) String cuisine,
+                                                @RequestParam(required = false) String foodType) {
         return new ApiResponse<>(
             200,
             "Search completed",
-            wikidataService.retrieveDishAndCuisineData(q)
-        );
+                searchService.searchDishes(q, cuisine, foodType));
+
     }
 }

@@ -3,7 +3,7 @@ info:
   title: Semantic Cuisine
   description: |-
     This is the API specification for the Semantic Browse for Cuisines application.
-  version: 1.0.2
+  version: 1.0.3
 externalDocs:
   description: Refer to the requirements
   url: https://github.com/bounswe/bounswe2024group1/wiki/Requirements
@@ -30,6 +30,7 @@ tags:
 paths:
   /users/logout:
     post:
+      operationId: logout
       tags:
         - auth
       summary: User logout
@@ -42,14 +43,17 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
                         type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /users/verify-email:
     post:
+      operationId: verifyEmail
       tags:
         - auth
       summary: Verify user's email
@@ -71,7 +75,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -81,6 +85,7 @@ paths:
 
   /users/resend-verification-email:
     post:
+      operationId: resendVerificationEmail
       tags:
         - auth
       summary: Resend verification email
@@ -93,7 +98,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -103,6 +108,7 @@ paths:
 
   /users/reset-password-request:
     post:
+      operationId: resetPasswordRequest
       tags:
         - auth
       summary: Request password reset
@@ -128,7 +134,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -138,6 +144,7 @@ paths:
 
   /users/reset-password:
     post:
+      operationId: resetPassword
       tags:
         - auth
       summary: Reset password
@@ -162,7 +169,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -172,6 +179,7 @@ paths:
 
   /users/signup:
     post:
+      operationId: signup
       tags:
         - auth
       summary: Register a new user
@@ -189,6 +197,7 @@ paths:
 
   /users/login:
     post:
+      operationId: login
       tags:
         - auth
       summary: User login
@@ -205,7 +214,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -215,6 +224,7 @@ paths:
 
   /users/{userId}:
     get:
+      operationId: getUserById
       tags:
         - user
       summary: Get user profile
@@ -233,7 +243,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -242,9 +252,11 @@ paths:
           $ref: "#/components/responses/NotFoundResponse"
 
     put:
+      operationId: updateUserById
       tags:
         - user
       summary: Update user profile
+      description: Can only update own profile
       security:
         - auth_jwt: []
       parameters:
@@ -266,7 +278,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -274,8 +286,30 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
+  /users/me:
+    get:
+      operationId: getMe
+      tags:
+        - user
+      summary: Get own profile
+      security:
+        - auth_jwt: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+
   /users/{userId}/following:
     get:
+      operationId: getUserFollowing
       tags:
         - user
       summary: Get users being followed
@@ -294,16 +328,17 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/UserSummary"
+                        $ref: "#/components/schemas/UserArray"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /users/{userId}/followers:
     get:
+      operationId: getUserFollowers
       tags:
         - user
       summary: Get user's followers
@@ -320,57 +355,69 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/UserSummary"
+                        $ref: "#/components/schemas/UserArray"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
-  /users/follow:
+  /users/{userId}/follow:
     post:
+      operationId: followUser
       tags:
         - user
       summary: Follow a user
       security:
         - auth_jwt: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                followingUserId:
-                  type: integer
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          $ref: "#/components/responses/OkResponse"
+          description: OK - returning new user profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
-
-  /users/unfollow:
-    post:
+    delete:
+      operationId: unfollowUser
       tags:
         - user
       summary: Unfollow a user
       security:
         - auth_jwt: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                followingUserId:
-                  type: integer
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          $ref: "#/components/responses/OkResponse"
+          description: OK - returning new user profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "404":
@@ -378,6 +425,7 @@ paths:
 
   /search/users:
     get:
+      operationId: searchUsers
       tags:
         - user
       summary: Search for users
@@ -393,16 +441,17 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/UserSummary"
+                        $ref: "#/components/schemas/UserArray"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /search/dishes:
     get:
+      operationId: searchDishes
       tags:
         - dish
       summary: Search for dishes
@@ -428,16 +477,17 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/DishSearchResult"
+                        $ref: "#/components/schemas/DishArray"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /dishes/{dishId}:
     get:
+      operationId: getDishById
       tags:
         - dish
       summary: Get dish details
@@ -454,7 +504,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -464,6 +514,7 @@ paths:
 
   /cuisines/{cuisineId}:
     get:
+      operationId: getCuisineById
       tags:
         - cuisines
       summary: Get cuisine details
@@ -484,16 +535,47 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
                         $ref: "#/components/schemas/CuisineDetails"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+  /cuisines/{cuisineId}/follow:
+    post:
+      operationId: followCuisine
+      tags:
+        - cuisines
+      summary: Follow a cuisine
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: cuisineId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK - returning cuisine details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/CuisineDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /recipes:
     get:
+      operationId: getRecipesForEntity
       tags:
         - recipe
       summary: Get recipes for dish, cuisine
@@ -518,15 +600,16 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/RecipeSummary"
+                        $ref: "#/components/schemas/RecipeArray"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
     post:
+      operationId: createRecipe
       tags:
         - recipe
       summary: Create a new recipe
@@ -545,7 +628,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/CreatedResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -555,6 +638,7 @@ paths:
 
   /recipes/{recipeId}:
     get:
+      operationId: getRecipeById
       tags:
         - recipe
       summary: Get recipe details
@@ -571,7 +655,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
@@ -580,6 +664,7 @@ paths:
           $ref: "#/components/responses/NotFoundResponse"
 
     delete:
+      operationId: deleteRecipeById
       tags:
         - recipe
       summary: Delete a recipe
@@ -593,7 +678,8 @@ paths:
             type: integer
       responses:
         "204":
-          description: No content
+          description: OK
+          $ref: "#/components/responses/OkResponse"
         "403":
           $ref: "#/components/responses/ForbiddenResponse"
         "404":
@@ -601,6 +687,7 @@ paths:
 
   /recipes/{recipeId}/rating:
     post:
+      operationId: rateRecipe
       tags:
         - recipe
       summary: Rate a recipe
@@ -629,8 +716,34 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /recipes/{recipeId}/bookmark:
+  /recipes/{recipeId}/bookmarks:
+    get:
+      operationId: getBookmarkers
+      tags:
+        - recipe
+      summary: Get users who bookmarked a recipe
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserArray"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
     post:
+      operationId: bookmarkRecipe
       tags:
         - recipe
       summary: Bookmark a recipe
@@ -647,9 +760,157 @@ paths:
           $ref: "#/components/responses/OkResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
+    delete:
+      operationId: unbookmarkRecipe
+      tags:
+        - recipe
+      summary: Unbookmark a recipe
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+          $ref: "#/components/responses/OkResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+  /recipes/{recipeId}/comments:
+    get:
+      operationId: getCommentsForRecipe
+      tags:
+        - recipe
+      summary: Get comments for a recipe
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/CommentArray"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+    post:
+      operationId: addCommentToRecipe
+      tags:
+        - recipe
+      summary: Add a comment to a recipe
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Comment"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /recipes/{recipeId}/comments/{commentId}/upvote:
+    post:
+      operationId: upvoteComment
+      tags:
+        - recipe
+      summary: Upvote a comment
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK - returns new comment after upvote
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Comment"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+    delete:
+      operationId: removeUpvoteFromComment
+      tags:
+        - recipe
+      summary: Remove upvote from a comment
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK - returns new comment after upvote removal
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Comment"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /feed:
     get:
+      operationId: getFeed
       tags:
         - user
       summary: Get user's feed
@@ -669,13 +930,11 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/responses/OkResponse/content/application%2Fjson/schema"
+                  - $ref: "#/components/schemas/SuccessResponseObject"
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/RecipeSummary"
+                        $ref: "#/components/schemas/RecipeArray"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -750,7 +1009,7 @@ components:
           type: integer
         bookmarks:
           type: array
-          description: Only available when querying own profile.
+          description: Only available when querying the current user's profile.
           items:
             $ref: "#/components/schemas/RecipeSummary"
         recipes:
@@ -791,6 +1050,14 @@ components:
                 name: "takoyaki"
     UserSummary:
       type: object
+      required:
+        - id
+        - username
+        - name
+        - followersCount
+        - profilePicture
+        - recipeCount
+        - avgRating
       properties:
         id:
           type: integer
@@ -817,9 +1084,8 @@ components:
           recipeCount: 10
           avgRating: 4.5
 
-    DishSearchResult:
+    DishDetails:
       type: object
-      $ref: "#/components/schemas/DishDetails"
       examples:
         - id: "http://www.wikidata.org/entity/Q905527"
           name: "takoyaki"
@@ -829,13 +1095,12 @@ components:
           ingredients: "wheat flour, green laver, octopus as food, beni shōga, katsuobushi, Welsh onion"
           foodTypes: "konamono, octopus dish, yakimono"
           cuisines: "Japanese cuisine"
-
-    DishDetails:
-      type: object
       required:
         - id
         - name
         - image
+        - description
+        - countries
       properties:
         id:
           type: string
@@ -877,6 +1142,8 @@ components:
         image:
           type: string
           format: uri
+        isSelfFollowing:
+          type: boolean
         dishes:
           type: array
           items:
@@ -890,6 +1157,9 @@ components:
         - description
         - images
         - rating
+        - cookTime
+        - avgRating
+        - ratingsCount
         - author
       properties:
         id:
@@ -906,9 +1176,13 @@ components:
           items:
             type: string
             format: uri
-        rating:
+        avgRating:
           type: number
           format: float
+        ratingsCount:
+          type: integer
+        selfRating:
+          type: integer
         dish:
           $ref: "#/components/schemas/DishSummary"
         author:
@@ -917,10 +1191,12 @@ components:
         - id: 1
           name: "My Takoyaki Recipe"
           description: "A delicious takoyaki recipe that I learned from my grandmother."
-          cookTime: "30 minutes"
+          cookTime: 30
           images:
             - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
-          rating: 4.5
+          avgRating: 4.5
+          ratingsCount: 42
+          selfRating: 5
           dish:
             id: "http://www.wikidata.org/entity/Q905527"
             name: "takoyaki"
@@ -985,6 +1261,9 @@ components:
           format: float
         ratingsCount:
           type: integer
+        selfRating:
+          type: integer
+          description: The current user's rating for this recipe, if any.
         author:
           $ref: "#/components/schemas/UserSummary"
       examples:
@@ -1082,6 +1361,7 @@ components:
 
     CuisineSummary:
       type: object
+      required: ["id", "name"]
       properties:
         id:
           type: integer
@@ -1093,6 +1373,7 @@ components:
 
     DishSummary:
       type: object
+      required: ["id", "name"]
       properties:
         id:
           type: integer
@@ -1102,20 +1383,60 @@ components:
         - id: 1
           name: "takoyaki"
 
-    ApiResponse:
+    Comment:
       type: object
       required:
-        - status
+        - id
+        - author
+        - content
+        - upvoteCount
+        - hasSelfUpvoted
+        - createdAt
       properties:
-        status:
+        id:
           type: integer
-          description: <300 indicates success, >=400 indicates error.
-        data:
-          type: object
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ApiError"
+        author:
+          $ref: "#/components/schemas/UserSummary"
+        recipeId:
+          type: integer
+        upvoteCount:
+          type: integer
+        content:
+          type: string
+        hasSelfUpvoted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    CommentArray:
+      description: An array of comments
+      type: array
+      items:
+        $ref: "#/components/schemas/Comment"
+
+    DishArray:
+      description: An array of dishes
+      type: array
+      items:
+        $ref: "#/components/schemas/DishDetails"
+
+    RecipeArray:
+      description: An array of recipes
+      type: array
+      items:
+        $ref: "#/components/schemas/RecipeDetails"
+
+    UserArray:
+      description: An array of users
+      type: array
+      items:
+        $ref: "#/components/schemas/UserSummary"
+
+    ApiResponse:
+      oneOf:
+        - $ref: "#/components/schemas/SuccessResponseObject"
+        - $ref: "#/components/schemas/ErrorResponseObject"
       examples:
         - status: 200
           data: { "message": "Success" }
@@ -1136,112 +1457,126 @@ components:
         field:
           type: string
           description: If empty, indicates an error not related to any field.
+    SuccessResponseObject:
+      description: OK
+      type: object
+      required: ["status", "data"]
+      properties:
+        status:
+          type: integer
+          description:
+            Internal status code of the response. An HTTP 200 response with an internal
+            500 status code is an error response. Prioritize the inner status over the HTTP
+            status.
+          enum:
+            - 200
+            - 201
+          examples: [200, 201]
+        data:
+          oneOf:
+            - type: object
+            - type: array
+    ErrorResponseObject:
+      description: Response with errors
+      type: object
+      required: ["status", "errors"]
+      properties:
+        status:
+          enum:
+            - 400
+            - 401
+            - 403
+            - 404
+            - 409
+            - 500
+          description:
+            Internal status code of the response. An HTTP 200 response with an internal
+            500 status code is an error response. Prioritize the inner status over the HTTP
+            status.
+          examples: [400, 401, 403, 404, 409, 500]
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApiError"
   responses:
     OkResponse:
       description: OK
       content:
         application/json:
           schema:
-            type: object
-            required: ["status"]
-            properties:
-              status:
-                type: integer
-                examples: [200]
-              data:
-                type: object
+            $ref: "#/components/schemas/SuccessResponseObject"
 
     CreatedResponse:
       description: Created
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples: [201]
-              data:
-                type: object
+            allOf:
+              - $ref: "#/components/schemas/SuccessResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 201
 
     BadRequestResponse:
       description: Bad Request
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples: [400]
-              errors:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiError"
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 400
 
     UnauthorizedResponse:
       description: Unauthorized
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples:
-                  - 401
-              errors:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiError"
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 401
 
     ForbiddenResponse:
       description: Forbidden
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples:
-                  - 403
-              errors:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiError"
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 403
 
     NotFoundResponse:
       description: Not Found
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples:
-                  - 404
-              errors:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiError"
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 404
 
     ConflictResponse:
       description: Conflict
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples:
-                  - 409
-              errors:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiError"
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 409
 
     InternalServerErrorResponse:
       description: Internal Server Error

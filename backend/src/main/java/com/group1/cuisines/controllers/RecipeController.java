@@ -1,0 +1,72 @@
+package com.group1.cuisines.controllers;
+import com.group1.cuisines.dto.NewRecipeDto;
+import com.group1.cuisines.dto.RatingDto;
+import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.services.RecipeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+@RestController
+@RequestMapping("/api/v1")
+public class RecipeController {
+    @Autowired
+    private RecipeService recipeService;
+
+    @PostMapping("/recipes")
+    public ResponseEntity<?> createRecipe(@RequestBody NewRecipeDto newRecipe) throws Exception{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if the user is authenticated
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        String username = authentication.getName();
+        RecipeDetailDto recipeDetails = recipeService.createRecipe(newRecipe, username);
+        if (recipeDetails != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(recipeDetails);
+        } else {
+            return ResponseEntity.badRequest().body("Failed to create recipe");
+        }
+    }
+    @DeleteMapping("/recipes/{id}")
+    public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if the user is authenticated
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        String username = authentication.getName();
+        if (recipeService.deleteRecipe(id, username)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Recipe deleted successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to delete recipe");
+        }
+    }
+    @PostMapping("/recipes/{recipeId}/rating")
+    public ResponseEntity<?> rateRecipe(@PathVariable Integer recipeId, @RequestBody RatingDto ratingDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        String username = authentication.getName(); // Assuming the username can be obtained like this
+        boolean success = recipeService.rateRecipe(recipeId, username, ratingDto.getRating());
+
+        if (success) {
+            return ResponseEntity.ok().body("Rating added successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to add rating");
+        }
+    }
+
+
+
+}
