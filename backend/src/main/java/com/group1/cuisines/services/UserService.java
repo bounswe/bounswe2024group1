@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +68,13 @@ public class UserService {
             }
         }
         return false;
+    }
+    public Set<User> getUserFollowing(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return user.getFollowing(); // Assuming getFollowing() returns a Set<User>
+        }
+        return Collections.emptySet();
     }
     public boolean unfollowUser(Integer userId, Integer followerId) {
         if (userId.equals(followerId)) {

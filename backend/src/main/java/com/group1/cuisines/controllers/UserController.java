@@ -1,5 +1,6 @@
 package com.group1.cuisines.controllers;
 
+import com.group1.cuisines.dto.UserDto;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.repositories.UserRepository;
 import com.group1.cuisines.services.UserService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -59,6 +62,37 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Already following");
         }
         return ResponseEntity.ok().body("Followed successfully");
+    }
+    @GetMapping("/{userId}/following")
+    public ResponseEntity<?> getUserFollowing(@PathVariable Integer userId) {
+
+
+
+        // Authentication check
+
+
+        // Validate the provided user ID
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("Invalid user ID provided");
+        }
+
+        Set<User> following = userService.getUserFollowing(userId);
+        if (following.isEmpty()) {
+            return ResponseEntity.ok().body("User is not following anyone");
+        } else {
+            Set<UserDto> followingDto = following.stream()
+                    .map(user -> UserDto.builder()
+                            .id(user.getId())
+                            .username(user.getUsername())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .followerCount(user.getFollowerCount())
+                            .followingCount(user.getFollowingCount())
+                            .recipeCount(user.getRecipeCount())
+                            .build())
+                    .collect(Collectors.toSet());
+            return ResponseEntity.ok().body(followingDto);
+        }
     }
     @PostMapping("/{userId}/unfollow")
     public ResponseEntity<?> unfollowUser(@PathVariable Integer userId) {
