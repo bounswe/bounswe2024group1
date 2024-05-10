@@ -101,4 +101,11 @@ public class UserService {
         return false;
     }
 
+    public Set<User> getUserFollower(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return user.getFollowers(); // Assuming getFollowing() returns a Set<User>
+        }
+        return Collections.emptySet();
+    }
 }
