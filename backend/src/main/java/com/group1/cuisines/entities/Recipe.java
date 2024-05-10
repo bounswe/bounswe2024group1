@@ -21,10 +21,15 @@ public class Recipe {
     private int preparationTime;
     private int cookingTime;
     private int servingSize;
+    private double averageRating;
 
     @ManyToOne
     @JoinColumn(name = "dish_id", nullable = false)
     private Dish dish;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Rating> ratings = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

@@ -3,14 +3,8 @@ package com.group1.cuisines.services;
 import com.group1.cuisines.dto.IngredientsDto;
 import com.group1.cuisines.dto.NewRecipeDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
-import com.group1.cuisines.entities.Dish;
-import com.group1.cuisines.entities.Ingredient;
-import com.group1.cuisines.entities.Recipe;
-import com.group1.cuisines.entities.User;
-import com.group1.cuisines.repositories.DishRepository;
-import com.group1.cuisines.repositories.IngredientsRepository;
-import com.group1.cuisines.repositories.RecipeRepository;
-import com.group1.cuisines.repositories.UserRepository;
+import com.group1.cuisines.entities.*;
+import com.group1.cuisines.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +24,8 @@ public class RecipeService {
     private DishRepository dishRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RatingRepository ratingRepository;
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
@@ -93,5 +89,30 @@ public class RecipeService {
         recipeRepository.delete(recipe.get());
 
         return true;
+    }
+
+    public boolean rateRecipe(Integer recipeId, String username, Integer ratingValue) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+
+        if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
+            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId());
+            if (existingRating != null) {
+                return false; // Indicates that the user has already rated
+            }
+            Rating rating = new Rating();
+            rating.setUser(user.get());
+            rating.setRecipe(recipe);
+            rating.setRatingValue(ratingValue);
+            ratingRepository.save(rating);
+            double newAverage = recipeRepository.findAverageByRecipeId(recipeId);
+            recipe.setAverageRating(newAverage);
+            recipeRepository.save(recipe);
+            return true;
+        }
+        return false;
     }
 }

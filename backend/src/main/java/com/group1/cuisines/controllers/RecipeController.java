@@ -1,5 +1,6 @@
 package com.group1.cuisines.controllers;
 import com.group1.cuisines.dto.NewRecipeDto;
+import com.group1.cuisines.dto.RatingDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
 import com.group1.cuisines.services.RecipeService;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,22 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Recipe deleted successfully.");
         } else {
             return ResponseEntity.badRequest().body("Failed to delete recipe");
+        }
+    }
+    @PostMapping("/recipes/{recipeId}/rating")
+    public ResponseEntity<?> rateRecipe(@PathVariable Integer recipeId, @RequestBody RatingDto ratingDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        String username = authentication.getName(); // Assuming the username can be obtained like this
+        boolean success = recipeService.rateRecipe(recipeId, username, ratingDto.getRating());
+
+        if (success) {
+            return ResponseEntity.ok().body("Rating added successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to add rating");
         }
     }
 
