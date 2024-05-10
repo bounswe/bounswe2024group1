@@ -38,8 +38,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
     }
 
-    @PostMapping("/follow")
-    public ResponseEntity<?> followUser(@RequestBody Map<String, Integer> payload) {
+    @PostMapping("/{userId}/follow")
+    public ResponseEntity<?> followUser(@PathVariable Integer userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal()=="anonymousUser"){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
@@ -48,7 +48,7 @@ public class UserController {
         String username = authentication.getName();
 
         Integer followerId = userRepository.findUserIdByUsername(username);
-        Integer userId = payload.get("followingUserId");
+
 
         if (followerId == null || userId == null) {
             return ResponseEntity.badRequest().body("Invalid user data");
@@ -60,8 +60,8 @@ public class UserController {
         }
         return ResponseEntity.ok().body("Followed successfully");
     }
-    @PostMapping("/unfollow")
-    public ResponseEntity<?> unfollowUser(@RequestBody Map<String, Integer> payload) {
+    @PostMapping("/{userId}/unfollow")
+    public ResponseEntity<?> unfollowUser(@PathVariable Integer userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal()=="anonymousUser"){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
@@ -69,7 +69,7 @@ public class UserController {
 
         String username = authentication.getName();
         Integer followerId = userRepository.findUserIdByUsername(username);
-        Integer userId = payload.get("followingUserId");
+
 
         if (followerId == null || userId == null) {
             return ResponseEntity.badRequest().body("Invalid user data.");
