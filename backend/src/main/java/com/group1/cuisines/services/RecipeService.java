@@ -63,6 +63,7 @@ public class RecipeService {
             recipe.getIngredients().add(ingredient);
         }
         recipe = recipeRepository.save(recipe);
+        user.get().setRecipeCount(user.get().getRecipeCount() + 1);
 
 
             return RecipeDetailDto.builder()
@@ -74,5 +75,23 @@ public class RecipeService {
                     .dishName(recipe.getDish().getName())
                     .build();
 
+    }
+
+    public boolean deleteRecipe(Integer id, String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            return false;
+        }
+        Optional<Recipe> recipe = recipeRepository.findById(id);
+        if (recipe.isEmpty()){
+            return false;
+        }
+        if (recipe.get().getUser().getId() != user.get().getId()){
+            return false;
+        }
+        user.get().setRecipeCount(user.get().getRecipeCount() - 1);
+        recipeRepository.delete(recipe.get());
+
+        return true;
     }
 }

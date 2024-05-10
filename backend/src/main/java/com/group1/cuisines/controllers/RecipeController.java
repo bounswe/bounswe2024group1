@@ -33,6 +33,22 @@ public class RecipeController {
             return ResponseEntity.badRequest().body("Failed to create recipe");
         }
     }
+    @DeleteMapping("/recipes/{id}")
+    public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if the user is authenticated
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        String username = authentication.getName();
+        if (recipeService.deleteRecipe(id, username)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Recipe deleted successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to delete recipe");
+        }
+    }
 
 
 
