@@ -65,12 +65,6 @@ public class UserController {
     }
     @GetMapping("/{userId}/following")
     public ResponseEntity<?> getUserFollowing(@PathVariable Integer userId) {
-
-
-
-        // Authentication check
-
-
         // Validate the provided user ID
         if (userId == null) {
             return ResponseEntity.badRequest().body("Invalid user ID provided");
@@ -81,6 +75,30 @@ public class UserController {
             return ResponseEntity.ok().body("User is not following anyone");
         } else {
             Set<UserDto> followingDto = following.stream()
+                    .map(user -> UserDto.builder()
+                            .id(user.getId())
+                            .username(user.getUsername())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .followerCount(user.getFollowerCount())
+                            .followingCount(user.getFollowingCount())
+                            .recipeCount(user.getRecipeCount())
+                            .build())
+                    .collect(Collectors.toSet());
+            return ResponseEntity.ok().body(followingDto);
+        }
+    }
+    @GetMapping("/{userId}/followers")
+    public ResponseEntity<?> getUserFollowers(@PathVariable Integer userId) {
+        // Validate the provided user ID
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("Invalid user ID provided");
+        }
+        Set<User> followers = userService.getUserFollower(userId);
+        if (followers.isEmpty()) {
+            return ResponseEntity.ok().body("User is not followed by anyone");
+        } else {
+            Set<UserDto> followingDto = followers.stream()
                     .map(user -> UserDto.builder()
                             .id(user.getId())
                             .username(user.getUsername())
