@@ -1,4 +1,4 @@
-name: backend-worklow
+name: backend-test
 
 on:
   push:
@@ -16,7 +16,7 @@ on:
 
 
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
         env:
             working-directory:
