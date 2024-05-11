@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,9 @@ public class RecipeService {
     private UserRepository userRepository;
     @Autowired
     private RatingRepository ratingRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
@@ -115,4 +119,12 @@ public class RecipeService {
         }
         return false;
     }
+
+
+    public List<Comment> getCommentsByRecipeId(Integer recipeId) {
+        return commentRepository.findByRecipeId(recipeId);
+    }
+
+
+
 }
