@@ -18,8 +18,11 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install dependencies
-        run: yarn install —immutable
+        run: yarn install --immutable
 
       - name: Run formatter
         run: yarn format
