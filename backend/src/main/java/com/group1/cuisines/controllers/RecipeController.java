@@ -3,6 +3,7 @@ import com.group1.cuisines.dto.NewRecipeDto;
 import com.group1.cuisines.dto.RatingDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
 import com.group1.cuisines.entities.Comment;
+import com.group1.cuisines.entities.User;
 import com.group1.cuisines.services.RecipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.List;
+
 import java.util.List;
 
 @RestController
@@ -67,6 +70,34 @@ public class RecipeController {
         } else {
             return ResponseEntity.badRequest().body("Failed to add rating");
         }
+    }
+
+    @PostMapping("/recipes/{recipeId}/bookmarks")
+    public ResponseEntity<?> bookmarkRecipe(@PathVariable Integer recipeId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        String username = authentication.getName(); // Assuming the username can be obtained like this
+        boolean success = recipeService.bookmarkRecipe(recipeId, username);
+
+        if (success) {
+            return ResponseEntity.ok().body("Recipe bookmarked successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to bookmark recipe");
+        }
+    }
+
+    @GetMapping("/recipes/{recipeId}/bookmarks")
+    public ResponseEntity<?> getBookmarks(@PathVariable Integer recipeId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
+        return ResponseEntity.ok().body(whoBookmarked);
     }
 
     @GetMapping("/recipes/{recipeId}/comments")

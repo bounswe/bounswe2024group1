@@ -27,6 +27,8 @@ public class RecipeService {
     private UserRepository userRepository;
     @Autowired
     private RatingRepository ratingRepository;
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -120,11 +122,34 @@ public class RecipeService {
         return false;
     }
 
+    public boolean bookmarkRecipe(Integer recipeId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null){
+            return false;
+        }
+        if (bookmarkRepository.findByUserIdAndRecipeId(user.getId(), recipeId).isPresent()){
+            return false;
+        }
+
+        Bookmark bookmark = Bookmark.builder()
+                .user(user)
+                .recipe(recipe)
+                .build();
+        bookmarkRepository.save(bookmark);
+
+        return true;
+    }
+
+    public List<User> getWhoBookmarked(Integer recipeId) {
+        return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
+    }
 
     public List<Comment> getCommentsByRecipeId(Integer recipeId) {
         return commentRepository.findByRecipeId(recipeId);
     }
-
-
 
 }
