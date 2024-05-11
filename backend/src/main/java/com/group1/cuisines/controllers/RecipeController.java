@@ -1,4 +1,5 @@
 package com.group1.cuisines.controllers;
+import com.group1.cuisines.dto.CommentsDto;
 import com.group1.cuisines.dto.NewRecipeDto;
 import com.group1.cuisines.dto.RatingDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
@@ -102,12 +103,12 @@ public class RecipeController {
 
     @GetMapping("/recipes/{recipeId}/comments")
     public ResponseEntity<?> getComments(@PathVariable Integer recipeId) {
-
-        List<Comment> comments = recipeService.getCommentsByRecipeId(recipeId);
-        if (comments.isEmpty()) {
+        List<CommentsDto> commentsDto = recipeService.getCommentsByRecipeId(recipeId);
+        if (commentsDto.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No comments found for this recipe.");
         }
-        return ResponseEntity.ok(comments);
+        return ResponseEntity.ok(commentsDto);
     }
+
 
 }
