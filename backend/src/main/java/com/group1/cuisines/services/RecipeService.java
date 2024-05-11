@@ -29,6 +29,8 @@ public class RecipeService {
     private RatingRepository ratingRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
@@ -143,6 +145,28 @@ public class RecipeService {
 
     public List<User> getWhoBookmarked(Integer recipeId) {
         return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
+    }
+
+    public boolean addComment(Integer recipeId, String username, String comment) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null){
+            return false;
+        }
+        if(comment.length() > 1024 || comment.length() < 1) {
+            return false;
+        }
+        Comment newComment = Comment.builder()
+                .user(user)
+                .recipe(recipe)
+                .text(comment)
+                .build();
+        commentRepository.save(newComment);
+
+        return true;
     }
 
 }

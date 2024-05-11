@@ -2,6 +2,7 @@ package com.group1.cuisines.controllers;
 import com.group1.cuisines.dto.NewRecipeDto;
 import com.group1.cuisines.dto.RatingDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.entities.Recipe;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.services.RecipeService;
 import org.springframework.http.HttpStatus;
@@ -96,6 +97,23 @@ public class RecipeController {
 
         List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
         return ResponseEntity.ok().body(whoBookmarked);
+    }
+
+
+
+    @PostMapping("/recipes/{recipeId}/comments")
+    public ResponseEntity<?> addComment(@PathVariable Integer recipeId, @RequestBody String username, @RequestBody String comment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+
+        boolean savedComment = recipeService.addComment(recipeId, username, comment);
+        if (savedComment != false) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
+        } else {
+            return ResponseEntity.badRequest().body("Failed to add comment.");
+        }
     }
 
 
