@@ -1,0 +1,31 @@
+name: Front-End CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install —immutable
+
+      - name: Run formatter
+        run: yarn format
+
+      - name: Run linter
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
