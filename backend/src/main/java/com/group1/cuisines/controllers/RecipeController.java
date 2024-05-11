@@ -98,5 +98,19 @@ public class RecipeController {
         return ResponseEntity.ok().body(whoBookmarked);
     }
 
+    @DeleteMapping("/recipes/{recipeId}/comments/{commentId}/upvote")
+    public ResponseEntity<?> deleteUpvote(@PathVariable Integer commentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+        }
+        String username = authentication.getName();
+        boolean success = recipeService.deleteUpvote(commentId, username);
+        if (success) {
+            return ResponseEntity.ok().body("Upvote removed successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to remove upvote.");
+        }
+    }
 
 }

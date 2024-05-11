@@ -29,6 +29,8 @@ public class RecipeService {
     private RatingRepository ratingRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
+    @Autowired
+    private UpvoteRepository upvoteRepository;
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
@@ -144,5 +146,20 @@ public class RecipeService {
     public List<User> getWhoBookmarked(Integer recipeId) {
         return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
     }
+
+    @Transactional
+    public boolean deleteUpvote(Integer commentId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            return false;
+        }
+        Optional<Upvote> upvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
+        if (upvote.isPresent()) {
+            upvoteRepository.delete(upvote.get());
+            return true;
+        }
+        return false;
+    }
+
 
 }
