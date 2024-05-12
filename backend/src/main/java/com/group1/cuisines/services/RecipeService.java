@@ -1,5 +1,6 @@
 package com.group1.cuisines.services;
 
+import com.group1.cuisines.dto.CommentsDto;
 import com.group1.cuisines.dto.IngredientsDto;
 import com.group1.cuisines.dto.NewRecipeDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -29,6 +31,9 @@ public class RecipeService {
     private RatingRepository ratingRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
@@ -145,4 +150,16 @@ public class RecipeService {
         return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
     }
 
+    public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
+        return commentRepository.findByRecipeId(recipeId).stream()
+                .map(comment -> CommentsDto.builder()
+                        .id(comment.getId())
+                        .userId(comment.getUser().getId())
+                        .recipeId(comment.getRecipe().getId())
+                        .text(comment.getText())
+                        .createdDate(comment.getCreatedDate())
+                        .upvoteCount(comment.getUpvotes() != null ? comment.getUpvotes().size() : 0)
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

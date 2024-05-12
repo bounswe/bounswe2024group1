@@ -1,7 +1,9 @@
 package com.group1.cuisines.controllers;
+import com.group1.cuisines.dto.CommentsDto;
 import com.group1.cuisines.dto.NewRecipeDto;
 import com.group1.cuisines.dto.RatingDto;
 import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.entities.Comment;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.services.RecipeService;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.List;
 
 import java.util.List;
 
@@ -96,6 +99,15 @@ public class RecipeController {
 
         List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
         return ResponseEntity.ok().body(whoBookmarked);
+    }
+
+    @GetMapping("/recipes/{recipeId}/comments")
+    public ResponseEntity<?> getComments(@PathVariable Integer recipeId) {
+        List<CommentsDto> commentsDto = recipeService.getCommentsByRecipeId(recipeId);
+        if (commentsDto.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No comments found for this recipe.");
+        }
+        return ResponseEntity.ok(commentsDto);
     }
 
 
