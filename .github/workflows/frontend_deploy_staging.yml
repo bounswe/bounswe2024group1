@@ -1,0 +1,31 @@
+name: frontend-staging-workflow
+
+on:
+  workflow_run:
+    workflows: ["Front-End CI"]
+    types:
+      - completed
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authorize with doctl
+        run: echo ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} | doctl auth init --context github-actions
+
+      - name: Login to Docker registry
+        run: doctl registry login --context github-actions
+
+      - name: Build Docker image
+        run: docker compose -f compose.yml build
+
+      - name: Tag Docker image
+        run: docker tag bounswe2024group1-web:latest registry.digitalocean.com/semantic-browse/web-staging:latest
+
+      - name: Push Docker image
+        run: docker push registry.digitalocean.com/semantic-browse/web-staging:latest
