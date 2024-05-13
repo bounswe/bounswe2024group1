@@ -21,7 +21,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService; // Authentication service
 
     @PostMapping("/signup") // Sign up endpoint
-    public ResponseEntity<?> signup(
+    public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signup(
         @RequestBody SignUpRequest request
     ) {
         ApiResponse<AuthenticationTokenResponse> response = authenticationService.signup(request);
@@ -39,6 +39,12 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<AuthenticationTokenResponse>> signin(
         @RequestBody SignInRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.signin(request)); // Return response
+        ApiResponse<AuthenticationTokenResponse> response = authenticationService.signin(request);
+
+        if (response.getStatus() == 401) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        } else {
+            return ResponseEntity.ok(response);
+        }
     }
 }
