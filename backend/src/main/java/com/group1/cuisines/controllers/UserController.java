@@ -1,12 +1,17 @@
 package com.group1.cuisines.controllers;
 
+import com.group1.cuisines.dao.response.ErrorResponse;
+import com.group1.cuisines.dao.response.SuccessResponse;
 import com.group1.cuisines.dto.UserDto;
+import com.group1.cuisines.dto.UserProfileDto;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.repositories.UserRepository;
 import com.group1.cuisines.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +29,18 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
+
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable Integer userId, Authentication authentication) {
+        String currentUsername = authentication != null ? authentication.getName() : null;
+        try {
+            UserProfileDto userProfile = userService.getUserProfileById(userId, currentUsername);
+            return ResponseEntity.ok(new SuccessResponse<>(userProfile, "User profile fetched successfully"));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("User not found"));
+        }
+    }
 
     @GetMapping("/me")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {
