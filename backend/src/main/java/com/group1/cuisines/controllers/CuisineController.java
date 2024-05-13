@@ -1,11 +1,16 @@
 package com.group1.cuisines.controllers;
 
 import com.group1.cuisines.dao.response.ApiResponse;
+import com.group1.cuisines.dao.response.ErrorResponse;
+import com.group1.cuisines.dao.response.SuccessResponse;
+import com.group1.cuisines.dto.CuisineDetailsDto;
 import com.group1.cuisines.entities.Cuisine;
 import com.group1.cuisines.repositories.CuisineRepository;
 import com.group1.cuisines.services.CuisineService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +26,12 @@ public class CuisineController {
     private final CuisineRepository cuisineRepository;
 
     @GetMapping("/{cuisineId}")
-    public ResponseEntity<?> getCuisineDetails(
-            @PathVariable String cuisineId,
-            @RequestParam(defaultValue = "false") boolean includeDishes) {
-
-        Cuisine cuisine = cuisineService.getCuisineById(cuisineId, includeDishes);
-        if (cuisine == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getCuisineById(@PathVariable String cuisineId, @RequestParam(required = false) Boolean includeDishes) {
+        try {
+            CuisineDetailsDto cuisineDetails = cuisineService.getCuisineById(cuisineId, Boolean.TRUE.equals(includeDishes));
+            return ResponseEntity.ok(new SuccessResponse<>(cuisineDetails, "Cuisine details fetched successfully"));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Cuisine not found"));
         }
-        return ResponseEntity.ok(cuisine);
     }
 }
