@@ -1,6 +1,7 @@
 package com.group1.cuisines.controllers;
 
 import com.group1.cuisines.dao.response.ApiResponse;
+import com.group1.cuisines.dto.DishResponseDto;
 import com.group1.cuisines.entities.Dish;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.services.SearchService;
@@ -34,9 +35,9 @@ public class SearchController {
     }
 
     @GetMapping("/dishes")
-    public ApiResponse<List<Dish>> searchDishes(@RequestParam(required = false) String q,
-                                                @RequestParam(required = false) String cuisine,
-                                                @RequestParam(required = false) String foodType) {
+    public ApiResponse<List<DishResponseDto>> searchDishes(@RequestParam(required = false) String q,
+                                                           @RequestParam(required = false) String cuisine,
+                                                           @RequestParam(required = false) String foodType) {
         return new ApiResponse<>(
             200,
             "Search completed",
