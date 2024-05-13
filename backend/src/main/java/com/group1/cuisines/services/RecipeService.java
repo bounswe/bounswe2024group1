@@ -169,6 +169,7 @@ public class RecipeService {
         return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
     }
 
+
     public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
         return commentRepository.findByRecipeId(recipeId).stream()
                 .map(comment -> CommentsDto.builder()
