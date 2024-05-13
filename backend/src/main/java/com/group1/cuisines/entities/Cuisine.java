@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -32,8 +34,20 @@ public class Cuisine {
             inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
 
-    private List<Dish> dishes = new ArrayList<>();
+    private Set<Dish> dishes = new HashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cuisine cuisine = (Cuisine) o;
+        return id != null && id.equals(cuisine.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
+    }
     @Override
     public String toString() {
         return "Cuisine{" +

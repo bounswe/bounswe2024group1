@@ -1,9 +1,6 @@
 package com.group1.cuisines.services;
 
-import com.group1.cuisines.dto.CommentsDto;
-import com.group1.cuisines.dto.IngredientsDto;
-import com.group1.cuisines.dto.NewRecipeDto;
-import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.*;
 import com.group1.cuisines.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,25 @@ public class RecipeService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+
+
+
+    public List<RecipeDto> findRecipes(String sort, String dishId, String cuisineId) {
+        List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
+
+        return recipes.stream()
+                .map(recipe -> new RecipeDto(
+                        recipe.getId(),
+                        recipe.getTitle(),
+                        recipe.getInstructions(),
+                        recipe.getPreparationTime(),
+                        recipe.getCookingTime(),
+                        recipe.getServingSize(),
+                        recipe.getAverageRating(),
+                        recipe.getTitle()))
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {

@@ -1,8 +1,5 @@
 package com.group1.cuisines.controllers;
-import com.group1.cuisines.dto.CommentsDto;
-import com.group1.cuisines.dto.NewRecipeDto;
-import com.group1.cuisines.dto.RatingDto;
-import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.Comment;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.services.RecipeService;
@@ -22,6 +19,15 @@ import java.util.List;
 public class RecipeController {
     @Autowired
     private RecipeService recipeService;
+
+
+    @GetMapping("/recipes")
+    public ResponseEntity<List<RecipeDto>> getRecipes(@RequestParam(required = false) String sort,
+                                                      @RequestParam(required = false) String dishId,
+                                                      @RequestParam(required = false) String cuisineId) {
+        List<RecipeDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
+        return ResponseEntity.ok(recipes);
+    }
 
     @PostMapping("/recipes")
     public ResponseEntity<?> createRecipe(@RequestBody NewRecipeDto newRecipe) throws Exception{

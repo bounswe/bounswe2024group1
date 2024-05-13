@@ -1,18 +1,23 @@
 package com.group1.cuisines.dto;
-import lombok.*;
 
-import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewRecipeDto {
+public class RecipeDto {
+    private Integer id;
     private String title;
     private String instructions;
     private int preparationTime;
     private int cookingTime;
     private int servingSize;
-    private String dishId;
-    private List<IngredientsDto> ingredients;
+    private double averageRating;
+    private String dishName;
+
+
+
+
 }
