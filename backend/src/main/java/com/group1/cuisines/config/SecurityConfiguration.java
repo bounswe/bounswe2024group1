@@ -45,6 +45,7 @@ public class SecurityConfiguration {
                     .hasRole("ADMIN") // Require ADMIN role for "/api/v1/resources"
                         .requestMatchers(HttpMethod.POST,"/**")
                     .authenticated()
+                        .requestMatchers("/feed?type=following").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/**").authenticated()) // Require authentication for all other requests
             .sessionManagement(
                 manager ->

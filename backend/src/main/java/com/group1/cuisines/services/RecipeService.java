@@ -3,14 +3,17 @@ package com.group1.cuisines.services;
 import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.*;
 import com.group1.cuisines.repositories.*;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -217,4 +220,50 @@ public class RecipeService {
         return null;
     }
 
+    public List<RecipeDetailsDto> getRecipesByType(String type, @Nullable String username) {
+        if ("explore".equals(type)) {
+            return recipeRepository.findAll().stream()
+                    .map(this::convertToRecipeDto)
+                    .collect(Collectors.toList());
+        } else if ("following".equals(type) && username != null) {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            return user.getFollowing().stream()
+                    .flatMap(followingUser -> followingUser.getRecipes().stream())
+                    .map(this::convertToRecipeDto)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();  // Return an empty list if username is null or other conditions are not met
+    }
+
+    private RecipeDetailsDto convertToRecipeDto(Recipe r) {
+        CuisineDto cuisineDto = new CuisineDto();
+        if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
+
+            cuisineDto.setId(r.getDish().getCuisines().get(0).getId());
+            cuisineDto.setName(r.getDish().getCuisines().get(0).getName());
+
+        }
+        else if(r.getDish() != null && r.getDish().getCuisines().isEmpty()){
+            cuisineDto.setId("No cuisine Id from wikidata");
+            cuisineDto.setName("No cuisine name from wikidata");
+        }
+        // Conversion logic here
+        return new RecipeDetailsDto(
+                r.getId(),
+                r.getTitle(),
+
+                r.getInstructions(),
+                r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()),
+
+                r.getCookingTime(),
+                r.getServingSize(),
+                cuisineDto,
+
+                new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
+                r.getAverageRating(),
+                new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
+
+        );
+    }
 }
