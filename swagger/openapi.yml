@@ -1158,8 +1158,8 @@ components:
         - images
         - rating
         - cookTime
-        - avgRating
         - ratingsCount
+        - dish
         - author
       properties:
         id:
@@ -1223,6 +1223,7 @@ components:
         - servingSize
         - allergens
         - ratingsCount
+        - dish
         - author
       properties:
         id:
@@ -1245,7 +1246,7 @@ components:
             type: string
             format: uri
         cookTime:
-          type: string
+          type: number
         servingSize:
           type: integer
         allergens:

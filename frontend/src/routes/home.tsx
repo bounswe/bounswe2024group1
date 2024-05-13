@@ -1,4 +1,5 @@
 import { SearchBar } from "../components/SearchBar";
+import { Recipe } from "../components/Recipe";
 
 export function IndexRoute() {
   return (

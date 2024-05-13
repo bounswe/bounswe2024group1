@@ -4,6 +4,7 @@ import Signup from "./signup";
 import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search } from "./search";
+import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
 
 export const routes: RouteObject[] = [
@@ -18,6 +19,10 @@ export const routes: RouteObject[] = [
   {
     path: "/search",
     Component: Search,
+  },
+  {
+    path: "/feed",
+    Component: Feed,
   },
   {
     index: true,
