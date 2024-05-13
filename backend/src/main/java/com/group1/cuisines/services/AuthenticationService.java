@@ -52,7 +52,7 @@ public class AuthenticationService {
         String token = jwtService.generateToken(user);
 
         return new ApiResponse<>(
-            200,
+            201,
             "User registered successfully.",
             AuthenticationTokenResponse.builder().token(token).build()
         );
