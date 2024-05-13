@@ -178,4 +178,43 @@ public class RecipeService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public RecipeDetailsDto getRecipeById(Integer recipeId) {
+        Optional<Recipe> recipe = recipeRepository.findById(recipeId);
+
+
+        if (recipe.isPresent()) {
+            CuisineDto cuisineDto = new CuisineDto();
+            Recipe r = recipe.get();
+            if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
+
+                    cuisineDto.setId(r.getDish().getCuisines().get(0).getId());
+                    cuisineDto.setName(r.getDish().getCuisines().get(0).getName());
+
+            }
+            else if(r.getDish() != null && r.getDish().getCuisines().isEmpty()){
+                cuisineDto.setId("No cuisine Id from wikidata");
+                cuisineDto.setName("No cuisine name from wikidata");
+            }
+            // Conversion from Recipe entity to RecipeDetailsDto
+            return new RecipeDetailsDto(
+                    r.getId(),
+                    r.getTitle(),
+
+                    r.getInstructions(),
+                    r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()),
+
+                    r.getCookingTime(),
+                    r.getServingSize(),
+                    cuisineDto,
+
+                    new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
+                    r.getAverageRating(),
+                    new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
+
+            );
+        }
+        return null;
+    }
+
 }

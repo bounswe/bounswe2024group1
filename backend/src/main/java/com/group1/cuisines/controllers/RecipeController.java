@@ -1,4 +1,5 @@
 package com.group1.cuisines.controllers;
+import com.group1.cuisines.dao.response.SuccessResponse;
 import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.Comment;
 import com.group1.cuisines.entities.User;
@@ -21,6 +22,17 @@ public class RecipeController {
     private RecipeService recipeService;
 
 
+    @GetMapping("/recipes/{recipeId}")
+    public ResponseEntity<?> getRecipeById(@PathVariable Integer recipeId) {
+        RecipeDetailsDto recipeDetails = recipeService.getRecipeById(recipeId);
+        if (recipeDetails != null) {
+            return ResponseEntity.ok(new SuccessResponse<>(recipeDetails, "Recipe fetched successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recipe not found");
+        }
+    }
+
+
     @GetMapping("/recipes")
     public ResponseEntity<List<RecipeDto>> getRecipes(@RequestParam(required = false) String sort,
                                                       @RequestParam(required = false) String dishId,
@@ -28,6 +40,8 @@ public class RecipeController {
         List<RecipeDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
         return ResponseEntity.ok(recipes);
     }
+
+
 
     @PostMapping("/recipes")
     public ResponseEntity<?> createRecipe(@RequestBody NewRecipeDto newRecipe) throws Exception{
