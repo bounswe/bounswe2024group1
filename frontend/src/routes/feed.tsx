@@ -4,7 +4,7 @@ import { FullscreenLoading } from "../components/FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { AlertCircle, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useGetRecipesForEntity, GetRecipesForEntityQueryParams } from "../services/api/semanticBrowseComponents";
+import { useGetRecipesForEntity } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
 
 export const Feed = () => {

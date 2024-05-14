@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useMemo } from "react";
 import LinkIcon from "@/assets/Icon/General/Link.svg";
 import BookmarkIcon from "@/assets/Icon/General/Bookmark.svg";
 import TimeIcon from "@/assets/Icon/General/Clock.svg";
