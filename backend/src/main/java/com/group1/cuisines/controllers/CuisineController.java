@@ -31,7 +31,7 @@ public class CuisineController {
             CuisineDetailsDto cuisineDetails = cuisineService.getCuisineById(cuisineId, Boolean.TRUE.equals(includeDishes));
             return ResponseEntity.ok(new SuccessResponse<>(200,cuisineDetails, "Cuisine details fetched successfully"));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(204,"Cuisine not found"));
+            return ResponseEntity.ok(new ErrorResponse(204,"Cuisine not found"));
         }
     }
 }
