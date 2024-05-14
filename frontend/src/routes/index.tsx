@@ -5,6 +5,7 @@ import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search } from "./search";
 import { NavbarLayout } from "../components/NavbarLayout";
+import Profile from "./profile";
 
 export const routes: RouteObject[] = [
   {
@@ -22,6 +23,10 @@ export const routes: RouteObject[] = [
   {
     index: true,
     Component: IndexRoute,
+  },
+  {
+    path: "/profile",
+    Component: Profile,
   },
   {
     path: "/logout",

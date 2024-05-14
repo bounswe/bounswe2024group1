@@ -1,4 +1,11 @@
-import { CircleUser, Menu, Package2, UtensilsCrossed } from "lucide-react";
+import {
+  CircleUser,
+  LogOut,
+  Menu,
+  Package2,
+  User,
+  UtensilsCrossed,
+} from "lucide-react";
 import {
   Link,
   NavLink,
@@ -10,6 +17,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
@@ -107,11 +117,25 @@ export const NavbarLayout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <fetcher.Form method="POST" action="/logout">
-                    <Button type="submit">Log out</Button>
-                  </fetcher.Form>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <fetcher.Form
+                  className="contents"
+                  method="POST"
+                  action="/logout"
+                >
+                  <DropdownMenuItem asChild>
+                    <button type="submit">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </button>
+                  </DropdownMenuItem>
+                </fetcher.Form>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
