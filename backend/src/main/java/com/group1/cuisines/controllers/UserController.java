@@ -113,11 +113,15 @@ public class UserController {
     public ResponseEntity<?> getUserFollowers(@PathVariable Integer userId) {
         // Validate the provided user ID
         if (userId == null) {
-            return ResponseEntity.badRequest().body("Invalid user ID provided");
+
+            return ResponseEntity.ok(new ErrorResponse(204,"Invalid user ID provided")  );
+        }
+        if(userRepository.findById(userId).isEmpty()){
+            return ResponseEntity.ok(new ErrorResponse(204,"User not found")  );
         }
         Set<User> followers = userService.getUserFollower(userId);
         if (followers.isEmpty()) {
-            return ResponseEntity.ok().body("User is not followed by anyone");
+            return ResponseEntity.ok(new ErrorResponse(204,"User is not followed by anyone"));
         } else {
             Set<UserDto> followingDto = followers.stream()
                     .map(user -> UserDto.builder()
@@ -130,7 +134,7 @@ public class UserController {
                             .recipeCount(user.getRecipeCount())
                             .build())
                     .collect(Collectors.toSet());
-            return ResponseEntity.ok().body(followingDto);
+            return ResponseEntity.ok(new SuccessResponse<>(200,followingDto, "User followers fetched successfully"));
         }
     }
     @PostMapping("/{userId}/unfollow")
