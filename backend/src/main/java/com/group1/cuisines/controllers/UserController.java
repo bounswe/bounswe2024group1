@@ -36,9 +36,9 @@ public class UserController {
         String currentUsername = authentication != null ? authentication.getName() : null;
         try {
             UserProfileDto userProfile = userService.getUserProfileById(userId, currentUsername);
-            return ResponseEntity.ok(new SuccessResponse<>(userProfile, "User profile fetched successfully"));
+            return ResponseEntity.ok(new SuccessResponse<>(200,userProfile, "User profile fetched successfully"));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("User not found"));
+            return ResponseEntity.ok(new ErrorResponse(204,"User not found"));
         }
     }
 

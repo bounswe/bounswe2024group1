@@ -29,9 +29,9 @@ public class CuisineController {
     public ResponseEntity<?> getCuisineById(@PathVariable String cuisineId, @RequestParam(required = false) Boolean includeDishes) {
         try {
             CuisineDetailsDto cuisineDetails = cuisineService.getCuisineById(cuisineId, Boolean.TRUE.equals(includeDishes));
-            return ResponseEntity.ok(new SuccessResponse<>(cuisineDetails, "Cuisine details fetched successfully"));
+            return ResponseEntity.ok(new SuccessResponse<>(200,cuisineDetails, "Cuisine details fetched successfully"));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Cuisine not found"));
+            return ResponseEntity.ok(new ErrorResponse(204,"Cuisine not found"));
         }
     }
 }
