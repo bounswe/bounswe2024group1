@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Comment } from "../components/Comment";
 import { FullscreenLoading } from "../components/FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
