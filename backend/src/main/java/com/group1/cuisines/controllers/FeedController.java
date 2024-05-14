@@ -30,7 +30,7 @@ public class FeedController {
         if ("following".equals(type)) {
             if (authentication == null || !authentication.isAuthenticated()) {
                 // Return an empty set and a message for unauthenticated users
-                return ResponseEntity.ok(new SuccessResponse<>(200,Collections.emptyList(), "No content available. Please log in and follow other users !."));
+                return ResponseEntity.ok(new SuccessResponse<>(400,Collections.emptyList(), "No content available. Please log in and follow other users !."));
             }
             // Fetch following users' recipes for authenticated users
             String username = authentication.getName();
