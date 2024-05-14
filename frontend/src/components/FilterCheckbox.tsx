@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { useId } from "react";
 
 export default function FilterCheckbox({
   label,
