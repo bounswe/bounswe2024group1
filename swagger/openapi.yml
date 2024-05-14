@@ -306,6 +306,8 @@ paths:
                     properties:
                       data:
                         $ref: "#/components/schemas/UserProfile"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
 
   /users/{userId}/following:
     get:

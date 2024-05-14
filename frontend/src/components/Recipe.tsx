@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useMemo } from "react";
 import LinkIcon from "@/assets/Icon/General/Link.svg";
 import BookmarkIcon from "@/assets/Icon/General/Bookmark.svg";
 import TimeIcon from "@/assets/Icon/General/Clock.svg";
@@ -28,19 +27,31 @@ export const Recipe = ({
     <div className="flex flex-col self-stretch justify-self-stretch">
       <div className="-mb-16 w-[70%] self-center">
         <AspectRatio ratio={16 / 9}>
-          <img src={images[0]} className="h-full w-full rounded-2xl object-cover" alt={name} />
+          <img
+            src={images[0]}
+            className="h-full w-full rounded-2xl object-cover"
+            alt={name}
+          />
         </AspectRatio>
       </div>
 
       <Card className="flex flex-1 flex-col bg-gray-100 pt-16">
         <CardHeader>
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <CardTitle>{name}</CardTitle>
             <div className="flex gap-2">
-              <Button className="bg-transparent" size="icon" variant="secondary">
+              <Button
+                className="bg-transparent"
+                size="icon"
+                variant="secondary"
+              >
                 <img src={LinkIcon} alt="Link icon" />
               </Button>
-              <Button className="bg-transparent" size="icon" variant="secondary">
+              <Button
+                className="bg-transparent"
+                size="icon"
+                variant="secondary"
+              >
                 <img src={BookmarkIcon} alt="Bookmark icon" />
               </Button>
             </div>
@@ -48,22 +59,28 @@ export const Recipe = ({
         </CardHeader>
         <CardContent className="flex flex-1 flex-col justify-between gap-2">
           <div className="flex items-center">
-            <img src={StarIcon} alt="avgRating icon" className="w-4 h-4 mr-2" />
-            <p className="text-sm text-gray-500">{avgRating} ({ratingsCount} Reviews)</p>
+            <img src={StarIcon} alt="avgRating icon" className="mr-2 h-4 w-4" />
+            <p className="text-sm text-gray-500">
+              {avgRating} ({ratingsCount} Reviews)
+            </p>
           </div>
           <div className="flex items-center">
-            <img src={TimeIcon} alt="Time icon" className="w-4 h-4 mr-2" />
+            <img src={TimeIcon} alt="Time icon" className="mr-2 h-4 w-4" />
             <p className="text-sm text-gray-500">{cookTime}</p>
           </div>
           {dish && (
             <div className="flex items-center">
-              <img src={FoodIcon} alt="Food icon" className="w-4 h-4 mr-2" />
+              <img src={FoodIcon} alt="Food icon" className="mr-2 h-4 w-4" />
               <p className="text-sm text-gray-500">{dish.name}</p>
             </div>
           )}
           {author && author.profilePicture && (
             <div className="flex items-center">
-              <img src={author.profilePicture} alt="Author" className="w-4 h-4 mr-2" />
+              <img
+                src={author.profilePicture}
+                alt="Author"
+                className="mr-2 h-4 w-4"
+              />
             </div>
           )}
           <div className="self-end">
