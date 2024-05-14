@@ -1,6 +1,14 @@
 name: Front-End CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "frontend/**"
+      - ".github/**"
+  pull_request:
+    branches:
+      - main
+      - staging
 
 jobs:
   build:
@@ -15,8 +23,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
-          cache: 'yarn'
+          node-version: "20"
+          cache: "yarn"
 
       - name: Enable Corepack
         run: corepack enable
