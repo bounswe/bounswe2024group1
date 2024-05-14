@@ -11,6 +11,7 @@ public class AuthorDto {
     private String name;
     private String username;
     private Integer followersCount;
+    private Integer followingCount;
     private Integer recipesCount;
 
 }
