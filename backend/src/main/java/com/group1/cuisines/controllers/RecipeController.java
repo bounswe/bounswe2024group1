@@ -102,11 +102,13 @@ public class RecipeController {
 
 
     @PostMapping("/recipes/{recipeId}/comments")
-    public ResponseEntity<?> addComment(@PathVariable Integer recipeId, @RequestBody String username, @RequestBody String comment) {
+    public ResponseEntity<?> addComment(@PathVariable Integer recipeId, @RequestBody String comment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
         }
+
+        String username = authentication.getName(); // Assuming the username can be obtained like this
 
         boolean savedComment = recipeService.addComment(recipeId, username, comment);
         if (savedComment != false) {
