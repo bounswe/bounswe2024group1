@@ -8,6 +8,7 @@ import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
 import Profile from "./profile";
 import RecipePage from "./recipe";
+import { Bookmarks } from "./bookmarks";
 import CreateRecipePage from "./create-recipe";
 
 export const routes: RouteObject[] = [
@@ -30,6 +31,10 @@ export const routes: RouteObject[] = [
   {
     path: "/recipes/:recipeId",
     Component: RecipePage,
+  },
+  {
+    path: "/bookmarks",
+    Component: Bookmarks,
   },
   {
     index: true,

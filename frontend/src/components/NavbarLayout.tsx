@@ -27,13 +27,13 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { SearchBar } from "./SearchBar";
 import useAuthStore from "../services/auth";
 import { FullscreenLoading } from "./FullscreenLoading";
+import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 
 const links = [{ name: "Home", path: "/" }] as const;
 
 export const NavbarLayout = () => {
   const fetcher = useFetcher();
   const isAuthenticated = !!useAuthStore().token;
-
   const navigation = useNavigation();
 
   return (
@@ -122,6 +122,13 @@ export const NavbarLayout = () => {
                   <Link to="/users/me">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/bookmarks">
+                    <Bookmark className="mr-2 h-4 w-4 fill-white" />
+                    <span>Bookmarks</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
