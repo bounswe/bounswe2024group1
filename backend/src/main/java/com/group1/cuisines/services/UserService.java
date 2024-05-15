@@ -162,7 +162,7 @@ public class UserService {
                 recipe.getTitle(),
                 recipe.getInstructions(),
                 recipe.getIngredients().stream()
-                        .map(ingredient -> new IngredientsDto(ingredient.getName()))
+                        .map(IngredientsDto::new)
                         .collect(Collectors.toList()),
                 recipe.getServingSize(),
                 recipe.getCookingTime(),
