@@ -6,6 +6,7 @@ import { signout } from "../services/auth";
 import { Search } from "./search";
 import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
+import { Bookmarks } from "./bookmarks";
 
 export const routes: RouteObject[] = [
   {
@@ -23,6 +24,10 @@ export const routes: RouteObject[] = [
   {
     path: "/feed",
     Component: Feed,
+  },
+  {
+    path: "/bookmarks",
+    Component: Bookmarks,
   },
   {
     index: true,
