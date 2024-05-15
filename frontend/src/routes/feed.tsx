@@ -1,26 +1,28 @@
-import { useState } from "react";
 import { Recipe } from "../components/Recipe";
 import { FullscreenLoading } from "../components/FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
-import { AlertCircle, Filter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useGetRecipesForEntity } from "../services/api/semanticBrowseComponents";
+import { AlertCircle } from "lucide-react";
+import { useGetFeed } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SearchFilterPopover from "@/components/SearchFilterPopover";
+import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 export const Feed = () => {
-  const navigate = useNavigate();
-  const [selectedButton, setSelectedButton] = useState<"Following" | "Explore">(
-    "Following",
-  );
+  const [params, setParams] = useSearchParams();
   const {
     data: feedData,
     isLoading,
     error,
-  } = useGetRecipesForEntity({
+  } = useGetFeed({
     queryParams: {
-      sort: selectedButton === "Following" ? "topRated" : "recent",
+      type: ["explore", "following"].includes(params.get("type") ?? "")
+        ? (params.get("type") as "explore" | "following")
+        : "explore",
     },
   });
+  const [foodType, setFoodType] = useState(params.get("foodType") || "");
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -40,43 +42,37 @@ export const Feed = () => {
 
   return (
     <div className="container flex flex-col gap-2 py-8">
-      <h1 className="text-2xl font-bold">
-        {feedData?.data?.length
-          ? `Found ${feedData.data.length} results`
-          : "No recipes found"}
-      </h1>
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex space-x-4">
-          <button
-            className={`rounded-md px-4 py-2 ${
-              selectedButton === "Following"
-                ? "bg-red-500 text-white"
-                : "bg-transparent text-red-400"
-            }`}
-            onClick={() => setSelectedButton("Following")}
-          >
-            Following
-          </button>
-          <button
-            className={`rounded-md px-4 py-2 ${
-              selectedButton === "Explore"
-                ? "bg-red-500 text-white"
-                : "bg-transparent text-red-400"
-            }`}
-            onClick={() => setSelectedButton("Explore")}
-          >
-            Explore
-          </button>
-        </div>
-        <div className="cursor-pointer" onClick={() => navigate("/filter")}>
-          <Filter className="h-6 w-6 text-gray-700" />
-        </div>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">
+          {feedData?.data?.length
+            ? `Found ${feedData.data.length} results`
+            : "No recipes found"}
+        </h1>
+        <SearchFilterPopover foodType={foodType} setFoodType={setFoodType} />
       </div>
-      <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {feedData?.data?.map((recipe) => (
-          <Recipe key={recipe.id} recipe={recipe} />
-        ))}
-      </div>
+      <Tabs
+        defaultValue="explore"
+        onValueChange={(val) => setParams((prev) => ({ ...prev, type: val }))}
+      >
+        <TabsList>
+          <TabsTrigger value="following">Following</TabsTrigger>
+          <TabsTrigger value="explore">Explore</TabsTrigger>
+        </TabsList>
+        <TabsContent value="following">
+          <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {feedData?.data?.map((recipe) => (
+              <Recipe key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="explore">
+          <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {feedData?.data?.map((recipe) => (
+              <Recipe key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
