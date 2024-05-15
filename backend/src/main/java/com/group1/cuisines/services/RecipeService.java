@@ -1,23 +1,25 @@
 package com.group1.cuisines.services;
 
-import com.group1.cuisines.dto.CommentsDto;
-import com.group1.cuisines.dto.IngredientsDto;
-import com.group1.cuisines.dto.NewRecipeDto;
-import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.*;
 import com.group1.cuisines.repositories.*;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
+    @Autowired
+    private AuthenticationService authenticationService;
     @Autowired
     private IngredientsRepository ingredientRepository;
 
@@ -34,6 +36,25 @@ public class RecipeService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+
+
+
+    public List<RecipeDto> findRecipes(String sort, String dishId, String cuisineId) {
+        List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
+
+        return recipes.stream()
+                .map(recipe -> new RecipeDto(
+                        recipe.getId(),
+                        recipe.getTitle(),
+                        recipe.getInstructions(),
+                        recipe.getPreparationTime(),
+                        recipe.getCookingTime(),
+                        recipe.getServingSize(),
+                        recipe.getAverageRating(),
+                        recipe.getTitle()))
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
@@ -107,7 +128,7 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
 
         if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
-            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId());
+            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId()).orElse(null);
             if (existingRating != null) {
                 return false; // Indicates that the user has already rated
             }
@@ -150,6 +171,7 @@ public class RecipeService {
         return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
     }
 
+
     public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
         return commentRepository.findByRecipeId(recipeId).stream()
                 .map(comment -> CommentsDto.builder()
@@ -161,5 +183,60 @@ public class RecipeService {
                         .upvoteCount(comment.getUpvotes() != null ? comment.getUpvotes().size() : 0)
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public RecipeDetailsDto getRecipeById(Integer recipeId) {
+        Optional<Recipe> recipe = recipeRepository.findById(recipeId);
+        return recipe.map(this::convertToRecipeDetailsDto).orElse(null);
+    }
+
+    public List<RecipeDetailsDto> getRecipesByType(String type, @Nullable String username) {
+        if ("explore".equals(type)) {
+            return recipeRepository.findAll().stream()
+                    .map(this::convertToRecipeDetailsDto)
+                    .collect(Collectors.toList());
+        } else if ("following".equals(type) && username != null) {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            return user.getFollowing().stream()
+                    .flatMap(followingUser -> followingUser.getRecipes().stream())
+                    .map(this::convertToRecipeDetailsDto)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();  // Return an empty list if username is null or other conditions are not met
+    }
+
+    public RecipeDetailsDto convertToRecipeDetailsDto(Recipe r) {
+        CuisineDto cuisineDto = new CuisineDto();
+        if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
+
+            cuisineDto.setId(r.getDish().getCuisines().get(0).getId());
+            cuisineDto.setName(r.getDish().getCuisines().get(0).getName());
+
+        }
+        else if(r.getDish() != null && r.getDish().getCuisines().isEmpty()){
+            cuisineDto.setId("No cuisine Id from wikidata");
+            cuisineDto.setName("No cuisine name from wikidata");
+        }
+
+        Integer userRating = authenticationService.getUser().map(User::getId)
+                .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
+                .map(Rating::getRatingValue)
+                .orElse(null);
+
+        // Conversion logic here
+        return RecipeDetailsDto.builder()
+                .id(r.getId())
+                .name(r.getTitle())
+                .instructions(r.getInstructions())
+                .ingredients(r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()))
+                .cookTime(r.getCookingTime())
+                .servingSize(r.getServingSize())
+                .cuisine(cuisineDto)
+                .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
+                .avgRating(r.getAverageRating())
+                .selfRating(userRating)
+                .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
+                .build();
     }
 }

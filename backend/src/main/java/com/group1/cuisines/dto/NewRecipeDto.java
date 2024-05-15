@@ -14,5 +14,5 @@ public class NewRecipeDto {
     private int cookingTime;
     private int servingSize;
     private String dishId;
-    private List<IngredientsDto> ingredients; // Nested DTOs for ingredients
+    private List<IngredientsDto> ingredients;
 }
