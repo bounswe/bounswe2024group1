@@ -17,6 +17,7 @@ public class RecipeDetailsDto {
     private List<IngredientsDto> ingredients;
     //private List<String> images;
     private Integer cookTime;
+    private Integer prepTime;
     private Integer servingSize;
    // private List<String> allergens;
     private CuisineDto cuisine;

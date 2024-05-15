@@ -165,7 +165,8 @@ public class UserService {
                         .map(IngredientsDto::new)
                         .collect(Collectors.toList()),
                 recipe.getServingSize(),
-                recipe.getCookingTime(),
+                recipe.getCookTime(),
+                recipe.getPrepTime(),
                 //recipe.getImages(),
                 cuisineDto,
                 new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),

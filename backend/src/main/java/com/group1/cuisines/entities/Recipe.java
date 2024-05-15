@@ -19,8 +19,8 @@ public class Recipe {
     private Integer id;
     private String title;
     private String instructions;
-    private int preparationTime;
-    private int cookingTime;
+    private int prepTime;
+    private int cookTime;
     private int servingSize;
     private double averageRating;
 
