@@ -1,10 +1,20 @@
-import Filter from "@/assets/Icon/General/Filter.svg";
+import Filter from "@/assets/Icon/General/Filter.svg?react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import FilterCheckbox from "./FilterCheckbox";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { XIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const predefinedCuisines = [
+  "Indonesian",
+  "Turkish",
+  "Russian",
+  "Japanese",
+  "French",
+];
+const predefinedTypeOfFood = ["Meat", "Baked", "Dairy", "Eggs"];
 
 export default function SearchFilterPopover({
   cuisine,
@@ -20,6 +30,8 @@ export default function SearchFilterPopover({
   const [tempCuisine, setTempCuisine] = useState(cuisine);
   const [tempFoodType, setTempFoodType] = useState(foodType);
 
+  const hasFilter = !!cuisine || !!foodType;
+
   return (
     <Popover
       onOpenChange={(open) => {
@@ -32,11 +44,16 @@ export default function SearchFilterPopover({
       <PopoverTrigger asChild>
         <Button
           size="icon"
-          variant={!!cuisine || !!foodType ? "default" : "outline"}
+          variant={hasFilter ? "default" : "outline"}
           aria-label="Filter"
           className="flex-shrink-0"
         >
-          <img src={Filter} className="h-6 w-6" />
+          <Filter
+            className={cn(
+              "h-6 w-6",
+              hasFilter ? "stroke-2 text-white" : "text-gray-800",
+            )}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -50,59 +67,29 @@ export default function SearchFilterPopover({
         <div className="flex flex-col gap-3">
           <h5 className="text-xl font-semibold">Cuisine</h5>
           <div className="flex flex-wrap gap-3 gap-y-2">
-            <FilterCheckbox
-              label="Italian"
-              checked={tempCuisine === "Italian"}
-              onChange={(e) =>
-                setTempCuisine(e.target.checked ? "Italian" : "")
-              }
-            />
-            <FilterCheckbox
-              label="Chinese"
-              checked={tempCuisine === "Chinese"}
-              onChange={(e) =>
-                setTempCuisine(e.target.checked ? "Chinese" : "")
-              }
-            />
-            <FilterCheckbox
-              label="Japanese"
-              checked={tempCuisine === "Japanese"}
-              onChange={(e) =>
-                setTempCuisine(e.target.checked ? "Japanese" : "")
-              }
-            />
-            <FilterCheckbox
-              label="Turkish"
-              checked={tempCuisine === "Turkish"}
-              onChange={(e) =>
-                setTempCuisine(e.target.checked ? "Turkish" : "")
-              }
-            />
+            {predefinedCuisines.map((cuisine) => (
+              <FilterCheckbox
+                key={cuisine}
+                label={cuisine}
+                checked={tempCuisine === cuisine}
+                onChange={(e) =>
+                  setTempCuisine(e.target.checked ? cuisine : "")
+                }
+              />
+            ))}
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <h5 className="text-xl font-semibold">Type of Food</h5>
           <div className="flex flex-wrap gap-3 gap-y-2">
-            <FilterCheckbox
-              label="Meat"
-              checked={tempFoodType === "Meat"}
-              onChange={(e) => setTempFoodType(e.target.checked ? "Meat" : "")}
-            />
-            <FilterCheckbox
-              label="Baked"
-              checked={tempFoodType === "Baked"}
-              onChange={(e) => setTempFoodType(e.target.checked ? "Baked" : "")}
-            />
-            <FilterCheckbox
-              label="Dairy"
-              checked={tempFoodType === "Dairy"}
-              onChange={(e) => setTempFoodType(e.target.checked ? "Dairy" : "")}
-            />
-            <FilterCheckbox
-              label="Eggs"
-              checked={tempFoodType === "Eggs"}
-              onChange={(e) => setTempFoodType(e.target.checked ? "Eggs" : "")}
-            />
+            {predefinedTypeOfFood.map((type) => (
+              <FilterCheckbox
+                key={type}
+                label={type}
+                checked={tempFoodType === type}
+                onChange={(e) => setTempFoodType(e.target.checked ? type : "")}
+              />
+            ))}
           </div>
         </div>
         <PopoverClose asChild>

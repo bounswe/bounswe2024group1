@@ -4,10 +4,8 @@ import {
   SearchDishesResponse,
   useSearchDishes,
 } from "../services/api/semanticBrowseComponents";
-import { renderError } from "../services/api/semanticBrowseFetcher";
 import { FullscreenLoading } from "../components/FullscreenLoading";
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import ErrorAlert from "@/components/ErrorAlert";
 
 export const Search = () => {
   const [params] = useSearchParams();
@@ -23,15 +21,7 @@ export const Search = () => {
     return <FullscreenLoading overlay />;
   }
   if (error) {
-    return (
-      <div className="container flex flex-col gap-2 py-8">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{renderError(error)}</AlertDescription>
-        </Alert>
-      </div>
-    );
+    return <ErrorAlert error={error} />;
   }
 
   return (
