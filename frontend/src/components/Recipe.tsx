@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import LinkIcon from "@/assets/Icon/General/Link.svg";
-import BookmarkIcon from "@/assets/Icon/General/Bookmark.svg";
+import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 import TimeIcon from "@/assets/Icon/General/Clock.svg";
 import StarIcon from "@/assets/Icon/General/Star.svg";
 import FoodIcon from "@/assets/Icon/General/Food.svg";
@@ -43,7 +43,9 @@ export const Recipe = ({
                 size="icon"
                 variant="secondary"
               >
-                <img src={BookmarkIcon} alt="Bookmark icon" />
+                <div className="flex items-center gap-4">
+                    <Bookmark className="h-4 w-4 fill-white" />
+                </div>
               </Button>
             </div>
           </div>

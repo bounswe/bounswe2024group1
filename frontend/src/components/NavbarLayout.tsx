@@ -27,7 +27,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { SearchBar } from "./SearchBar";
 import useAuthStore from "../services/auth";
 import { FullscreenLoading } from "./FullscreenLoading";
-import { useNavigate } from "react-router-dom";
+import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 
 const links = [{ name: "Home", path: "/" }] as const;
 
@@ -127,7 +127,7 @@ export const NavbarLayout = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/bookmarks">
-                    <User className="mr-2 h-4 w-4" />
+                    <Bookmark className="mr-2 h-4 w-4 fill-white" />
                     <span>Bookmarks</span>
                   </Link>
                 </DropdownMenuItem>
