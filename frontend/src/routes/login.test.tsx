@@ -12,6 +12,12 @@ vi.mock("@/services/api/semanticBrowseComponents", async (importOriginal) => {
     >();
   return {
     ...mod,
+    useGetFeed: vi.fn(() => ({
+      data: {
+        data: [],
+        status: 200,
+      },
+    })),
     fetchLogin: vi.fn(() =>
       Promise.resolve({ data: { token: "token" }, status: 200 }),
     ),

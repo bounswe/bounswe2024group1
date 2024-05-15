@@ -4,25 +4,26 @@ import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useGetFeed } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SearchFilterPopover from "@/components/SearchFilterPopover";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import useAuthStore from "@/services/auth";
 
 export const Feed = () => {
+  const isAuthenticated = useAuthStore().token !== null;
   const [params, setParams] = useSearchParams();
+  const feedType = ["explore", "following"].includes(params.get("type") ?? "")
+    ? (params.get("type") as "explore" | "following")
+    : "explore";
+  // const foodType = params.get("foodType") || "";
+  // const setFoodType = (val: string) => setParams({ ...params, foodType: val });
+
   const {
     data: feedData,
     isLoading,
     error,
   } = useGetFeed({
-    queryParams: {
-      type: ["explore", "following"].includes(params.get("type") ?? "")
-        ? (params.get("type") as "explore" | "following")
-        : "explore",
-    },
+    queryParams: { type: isAuthenticated ? feedType : "explore" },
   });
-  const [foodType, setFoodType] = useState(params.get("foodType") || "");
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -41,38 +42,43 @@ export const Feed = () => {
   }
 
   return (
-    <div className="container flex flex-col gap-2 py-8">
+    <div className="flex flex-col gap-2 py-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          {feedData?.data?.length
-            ? `Found ${feedData.data.length} results`
-            : "No recipes found"}
-        </h1>
-        <SearchFilterPopover foodType={foodType} setFoodType={setFoodType} />
+        <h3 className="font-bold">
+          {isAuthenticated ? "Your Feed" : "Explore Recipes"}
+        </h3>
+        {
+          // TODO: backend does not support this feature yet.
+          // <SearchFilterPopover foodType={foodType} setFoodType={setFoodType} />
+        }
       </div>
-      <Tabs
-        defaultValue="explore"
-        onValueChange={(val) => setParams((prev) => ({ ...prev, type: val }))}
-      >
-        <TabsList>
-          <TabsTrigger value="following">Following</TabsTrigger>
-          <TabsTrigger value="explore">Explore</TabsTrigger>
-        </TabsList>
-        <TabsContent value="following">
-          <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {feedData?.data?.map((recipe) => (
-              <Recipe key={recipe.id} recipe={recipe} />
-            ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="explore">
-          <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {feedData?.data?.map((recipe) => (
-              <Recipe key={recipe.id} recipe={recipe} />
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+      {isAuthenticated && (
+        <Tabs
+          defaultValue={feedType}
+          onValueChange={(val) => setParams((prev) => ({ ...prev, type: val }))}
+        >
+          <TabsList>
+            <TabsTrigger value="following">Following</TabsTrigger>
+            <TabsTrigger value="explore">Explore</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      )}
+      <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {feedData?.data?.length === 0 && (
+          <Alert variant="default">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>No recipes found</AlertTitle>
+            <AlertDescription>
+              {isAuthenticated
+                ? "Follow some users to see their recipes here."
+                : "No recipes found. Try searching for something else."}
+            </AlertDescription>
+          </Alert>
+        )}
+        {feedData?.data?.map((recipe) => (
+          <Recipe key={recipe.id} recipe={recipe} />
+        ))}
+      </div>
     </div>
   );
 };

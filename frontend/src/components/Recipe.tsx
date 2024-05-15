@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import LinkIcon from "@/assets/Icon/General/Link.svg";
-import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
+import LinkIcon from "@/assets/Icon/General/Link.svg?react";
+import BookmarkIcon from "@/assets/Icon/General/Bookmark.svg?react";
 import TimeIcon from "@/assets/Icon/General/Clock.svg";
 import StarIcon from "@/assets/Icon/General/Star.svg";
 import FoodIcon from "@/assets/Icon/General/Food.svg";
@@ -36,16 +36,14 @@ export const Recipe = ({
                 size="icon"
                 variant="secondary"
               >
-                <img src={LinkIcon} alt="Link icon" />
+                <LinkIcon aria-label="Link" />
               </Button>
               <Button
                 className="bg-transparent"
                 size="icon"
                 variant="secondary"
               >
-                <div className="flex items-center gap-4">
-                    <Bookmark className="h-4 w-4 fill-white" />
-                </div>
+                <BookmarkIcon aria-label="Bookmark" className="fill-white" />
               </Button>
             </div>
           </div>
