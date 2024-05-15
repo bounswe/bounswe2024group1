@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useGetBookmarkers, GetBookmarkersResponse } from "@/services/api/semanticBrowseComponents";
 import { Profile } from "./Profile";
+import { ChevronRight } from "lucide-react";
 
 export function Bookmarkers({ recipeId }: { recipeId: number }) {
     const { data: bookmarksData} = useGetBookmarkers<GetBookmarkersResponse>({
@@ -10,7 +11,9 @@ export function Bookmarkers({ recipeId }: { recipeId: number }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Bookmarkers</Button>
+      <span className="flex cursor-pointer items-center text-sm text-gray-600">
+          See bookmarkers <ChevronRight className="h-4 w-4" />
+        </span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

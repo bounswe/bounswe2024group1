@@ -16,6 +16,7 @@ import { Link, useParams } from "react-router-dom";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { useState } from "react";
 import ErrorAlert from "@/components/ErrorAlert";
+import { Bookmarkers } from "@/components/Bookmarkers";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -112,9 +113,7 @@ export default function RecipePage() {
       <div className="flex items-center gap-4">
         <Bookmark className="h-4 w-4 fill-white" />
         <span className="font-bold">512</span>
-        <span className="flex cursor-pointer items-center text-sm text-gray-600">
-          See bookmarkers <ChevronRight className="h-4 w-4" />
-        </span>
+        <Bookmarkers recipeId={recipe.id}/>
       </div>
 
       <div className="grid grid-cols-2 gap-2 py-2">
