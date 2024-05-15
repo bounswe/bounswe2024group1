@@ -31,7 +31,7 @@ export default function Profile() {
 
   const profile = data!.data;
   return (
-    <div key="1" className="container bg-white py-20">
+    <div key="1" className="container bg-white py-16">
       <div className="flex flex-col gap-4 px-4 py-2">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="">My profile</h1>

@@ -2,7 +2,7 @@ import { Recipe } from "../components/Recipe";
 import { FullscreenLoading } from "../components/FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { useGetRecipesForEntity } from "../services/api/semanticBrowseComponents";
+import { useGetFeed } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SearchFilterPopover from "@/components/SearchFilterPopover";
@@ -10,14 +10,19 @@ import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
 export const Feed = () => {
-  const { data, isLoading, error } = useGetRecipesForEntity({
+  const [params, setParams] = useSearchParams();
+  const {
+    data: feedData,
+    isLoading,
+    error,
+  } = useGetFeed({
     queryParams: {
-      sort: "topRated",
+      type: ["explore", "following"].includes(params.get("type") ?? "")
+        ? (params.get("type") as "explore" | "following")
+        : "explore",
     },
   });
-  const [params] = useSearchParams();
   const [foodType, setFoodType] = useState(params.get("foodType") || "");
-  const feedData = { data };
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -45,7 +50,10 @@ export const Feed = () => {
         </h1>
         <SearchFilterPopover foodType={foodType} setFoodType={setFoodType} />
       </div>
-      <Tabs defaultValue="explore">
+      <Tabs
+        defaultValue="explore"
+        onValueChange={(val) => setParams((prev) => ({ ...prev, type: val }))}
+      >
         <TabsList>
           <TabsTrigger value="following">Following</TabsTrigger>
           <TabsTrigger value="explore">Explore</TabsTrigger>
