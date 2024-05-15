@@ -82,7 +82,6 @@ public class RecipeService {
         for (IngredientsDto ingredientDto : newRecipe.getIngredients()) {
             Ingredient ingredient = Ingredient.builder()
                     .name(ingredientDto.getName())
-                    .description(ingredientDto.getDescription())
                     .amount(ingredientDto.getAmount())
                     .recipe(recipe) // Link ingredient to the recipe
                     .build();

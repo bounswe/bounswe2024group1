@@ -8,12 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 public class IngredientsDto {
     private String name;
-    private String description;
     private String amount;
 
     public IngredientsDto(Ingredient ingredient) {
         this.name = ingredient.getName();
-        this.description = ingredient.getDescription();
         this.amount = ingredient.getAmount();
     }
 

@@ -14,7 +14,6 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private String description; // Optional, can include details like organic, gluten-free, etc.
     private String amount; // E.g. grams, cups, etc.
     @ManyToOne
     @JoinColumn(name = "recipe_id") // This column in the Ingredient table will hold the foreign key to the Recipe
