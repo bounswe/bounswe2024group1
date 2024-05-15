@@ -58,7 +58,7 @@ describe("SearchFilterPopover", () => {
     const turkishCheckbox = screen.getByLabelText(/turkish/i);
     fireEvent.click(turkishCheckbox);
 
-    const meatCheckbox = screen.getByLabelText(/meat/i);
+    const meatCheckbox = screen.getByLabelText(/soup/i);
     fireEvent.click(meatCheckbox);
 
     const confirmButton = screen.getByRole("button", { name: /confirm/i });
@@ -66,6 +66,6 @@ describe("SearchFilterPopover", () => {
 
     // Assert
     expect(setCuisine).toHaveBeenCalledWith("Turkish");
-    expect(setFoodType).toHaveBeenCalledWith("Meat");
+    expect(setFoodType).toHaveBeenCalledWith("soup");
   });
 });

@@ -45,7 +45,7 @@ export const NavbarLayout = () => {
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
             <UtensilsCrossed className="h-6 w-6" />
-            <span className="sr-only">Semantic Cuisines</span>
+            <h5 className="w-[max-content]">Semantic Cuisines</h5>
           </Link>
           {links.map(({ name, path }) => (
             <NavLink

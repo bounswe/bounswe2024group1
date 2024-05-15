@@ -14,7 +14,35 @@ const predefinedCuisines = [
   "Japanese",
   "French",
 ];
-const predefinedTypeOfFood = ["Meat", "Baked", "Dairy", "Eggs"];
+const predefinedTypeOfFood = [
+  "Cookies",
+  "baked good",
+  "bread",
+  "chicken dish",
+  "dessert",
+  "dip",
+  "drink",
+  "fruit dish",
+  "halal food",
+  "hamburger",
+  "kosher food",
+  "meat dish",
+  "noodle dish",
+  "pasta dish",
+  "pizza",
+  "pork dish",
+  "rice dish",
+  "roll",
+  "salad",
+  "sandwich",
+  "seafood",
+  "skewer",
+  "soft drink",
+  "soup",
+  "sushi",
+  "vegan food",
+  "vegetarian cuisine",
+];
 
 type CuisineFilter = {
   cuisine: string;
