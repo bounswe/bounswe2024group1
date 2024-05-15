@@ -2,10 +2,7 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { routeConfig } from "../routes";
 import { afterEach, expect, test, vi } from "vitest";
-import {
-  fetchGetMe,
-  fetchLogin,
-} from "@/services/api/semanticBrowseComponents";
+import { fetchLogin } from "@/services/api/semanticBrowseComponents";
 import useAuthStore from "../services/auth";
 
 vi.mock("@/services/api/semanticBrowseComponents", async (importOriginal) => {
