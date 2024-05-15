@@ -24,10 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserService userService;
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -69,7 +66,7 @@ public class SecurityConfiguration {
     public AuthenticationProvider authenticationProvider() { // Authentication provider
         DaoAuthenticationProvider authProvider =
             new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService.userDetailsService());
+        authProvider.setUserDetailsService(jwtAuthenticationFilter.userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

@@ -7,6 +7,7 @@ import com.group1.cuisines.entities.User;
 import com.group1.cuisines.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,23 +25,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    @Autowired
+    private final RecipeService recipeService;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-
-            @Override
-            public UserDetails loadUserByUsername(String usernameOrEmail) {
-                logger.debug("Attempting to find user by email or username: {}", usernameOrEmail);
-
-                User user = userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail));
-
-                return user;
-            }
-
-        };
-    }
 
     public List<User> searchUsers(String searchTerm) {
 
@@ -142,7 +129,7 @@ public class UserService {
         profile.setFollowingCount(user.getFollowing().size());
         profile.setRecipeCount(user.getRecipes().size());
         profile.setRecipes(user.getRecipes().stream()
-                .map(this::convertToRecipeDetailsDto)
+                .map(recipeService::convertToRecipeDetailsDto)
                 .collect(Collectors.toList()));
 
         if (isSelf) {
@@ -154,35 +141,6 @@ public class UserService {
         }
 
         return profile;
-    }
-
-    private RecipeDetailsDto convertToRecipeDetailsDto(Recipe recipe) {
-        CuisineDto cuisineDto = new CuisineDto();
-        if (recipe.getDish() != null && !recipe.getDish().getCuisines().isEmpty()) {
-
-            cuisineDto.setId(recipe.getDish().getCuisines().get(0).getId());
-            cuisineDto.setName(recipe.getDish().getCuisines().get(0).getName());
-
-        }
-        else if(recipe.getDish() != null && recipe.getDish().getCuisines().isEmpty()){
-            cuisineDto.setId("No cuisine Id from wikidata");
-            cuisineDto.setName("No cuisine name from wikidata");
-        }
-        return new RecipeDetailsDto(
-                recipe.getId(),
-                recipe.getTitle(),
-                recipe.getInstructions(),
-                recipe.getIngredients().stream()
-                        .map(ingredient -> new IngredientsDto(ingredient.getName()))
-                        .collect(Collectors.toList()),
-                recipe.getCookingTime(),
-                recipe.getServingSize(),
-               cuisineDto,
-                new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),
-                recipe.getAverageRating(),
-                new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName()+ " " + recipe.getUser().getLastName() ,
-                       recipe.getUser().getFollowerCount(), recipe.getUser().getFollowingCount(),recipe.getUser().getRecipeCount())
-        );
     }
 
     private BookmarkDto convertToBookmarkDto(Bookmark bookmark) {
@@ -233,7 +191,7 @@ public class UserService {
         profile.setFollowingCount(user.getFollowing().size());
         profile.setRecipeCount(user.getRecipes().size());
         profile.setRecipes(user.getRecipes().stream()
-                .map(this::convertToRecipeDetailsDto)
+                .map(recipeService::convertToRecipeDetailsDto)
                 .collect(Collectors.toList()));
         return profile;
     }

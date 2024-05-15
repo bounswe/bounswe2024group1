@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeService {
     @Autowired
+    private AuthenticationService authenticationService;
+    @Autowired
     private IngredientsRepository ingredientRepository;
 
     @Autowired
@@ -126,7 +128,7 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
 
         if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
-            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId());
+            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId()).orElse(null);
             if (existingRating != null) {
                 return false; // Indicates that the user has already rated
             }
@@ -185,59 +187,26 @@ public class RecipeService {
 
     public RecipeDetailsDto getRecipeById(Integer recipeId) {
         Optional<Recipe> recipe = recipeRepository.findById(recipeId);
-
-
-        if (recipe.isPresent()) {
-            CuisineDto cuisineDto = new CuisineDto();
-            Recipe r = recipe.get();
-            if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
-
-                    cuisineDto.setId(r.getDish().getCuisines().get(0).getId());
-                    cuisineDto.setName(r.getDish().getCuisines().get(0).getName());
-
-            }
-            else if(r.getDish() != null && r.getDish().getCuisines().isEmpty()){
-                cuisineDto.setId("No cuisine Id from wikidata");
-                cuisineDto.setName("No cuisine name from wikidata");
-            }
-            // Conversion from Recipe entity to RecipeDetailsDto
-            return new RecipeDetailsDto(
-                    r.getId(),
-                    r.getTitle(),
-
-                    r.getInstructions(),
-                    r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()),
-
-                    r.getCookingTime(),
-                    r.getServingSize(),
-                    cuisineDto,
-
-                    new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
-                    r.getAverageRating(),
-                    new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(),r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
-
-            );
-        }
-        return null;
+        return recipe.map(this::convertToRecipeDetailsDto).orElse(null);
     }
 
     public List<RecipeDetailsDto> getRecipesByType(String type, @Nullable String username) {
         if ("explore".equals(type)) {
             return recipeRepository.findAll().stream()
-                    .map(this::convertToRecipeDto)
+                    .map(this::convertToRecipeDetailsDto)
                     .collect(Collectors.toList());
         } else if ("following".equals(type) && username != null) {
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             return user.getFollowing().stream()
                     .flatMap(followingUser -> followingUser.getRecipes().stream())
-                    .map(this::convertToRecipeDto)
+                    .map(this::convertToRecipeDetailsDto)
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();  // Return an empty list if username is null or other conditions are not met
     }
 
-    private RecipeDetailsDto convertToRecipeDto(Recipe r) {
+    public RecipeDetailsDto convertToRecipeDetailsDto(Recipe r) {
         CuisineDto cuisineDto = new CuisineDto();
         if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
 
@@ -249,22 +218,25 @@ public class RecipeService {
             cuisineDto.setId("No cuisine Id from wikidata");
             cuisineDto.setName("No cuisine name from wikidata");
         }
+
+        Integer userRating = authenticationService.getUser().map(User::getId)
+                .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
+                .map(Rating::getRatingValue)
+                .orElse(null);
+
         // Conversion logic here
-        return new RecipeDetailsDto(
-                r.getId(),
-                r.getTitle(),
-
-                r.getInstructions(),
-                r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()),
-
-                r.getCookingTime(),
-                r.getServingSize(),
-                cuisineDto,
-
-                new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
-                r.getAverageRating(),
-                new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(),r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
-
-        );
+        return RecipeDetailsDto.builder()
+                .id(r.getId())
+                .name(r.getTitle())
+                .instructions(r.getInstructions())
+                .ingredients(r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()))
+                .cookTime(r.getCookingTime())
+                .servingSize(r.getServingSize())
+                .cuisine(cuisineDto)
+                .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
+                .avgRating(r.getAverageRating())
+                .selfRating(userRating)
+                .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
+                .build();
     }
 }
