@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeService {
     @Autowired
+        private AuthenticationService authenticationService;
+    @Autowired
     private IngredientsRepository ingredientRepository;
 
     @Autowired
@@ -216,6 +218,12 @@ public class RecipeService {
             cuisineDto.setId("No cuisine Id from wikidata");
             cuisineDto.setName("No cuisine name from wikidata");
         }
+
+        Integer userRating = authenticationService.getUser().map(User::getId)
+                .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
+                .map(Rating::getRatingValue)
+                .orElse(null);
+
         // Conversion logic here
         return RecipeDetailsDto.builder()
                 .id(r.getId())
@@ -227,7 +235,7 @@ public class RecipeService {
                 .cuisine(cuisineDto)
                 .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
                 .avgRating(r.getAverageRating())
-                .userRating(ratingRepository.findByRecipeIdAndUserId(r.getId(), r.getUser().getId()).map(Rating::getRatingValue).orElse(null))
+                .userRating(userRating)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
     }

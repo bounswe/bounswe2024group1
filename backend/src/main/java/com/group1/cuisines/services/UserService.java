@@ -29,22 +29,6 @@ public class UserService {
     private final RecipeService recipeService;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-
-            @Override
-            public UserDetails loadUserByUsername(String usernameOrEmail) {
-                logger.debug("Attempting to find user by email or username: {}", usernameOrEmail);
-
-                User user = userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail));
-
-                return user;
-            }
-
-        };
-    }
-
     public List<User> searchUsers(String searchTerm) {
 
         if (searchTerm == null || searchTerm.trim().isEmpty()) {

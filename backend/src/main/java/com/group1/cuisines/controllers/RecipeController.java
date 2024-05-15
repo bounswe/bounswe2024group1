@@ -3,6 +3,7 @@ import com.group1.cuisines.dao.response.SuccessResponse;
 import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.Comment;
 import com.group1.cuisines.entities.User;
+import com.group1.cuisines.services.AuthenticationService;
 import com.group1.cuisines.services.RecipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,8 @@ import java.util.List;
 public class RecipeController {
     @Autowired
     private RecipeService recipeService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
 
     @GetMapping("/recipes/{recipeId}")
@@ -45,14 +48,13 @@ public class RecipeController {
 
     @PostMapping("/recipes")
     public ResponseEntity<?> createRecipe(@RequestBody NewRecipeDto newRecipe) throws Exception{
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
 
         // Check if the user is authenticated
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
         }
 
-        String username = authentication.getName();
         RecipeDetailDto recipeDetails = recipeService.createRecipe(newRecipe, username);
         if (recipeDetails != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(recipeDetails);
@@ -62,14 +64,12 @@ public class RecipeController {
     }
     @DeleteMapping("/recipes/{id}")
     public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
 
-        // Check if the user is authenticated
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
         }
 
-        String username = authentication.getName();
         if (recipeService.deleteRecipe(id, username)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Recipe deleted successfully.");
         } else {
@@ -78,12 +78,11 @@ public class RecipeController {
     }
     @PostMapping("/recipes/{recipeId}/rating")
     public ResponseEntity<?> rateRecipe(@PathVariable Integer recipeId, @RequestBody RatingDto ratingDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
         }
 
-        String username = authentication.getName(); // Assuming the username can be obtained like this
         boolean success = recipeService.rateRecipe(recipeId, username, ratingDto.getRating());
 
         if (success) {
@@ -95,12 +94,11 @@ public class RecipeController {
 
     @PostMapping("/recipes/{recipeId}/bookmarks")
     public ResponseEntity<?> bookmarkRecipe(@PathVariable Integer recipeId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
         }
 
-        String username = authentication.getName(); // Assuming the username can be obtained like this
         boolean success = recipeService.bookmarkRecipe(recipeId, username);
 
         if (success) {
@@ -112,8 +110,8 @@ public class RecipeController {
 
     @GetMapping("/recipes/{recipeId}/bookmarks")
     public ResponseEntity<?> getBookmarks(@PathVariable Integer recipeId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
         }
 
