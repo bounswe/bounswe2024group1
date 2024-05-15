@@ -27,7 +27,6 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { SearchBar } from "./SearchBar";
 import useAuthStore from "../services/auth";
 import { FullscreenLoading } from "./FullscreenLoading";
-import { useNavigate } from "react-router-dom";
 
 const links = [{ name: "Home", path: "/" }] as const;
 
