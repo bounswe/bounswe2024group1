@@ -19,8 +19,12 @@ export const SearchBar = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          const params = new URLSearchParams();
+          params.append("q", search);
+          if (cuisine) params.append("cuisine", cuisine);
+          if (foodType) params.append("foodType", foodType);
 
-          navigate("/search?q=" + encodeURIComponent(search));
+          navigate("/search?" + params.toString());
         }}
         className="flex gap-4"
       >

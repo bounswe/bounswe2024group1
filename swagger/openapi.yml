@@ -997,6 +997,8 @@ components:
           type: string
         followersCount:
           type: integer
+        followingCount:
+          type: integer
         gender:
           type: string
           enum: [male, female, unknown]
@@ -1026,6 +1028,7 @@ components:
           name: "Takoyaki Lover"
           bio: "I love takoyaki!"
           followersCount: 100
+          followingCount: 100
           gender: unknown
           profilePicture: "https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640"
           diets: ["keto"]

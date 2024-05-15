@@ -43,7 +43,6 @@ export default function RecipePage() {
     },
   });
 
-  console.log(data, isLoading, error);
   if (isLoading) {
     return <FullscreenLoading overlay />;
   }
