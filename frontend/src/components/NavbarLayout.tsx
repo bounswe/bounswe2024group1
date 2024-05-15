@@ -18,13 +18,14 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { SearchBar } from "./SearchBar";
 import useAuthStore from "../services/auth";
 import { FullscreenLoading } from "./FullscreenLoading";
+import { useNavigate } from "react-router-dom";
 
 const links = [{ name: "Home", path: "/" }] as const;
 
 export const NavbarLayout = () => {
   const fetcher = useFetcher();
   const isAuthenticated = !!useAuthStore().token;
-
+  const navigate = useNavigate();
   const navigation = useNavigation();
 
   return (
@@ -107,6 +108,12 @@ export const NavbarLayout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                <div className="cursor-pointer text-sm font-medium hover:underline" onClick={() => navigate("/bookmarks")}> Bookmarks </div>
+                <form id="bookmarksForm" method="POST" action="/bookmarks" style={{ display: 'none' }}>
+                  {/* Hidden form for submission */}
+                </form>
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <fetcher.Form method="POST" action="/logout">
                     <Button type="submit">Log out</Button>
