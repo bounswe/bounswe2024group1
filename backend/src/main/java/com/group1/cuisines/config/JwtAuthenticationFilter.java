@@ -1,7 +1,10 @@
 package com.group1.cuisines.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group1.cuisines.dao.response.ErrorResponse;
 import com.group1.cuisines.services.JwtService;
 import com.group1.cuisines.services.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(
@@ -31,45 +35,56 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
+        try {
+            final String authHeader = request.getHeader("Authorization");
+            final String jwt;
+            final String userEmail;
 
-        if (
-            StringUtils.isEmpty(authHeader) ||
-            !org.springframework.util.StringUtils.startsWithIgnoreCase(
-                authHeader,
-                "Bearer "
-            )
-        ) {
-            logger.info("No JWT token found in request headers");
-            filterChain.doFilter(request, response);
-            return;
-        }
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        if (
-            StringUtils.isNotEmpty(userEmail) &&
-            SecurityContextHolder.getContext().getAuthentication() == null
-        ) {
-            UserDetails userDetails = userService
-                .userDetailsService()
-                .loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                SecurityContext context =
-                    SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                    );
-                authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                context.setAuthentication(authToken);
-                SecurityContextHolder.setContext(context);
+            if (
+                    StringUtils.isEmpty(authHeader) ||
+                            !org.springframework.util.StringUtils.startsWithIgnoreCase(
+                                    authHeader,
+                                    "Bearer "
+                            )
+            ) {
+                logger.info("No JWT token found in request headers");
+                filterChain.doFilter(request, response);
+                return;
             }
+            jwt = authHeader.substring(7);
+            userEmail = jwtService.extractUsername(jwt);
+            if (
+                    StringUtils.isNotEmpty(userEmail) &&
+                            SecurityContextHolder.getContext().getAuthentication() == null
+            ) {
+                UserDetails userDetails = userService
+                        .userDetailsService()
+                        .loadUserByUsername(userEmail);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    SecurityContext context =
+                            SecurityContextHolder.createEmptyContext();
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    context.setAuthentication(authToken);
+                    SecurityContextHolder.setContext(context);
+                }
+            }
+        }
+        catch (ExpiredJwtException e ){
+            logger.info("JWT token has expired");
+            ErrorResponse errorResponse = new ErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, "JWT token has expired");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+            return;
+
         }
         filterChain.doFilter(request, response);
     }

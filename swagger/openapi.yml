@@ -1418,6 +1418,7 @@ components:
       required:
         - id
         - author
+        - recipeId
         - content
         - upvoteCount
         - hasSelfUpvoted
