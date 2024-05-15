@@ -2,6 +2,17 @@ name: bounswe2024group1
 # Production-like docker-compose setup
 
 services:
+  s3mock:
+    image: adobe/s3mock:latest
+    environment:
+      - retainFilesOnExit=true
+      - initialBuckets=cuisines
+      - root=containers3root
+    ports:
+      - 9090:9090
+      - 9191:9191
+    volumes:
+      - s3mock-files:/containers3root
   swagger:
     image: swaggerapi/swagger-ui
     environment:
@@ -45,3 +56,4 @@ services:
 
 volumes:
   db-data:
+  s3mock-files:
