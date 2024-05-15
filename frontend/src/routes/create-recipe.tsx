@@ -5,7 +5,7 @@ import {
 import type { NewRecipe } from "@/services/api//semanticBrowseSchemas";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -77,7 +77,12 @@ export default function CreateRecipePage() {
     formState: { isSubmitting },
   } = form;
 
-  const { mutateAsync } = useCreateRecipe();
+  const navigate = useNavigate();
+  const { mutateAsync } = useCreateRecipe({
+    onSuccess(data) {
+      navigate(`/recipes/${data.data.id}`);
+    },
+  });
 
   return (
     <Form {...form}>
@@ -88,7 +93,10 @@ export default function CreateRecipePage() {
             mutateAsync({
               body: {
                 ...val,
-                instructions: val.instructions.join(";") as unknown,
+                // TODO: fix after backend is fixed
+                instructions: val.instructions.join(
+                  "<br>",
+                ) as unknown as string[],
               },
             }),
           )}

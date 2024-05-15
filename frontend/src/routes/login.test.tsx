@@ -2,7 +2,10 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { routeConfig } from "../routes";
 import { afterEach, expect, test, vi } from "vitest";
-import { fetchLogin } from "@/services/api/semanticBrowseComponents";
+import {
+  fetchGetMe,
+  fetchLogin,
+} from "@/services/api/semanticBrowseComponents";
 import useAuthStore from "../services/auth";
 
 vi.mock("@/services/api/semanticBrowseComponents", async (importOriginal) => {
@@ -14,6 +17,16 @@ vi.mock("@/services/api/semanticBrowseComponents", async (importOriginal) => {
     ...mod,
     fetchLogin: vi.fn(() =>
       Promise.resolve({ data: { token: "token" }, status: 200 }),
+    ),
+    fetchGetMe: vi.fn(() =>
+      Promise.resolve({
+        data: {
+          id: 1,
+          username: "efe",
+          email: "",
+        },
+        status: 200,
+      }),
     ),
   };
 });
