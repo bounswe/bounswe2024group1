@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
-import Link from "@/assets/Icon/General/Link.svg?react";
+import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import RatingInput from "@/components/RatingInput";
 import Serving from "@/assets/Icon/General/Serving.svg?react";
 import Clock from "@/assets/Icon/General/Clock.svg?react";
@@ -12,7 +12,7 @@ import {
   useGetRecipeById,
   useRateRecipe,
 } from "@/services/api/semanticBrowseComponents";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { useState } from "react";
 import ErrorAlert from "@/components/ErrorAlert";
@@ -20,12 +20,14 @@ import ErrorAlert from "@/components/ErrorAlert";
 export default function RecipePage() {
   const { recipeId } = useParams();
 
-  const { data, isLoading, error, refetch } = useGetRecipeById({
-    pathParams: { recipeId: recipeId ? Number(recipeId) : -1 },
-    queryParams: {
+  const { data, isLoading, error, refetch } = useGetRecipeById(
+    {
+      pathParams: { recipeId: recipeId ? Number(recipeId) : -1 },
+    },
+    {
       enabled: !!recipeId,
     },
-  });
+  );
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 
@@ -53,7 +55,7 @@ export default function RecipePage() {
   const { data: recipe } = data! || {};
   const instructions = Array.isArray(recipe.instructions)
     ? recipe.instructions
-    : [];
+    : (recipe.instructions as string).split("<br>");
 
   return (
     <div className="container flex flex-col gap-4 py-16">
@@ -61,7 +63,7 @@ export default function RecipePage() {
         <h1>{recipe.name}</h1>
         <div className="flex gap-4">
           <Button size="icon">
-            <Link className="h-5 w-5" />
+            <LinkIcon className="h-5 w-5" />
           </Button>
           <Button>
             Bookmark
@@ -76,14 +78,17 @@ export default function RecipePage() {
       />
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <Link
+          to={`/users/${recipe.author.id}`}
+          className="flex items-center gap-4"
+        >
           <img
             src={recipe.author.profilePicture}
             alt={recipe.author.name}
             className="h-8 w-8 rounded-full object-cover"
           />
           <span className="font-bold">{recipe.author.name}</span>
-        </div>
+        </Link>
         <Button>Follow</Button>
       </div>
       <div className="flex items-center gap-4">
