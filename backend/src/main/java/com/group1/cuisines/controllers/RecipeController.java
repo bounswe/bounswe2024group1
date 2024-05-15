@@ -1,4 +1,5 @@
 package com.group1.cuisines.controllers;
+import com.group1.cuisines.dao.response.ErrorResponse;
 import com.group1.cuisines.dao.response.SuccessResponse;
 import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.Comment;
@@ -29,19 +30,19 @@ public class RecipeController {
     public ResponseEntity<?> getRecipeById(@PathVariable Integer recipeId) {
         RecipeDetailsDto recipeDetails = recipeService.getRecipeById(recipeId);
         if (recipeDetails != null) {
-            return ResponseEntity.ok(new SuccessResponse<>(200,recipeDetails, "Recipe fetched successfully"));
+            return ResponseEntity.ok(new SuccessResponse<>(200, recipeDetails, "Recipe fetched successfully"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recipe not found");
+            return ResponseEntity.ok(new ErrorResponse(200, ""));
         }
     }
 
 
     @GetMapping("/recipes")
-    public ResponseEntity<List<RecipeDto>> getRecipes(@RequestParam(required = false) String sort,
+    public ResponseEntity<?> getRecipes(@RequestParam(required = false) String sort,
                                                       @RequestParam(required = false) String dishId,
                                                       @RequestParam(required = false) String cuisineId) {
         List<RecipeDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
-        return ResponseEntity.ok(recipes);
+        return ResponseEntity.ok(new SuccessResponse<>(200, recipes, "Recipes fetched successfully"));
     }
 
 
@@ -52,14 +53,14 @@ public class RecipeController {
 
         // Check if the user is authenticated
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
         RecipeDetailDto recipeDetails = recipeService.createRecipe(newRecipe, username);
         if (recipeDetails != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(recipeDetails);
+            return ResponseEntity.ok(new SuccessResponse<>(201, recipeDetails, "Recipe created successfully"));
         } else {
-            return ResponseEntity.badRequest().body("Failed to create recipe");
+            return ResponseEntity.ok(new ErrorResponse(400, "Failed to create recipe"));
         }
     }
     @DeleteMapping("/recipes/{id}")
@@ -67,28 +68,28 @@ public class RecipeController {
         String username = authenticationService.getUser().map(User::getUsername).orElse(null);
 
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
         if (recipeService.deleteRecipe(id, username)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Recipe deleted successfully.");
+            return ResponseEntity.ok(new SuccessResponse<>(200, "", "Recipe deleted successfully"));
         } else {
-            return ResponseEntity.badRequest().body("Failed to delete recipe");
+            return ResponseEntity.ok(new ErrorResponse(400, "Failed to delete recipe"));
         }
     }
     @PostMapping("/recipes/{recipeId}/rating")
     public ResponseEntity<?> rateRecipe(@PathVariable Integer recipeId, @RequestBody RatingDto ratingDto) {
         String username = authenticationService.getUser().map(User::getUsername).orElse(null);
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
         boolean success = recipeService.rateRecipe(recipeId, username, ratingDto.getRating());
 
         if (success) {
-            return ResponseEntity.ok().body("Rating added successfully");
+            return ResponseEntity.ok(new SuccessResponse<>(200, "", "Rating added successfully"));
         } else {
-            return ResponseEntity.badRequest().body("Failed to add rating");
+            return ResponseEntity.ok(new ErrorResponse(400, "Failed to add rating"));
         }
     }
 
@@ -96,36 +97,35 @@ public class RecipeController {
     public ResponseEntity<?> bookmarkRecipe(@PathVariable Integer recipeId) {
         String username = authenticationService.getUser().map(User::getUsername).orElse(null);
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
         boolean success = recipeService.bookmarkRecipe(recipeId, username);
 
         if (success) {
-            return ResponseEntity.ok().body("Recipe bookmarked successfully");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to bookmark recipe");
+            return ResponseEntity.ok(new SuccessResponse<>(200, "", "Recipe bookmarked successfully"));
         }
+        return ResponseEntity.ok(new ErrorResponse(400, "Failed to bookmark recipe"));
     }
 
     @GetMapping("/recipes/{recipeId}/bookmarks")
     public ResponseEntity<?> getBookmarks(@PathVariable Integer recipeId) {
         String username = authenticationService.getUser().map(User::getUsername).orElse(null);
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
         List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
-        return ResponseEntity.ok().body(whoBookmarked);
+        return ResponseEntity.ok(new SuccessResponse<>(200, whoBookmarked, "Bookmarks fetched successfully"));
     }
 
     @GetMapping("/recipes/{recipeId}/comments")
     public ResponseEntity<?> getComments(@PathVariable Integer recipeId) {
         List<CommentsDto> commentsDto = recipeService.getCommentsByRecipeId(recipeId);
         if (commentsDto.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No comments found for this recipe.");
+            return ResponseEntity.ok(new ErrorResponse(204, "No comments found"));
         }
-        return ResponseEntity.ok(commentsDto);
+        return ResponseEntity.ok(new SuccessResponse<>(200, commentsDto, "Comments fetched successfully"));
     }
 
 

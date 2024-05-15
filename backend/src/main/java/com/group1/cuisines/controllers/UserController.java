@@ -49,10 +49,10 @@ public class UserController {
             User user = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
             if (user != null) {
                 UserProfileDto userProfile = userService.getUserProfileById(user.getId(), userDetails.getUsername());
-                return ResponseEntity.ok(new SuccessResponse<>(200,userProfile, "User profile fetched successfully"));
+                return ResponseEntity.ok(new SuccessResponse<>(200, userProfile, "User profile fetched successfully"));
             }
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        return ResponseEntity.ok(new ErrorResponse(204, "User not found"));
     }
 
     @DeleteMapping("/{userId}/unfollow")
