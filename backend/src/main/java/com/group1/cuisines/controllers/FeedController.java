@@ -30,16 +30,16 @@ public class FeedController {
         if ("following".equals(type)) {
             if (authentication == null || !authentication.isAuthenticated()) {
                 // Return an empty set and a message for unauthenticated users
-                return ResponseEntity.ok(new SuccessResponse<>(Collections.emptyList(), "No content available. Please log in and follow other users !."));
+                return ResponseEntity.ok(new SuccessResponse<>(400,Collections.emptyList(), "No content available. Please log in and follow other users !."));
             }
             // Fetch following users' recipes for authenticated users
             String username = authentication.getName();
             List<RecipeDetailsDto> recipes = recipeService.getRecipesByType(type, username);
-            return ResponseEntity.ok(new SuccessResponse<>(recipes, "Recipes fetched successfully from followed users."));
+            return ResponseEntity.ok(new SuccessResponse<>(200,recipes, "Recipes fetched successfully from followed users."));
         }
 
         // For 'explore', accessible to everyone
         List<RecipeDetailsDto> recipes = recipeService.getRecipesByType(type, null);
-        return ResponseEntity.ok(new SuccessResponse<>(recipes, "Recipes fetched successfully."));
+        return ResponseEntity.ok(new SuccessResponse<>(200,recipes, "Recipes fetched successfully."));
     }
 }

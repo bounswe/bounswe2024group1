@@ -4,8 +4,10 @@ import Signup from "./signup";
 import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search } from "./search";
+import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
 import Profile from "./profile";
+import RecipePage from "./recipe";
 
 export const routes: RouteObject[] = [
   {
@@ -21,11 +23,19 @@ export const routes: RouteObject[] = [
     Component: Search,
   },
   {
+    path: "/feed",
+    Component: Feed,
+  },
+  {
+    path: "/recipes/:recipeId",
+    Component: RecipePage,
+  },
+  {
     index: true,
     Component: IndexRoute,
   },
   {
-    path: "/profile",
+    path: "/users/:userId",
     Component: Profile,
   },
   {

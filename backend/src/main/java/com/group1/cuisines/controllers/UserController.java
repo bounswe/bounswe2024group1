@@ -36,9 +36,9 @@ public class UserController {
         String currentUsername = authentication != null ? authentication.getName() : null;
         try {
             UserProfileDto userProfile = userService.getUserProfileById(userId, currentUsername);
-            return ResponseEntity.ok(new SuccessResponse<>(userProfile, "User profile fetched successfully"));
+            return ResponseEntity.ok(new SuccessResponse<>(200,userProfile, "User profile fetched successfully"));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("User not found"));
+            return ResponseEntity.ok(new ErrorResponse(204,"User not found"));
         }
     }
 
@@ -58,38 +58,47 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
     }
 
-    @PostMapping("/{userId}/follow")
-    public ResponseEntity<?> followUser(@PathVariable Integer userId) {
+    @PostMapping("/follow")
+    public ResponseEntity<?> followUser(@RequestBody Map<String, Integer> requestBody) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal()=="anonymousUser"){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401,"Authentication required")  );
+
         }
 
         String username = authentication.getName();
 
         Integer followerId = userRepository.findUserIdByUsername(username);
+        Integer userId = requestBody.get("userId");
 
 
         if (followerId == null || userId == null) {
-            return ResponseEntity.badRequest().body("Invalid user data");
+
+            return ResponseEntity.ok(new ErrorResponse(204,"Invalid user data"));
         }
 
         boolean result = userService.followUser(userId, followerId);
         if (!result) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Already following");
+
+            return ResponseEntity.ok(new ErrorResponse(209,"Already following"));
         }
-        return ResponseEntity.ok().body("Followed successfully");
+
+        return ResponseEntity.ok(new SuccessResponse<>(200,null,"Followed successfully"));
     }
     @GetMapping("/{userId}/following")
     public ResponseEntity<?> getUserFollowing(@PathVariable Integer userId) {
         // Validate the provided user ID
         if (userId == null) {
-            return ResponseEntity.badRequest().body("Invalid user ID provided");
+
+            return ResponseEntity.ok(new ErrorResponse(204,"Invalid user ID provided")  );
+        }
+        if(userRepository.findById(userId).isEmpty()){
+            return ResponseEntity.ok(new ErrorResponse(204,"User not found")  );
         }
 
         Set<User> following = userService.getUserFollowing(userId);
         if (following.isEmpty()) {
-            return ResponseEntity.ok().body("User is not following anyone");
+            return ResponseEntity.ok(new ErrorResponse(204,"User is not following anyone"));
         } else {
             Set<UserDto> followingDto = following.stream()
                     .map(user -> UserDto.builder()
@@ -102,18 +111,22 @@ public class UserController {
                             .recipeCount(user.getRecipeCount())
                             .build())
                     .collect(Collectors.toSet());
-            return ResponseEntity.ok().body(followingDto);
+            return ResponseEntity.ok(new SuccessResponse<>(200,followingDto, "User following fetched successfully"));
         }
     }
     @GetMapping("/{userId}/followers")
     public ResponseEntity<?> getUserFollowers(@PathVariable Integer userId) {
         // Validate the provided user ID
         if (userId == null) {
-            return ResponseEntity.badRequest().body("Invalid user ID provided");
+
+            return ResponseEntity.ok(new ErrorResponse(204,"Invalid user ID provided")  );
+        }
+        if(userRepository.findById(userId).isEmpty()){
+            return ResponseEntity.ok(new ErrorResponse(204,"User not found")  );
         }
         Set<User> followers = userService.getUserFollower(userId);
         if (followers.isEmpty()) {
-            return ResponseEntity.ok().body("User is not followed by anyone");
+            return ResponseEntity.ok(new ErrorResponse(204,"User is not followed by anyone"));
         } else {
             Set<UserDto> followingDto = followers.stream()
                     .map(user -> UserDto.builder()
@@ -126,29 +139,31 @@ public class UserController {
                             .recipeCount(user.getRecipeCount())
                             .build())
                     .collect(Collectors.toSet());
-            return ResponseEntity.ok().body(followingDto);
+            return ResponseEntity.ok(new SuccessResponse<>(200,followingDto, "User followers fetched successfully"));
         }
     }
-    @PostMapping("/{userId}/unfollow")
-    public ResponseEntity<?> unfollowUser(@PathVariable Integer userId) {
+    @PostMapping("/unfollow")
+    public ResponseEntity<?> unfollowUser(@RequestBody Map<String, Integer> requestBody) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal()=="anonymousUser"){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401,"Authentication required")  );
         }
 
         String username = authentication.getName();
         Integer followerId = userRepository.findUserIdByUsername(username);
+        Integer userId = requestBody.get("userId");
 
 
         if (followerId == null || userId == null) {
-            return ResponseEntity.badRequest().body("Invalid user data.");
+            return ResponseEntity.ok(new ErrorResponse(204,"Invalid user data"));
         }
 
         boolean result = userService.unfollowUser(userId, followerId);
         if (!result) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Follow relationship does not exist.");
+
+            return ResponseEntity.ok(new ErrorResponse(209,"Follow relationship does not exist"));
         }
-        return ResponseEntity.ok().body("Unfollowed successfully.");
+        return ResponseEntity.ok(new SuccessResponse<>(200,null,"Unfollowed successfully"));
     }
 
 }

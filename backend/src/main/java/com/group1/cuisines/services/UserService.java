@@ -168,7 +168,7 @@ public class UserService {
                 new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),
                 recipe.getAverageRating(),
                 new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName(),
-                        recipe.getUser().getFollowerCount(),recipe.getUser().getRecipeCount())
+                       recipe.getUser().getFollowingCount(), recipe.getUser().getFollowerCount(),recipe.getUser().getRecipeCount())
         );
     }
 
@@ -200,7 +200,7 @@ public class UserService {
                 new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),
                 recipe.getAverageRating(),
                 new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName(),
-                        recipe.getUser().getFollowerCount(),recipe.getUser().getRecipeCount())
+                      recipe.getUser().getFollowingCount(),  recipe.getUser().getFollowerCount(),recipe.getUser().getRecipeCount())
         );
     }
 }

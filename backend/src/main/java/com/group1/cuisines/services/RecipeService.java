@@ -214,7 +214,7 @@ public class RecipeService {
 
                     new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
                     r.getAverageRating(),
-                    new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
+                    new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(),r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
 
             );
         }
@@ -263,7 +263,7 @@ public class RecipeService {
 
                 new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
                 r.getAverageRating(),
-                new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
+                new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(),r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
 
         );
     }

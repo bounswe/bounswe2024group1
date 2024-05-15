@@ -26,7 +26,7 @@ public class RecipeController {
     public ResponseEntity<?> getRecipeById(@PathVariable Integer recipeId) {
         RecipeDetailsDto recipeDetails = recipeService.getRecipeById(recipeId);
         if (recipeDetails != null) {
-            return ResponseEntity.ok(new SuccessResponse<>(recipeDetails, "Recipe fetched successfully"));
+            return ResponseEntity.ok(new SuccessResponse<>(200,recipeDetails, "Recipe fetched successfully"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recipe not found");
         }
