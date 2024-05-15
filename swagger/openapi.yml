@@ -1009,6 +1009,8 @@ components:
             type: string
         recipeCount:
           type: integer
+        selfFollowing:
+          type: boolean
         bookmarks:
           type: array
           description: Only available when querying the current user's profile.
@@ -1027,6 +1029,7 @@ components:
           gender: unknown
           profilePicture: "https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640"
           diets: ["keto"]
+          selfFollowing: true
           recipeCount: 10
           bookmarks:
             - id: 1
@@ -1072,6 +1075,8 @@ components:
         profilePicture:
           type: string
           format: uri
+        selfFollowing:
+          type: boolean
         recipeCount:
           type: integer
         avgRating:
@@ -1085,6 +1090,7 @@ components:
           profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
           recipeCount: 10
           avgRating: 4.5
+          selfFollowing: false
 
     DishDetails:
       type: object
@@ -1183,6 +1189,8 @@ components:
           items:
             type: string
             format: uri
+        selfBookmarked:
+          type: boolean
         avgRating:
           type: number
           format: float
@@ -1269,6 +1277,8 @@ components:
           $ref: "#/components/schemas/CuisineSummary"
         dish:
           $ref: "#/components/schemas/DishSummary"
+        selfBookmarked:
+          type: boolean
         avgRating:
           type: number
           format: float
