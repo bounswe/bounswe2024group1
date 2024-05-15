@@ -82,6 +82,7 @@ public class RecipeService {
         for (IngredientsDto ingredientDto : newRecipe.getIngredients()) {
             Ingredient ingredient = Ingredient.builder()
                     .name(ingredientDto.getName())
+                    .amount(ingredientDto.getAmount())
                     .recipe(recipe) // Link ingredient to the recipe
                     .build();
             ingredientRepository.save(ingredient);
@@ -229,7 +230,7 @@ public class RecipeService {
                 .id(r.getId())
                 .name(r.getTitle())
                 .instructions(r.getInstructions())
-                .ingredients(r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()))
+                .ingredients(r.getIngredients().stream().map(IngredientsDto::new).collect(Collectors.toList()))
                 .cookTime(r.getCookingTime())
                 .servingSize(r.getServingSize())
                 .cuisine(cuisineDto)
