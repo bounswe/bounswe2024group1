@@ -418,7 +418,7 @@ export const fetchGetUserById = (
     GetUserByIdPathParams
   >({ url: "/users/{userId}", method: "get", ...variables, signal });
 
-export const useGetUserById = <TData = GetUserByIdResponse,>(
+export const useGetUserById = <TData = GetUserByIdResponse>(
   variables: GetUserByIdVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<GetUserByIdResponse, GetUserByIdError, TData>,
@@ -506,7 +506,10 @@ export const useUpdateUserById = (
   });
 };
 
-export type GetMeError = Fetcher.ErrorWrapper<undefined>;
+export type GetMeError = Fetcher.ErrorWrapper<{
+  status: 403;
+  payload: Responses.ForbiddenResponse;
+}>;
 
 export type GetMeResponse = {
   /**
@@ -529,7 +532,7 @@ export const fetchGetMe = (variables: GetMeVariables, signal?: AbortSignal) =>
     signal,
   });
 
-export const useGetMe = <TData = GetMeResponse,>(
+export const useGetMe = <TData = GetMeResponse>(
   variables: GetMeVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<GetMeResponse, GetMeError, TData>,
@@ -588,7 +591,7 @@ export const fetchGetUserFollowing = (
     GetUserFollowingPathParams
   >({ url: "/users/{userId}/following", method: "get", ...variables, signal });
 
-export const useGetUserFollowing = <TData = GetUserFollowingResponse,>(
+export const useGetUserFollowing = <TData = GetUserFollowingResponse>(
   variables: GetUserFollowingVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -655,7 +658,7 @@ export const fetchGetUserFollowers = (
     GetUserFollowersPathParams
   >({ url: "/users/{userId}/followers", method: "get", ...variables, signal });
 
-export const useGetUserFollowers = <TData = GetUserFollowersResponse,>(
+export const useGetUserFollowers = <TData = GetUserFollowersResponse>(
   variables: GetUserFollowersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -852,7 +855,7 @@ export const fetchSearchUsers = (
     {}
   >({ url: "/search/users", method: "get", ...variables, signal });
 
-export const useSearchUsers = <TData = SearchUsersResponse,>(
+export const useSearchUsers = <TData = SearchUsersResponse>(
   variables: SearchUsersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<SearchUsersResponse, SearchUsersError, TData>,
@@ -913,7 +916,7 @@ export const fetchSearchDishes = (
     {}
   >({ url: "/search/dishes", method: "get", ...variables, signal });
 
-export const useSearchDishes = <TData = SearchDishesResponse,>(
+export const useSearchDishes = <TData = SearchDishesResponse>(
   variables: SearchDishesVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<SearchDishesResponse, SearchDishesError, TData>,
@@ -972,7 +975,7 @@ export const fetchGetDishById = (
     GetDishByIdPathParams
   >({ url: "/dishes/{dishId}", method: "get", ...variables, signal });
 
-export const useGetDishById = <TData = GetDishByIdResponse,>(
+export const useGetDishById = <TData = GetDishByIdResponse>(
   variables: GetDishByIdVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<GetDishByIdResponse, GetDishByIdError, TData>,
@@ -1036,7 +1039,7 @@ export const fetchGetCuisineById = (
     GetCuisineByIdPathParams
   >({ url: "/cuisines/{cuisineId}", method: "get", ...variables, signal });
 
-export const useGetCuisineById = <TData = GetCuisineByIdResponse,>(
+export const useGetCuisineById = <TData = GetCuisineByIdResponse>(
   variables: GetCuisineByIdVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1175,7 +1178,7 @@ export const fetchGetRecipesForEntity = (
     {}
   >({ url: "/recipes", method: "get", ...variables, signal });
 
-export const useGetRecipesForEntity = <TData = GetRecipesForEntityResponse,>(
+export const useGetRecipesForEntity = <TData = GetRecipesForEntityResponse>(
   variables: GetRecipesForEntityVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1297,7 +1300,7 @@ export const fetchGetRecipeById = (
     GetRecipeByIdPathParams
   >({ url: "/recipes/{recipeId}", method: "get", ...variables, signal });
 
-export const useGetRecipeById = <TData = GetRecipeByIdResponse,>(
+export const useGetRecipeById = <TData = GetRecipeByIdResponse>(
   variables: GetRecipeByIdVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1481,7 +1484,7 @@ export const fetchGetBookmarkers = (
     signal,
   });
 
-export const useGetBookmarkers = <TData = GetBookmarkersResponse,>(
+export const useGetBookmarkers = <TData = GetBookmarkersResponse>(
   variables: GetBookmarkersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1659,7 +1662,7 @@ export const fetchGetCommentsForRecipe = (
     signal,
   });
 
-export const useGetCommentsForRecipe = <TData = GetCommentsForRecipeResponse,>(
+export const useGetCommentsForRecipe = <TData = GetCommentsForRecipeResponse>(
   variables: GetCommentsForRecipeVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1925,7 +1928,7 @@ export const fetchGetFeed = (
     {}
   >({ url: "/feed", method: "get", ...variables, signal });
 
-export const useGetFeed = <TData = GetFeedResponse,>(
+export const useGetFeed = <TData = GetFeedResponse>(
   variables: GetFeedVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<GetFeedResponse, GetFeedError, TData>,
