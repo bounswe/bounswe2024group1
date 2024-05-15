@@ -4,7 +4,7 @@ import { useGetBookmarkers, GetBookmarkersResponse } from "@/services/api/semant
 import { Profile } from "./Profile";
 
 export function Bookmarkers({ recipeId }: { recipeId: number }) {
-    const { data: bookmarksData, isLoading, error } = useGetBookmarkers<GetBookmarkersResponse>({
+    const { data: bookmarksData} = useGetBookmarkers<GetBookmarkersResponse>({
         pathParams: { recipeId }
     });
   return (
