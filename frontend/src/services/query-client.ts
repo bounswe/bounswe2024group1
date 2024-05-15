@@ -1,7 +1,29 @@
-import { QueryCache, QueryClient } from "@tanstack/react-query";
-import useAuthStore from "./auth";
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
+import { signout } from "./auth";
 import { toast } from "@/components/ui/use-toast";
 import { renderError } from "./api/semanticBrowseFetcher";
+
+const errorHandler = (error: Error) => {
+  if ("status" in error && error.status === 401) {
+    signout();
+    toast({
+      title: "Session expired",
+      description: "Please log in again",
+      variant: "destructive",
+    });
+
+    // navigate to /login
+    window.location.href =
+      "/login?from=" +
+      encodeURIComponent(window.location.pathname + window.location.search);
+  } else {
+    toast({
+      title: "An error occurred",
+      description: renderError(error),
+      variant: "destructive",
+    });
+  }
+};
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -9,27 +31,11 @@ export const queryClient = new QueryClient({
       retry: 1,
     },
   },
-  queryCache: new QueryCache({
-    onError: (error) => {
-      if ("status" in error && error.status === 401) {
-        useAuthStore.getState().logout();
-        toast({
-          title: "Session expired",
-          description: "Please log in again",
-          variant: "destructive",
-        });
+  mutationCache: new MutationCache({
+    onError: errorHandler,
+  }),
 
-        // navigate to /login
-        window.location.href =
-          "/login?from=" +
-          encodeURIComponent(window.location.pathname + window.location.search);
-      } else {
-        toast({
-          title: "An error occurred",
-          description: renderError(error),
-          variant: "destructive",
-        });
-      }
-    },
+  queryCache: new QueryCache({
+    onError: errorHandler,
   }),
 });

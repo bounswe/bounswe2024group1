@@ -94,7 +94,18 @@ export async function semanticBrowseFetch<
       try {
         error = {
           status: response.status,
-          payload: (await response.json()) as ErrorResponseObject,
+          payload: (await response
+            .json()
+            .catch(() =>
+              response.text().then((text) => ({
+                status: response.status,
+                errors: [{ message: text }],
+              })),
+            )
+            .catch(() => ({
+              status: "unknown",
+              errors: [{ message: "Could not parse response" }],
+            }))) as ErrorResponseObject,
         } as ErrorWrapper<TError>;
       } catch (e) {
         error = {

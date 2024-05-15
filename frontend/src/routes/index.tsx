@@ -8,6 +8,7 @@ import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
 import Profile from "./profile";
 import RecipePage from "./recipe";
+import CreateRecipePage from "./create-recipe";
 
 export const routes: RouteObject[] = [
   {
@@ -44,6 +45,10 @@ export const routes: RouteObject[] = [
       await signout();
       return redirect("/");
     },
+  },
+  {
+    path: "/recipes/new",
+    Component: CreateRecipePage,
   },
 ];
 
