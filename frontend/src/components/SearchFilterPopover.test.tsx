@@ -30,8 +30,8 @@ describe("SearchFilterPopover", () => {
     const filterButton = screen.getByRole("button", { name: /filter/i });
     fireEvent.click(filterButton); // Open the popover
 
-    const italianCheckbox = screen.getByLabelText(/italian/i);
-    fireEvent.click(italianCheckbox);
+    const turkishCheckbox = screen.getByLabelText(/turkish/i);
+    fireEvent.click(turkishCheckbox);
 
     const popoverCloseButton = screen.getByRole("button", { name: /close/i });
     fireEvent.click(popoverCloseButton); // Close the popover without confirming
@@ -55,8 +55,8 @@ describe("SearchFilterPopover", () => {
     const filterButton = screen.getByRole("button", { name: /filter/i });
     fireEvent.click(filterButton); // Open the popover
 
-    const italianCheckbox = screen.getByLabelText(/italian/i);
-    fireEvent.click(italianCheckbox);
+    const turkishCheckbox = screen.getByLabelText(/turkish/i);
+    fireEvent.click(turkishCheckbox);
 
     const meatCheckbox = screen.getByLabelText(/meat/i);
     fireEvent.click(meatCheckbox);
@@ -65,7 +65,7 @@ describe("SearchFilterPopover", () => {
     fireEvent.click(confirmButton); // Confirm the selection
 
     // Assert
-    expect(setCuisine).toHaveBeenCalledWith("Italian");
+    expect(setCuisine).toHaveBeenCalledWith("Turkish");
     expect(setFoodType).toHaveBeenCalledWith("Meat");
   });
 });

@@ -23,7 +23,7 @@ export type AuthToken = {
 };
 
 /**
- * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","bio":"I love takoyaki!","followersCount":100,"gender":"unknown","profilePicture":"https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640","diets":["keto"],"recipeCount":10,"bookmarks":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}],"recipes":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}]}
+ * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","bio":"I love takoyaki!","followersCount":100,"gender":"unknown","profilePicture":"https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640","diets":["keto"],"selfFollowing":true,"recipeCount":10,"bookmarks":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}],"recipes":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}]}
  */
 export type UserProfile = {
   id?: number;
@@ -38,6 +38,7 @@ export type UserProfile = {
   profilePicture?: string;
   diets?: string[];
   recipeCount?: number;
+  selfFollowing?: boolean;
   /**
    * Only available when querying the current user's profile.
    */
@@ -46,7 +47,7 @@ export type UserProfile = {
 };
 
 /**
- * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5}
+ * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5,"selfFollowing":false}
  */
 export type UserSummary = {
   id: number;
@@ -57,6 +58,7 @@ export type UserSummary = {
    * @format uri
    */
   profilePicture: string;
+  selfFollowing?: boolean;
   recipeCount: number;
   /**
    * @format float
@@ -76,7 +78,9 @@ export type DishDetails = {
    */
   image: string;
   countries: string;
-  ingredients?: string;
+  ingredients?: {
+    name?: string;
+  }[];
   foodTypes?: string;
   cuisine?: CuisineSummary;
   /**
@@ -109,6 +113,7 @@ export type RecipeSummary = {
    */
   cookTime: number;
   images: string[];
+  selfBookmarked?: boolean;
   /**
    * @format float
    */
@@ -120,20 +125,24 @@ export type RecipeSummary = {
 };
 
 /**
- * @example {"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","instructions":["Mix the batter.","Add the octopus.","Cook the takoyaki balls."],"ingredients":["wheat flour","green laver","octopus as food","beni shōga","katsuobushi","Welsh onion"],"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"cookTime":"30 minutes","servingSize":4,"allergens":["seafood"],"cuisine":{"id":1,"name":"Japanese"},"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"},"avgRating":4.5,"ratingsCount":10}
+ * @example {"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","instructions":["Mix the batter.","Add the octopus.","Cook the takoyaki balls."],"ingredients":[{"name":"wheat flour","amount":"1 cup"},{"name":"green laver","amount":"1/4 cup"},{"name":"octopus as food","amount":"1 cup"},{"name":"beni shōga","amount":"1 cup"},{"name":"katsuobushi","amount":"1 cup"},{"name":"Welsh onion","amount":"1 cup"}],"author":{"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4},"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"cookTime":30,"servingSize":4,"allergens":["seafood"],"cuisine":{"id":1,"name":"Japanese"},"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"},"selfRating":5,"avgRating":4.5,"ratingsCount":10}
  */
 export type RecipeDetails = {
   id: number;
   name: string;
   description: string;
   instructions: string[];
-  ingredients: string[];
+  ingredients: {
+    name?: string;
+    amount?: string;
+  }[];
   images: string[];
   cookTime: number;
   servingSize: number;
   allergens: string[];
   cuisine?: CuisineSummary;
   dish: DishSummary;
+  selfBookmarked?: boolean;
   /**
    * @format float
    */
@@ -176,12 +185,13 @@ export type CuisineSummary = {
 export type DishSummary = {
   id: number;
   name: string;
+  countries?: string;
 };
 
 export type Comment = {
   id: number;
   author: UserSummary;
-  recipeId?: number;
+  recipeId: number;
   upvoteCount: number;
   content: string;
   hasSelfUpvoted: boolean;
