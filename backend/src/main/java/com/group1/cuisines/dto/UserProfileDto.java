@@ -13,6 +13,7 @@ public class UserProfileDto {
     private String username;
     private String name;
     private String bio;
+    private boolean selfFollowing;
     private Integer followersCount;
     private Integer followingCount;
     //private String gender;
