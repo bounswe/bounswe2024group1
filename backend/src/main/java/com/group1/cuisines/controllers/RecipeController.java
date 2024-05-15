@@ -115,7 +115,7 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
-        List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
+        List<UserDto> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
         return ResponseEntity.ok(new SuccessResponse<>(200, whoBookmarked, "Bookmarks fetched successfully"));
     }
 
