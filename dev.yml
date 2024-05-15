@@ -29,8 +29,8 @@ services:
       DB_PASSWORD: admin
       SPRING_PROFILES_ACTIVE: docker
       DO_SPACES_ENDPOINT: "http://s3mock:9090"
-      DO_SPACES_ACCESS_KEY: "minioadmin"
-      DO_SPACES_SECRET_KEY: "minioadmin"
+      DO_SPACES_ACCESS_KEY: "---"
+      DO_SPACES_SECRET_KEY: "---"
       DO_SPACES_BUCKET: "cuisines"
     depends_on:
       - db
