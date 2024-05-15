@@ -126,7 +126,7 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
 
         if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
-            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId());
+            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId()).orElse(null);
             if (existingRating != null) {
                 return false; // Indicates that the user has already rated
             }
@@ -185,40 +185,7 @@ public class RecipeService {
 
     public RecipeDetailsDto getRecipeById(Integer recipeId) {
         Optional<Recipe> recipe = recipeRepository.findById(recipeId);
-
-
-        if (recipe.isPresent()) {
-            CuisineDto cuisineDto = new CuisineDto();
-            Recipe r = recipe.get();
-            if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
-
-                    cuisineDto.setId(r.getDish().getCuisines().get(0).getId());
-                    cuisineDto.setName(r.getDish().getCuisines().get(0).getName());
-
-            }
-            else if(r.getDish() != null && r.getDish().getCuisines().isEmpty()){
-                cuisineDto.setId("No cuisine Id from wikidata");
-                cuisineDto.setName("No cuisine name from wikidata");
-            }
-            // Conversion from Recipe entity to RecipeDetailsDto
-            return new RecipeDetailsDto(
-                    r.getId(),
-                    r.getTitle(),
-
-                    r.getInstructions(),
-                    r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()),
-
-                    r.getCookingTime(),
-                    r.getServingSize(),
-                    cuisineDto,
-
-                    new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
-                    r.getAverageRating(),
-                    new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(),r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
-
-            );
-        }
-        return null;
+        return recipe.map(this::convertToRecipeDto).orElse(null);
     }
 
     public List<RecipeDetailsDto> getRecipesByType(String type, @Nullable String username) {
@@ -237,7 +204,7 @@ public class RecipeService {
         return new ArrayList<>();  // Return an empty list if username is null or other conditions are not met
     }
 
-    private RecipeDetailsDto convertToRecipeDto(Recipe r) {
+    public RecipeDetailsDto convertToRecipeDto(Recipe r) {
         CuisineDto cuisineDto = new CuisineDto();
         if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
 
@@ -250,21 +217,18 @@ public class RecipeService {
             cuisineDto.setName("No cuisine name from wikidata");
         }
         // Conversion logic here
-        return new RecipeDetailsDto(
-                r.getId(),
-                r.getTitle(),
-
-                r.getInstructions(),
-                r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()),
-
-                r.getCookingTime(),
-                r.getServingSize(),
-                cuisineDto,
-
-                new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()),
-                r.getAverageRating(),
-                new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(),r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount())
-
-        );
+        return RecipeDetailsDto.builder()
+                .id(r.getId())
+                .name(r.getTitle())
+                .instructions(r.getInstructions())
+                .ingredients(r.getIngredients().stream().map(ingredient -> new IngredientsDto( ingredient.getName())).collect(Collectors.toList()))
+                .cookTime(r.getCookingTime())
+                .servingSize(r.getServingSize())
+                .cuisine(cuisineDto)
+                .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
+                .avgRating(r.getAverageRating())
+                .userRating(ratingRepository.findByRecipeIdAndUserId(r.getId(), r.getUser().getId()).map(Rating::getRatingValue).orElse(null))
+                .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
+                .build();
     }
 }

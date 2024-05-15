@@ -6,6 +6,7 @@ import com.group1.cuisines.entities.Ingredient;
 import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeDetailsDto {
@@ -21,6 +22,7 @@ public class RecipeDetailsDto {
     private CuisineDto cuisine;
     private DishDto dish;
     private Double avgRating;
+    private Integer userRating;
 
     private AuthorDto author;
 

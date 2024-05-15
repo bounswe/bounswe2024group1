@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface RatingRepository extends JpaRepository<Rating,Integer> {
-    Rating findByRecipeIdAndUserId(Integer recipeId, Integer userId);
+    Optional<Rating> findByRecipeIdAndUserId(Integer recipeId, Integer userId);
 
 }
