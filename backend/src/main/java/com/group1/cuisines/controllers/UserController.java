@@ -45,20 +45,16 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails instanceof com.group1.cuisines.entities.User) {
-            User user = (User) userDetails;
-            Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("username", user.getUsername());
-            userInfo.put("email", user.getEmail());
-            userInfo.put("bio", user.getBio());
-            userInfo.put("country", user.getCountry());
-
-            return ResponseEntity.ok(userInfo);
+        if (userDetails != null) {
+            User user = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+            if (user != null) {
+                UserProfileDto userProfile = userService.getUserProfileById(user.getId(), userDetails.getUsername());
+                return ResponseEntity.ok(new SuccessResponse<>(200,userProfile, "User profile fetched successfully"));
+            }
         }
-
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
-
     }
+
     @DeleteMapping("/{userId}/unfollow")
     public ResponseEntity<?> unfollowUser(@PathVariable Integer userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
