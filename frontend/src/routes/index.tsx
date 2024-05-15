@@ -5,7 +5,6 @@ import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search } from "./search";
 import { Feed } from "./feed";
-import { Comments } from "./commentsPage";
 import { NavbarLayout } from "../components/NavbarLayout";
 
 export const routes: RouteObject[] = [
@@ -24,10 +23,6 @@ export const routes: RouteObject[] = [
   {
     path: "/feed",
     Component: Feed,
-  },
-  {
-    path: "/commentsPage",
-    Component: Comments,
   },
   {
     index: true,

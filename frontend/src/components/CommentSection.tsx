@@ -1,15 +1,16 @@
-import { Comment } from "../components/Comment";
-import { FullscreenLoading } from "../components/FullscreenLoading";
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
+import { Comment } from "./Comment";
+import { FullscreenLoading } from "./FullscreenLoading";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetCommentsForRecipe } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
 
-export const Comments = () => {
+
+export const Comments = ({recipeId}: {recipeId : number}) => {
   const navigate = useNavigate();
   const { data: commentData, isLoading, error } = useGetCommentsForRecipe({
-    pathParams: { recipeId: 123 }, // Update the recipeId with the actual recipeId
+    pathParams: { recipeId },
   });
 
   if (isLoading) {
