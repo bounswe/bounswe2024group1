@@ -1,67 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { Icon } from 'react-native-elements';
-
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { Icon } from "react-native-elements";
 
 const BookmarksScreen = () => {
   //const [bookmarks, setBookmarks] = useState([]);
 
- // useEffect(() => {
-    // Fetch the bookmarks from the server
-    //get('bookmarks')
-    //  .then(response => {
-    //    setBookmarks(response.data);
-    //  })
-    //  .catch(error => {
-    //    console.error(error);
-    //  });
+  // useEffect(() => {
+  // Fetch the bookmarks from the server
+  //get('bookmarks')
+  //  .then(response => {
+  //    setBookmarks(response.data);
+  //  })
+  //  .catch(error => {
+  //    console.error(error);
+  //  });
   //}, []);
 
-  /*PLACEHOLDER*/  /*PLACEHOLDER*/ 
-   /*PLACEHOLDER*/   /*PLACEHOLDER*/  
-  const bookmarks = []
-  bookmarks[0]={
-    image:require('@/assets/temp2.png'),
-    title:'matnti',
-    author:'yigit',
-    rating:'4.9',
-    id:1
-  }
-  bookmarks[1]={
-    image:require('@/assets/temp2.png'),
-    title:'matnti',
-    author:'yigit',
-    rating:'4.9',
-    id:1
-  }
-  bookmarks[2]={
-    image:require('@/assets/bookmarktemp.png'),
-    title:'matnti',
-    author:'yigit',
-    rating:'4.9',
-    id:1
-  }
-  bookmarks[3]={
-    image:require('@/assets/bookmarktemp.png'),
-    title:'matnti',
-    author:'yigit',
-    rating:'4.9',
-    id:1
-  }
+  /*PLACEHOLDER*/ /*PLACEHOLDER*/
+  /*PLACEHOLDER*/ /*PLACEHOLDER*/
+  const bookmarks = [];
+  bookmarks[0] = {
+    image: require("@/assets/temp2.png"),
+    title: "matnti",
+    author: "yigit",
+    rating: "4.9",
+    id: 1,
+  };
+  bookmarks[1] = {
+    image: require("@/assets/temp2.png"),
+    title: "matnti",
+    author: "yigit",
+    rating: "4.9",
+    id: 1,
+  };
+  bookmarks[2] = {
+    image: require("@/assets/bookmarktemp.png"),
+    title: "matnti",
+    author: "yigit",
+    rating: "4.9",
+    id: 1,
+  };
+  bookmarks[3] = {
+    image: require("@/assets/bookmarktemp.png"),
+    title: "matnti",
+    author: "yigit",
+    rating: "4.9",
+    id: 1,
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.bookmarkItem}>
-      <Image source={item.image} className="w-full h-40" resizeMode='cover' />
+      <Image source={item.image} className="w-full h-40" resizeMode="cover" />
       {item.isVideo && (
         <View style={styles.overlay}>
-          <Icon name="play-circle-outline" type="material" size={48} color="#fff" />
+          <Icon
+            name="play-circle-outline"
+            type="material"
+            size={48}
+            color="#fff"
+          />
         </View>
       )}
       <View style={styles.details}>
         <View style={styles.header}>
           <Text style={styles.title}>{item.title}</Text>
           <TouchableOpacity style={styles.menuIcon}>
-            <Icon name="dots-horizontal" type="material-community" size={24} color="#888" />
+            <Icon
+              name="dots-horizontal"
+              type="material-community"
+              size={24}
+              color="#888"
+            />
           </TouchableOpacity>
         </View>
         <Text style={styles.author}>By {item.author}</Text>
@@ -71,20 +87,23 @@ const BookmarksScreen = () => {
         </View>
       </View>
       <TouchableOpacity style={styles.bookmarkIcon}>
-      <Image className='w-24 h-24 absolute right-0' source={require("../../../assets/bookmarklogo.png")}/>
+        <Image
+          className="w-24 h-24 absolute right-0"
+          source={require("../../../assets/bookmarklogo.png")}
+        />
       </TouchableOpacity>
     </View>
   );
-  
+
   return (
     <View className="flex-col bg-white px-6 py-20">
       <Text className="text-3xl font-semibold">Bookmarks</Text>
-      <View className='w-48 bg-white mt-6 h-10 bg-app-red rounded-xl'></View>
+      <View className="w-48 bg-white mt-6 h-10 bg-app-red rounded-xl" />
       <FlatList
-       className='mt-4'
+        className="mt-4"
         data={bookmarks}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );
@@ -94,64 +113,62 @@ const BookmarksScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    
+    backgroundColor: "#fff",
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 10,
   },
   redBox: {
     width: 50,
     height: 5,
-    backgroundColor: 'red',
+    backgroundColor: "red",
     marginBottom: 10,
   },
   bookmarkItem: {
-    display:'inline-block',
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     marginVertical: 10,
     borderRadius: 10,
     elevation: 1,
 
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   image: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   details: {
     padding: 10,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     flex: 1,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   author: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginTop: 5,
   },
   ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 5,
   },
   rating: {
@@ -159,7 +176,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   bookmarkIcon: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: -18,
   },
@@ -167,6 +184,5 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 });
-
 
 export default BookmarksScreen;
