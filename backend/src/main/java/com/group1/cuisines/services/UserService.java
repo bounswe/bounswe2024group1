@@ -167,8 +167,8 @@ public class UserService {
                cuisineDto,
                 new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),
                 recipe.getAverageRating(),
-                new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName(),
-                       recipe.getUser().getFollowingCount(), recipe.getUser().getFollowerCount(),recipe.getUser().getRecipeCount())
+                new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName()+ " " + recipe.getUser().getLastName() ,
+                       recipe.getUser().getFollowerCount(), recipe.getUser().getFollowingCount(),recipe.getUser().getRecipeCount())
         );
     }
 
@@ -200,7 +200,27 @@ public class UserService {
                 new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),
                 recipe.getAverageRating(),
                 new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName(),
-                      recipe.getUser().getFollowingCount(),  recipe.getUser().getFollowerCount(),recipe.getUser().getRecipeCount())
+                      recipe.getUser().getFollowerCount(),  recipe.getUser().getFollowingCount(),recipe.getUser().getRecipeCount())
         );
+    }
+
+    public UserProfileDto getUserProfileDtoById(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        // Map the User entity to UserProfileDto, possibly using ModelMapper or manual mapping
+        UserProfileDto profile = new UserProfileDto();
+        profile.setId(user.getId());
+        profile.setUsername(user.getUsername());
+        profile.setName(user.getFirstName() + " " + user.getLastName());
+        profile.setBio(user.getBio());
+        profile.setFollowersCount(user.getFollowers().size());
+        profile.setFollowingCount(user.getFollowing().size());
+        profile.setRecipeCount(user.getRecipes().size());
+        profile.setRecipes(user.getRecipes().stream()
+                .map(this::convertToRecipeDetailsDto)
+                .collect(Collectors.toList()));
+        return profile;
     }
 }
