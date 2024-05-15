@@ -129,7 +129,7 @@ public class UserService {
         profile.setFollowingCount(user.getFollowing().size());
         profile.setRecipeCount(user.getRecipes().size());
         profile.setRecipes(user.getRecipes().stream()
-                .map(recipeService::convertToRecipeDto)
+                .map(recipeService::convertToRecipeDetailsDto)
                 .collect(Collectors.toList()));
 
         if (isSelf) {
@@ -191,7 +191,7 @@ public class UserService {
         profile.setFollowingCount(user.getFollowing().size());
         profile.setRecipeCount(user.getRecipes().size());
         profile.setRecipes(user.getRecipes().stream()
-                .map(this::convertToRecipeDetailsDto)
+                .map(recipeService::convertToRecipeDetailsDto)
                 .collect(Collectors.toList()));
         return profile;
     }

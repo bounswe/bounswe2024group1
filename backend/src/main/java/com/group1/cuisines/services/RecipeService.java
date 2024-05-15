@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeService {
     @Autowired
-        private AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
     private IngredientsRepository ingredientRepository;
 
@@ -187,26 +187,26 @@ public class RecipeService {
 
     public RecipeDetailsDto getRecipeById(Integer recipeId) {
         Optional<Recipe> recipe = recipeRepository.findById(recipeId);
-        return recipe.map(this::convertToRecipeDto).orElse(null);
+        return recipe.map(this::convertToRecipeDetailsDto).orElse(null);
     }
 
     public List<RecipeDetailsDto> getRecipesByType(String type, @Nullable String username) {
         if ("explore".equals(type)) {
             return recipeRepository.findAll().stream()
-                    .map(this::convertToRecipeDto)
+                    .map(this::convertToRecipeDetailsDto)
                     .collect(Collectors.toList());
         } else if ("following".equals(type) && username != null) {
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             return user.getFollowing().stream()
                     .flatMap(followingUser -> followingUser.getRecipes().stream())
-                    .map(this::convertToRecipeDto)
+                    .map(this::convertToRecipeDetailsDto)
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();  // Return an empty list if username is null or other conditions are not met
     }
 
-    public RecipeDetailsDto convertToRecipeDto(Recipe r) {
+    public RecipeDetailsDto convertToRecipeDetailsDto(Recipe r) {
         CuisineDto cuisineDto = new CuisineDto();
         if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
 
