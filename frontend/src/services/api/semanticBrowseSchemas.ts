@@ -68,7 +68,7 @@ export type UserSummary = {
 };
 
 /**
- * @example {"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","description":"ball-shaped Japanese snack with octopus","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","countries":"Japan","ingredients":"wheat flour, green laver, octopus as food, beni shōga, katsuobushi, Welsh onion","foodTypes":"konamono, octopus dish, yakimono","cuisines":"Japanese cuisine"}
+ * @example {"id":"Q905527","name":"takoyaki","description":"ball-shaped Japanese snack with octopus","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","countries":"Japan","ingredients":"wheat flour, green laver, octopus as food, beni shōga, katsuobushi, Welsh onion","foodTypes":"konamono, octopus dish, yakimono","cuisines":"Japanese cuisine"}
  */
 export type DishDetails = {
   id: string;
@@ -157,7 +157,7 @@ export type RecipeDetails = {
 };
 
 /**
- * @example {"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","instructions":["Mix the batter.","Add the octopus.","Cook the takoyaki balls."],"ingredients":["wheat flour","green laver","octopus as food","beni shōga","katsuobushi","Welsh onion"],"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"prepTime":"10 minutes","cookTime":"30 minutes","servingSize":4,"allergens":["seafood"],"dishId":1}
+ * @example {"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","instructions":["Mix the batter.","Add the octopus.","Cook the takoyaki balls."],"ingredients":["wheat flour","green laver","octopus as food","beni shōga","katsuobushi","Welsh onion"],"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"prepTime":"10 minutes","cookTime":"30 minutes","servingSize":4,"allergens":["seafood"],"dishId":"Q905527"}
  */
 export type NewRecipe = {
   name: string;
@@ -165,11 +165,11 @@ export type NewRecipe = {
   instructions: string[];
   ingredients: string[];
   images?: Blob[];
-  prepTime: string;
-  cookTime: string;
+  prepTime: number;
+  cookTime: number;
   servingSize: number;
   allergens?: string[];
-  dishId?: number;
+  dishId?: string;
 };
 
 /**
@@ -184,7 +184,7 @@ export type CuisineSummary = {
  * @example {"id":1,"name":"takoyaki"}
  */
 export type DishSummary = {
-  id: number;
+  id: string;
   name: string;
   countries?: string;
 };

@@ -498,7 +498,7 @@ paths:
           name: dishId
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: OK
@@ -1098,7 +1098,7 @@ components:
     DishDetails:
       type: object
       examples:
-        - id: "http://www.wikidata.org/entity/Q905527"
+        - id: "Q905527"
           name: "takoyaki"
           description: "ball-shaped Japanese snack with octopus"
           image: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
@@ -1366,9 +1366,9 @@ components:
             type: string
             format: binary
         prepTime:
-          type: string
+          type: number
         cookTime:
-          type: string
+          type: number
         servingSize:
           type: integer
         allergens:
@@ -1376,7 +1376,7 @@ components:
           items:
             type: string
         dishId:
-          type: integer
+          type: string
       examples:
         - name: "My Takoyaki Recipe"
           description: "A delicious takoyaki recipe that I learned from my grandmother."
@@ -1398,7 +1398,7 @@ components:
           servingSize: 4
           allergens:
             - "seafood"
-          dishId: 1
+          dishId: "Q905527"
 
     CuisineSummary:
       type: object
@@ -1417,7 +1417,7 @@ components:
       required: ["id", "name"]
       properties:
         id:
-          type: integer
+          type: string
         name:
           type: string
         countries:

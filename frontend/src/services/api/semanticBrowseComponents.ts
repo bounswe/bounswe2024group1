@@ -939,7 +939,7 @@ export const useSearchDishes = <TData = SearchDishesResponse>(
 };
 
 export type GetDishByIdPathParams = {
-  dishId: number;
+  dishId: string;
 };
 
 export type GetDishByIdError = Fetcher.ErrorWrapper<{

@@ -20,12 +20,14 @@ import ErrorAlert from "@/components/ErrorAlert";
 export default function RecipePage() {
   const { recipeId } = useParams();
 
-  const { data, isLoading, error, refetch } = useGetRecipeById({
-    pathParams: { recipeId: recipeId ? Number(recipeId) : -1 },
-    queryParams: {
+  const { data, isLoading, error, refetch } = useGetRecipeById(
+    {
+      pathParams: { recipeId: recipeId ? Number(recipeId) : -1 },
+    },
+    {
       enabled: !!recipeId,
     },
-  });
+  );
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 

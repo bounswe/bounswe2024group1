@@ -12,12 +12,16 @@ export default function Profile() {
   const { userId = "" } = useParams<{ userId: string }>();
   const me = userId === "me";
 
-  const { isLoading, data, error } = useGetUserById({
-    pathParams: { userId: me ? ("me" as unknown as number) : parseInt(userId) },
-    queryParams: {
-      enabled: !me && !isNaN(Number(userId)),
+  const { isLoading, data, error } = useGetUserById(
+    {
+      pathParams: {
+        userId: me ? ("me" as unknown as number) : parseInt(userId),
+      },
     },
-  });
+    {
+      enabled: me || !isNaN(Number(userId)),
+    },
+  );
 
   if (!me && isNaN(Number(userId))) {
     return <h1>Invalid user id</h1>;
