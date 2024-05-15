@@ -34,7 +34,6 @@ const links = [{ name: "Home", path: "/" }] as const;
 export const NavbarLayout = () => {
   const fetcher = useFetcher();
   const isAuthenticated = !!useAuthStore().token;
-  const navigate = useNavigate();
   const navigation = useNavigation();
 
   return (
@@ -123,6 +122,13 @@ export const NavbarLayout = () => {
                   <Link to="/users/me">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/bookmarks">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Bookmarks</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
