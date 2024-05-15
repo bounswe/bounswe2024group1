@@ -2,14 +2,12 @@ import React from 'react';
 import { Recipe } from "../components/Recipe";
 import { FullscreenLoading } from "../components/FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
-import { AlertCircle, Filter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { AlertCircle } from "lucide-react";
 import { useGetMe } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
 
 // Inside the Bookmarks component
 export const Bookmarks = () => {
-  const navigate = useNavigate();
   const { data: bookmarksData, isLoading, error } = useGetMe({});
 
   if (isLoading) {
