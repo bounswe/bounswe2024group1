@@ -74,6 +74,17 @@ public class UserService {
         }
         return false;
     }
+    public boolean isFollowing(Integer followerId, Integer followedId) {
+        if (followerId == null || followedId == null) {
+            return false;
+        }
+        User follower = userRepository.findById(followerId).orElse(null);
+        User followed = userRepository.findById(followedId).orElse(null);
+        if (follower != null && followed != null) {
+            return follower.getFollowing().contains(followed);
+        }
+        return false;
+    }
     public Set<User> getUserFollowing(Integer userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -117,6 +128,7 @@ public class UserService {
     public UserProfileDto getUserProfileById(Integer userId, String currentUsername) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Integer currentUserId = userRepository.findUserIdByUsername(currentUsername);
 
         boolean isSelf = user.getUsername().equals(currentUsername);
 
@@ -125,6 +137,7 @@ public class UserService {
         profile.setUsername(user.getUsername());
         profile.setName(user.getFirstName() + " " + user.getLastName());
         profile.setBio(user.getBio());
+        profile.setSelfFollowing(isFollowing(currentUserId, userId));
         profile.setFollowersCount(user.getFollowers().size());
         profile.setFollowingCount(user.getFollowing().size());
         profile.setRecipeCount(user.getRecipes().size());
@@ -215,6 +228,7 @@ public class UserService {
         profile.setUsername(user.getUsername());
         profile.setName(user.getFirstName() + " " + user.getLastName());
         profile.setBio(user.getBio());
+
         profile.setFollowersCount(user.getFollowers().size());
         profile.setFollowingCount(user.getFollowing().size());
         profile.setRecipeCount(user.getRecipes().size());

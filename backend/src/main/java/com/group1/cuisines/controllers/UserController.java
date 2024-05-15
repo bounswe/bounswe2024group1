@@ -7,6 +7,7 @@ import com.group1.cuisines.dto.UserProfileDto;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.repositories.UserRepository;
 import com.group1.cuisines.services.UserService;
+import com.sun.security.auth.UserPrincipal;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,9 +85,11 @@ public class UserController {
         }
 
         UserProfileDto followedUserDto = userService.getUserProfileDtoById(userId);
+
         if (followedUserDto == null) {
             return ResponseEntity.ok(new ErrorResponse(404, "User not found"));
         }
+        followedUserDto.setSelfFollowing(false);
         return ResponseEntity.ok(new SuccessResponse<>(200,followedUserDto,"Unfollowed successfully"));
     }
 
@@ -121,6 +124,7 @@ public class UserController {
         if (followedUserDto == null) {
             return ResponseEntity.ok(new ErrorResponse(404, "User not found"));
         }
+        followedUserDto.setSelfFollowing(true);
 
         return ResponseEntity.ok(new SuccessResponse<>(200,followedUserDto,"Followed successfully"));
     }
@@ -134,17 +138,27 @@ public class UserController {
         if(userRepository.findById(userId).isEmpty()){
             return ResponseEntity.ok(new ErrorResponse(204,"User not found")  );
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer currentUserId = null;
+        if (authentication.getPrincipal()!="anonymousUser" && authentication != null && authentication.isAuthenticated()) {
+            currentUserId = ((User) authentication.getPrincipal()).getId();
+        }
+        else{
+            currentUserId=null;
+        }
 
         Set<User> following = userService.getUserFollowing(userId);
         if (following.isEmpty()) {
             return ResponseEntity.ok(new ErrorResponse(204,"User is not following anyone"));
         } else {
+            Integer finalCurrentUserId = currentUserId;
             Set<UserDto> followingDto = following.stream()
                     .map(user -> UserDto.builder()
                             .id(user.getId())
                             .username(user.getUsername())
                             .firstName(user.getFirstName())
                             .lastName(user.getLastName())
+                            .selfFollowing(userService.isFollowing(finalCurrentUserId, user.getId()))
                             .followerCount(user.getFollowerCount())
                             .followingCount(user.getFollowingCount())
                             .recipeCount(user.getRecipeCount())
@@ -163,16 +177,29 @@ public class UserController {
         if(userRepository.findById(userId).isEmpty()){
             return ResponseEntity.ok(new ErrorResponse(204,"User not found")  );
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer currentUserId = null;
+        if (authentication.getPrincipal()!="anonymousUser" && authentication != null && authentication.isAuthenticated()) {
+            currentUserId = ((User) authentication.getPrincipal()).getId();
+        }
+        else{
+            currentUserId=null;
+        }
+
+
+
         Set<User> followers = userService.getUserFollower(userId);
         if (followers.isEmpty()) {
             return ResponseEntity.ok(new ErrorResponse(204,"User is not followed by anyone"));
         } else {
+            Integer finalCurrentUserId = currentUserId;
             Set<UserDto> followingDto = followers.stream()
                     .map(user -> UserDto.builder()
                             .id(user.getId())
                             .username(user.getUsername())
                             .firstName(user.getFirstName())
                             .lastName(user.getLastName())
+                            .selfFollowing(userService.isFollowing(finalCurrentUserId, user.getId()))
                             .followerCount(user.getFollowerCount())
                             .followingCount(user.getFollowingCount())
                             .recipeCount(user.getRecipeCount())
