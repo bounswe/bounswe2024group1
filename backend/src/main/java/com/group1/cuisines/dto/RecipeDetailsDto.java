@@ -23,6 +23,7 @@ public class RecipeDetailsDto {
     private CuisineDto cuisine;
     private DishDto dish;
     private Double avgRating;
+    private Integer ratingsCount;
     private Integer selfRating;
 
     private AuthorDto author;

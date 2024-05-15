@@ -42,15 +42,7 @@ public class RecipeService {
         List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
 
         return recipes.stream()
-                .map(recipe -> new RecipeDto(
-                        recipe.getId(),
-                        recipe.getTitle(),
-                        recipe.getInstructions(),
-                        recipe.getPrepTime(),
-                        recipe.getCookTime(),
-                        recipe.getServingSize(),
-                        recipe.getAverageRating(),
-                        recipe.getTitle()))
+                .map(RecipeDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -89,15 +81,7 @@ public class RecipeService {
         recipe = recipeRepository.save(recipe);
         user.get().setRecipeCount(user.get().getRecipeCount() + 1);
 
-
-            return RecipeDetailDto.builder()
-                    .id(recipe.getId())
-                    .title(recipe.getTitle())
-                    .instructions(recipe.getInstructions())
-                    .prepTime(recipe.getPrepTime())
-                    .cookTime(recipe.getCookTime())
-                    .dishName(recipe.getDish().getName())
-                    .build();
+        return new RecipeDetailDto(recipe);
 
     }
 
@@ -235,6 +219,7 @@ public class RecipeService {
                 .cuisine(cuisineDto)
                 .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
                 .avgRating(r.getAverageRating())
+                .ratingsCount(r.getRatings().size())
                 .selfRating(userRating)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
