@@ -1116,7 +1116,12 @@ components:
         countries:
           type: string
         ingredients:
-          type: string
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
         foodTypes:
           type: string
         cuisine:
@@ -1241,7 +1246,12 @@ components:
         ingredients:
           type: array
           items:
-            type: string
+            type: object
+            properties:
+              name:
+                type: string
+              amount:
+                type: string
         images:
           type: array
           items:
@@ -1278,15 +1288,29 @@ components:
             - "Add the octopus."
             - "Cook the takoyaki balls."
           ingredients:
-            - "wheat flour"
-            - "green laver"
-            - "octopus as food"
-            - "beni shōga"
-            - "katsuobushi"
-            - "Welsh onion"
+            - name: "wheat flour"
+              amount: "1 cup"
+            - name: "green laver"
+              amount: "1/4 cup"
+            - name: "octopus as food"
+              amount: "1 cup"
+            - name: "beni shōga"
+              amount: "1 cup"
+            - name: "katsuobushi"
+              amount: "1 cup"
+            - name: "Welsh onion"
+              amount: "1 cup"
+          author:
+            id: 1
+            username: "takoyaki_lover"
+            name: "Takoyaki Lover"
+            followersCount: 100
+            profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+            recipeCount: 10
+            avgRating: 4.
           images:
             - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
-          cookTime: "30 minutes"
+          cookTime: 30
           servingSize: 4
           allergens:
             - "seafood"
@@ -1297,6 +1321,7 @@ components:
             id: "http://www.wikidata.org/entity/Q905527"
             name: "takoyaki"
             image: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          selfRating: 5
           avgRating: 4.5
           ratingsCount: 10
 
@@ -1381,6 +1406,8 @@ components:
         id:
           type: integer
         name:
+          type: string
+        countries:
           type: string
       examples:
         - id: 1
