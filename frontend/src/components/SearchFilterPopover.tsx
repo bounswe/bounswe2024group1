@@ -16,17 +16,24 @@ const predefinedCuisines = [
 ];
 const predefinedTypeOfFood = ["Meat", "Baked", "Dairy", "Eggs"];
 
-export default function SearchFilterPopover({
-  cuisine,
-  setCuisine,
-  foodType,
-  setFoodType,
-}: {
+type CuisineFilter = {
   cuisine: string;
   setCuisine: (cuisine: string) => void;
+};
+type FoodTypeFilter = {
   foodType: string;
   setFoodType: (foodType: string) => void;
-}) {
+};
+export default function SearchFilterPopover(
+  props: (object | CuisineFilter) & (object | FoodTypeFilter),
+) {
+  const {
+    cuisine = "",
+    foodType = "",
+    setCuisine = null,
+    setFoodType = null,
+  } = props as CuisineFilter & FoodTypeFilter;
+
   const [tempCuisine, setTempCuisine] = useState(cuisine);
   const [tempFoodType, setTempFoodType] = useState(foodType);
 
@@ -63,40 +70,50 @@ export default function SearchFilterPopover({
         <PopoverClose aria-label="Close" className="absolute right-4 top-4">
           <XIcon />
         </PopoverClose>
-        <h4 className="text-2xl font-bold">Filter</h4>
-        <div className="flex flex-col gap-3">
-          <h5 className="text-xl font-semibold">Cuisine</h5>
-          <div className="flex flex-wrap gap-3 gap-y-2">
-            {predefinedCuisines.map((cuisine) => (
-              <FilterCheckbox
-                key={cuisine}
-                label={cuisine}
-                checked={tempCuisine === cuisine}
-                onChange={(e) =>
-                  setTempCuisine(e.target.checked ? cuisine : "")
-                }
-              />
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <h5 className="text-xl font-semibold">Type of Food</h5>
-          <div className="flex flex-wrap gap-3 gap-y-2">
-            {predefinedTypeOfFood.map((type) => (
-              <FilterCheckbox
-                key={type}
-                label={type}
-                checked={tempFoodType === type}
-                onChange={(e) => setTempFoodType(e.target.checked ? type : "")}
-              />
-            ))}
-          </div>
-        </div>
+        {setCuisine && (
+          <>
+            <h4 className="text-2xl font-bold">Filter</h4>
+            <div className="flex flex-col gap-3">
+              <h5 className="text-xl font-semibold">Cuisine</h5>
+              <div className="flex flex-wrap gap-3 gap-y-2">
+                {predefinedCuisines.map((cuisine) => (
+                  <FilterCheckbox
+                    key={cuisine}
+                    label={cuisine}
+                    checked={tempCuisine === cuisine}
+                    onChange={(e) =>
+                      setTempCuisine(e.target.checked ? cuisine : "")
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+        {setFoodType && (
+          <>
+            <div className="flex flex-col gap-3">
+              <h5 className="text-xl font-semibold">Type of Food</h5>
+              <div className="flex flex-wrap gap-3 gap-y-2">
+                {predefinedTypeOfFood.map((type) => (
+                  <FilterCheckbox
+                    key={type}
+                    label={type}
+                    checked={tempFoodType === type}
+                    onChange={(e) =>
+                      setTempFoodType(e.target.checked ? type : "")
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
         <PopoverClose asChild>
           <Button
             onClick={() => {
-              setCuisine(tempCuisine);
-              setFoodType(tempFoodType);
+              setCuisine?.(tempCuisine);
+              setFoodType?.(tempFoodType);
             }}
             className="self-end"
           >

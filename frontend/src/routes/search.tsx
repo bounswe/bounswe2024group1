@@ -14,7 +14,11 @@ export const Search = () => {
     isLoading,
     error,
   } = useSearchDishes<SearchDishesResponse>({
-    queryParams: { q: params.get("q") ?? "" },
+    queryParams: {
+      q: params.get("q") ?? "",
+      ...(params.get("cuisine") ? { cuisine: params.get("cuisine")! } : {}),
+      ...(params.get("foodType") ? { foodType: params.get("foodType")! } : {}),
+    },
   });
 
   if (isLoading) {
