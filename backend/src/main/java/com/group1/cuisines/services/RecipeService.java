@@ -171,6 +171,23 @@ public class RecipeService {
         return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
     }
 
+    public boolean deleteBookmark(Integer recipeId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null){
+            return false;
+        }
+        Optional<Bookmark> bookmark = bookmarkRepository.findByUserIdAndRecipeId(user.getId(), recipeId);
+        if (bookmark.isEmpty()){
+            return false;
+        }
+        bookmarkRepository.delete(bookmark.get());
+        return true;
+    }
+
 
     public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
         return commentRepository.findByRecipeId(recipeId).stream()
