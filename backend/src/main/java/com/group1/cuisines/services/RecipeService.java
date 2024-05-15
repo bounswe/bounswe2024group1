@@ -235,7 +235,7 @@ public class RecipeService {
                 .cuisine(cuisineDto)
                 .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
                 .avgRating(r.getAverageRating())
-                .userRating(userRating)
+                .selfRating(userRating)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
     }
