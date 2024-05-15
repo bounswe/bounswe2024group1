@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { UserSummary } from "@/services/api/semanticBrowseSchemas";
 
