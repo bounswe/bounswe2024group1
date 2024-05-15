@@ -1,4 +1,11 @@
-import { CircleUser, Menu, Package2, UtensilsCrossed } from "lucide-react";
+import {
+  CircleUser,
+  LogOut,
+  Menu,
+  Package2,
+  User,
+  UtensilsCrossed,
+} from "lucide-react";
 import {
   Link,
   NavLink,
@@ -10,6 +17,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
@@ -108,17 +117,27 @@ export const NavbarLayout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                <div className="cursor-pointer text-sm font-medium hover:underline" onClick={() => navigate("/bookmarks")}> Bookmarks </div>
-                <form id="bookmarksForm" method="POST" action="/bookmarks" style={{ display: 'none' }}>
-                  {/* Hidden form for submission */}
-                </form>
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/users/me">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <fetcher.Form method="POST" action="/logout">
-                    <Button type="submit">Log out</Button>
-                  </fetcher.Form>
-                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <fetcher.Form
+                  className="contents"
+                  method="POST"
+                  action="/logout"
+                >
+                  <DropdownMenuItem asChild>
+                    <button type="submit">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </button>
+                  </DropdownMenuItem>
+                </fetcher.Form>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

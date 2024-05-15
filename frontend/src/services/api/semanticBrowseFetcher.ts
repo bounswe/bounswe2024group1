@@ -6,6 +6,7 @@ import {
   ErrorResponseObject,
   SuccessResponseObject,
 } from "./semanticBrowseSchemas";
+import { z } from "zod";
 
 const baseUrl = "/api/v1";
 
@@ -162,16 +163,36 @@ const resolveUrl = (
   );
 };
 
+export const errorSchema = z.object({
+  status: z.number().or(z.literal("unknown")),
+  payload: z.object({
+    status: z.number(),
+    errors: z
+      .array(
+        z.object({
+          field: z.string().optional(),
+          message: z.string(),
+        }),
+      )
+      .optional(),
+    message: z.string().optional(),
+  }),
+});
+
 export const renderError = (
-  error: ErrorWrapper<{ status: unknown; payload: ErrorResponseObject }>,
+  unknownError: unknown,
   excludeFieldErrors: boolean = false,
 ): string => {
+  if (!errorSchema.safeParse(unknownError).success) {
+    return "Unknown error";
+  }
+  const error = errorSchema.parse(unknownError);
   if (!("errors" in error.payload)) {
     return error.payload?.["message"] ?? "Unknown error";
   }
   const errors = excludeFieldErrors
-    ? error.payload.errors.filter((e) => !e.field)
-    : error.payload.errors;
+    ? error.payload.errors!.filter((e) => !e.field)
+    : error.payload.errors!;
 
   const fieldErrors = errors
     .filter((e) => !!e.field)

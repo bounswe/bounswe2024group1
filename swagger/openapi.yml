@@ -306,6 +306,8 @@ paths:
                     properties:
                       data:
                         $ref: "#/components/schemas/UserProfile"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
 
   /users/{userId}/following:
     get:
@@ -995,6 +997,8 @@ components:
           type: string
         followersCount:
           type: integer
+        followingCount:
+          type: integer
         gender:
           type: string
           enum: [male, female, unknown]
@@ -1007,6 +1011,8 @@ components:
             type: string
         recipeCount:
           type: integer
+        selfFollowing:
+          type: boolean
         bookmarks:
           type: array
           description: Only available when querying the current user's profile.
@@ -1022,9 +1028,11 @@ components:
           name: "Takoyaki Lover"
           bio: "I love takoyaki!"
           followersCount: 100
+          followingCount: 100
           gender: unknown
           profilePicture: "https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640"
           diets: ["keto"]
+          selfFollowing: true
           recipeCount: 10
           bookmarks:
             - id: 1
@@ -1070,6 +1078,8 @@ components:
         profilePicture:
           type: string
           format: uri
+        selfFollowing:
+          type: boolean
         recipeCount:
           type: integer
         avgRating:
@@ -1083,6 +1093,7 @@ components:
           profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
           recipeCount: 10
           avgRating: 4.5
+          selfFollowing: false
 
     DishDetails:
       type: object
@@ -1114,7 +1125,12 @@ components:
         countries:
           type: string
         ingredients:
-          type: string
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
         foodTypes:
           type: string
         cuisine:
@@ -1176,6 +1192,8 @@ components:
           items:
             type: string
             format: uri
+        selfBookmarked:
+          type: boolean
         avgRating:
           type: number
           format: float
@@ -1239,7 +1257,12 @@ components:
         ingredients:
           type: array
           items:
-            type: string
+            type: object
+            properties:
+              name:
+                type: string
+              amount:
+                type: string
         images:
           type: array
           items:
@@ -1257,6 +1280,8 @@ components:
           $ref: "#/components/schemas/CuisineSummary"
         dish:
           $ref: "#/components/schemas/DishSummary"
+        selfBookmarked:
+          type: boolean
         avgRating:
           type: number
           format: float
@@ -1276,15 +1301,29 @@ components:
             - "Add the octopus."
             - "Cook the takoyaki balls."
           ingredients:
-            - "wheat flour"
-            - "green laver"
-            - "octopus as food"
-            - "beni shōga"
-            - "katsuobushi"
-            - "Welsh onion"
+            - name: "wheat flour"
+              amount: "1 cup"
+            - name: "green laver"
+              amount: "1/4 cup"
+            - name: "octopus as food"
+              amount: "1 cup"
+            - name: "beni shōga"
+              amount: "1 cup"
+            - name: "katsuobushi"
+              amount: "1 cup"
+            - name: "Welsh onion"
+              amount: "1 cup"
+          author:
+            id: 1
+            username: "takoyaki_lover"
+            name: "Takoyaki Lover"
+            followersCount: 100
+            profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+            recipeCount: 10
+            avgRating: 4.
           images:
             - "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
-          cookTime: "30 minutes"
+          cookTime: 30
           servingSize: 4
           allergens:
             - "seafood"
@@ -1295,6 +1334,7 @@ components:
             id: "http://www.wikidata.org/entity/Q905527"
             name: "takoyaki"
             image: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          selfRating: 5
           avgRating: 4.5
           ratingsCount: 10
 
@@ -1379,6 +1419,8 @@ components:
         id:
           type: integer
         name:
+          type: string
+        countries:
           type: string
       examples:
         - id: 1

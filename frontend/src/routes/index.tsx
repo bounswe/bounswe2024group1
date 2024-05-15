@@ -6,6 +6,8 @@ import { signout } from "../services/auth";
 import { Search } from "./search";
 import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
+import Profile from "./profile";
+import RecipePage from "./recipe";
 import { Bookmarks } from "./bookmarks";
 
 export const routes: RouteObject[] = [
@@ -26,12 +28,20 @@ export const routes: RouteObject[] = [
     Component: Feed,
   },
   {
+    path: "/recipes/:recipeId",
+    Component: RecipePage,
+  },
+  {
     path: "/bookmarks",
     Component: Bookmarks,
   },
   {
     index: true,
     Component: IndexRoute,
+  },
+  {
+    path: "/users/:userId",
+    Component: Profile,
   },
   {
     path: "/logout",

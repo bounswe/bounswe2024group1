@@ -1,6 +1,5 @@
 import { SearchBar } from "../components/SearchBar";
 
-
 export function IndexRoute() {
   return (
     <>
