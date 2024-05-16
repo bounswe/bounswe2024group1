@@ -156,7 +156,7 @@ public class UserService {
 
         DishDto dishDto = null;
         if (recipe.getDish() != null) {
-            dishDto = new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage());
+            dishDto = new DishDto(recipe.getDish());
         }
 
         return new BookmarkDto(
