@@ -54,6 +54,7 @@ export default function BookmarkButton({
   const bookmarked = optimisticBookmarked ?? data?.data?.selfBookmarked;
 
   const variant = bookmarked && !isLoading ? "primary-outline" : "default";
+
   return (
     <Button
       disabled={!!error || isLoading}
