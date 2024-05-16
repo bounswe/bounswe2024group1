@@ -3,6 +3,7 @@ package com.group1.cuisines.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -11,9 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommentsDto {
     private Integer id;
-    private Integer userId;
+    private AuthorDto author;
     private Integer recipeId;
-    private String text;
-    private LocalDateTime createdDate;
-    private int upvoteCount;
+    private Integer upvoteCount;
+    private String content;
+    private LocalDateTime createdAt;
 }
