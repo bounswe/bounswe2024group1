@@ -1,0 +1,41 @@
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
+import { signout } from "./auth";
+import { toast } from "@/components/ui/use-toast";
+import { renderError } from "./api/semanticBrowseFetcher";
+
+const errorHandler = (error: Error) => {
+  if ("status" in error && error.status === 401) {
+    signout();
+    toast({
+      title: "Session expired",
+      description: "Please log in again",
+      variant: "destructive",
+    });
+
+    // navigate to /login
+    window.location.href =
+      "/login?from=" +
+      encodeURIComponent(window.location.pathname + window.location.search);
+  } else {
+    toast({
+      title: "An error occurred",
+      description: renderError(error),
+      variant: "destructive",
+    });
+  }
+};
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+  },
+  mutationCache: new MutationCache({
+    onError: errorHandler,
+  }),
+
+  queryCache: new QueryCache({
+    onError: errorHandler,
+  }),
+});

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Icon } from "react-native-elements";
-
+import RecipeCard from "@/src/components/RecipeCard";
 const BookmarksScreen = () => {
   //const [bookmarks, setBookmarks] = useState([]);
 
@@ -56,49 +56,13 @@ const BookmarksScreen = () => {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.bookmarkItem}>
-      <Image source={item.image} className="w-full h-40" resizeMode="cover" />
-      {item.isVideo && (
-        <View style={styles.overlay}>
-          <Icon
-            name="play-circle-outline"
-            type="material"
-            size={48}
-            color="#fff"
-          />
-        </View>
-      )}
-      <View style={styles.details}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{item.title}</Text>
-          <TouchableOpacity style={styles.menuIcon}>
-            <Icon
-              name="dots-horizontal"
-              type="material-community"
-              size={24}
-              color="#888"
-            />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.author}>By {item.author}</Text>
-        <View style={styles.ratingRow}>
-          <Icon name="star" size={20} color="gold" />
-          <Text style={styles.rating}>{item.rating}</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.bookmarkIcon}>
-        <Image
-          className="w-24 h-24 absolute right-0"
-          source={require("../../../assets/bookmarklogo.png")}
-        />
-      </TouchableOpacity>
-    </View>
+    <RecipeCard recipe={item}/>
   );
 
   return (
     <View className="flex-col bg-white px-6 py-20">
       <Text className="text-3xl font-semibold">Bookmarks</Text>
-      <View className="w-48 bg-white mt-6 h-10 bg-app-red rounded-xl" />
+      {/*<View className="w-48 bg-white mt-6 h-10 bg-app-red rounded-xl" />*/}
       <FlatList
         className="mt-4"
         data={bookmarks}

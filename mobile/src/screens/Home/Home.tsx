@@ -15,7 +15,10 @@ import Popular from "@/src/components/Popular";
 import Title from "@/src/components/Title";
 import { searchDishes } from "@/src/services/search";
 import DishCard from "@/src/components/Dish";
+import RecipeCard from "@/src/components/RecipeCard";
 
+import Following from "@/src/components/Following";
+import { SafeAreaView } from "react-native-safe-area-context";
 export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
@@ -52,10 +55,9 @@ export const Home = () => {
       image: 'https://example.com/image3.jpg', // Replace with actual image URL
     },
   ];
-
-
+ 
   return (
-    <ScrollView className="w-screen bg-white p-6 overflow-y-scroll">
+    <SafeAreaView className="w-screen bg-white  pt-6 pl-6 pr-6 h-full box-border">
       <View className="pt-6">
         <Title />
         <View
@@ -95,7 +97,8 @@ export const Home = () => {
           <Text style={[styles.tabText, selectedTab === 'Following' && styles.activeTabText]}>Following</Text>
         </TouchableOpacity>
       </View>
-      <Trending /> 
+      {selectedTab=='Trending'?
+      <Trending/>:<Following/>}
       {/*results.map((dish) => (
         <DishCard
           key={dish.id}
@@ -107,14 +110,32 @@ export const Home = () => {
         />
       ))}
     */}
-     <Popular /> 
-    </ScrollView>
+    <View style={styles.addrecipecontainer}>
+      <TouchableOpacity>
+      <Image source={ require('@/assets/AddRecipe.png')}  style={styles.addrecipe} resizeMode='contain' resizeMethod='scale' />
+      </TouchableOpacity>
+      </View>
+    
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  }, 
+  addrecipecontainer:{
+    position:'absolute',
+    left:'50%',
+    bottom:0,
+    zIndex:50
+  },
+  addrecipe: {
+    width: 48,
+    right: 0,
+    position:'relative',
+    height:48,
+    zIndex:20
   },
   tabContainer: {
     flexDirection: 'row',

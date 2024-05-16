@@ -1,33 +1,26 @@
 import { View, Text, TouchableOpacity, Image,FlatList } from 'react-native'
 import React from 'react'
-
-import RecipeCard from './RecipeCard'
-const Trending = () => {
-   
-  //const [bookmarks, setBookmarks] = useState([]);
-
+import RecipeCard from './RecipeCard';
+const Following = () => {
   const bookmarks = [];
   bookmarks[0] = {
     image: require("@/assets/temp2.png"),
     title: "matnti",
     author: "yigit",
     rating: "4.9",
-    time:'2 hours',
     id: 1,
   };
   bookmarks[1] = {
     image: require("@/assets/temp2.png"),
-    title: "matnti",
+    title: "matntiqwe",
     author: "yigit",
     rating: "4.9",
-    time:'2 hours',
     id: 1,
   };
   bookmarks[2] = {
     image: require("@/assets/bookmarktemp.png"),
     title: "matnti",
     author: "yigit",
-    time:'2 hours',
     rating: "4.9",
     id: 1,
   };
@@ -36,16 +29,14 @@ const Trending = () => {
     title: "matnti",
     author: "yigit",
     rating: "4.9",
-    time:'2 hours',
     id: 1,
   };
   const renderItem = ({ item }) => (
     <RecipeCard recipe={item}/>
   );
-
   return (
     <View className='pb-80'>
-       <View className="pt-8 flex-row items-center justify-between">
+        <View className="pt-8 flex-row items-center justify-between">
         <Text className="font-bold text-xl">Trending now 🔥</Text>
         <TouchableOpacity className="flex-row items-center">
           <Text className="text-app-red font-bold">See All</Text>
@@ -55,16 +46,16 @@ const Trending = () => {
           />
         </TouchableOpacity>
       </View>
-      
+      <View>
       <FlatList
         className="mt-4"
         data={bookmarks}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
       />
-      
-    </View>
+      </View>
+      </View>
   )
 }
 
-export default Trending
+export default Following

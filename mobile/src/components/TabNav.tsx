@@ -8,7 +8,7 @@ import Profile from '../screens/Profile/Profile';
 import NotificationsScreen from '../screens/Notifications/NotificationsScreen';
 export default function TabNav(){
     return(
-            <Tab.Navigator screenOptions={{ headerShown: false }}>
+            <Tab.Navigator  screenOptions={{ headerShown: false }}>
                 <Tab.Screen name='Home' component={Home}/>
                 <Tab.Screen name='Bookmarks' component={BookmarksScreen}/>
                 <Tab.Screen name='Notifications' component={NotificationsScreen}/>
