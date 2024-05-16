@@ -115,8 +115,23 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
-        List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
+        List<UserDto> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
         return ResponseEntity.ok(new SuccessResponse<>(200, whoBookmarked, "Bookmarks fetched successfully"));
+    }
+
+    @DeleteMapping("/recipes/{recipeId}/bookmarks")
+    public ResponseEntity<?> deleteBookmark(@PathVariable Integer recipeId) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
+        }
+
+        boolean success = recipeService.deleteBookmark(recipeId, username);
+
+        if (success) {
+            return ResponseEntity.ok(new SuccessResponse<>(200, "", "Bookmark deleted successfully"));
+        }
+        return ResponseEntity.ok(new ErrorResponse(400, "Failed to delete bookmark"));
     }
 
     @GetMapping("/recipes/{recipeId}/comments")
