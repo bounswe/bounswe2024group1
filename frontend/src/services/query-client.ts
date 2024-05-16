@@ -2,6 +2,7 @@ import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 import { signout } from "./auth";
 import { toast } from "@/components/ui/use-toast";
 import { renderError } from "./api/semanticBrowseFetcher";
+import { router } from "@/routes";
 
 const errorHandler = (error: Error) => {
   if ("status" in error && error.status === 401) {
@@ -13,9 +14,10 @@ const errorHandler = (error: Error) => {
     });
 
     // navigate to /login
-    window.location.href =
+    router.navigate(
       "/login?from=" +
-      encodeURIComponent(window.location.pathname + window.location.search);
+        encodeURIComponent(window.location.pathname + window.location.search),
+    );
   } else {
     toast({
       title: "An error occurred",

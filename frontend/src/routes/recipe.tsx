@@ -8,6 +8,7 @@ import Food from "@/assets/Icon/General/Food.svg?react";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
 import { StarIcon } from "lucide-react";
 import {
+  useGetCommentsForRecipe,
   useGetRecipeById,
   useRateRecipe,
 } from "@/services/api/semanticBrowseComponents";
@@ -20,6 +21,7 @@ import useAuthStore from "@/services/auth";
 import FollowButton from "@/components/FollowButton";
 import BookmarkButton from "@/components/BookmarkButton";
 import { toast } from "@/components/ui/use-toast";
+import { Comment } from "@/components/Comment";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -32,7 +34,17 @@ export default function RecipePage() {
       enabled: !!recipeId,
     },
   );
-  const { selfProfile } = useAuthStore();
+  const { selfProfile, token } = useAuthStore();
+
+  const { data: comments, isLoading: commentsLoading } =
+    useGetCommentsForRecipe(
+      {
+        pathParams: { recipeId: recipeId ? Number(recipeId) : -1 },
+      },
+      {
+        enabled: !!recipeId,
+      },
+    );
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 
@@ -81,7 +93,7 @@ export default function RecipePage() {
           >
             <LinkIcon className="h-5 w-5" />
           </Button>
-          <BookmarkButton recipe={recipe} />
+          {!!token && <BookmarkButton recipe={recipe} />}
         </div>
       </div>
       <img
@@ -96,13 +108,13 @@ export default function RecipePage() {
           className="flex items-center gap-4"
         >
           <img
-            src={recipe.author.profilePicture}
+            src={recipe.author.profilePicture || "https://placehold.co/640x640"}
             alt={recipe.author.name}
             className="h-8 w-8 rounded-full object-cover"
           />
           <span className="font-bold">{recipe.author.name}</span>
         </Link>
-        {selfProfile?.id !== recipe.author.id && (
+        {token && selfProfile?.id !== recipe.author.id && (
           <FollowButton profile={recipe.author} />
         )}
       </div>
@@ -114,15 +126,17 @@ export default function RecipePage() {
         <span className="font-light text-gray-500">
           ({recipe.ratingsCount} ratings)
         </span>
-        <RatingInput
-          currentRating={optimisticRating ?? recipe.selfRating ?? 0}
-          setRating={(rating) => {
-            mutateAsync({
-              pathParams: { recipeId: recipe.id },
-              body: { rating },
-            });
-          }}
-        />
+        {!!token && (
+          <RatingInput
+            currentRating={optimisticRating ?? recipe.selfRating ?? 0}
+            setRating={(rating) => {
+              mutateAsync({
+                pathParams: { recipeId: recipe.id },
+                body: { rating },
+              });
+            }}
+          />
+        )}
       </div>
       <Bookmarkers recipeId={recipe.id} />
 
@@ -198,8 +212,11 @@ export default function RecipePage() {
           </div>
         ))}
       </div>
-
-      <div className="space-y-2"></div>
+      <h4 className="font-bold">Comments</h4>
+      {commentsLoading && <span>Loading comments...</span>}
+      {comments?.data?.map((comment) => (
+        <Comment key={comment.id} comment={comment} />
+      ))}
     </div>
   );
 }
