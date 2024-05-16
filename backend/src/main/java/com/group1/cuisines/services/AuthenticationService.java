@@ -9,8 +9,12 @@ import com.group1.cuisines.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +56,7 @@ public class AuthenticationService {
         String token = jwtService.generateToken(user);
 
         return new ApiResponse<>(
-            200,
+            201,
             "User registered successfully.",
             AuthenticationTokenResponse.builder().token(token).build()
         );
@@ -93,4 +97,14 @@ public class AuthenticationService {
             );
         }
     }
+
+    public Optional<User> getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return Optional.empty();
+        }
+        String username = authentication.getName();
+        return userRepository.findByUsername(username);
+    }
+
 }

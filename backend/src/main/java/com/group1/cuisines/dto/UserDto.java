@@ -13,6 +13,7 @@ public class UserDto {
     private String username;
     private String firstName;
     private String lastName;
+    private boolean selfFollowing;
     private int followerCount;
     private int followingCount;
     private int recipeCount;

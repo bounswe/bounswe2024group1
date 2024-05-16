@@ -3,6 +3,22 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { routeConfig } from "../routes";
 import { expect, test, vi } from "vitest";
 
+vi.mock("@/services/api/semanticBrowseComponents", async (importOriginal) => {
+  const mod =
+    await importOriginal<
+      typeof import("@/services/api/semanticBrowseComponents")
+    >();
+  return {
+    ...mod,
+    useGetFeed: vi.fn(() => ({
+      data: {
+        data: [],
+        status: 200,
+      },
+    })),
+  };
+});
+
 vi.mock("@/services/search", () => {
   return {
     searchDishes: () => Promise.resolve([]),

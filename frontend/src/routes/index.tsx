@@ -4,7 +4,12 @@ import Signup from "./signup";
 import { IndexRoute } from "./home";
 import { signout } from "../services/auth";
 import { Search } from "./search";
+import { Feed } from "./feed";
 import { NavbarLayout } from "../components/NavbarLayout";
+import Profile from "./profile";
+import RecipePage from "./recipe";
+import { Bookmarks } from "./bookmarks";
+import CreateRecipePage from "./create-recipe";
 
 export const routes: RouteObject[] = [
   {
@@ -20,8 +25,24 @@ export const routes: RouteObject[] = [
     Component: Search,
   },
   {
+    path: "/feed",
+    Component: Feed,
+  },
+  {
+    path: "/recipes/:recipeId",
+    Component: RecipePage,
+  },
+  {
+    path: "/bookmarks",
+    Component: Bookmarks,
+  },
+  {
     index: true,
     Component: IndexRoute,
+  },
+  {
+    path: "/users/:userId",
+    Component: Profile,
   },
   {
     path: "/logout",
@@ -29,6 +50,10 @@ export const routes: RouteObject[] = [
       await signout();
       return redirect("/");
     },
+  },
+  {
+    path: "/recipes/new",
+    Component: CreateRecipePage,
   },
 ];
 

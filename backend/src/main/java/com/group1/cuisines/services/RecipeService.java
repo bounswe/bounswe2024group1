@@ -1,21 +1,23 @@
 package com.group1.cuisines.services;
 
-import com.group1.cuisines.dto.IngredientsDto;
-import com.group1.cuisines.dto.NewRecipeDto;
-import com.group1.cuisines.dto.RecipeDetailDto;
+import com.group1.cuisines.dto.*;
 import com.group1.cuisines.entities.*;
 import com.group1.cuisines.repositories.*;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
+    @Autowired
+    private AuthenticationService authenticationService;
     @Autowired
     private IngredientsRepository ingredientRepository;
 
@@ -32,8 +34,22 @@ public class RecipeService {
     @Autowired
     private UpvoteRepository upvoteRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
+
+
+
+    public List<RecipeDetailsDto> findRecipes(String sort, String dishId, String cuisineId) {
+        List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
+
+        return recipes.stream()
+                .map(this::convertToRecipeDetailsDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
-    public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
+    public RecipeDetailsDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -43,10 +59,11 @@ public class RecipeService {
         );
 
         Recipe recipe = Recipe.builder()
-                .title(newRecipe.getTitle())
+                .name(newRecipe.getName())
+                .description(newRecipe.getDescription())
                 .instructions(newRecipe.getInstructions())
-                .preparationTime(newRecipe.getPreparationTime())
-                .cookingTime(newRecipe.getCookingTime())
+                .prepTime(newRecipe.getPrepTime())
+                .cookTime(newRecipe.getCookTime())
                 .servingSize(newRecipe.getServingSize())
                 .dish(dish)
                 .user(user.get())
@@ -58,6 +75,7 @@ public class RecipeService {
         for (IngredientsDto ingredientDto : newRecipe.getIngredients()) {
             Ingredient ingredient = Ingredient.builder()
                     .name(ingredientDto.getName())
+                    .amount(ingredientDto.getAmount())
                     .recipe(recipe) // Link ingredient to the recipe
                     .build();
             ingredientRepository.save(ingredient);
@@ -66,15 +84,7 @@ public class RecipeService {
         recipe = recipeRepository.save(recipe);
         user.get().setRecipeCount(user.get().getRecipeCount() + 1);
 
-
-            return RecipeDetailDto.builder()
-                    .id(recipe.getId())
-                    .title(recipe.getTitle())
-                    .instructions(recipe.getInstructions())
-                    .preparationTime(recipe.getPreparationTime())
-                    .cookingTime(recipe.getCookingTime())
-                    .dishName(recipe.getDish().getName())
-                    .build();
+        return convertToRecipeDetailsDto(recipe);
 
     }
 
@@ -104,7 +114,7 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
 
         if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
-            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId());
+            Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId()).orElse(null);
             if (existingRating != null) {
                 return false; // Indicates that the user has already rated
             }
@@ -143,8 +153,19 @@ public class RecipeService {
         return true;
     }
 
-    public List<User> getWhoBookmarked(Integer recipeId) {
-        return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
+    public List<UserDto> getWhoBookmarked(Integer recipeId) {
+        return bookmarkRepository.findByRecipeId(recipeId).stream()
+                .map(bookmark -> UserDto.builder()
+                        .id(bookmark.getUser().getId())
+                        .username(bookmark.getUser().getUsername())
+                        .firstName(bookmark.getUser().getFirstName())
+                        .lastName(bookmark.getUser().getLastName())
+                        .recipeCount(bookmark.getUser().getRecipeCount())
+                        .followerCount(bookmark.getUser().getFollowers().size())
+                        .followingCount(bookmark.getUser().getFollowing().size())
+                        .selfFollowing(bookmark.getUser().getFollowing().contains(bookmark.getUser()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -162,4 +183,92 @@ public class RecipeService {
     }
 
 
+    public boolean deleteBookmark(Integer recipeId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null){
+            return false;
+        }
+        Optional<Bookmark> bookmark = bookmarkRepository.findByUserIdAndRecipeId(user.getId(), recipeId);
+        if (bookmark.isEmpty()){
+            return false;
+        }
+        bookmarkRepository.delete(bookmark.get());
+        return true;
+    }
+
+
+    public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
+        return commentRepository.findByRecipeId(recipeId).stream()
+                .map(comment -> CommentsDto.builder()
+                        .id(comment.getId())
+                        .userId(comment.getUser().getId())
+                        .recipeId(comment.getRecipe().getId())
+                        .text(comment.getText())
+                        .createdDate(comment.getCreatedDate())
+                        .upvoteCount(comment.getUpvotes() != null ? comment.getUpvotes().size() : 0)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public RecipeDetailsDto getRecipeById(Integer recipeId) {
+        Optional<Recipe> recipe = recipeRepository.findById(recipeId);
+        return recipe.map(this::convertToRecipeDetailsDto).orElse(null);
+    }
+
+    public List<RecipeDetailsDto> getRecipesByType(String type, @Nullable String username) {
+        if ("explore".equals(type)) {
+            return recipeRepository.findAll().stream()
+                    .map(this::convertToRecipeDetailsDto)
+                    .collect(Collectors.toList());
+        } else if ("following".equals(type) && username != null) {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            return user.getFollowing().stream()
+                    .flatMap(followingUser -> followingUser.getRecipes().stream())
+                    .map(this::convertToRecipeDetailsDto)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();  // Return an empty list if username is null or other conditions are not met
+    }
+
+    public RecipeDetailsDto convertToRecipeDetailsDto(Recipe r) {
+        CuisineDto cuisineDto = new CuisineDto();
+        if (r.getDish() != null && !r.getDish().getCuisines().isEmpty()) {
+
+            cuisineDto.setId(r.getDish().getCuisines().get(0).getId());
+            cuisineDto.setName(r.getDish().getCuisines().get(0).getName());
+
+        }
+        else if(r.getDish() != null && r.getDish().getCuisines().isEmpty()){
+            cuisineDto.setId("No cuisine Id from wikidata");
+            cuisineDto.setName("No cuisine name from wikidata");
+        }
+
+        Integer userRating = authenticationService.getUser().map(User::getId)
+                .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
+                .map(Rating::getRatingValue)
+                .orElse(null);
+
+        // Conversion logic here
+        return RecipeDetailsDto.builder()
+                .id(r.getId())
+                .name(r.getName())
+                .description(r.getDescription())
+                .instructions(r.getInstructions())
+                .ingredients(r.getIngredients().stream().map(IngredientsDto::new).collect(Collectors.toList()))
+                .cookTime(r.getCookTime())
+                .prepTime(r.getPrepTime())
+                .servingSize(r.getServingSize())
+                .cuisine(cuisineDto)
+                .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
+                .avgRating(r.getAverageRating())
+                .ratingsCount(r.getRatings().size())
+                .selfRating(userRating)
+                .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
+                .build();
+    }
 }
