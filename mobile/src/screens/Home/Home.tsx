@@ -13,11 +13,13 @@ import Popular from "@/src/components/Popular";
 import Title from "@/src/components/Title";
 import { searchDishes } from "@/src/services/search";
 import DishCard from "@/src/components/Dish";
+import { useNavigation } from "@react-navigation/native";
 
 export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
   const [searchFocused, setSearchFocused] = useState(false);
+  const nav = useNavigation();
   return (
     <ScrollView className="w-screen bg-white p-6 overflow-y-scroll">
       <View className="pt-6">
