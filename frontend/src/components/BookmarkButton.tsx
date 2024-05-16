@@ -51,8 +51,7 @@ export default function BookmarkButton({
     },
   });
 
-  const bookmarked =
-    (true || optimisticBookmarked) ?? data?.data?.selfBookmarked;
+  const bookmarked = optimisticBookmarked ?? data?.data?.selfBookmarked;
 
   const variant = bookmarked && !isLoading ? "primary-outline" : "default";
   return (

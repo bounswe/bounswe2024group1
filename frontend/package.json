@@ -34,7 +34,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "country-emoji": "^1.5.6",
-    "cypress": "^13.8.1",
     "lucide-react": "^0.376.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -83,7 +82,9 @@
       "prettier --write",
       "eslint --report-unused-disable-directives --max-warnings 0"
     ],
-    "*/**/*.{json,css,md}": ["prettier --write"]
+    "*/**/*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "yarn@4.1.1"
 }
