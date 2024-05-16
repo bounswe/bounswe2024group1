@@ -17,6 +17,8 @@ import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { useState } from "react";
 import ErrorAlert from "@/components/ErrorAlert";
 import { Bookmarkers } from "@/components/Bookmarkers";
+import useAuthStore from "@/services/auth";
+import FollowButton from "@/components/FollowButton";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -29,6 +31,7 @@ export default function RecipePage() {
       enabled: !!recipeId,
     },
   );
+  const { selfProfile } = useAuthStore();
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 
@@ -90,7 +93,9 @@ export default function RecipePage() {
           />
           <span className="font-bold">{recipe.author.name}</span>
         </Link>
-        <Button>Follow</Button>
+        {selfProfile?.id !== recipe.author.id && (
+          <FollowButton profile={recipe.author} />
+        )}
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
@@ -110,17 +115,13 @@ export default function RecipePage() {
           }}
         />
       </div>
-      <div className="flex items-center gap-4">
-        <Bookmark className="h-4 w-4 fill-white" />
-        <span className="font-bold">512</span>
-        <Bookmarkers recipeId={recipe.id}/>
-      </div>
+      <Bookmarkers recipeId={recipe.id} />
 
       <div className="grid grid-cols-2 gap-2 py-2">
-        <span className="flex items-center gap-4 font-bold">
+        {/* <span className="flex items-center gap-4 font-bold">
           <MeatDish className="h-6 w-6" />
           Meat
-        </span>
+        </span> */}
         <span className="flex items-center gap-4 font-bold">
           <Serving className="h-6 w-6" />
           {recipe.servingSize} servings

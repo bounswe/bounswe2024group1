@@ -74,7 +74,14 @@ export const Recipe = ({
               />
             </div>
           )}
-          <div className="self-end">
+          <div className="mt-4 flex items-center justify-between">
+            <Link to={`/users/${author.id}`} className="cursor-pointer ">
+              <img
+                src={author.profilePicture || "https://placehold.co/640x640"}
+                alt={author.name}
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            </Link>
             <Link
               to={`/recipes/${id}`}
               className="cursor-pointer text-sm font-medium text-gray-600 hover:underline"
