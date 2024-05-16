@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import RatingInput from "@/components/RatingInput";
 import Serving from "@/assets/Icon/General/Serving.svg?react";
@@ -19,6 +18,8 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { Bookmarkers } from "@/components/Bookmarkers";
 import useAuthStore from "@/services/auth";
 import FollowButton from "@/components/FollowButton";
+import BookmarkButton from "@/components/BookmarkButton";
+import { toast } from "@/components/ui/use-toast";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -66,13 +67,21 @@ export default function RecipePage() {
       <div className="flex items-center justify-between">
         <h1>{recipe.name}</h1>
         <div className="flex gap-4">
-          <Button size="icon">
+          <Button
+            size="icon"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast({
+                variant: "default",
+                title: "Link copied",
+                description:
+                  "The link to this recipe has been copied to your clipboard",
+              });
+            }}
+          >
             <LinkIcon className="h-5 w-5" />
           </Button>
-          <Button>
-            Bookmark
-            <Bookmark className="ml-2 h-5 w-5 fill-primary" />
-          </Button>
+          <BookmarkButton recipe={recipe} />
         </div>
       </div>
       <img
