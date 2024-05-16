@@ -1,7 +1,7 @@
 import { Comment } from "./Comment";
 import { FullscreenLoading } from "./FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
-import { AlertCircle, ArrowLeft } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useGetCommentsForRecipe } from "../services/api/semanticBrowseComponents";
 import { renderError } from "../services/api/semanticBrowseFetcher";
 
