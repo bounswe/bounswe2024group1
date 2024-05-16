@@ -1,4 +1,3 @@
-import { UserProfile } from "@/services/api/semanticBrowseSchemas";
 import { Button } from "./ui/button";
 import {
   useFollowUser,
@@ -27,7 +26,7 @@ export default function FollowButton({
     null as boolean | null,
   );
 
-  const { mutateAsync: follow, isPending: followPending } = useFollowUser({
+  const { mutateAsync: follow } = useFollowUser({
     onSuccess: () => {
       refetch().then(() => {
         setOptimisticFollowing(null);
@@ -37,18 +36,16 @@ export default function FollowButton({
       setOptimisticFollowing(null);
     },
   });
-  const { mutateAsync: unfollow, isPending: unfollowPending } = useUnfollowUser(
-    {
-      onSuccess: () => {
-        refetch().then(() => {
-          setOptimisticFollowing(null);
-        });
-      },
-      onError: () => {
+  const { mutateAsync: unfollow } = useUnfollowUser({
+    onSuccess: () => {
+      refetch().then(() => {
         setOptimisticFollowing(null);
-      },
+      });
     },
-  );
+    onError: () => {
+      setOptimisticFollowing(null);
+    },
+  });
 
   const following = optimisticFollowing ?? data?.data?.selfFollowing;
 

@@ -6,7 +6,7 @@ import Serving from "@/assets/Icon/General/Serving.svg?react";
 import Clock from "@/assets/Icon/General/Clock.svg?react";
 import Allergies from "@/assets/Icon/General/Allergies.svg?react";
 import Food from "@/assets/Icon/General/Food.svg?react";
-import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
+// import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
 import { StarIcon } from "lucide-react";
 import {
   useGetRecipeById,
