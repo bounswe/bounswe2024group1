@@ -283,11 +283,7 @@ public class RecipeService {
 
         DishDto dish = null;
         if (r.getDish() != null) {
-            dish = DishDto.builder()
-                    .id(r.getDish().getId())
-                    .name(r.getDish().getName())
-                    .image(r.getDish().getImage())
-                    .build();
+            dish = new DishDto(r.getDish());
         }
 
         // Conversion logic here
