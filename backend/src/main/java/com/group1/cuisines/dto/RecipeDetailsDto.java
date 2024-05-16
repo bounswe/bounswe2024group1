@@ -12,7 +12,7 @@ import lombok.*;
 public class RecipeDetailsDto {
     private Integer id;
     private String name;
-   // private String description;
+    private String description;
     private String instructions;
     private List<IngredientsDto> ingredients;
     //private List<String> images;

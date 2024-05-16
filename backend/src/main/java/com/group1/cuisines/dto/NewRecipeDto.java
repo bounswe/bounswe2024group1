@@ -8,7 +8,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewRecipeDto {
-    private String title;
+    private String name;
+    private String description;
     private String instructions;
     private int prepTime;
     private int cookTime;

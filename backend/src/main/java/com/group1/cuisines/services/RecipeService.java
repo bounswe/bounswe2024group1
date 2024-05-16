@@ -57,7 +57,8 @@ public class RecipeService {
         );
 
         Recipe recipe = Recipe.builder()
-                .title(newRecipe.getTitle())
+                .name(newRecipe.getName())
+                .description(newRecipe.getDescription())
                 .instructions(newRecipe.getInstructions())
                 .prepTime(newRecipe.getPrepTime())
                 .cookTime(newRecipe.getCookTime())
@@ -210,7 +211,8 @@ public class RecipeService {
         // Conversion logic here
         return RecipeDetailsDto.builder()
                 .id(r.getId())
-                .name(r.getTitle())
+                .name(r.getName())
+                .description(r.getDescription())
                 .instructions(r.getInstructions())
                 .ingredients(r.getIngredients().stream().map(IngredientsDto::new).collect(Collectors.toList()))
                 .cookTime(r.getCookTime())
