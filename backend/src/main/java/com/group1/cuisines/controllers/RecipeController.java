@@ -7,14 +7,9 @@ import com.group1.cuisines.entities.User;
 import com.group1.cuisines.services.AuthenticationService;
 import com.group1.cuisines.services.RecipeService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import java.util.List;
-
 import java.util.List;
 
 @RestController
@@ -41,7 +36,7 @@ public class RecipeController {
     public ResponseEntity<?> getRecipes(@RequestParam(required = false) String sort,
                                                       @RequestParam(required = false) String dishId,
                                                       @RequestParam(required = false) String cuisineId) {
-        List<RecipeDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
+        List<RecipeDetailsDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
         return ResponseEntity.ok(new SuccessResponse<>(200, recipes, "Recipes fetched successfully"));
     }
 
@@ -56,7 +51,7 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
-        RecipeDetailDto recipeDetails = recipeService.createRecipe(newRecipe, username);
+        RecipeDetailsDto recipeDetails = recipeService.createRecipe(newRecipe, username);
         if (recipeDetails != null) {
             return ResponseEntity.ok(new SuccessResponse<>(201, recipeDetails, "Recipe created successfully"));
         } else {

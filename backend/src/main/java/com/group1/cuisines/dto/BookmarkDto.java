@@ -12,6 +12,7 @@ public class BookmarkDto {
     private List<IngredientsDto> ingredients;
     private int servingSize;
     private Integer cookTime;
+    private Integer prepTime;
     //private List<String> images;
     private CuisineDto cuisine;
     private DishDto dish;

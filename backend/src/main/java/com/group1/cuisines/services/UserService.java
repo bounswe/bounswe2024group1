@@ -8,16 +8,12 @@ import com.group1.cuisines.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -159,13 +155,14 @@ public class UserService {
         }
         return new BookmarkDto(
                 recipe.getId(),
-                recipe.getTitle(),
+                recipe.getName(),
                 recipe.getInstructions(),
                 recipe.getIngredients().stream()
                         .map(IngredientsDto::new)
                         .collect(Collectors.toList()),
                 recipe.getServingSize(),
-                recipe.getCookingTime(),
+                recipe.getCookTime(),
+                recipe.getPrepTime(),
                 //recipe.getImages(),
                 cuisineDto,
                 new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),

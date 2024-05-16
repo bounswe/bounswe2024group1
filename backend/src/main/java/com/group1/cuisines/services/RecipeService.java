@@ -7,13 +7,11 @@ import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,24 +38,16 @@ public class RecipeService {
 
 
 
-    public List<RecipeDto> findRecipes(String sort, String dishId, String cuisineId) {
+    public List<RecipeDetailsDto> findRecipes(String sort, String dishId, String cuisineId) {
         List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
 
         return recipes.stream()
-                .map(recipe -> new RecipeDto(
-                        recipe.getId(),
-                        recipe.getTitle(),
-                        recipe.getInstructions(),
-                        recipe.getPreparationTime(),
-                        recipe.getCookingTime(),
-                        recipe.getServingSize(),
-                        recipe.getAverageRating(),
-                        recipe.getTitle()))
+                .map(this::convertToRecipeDetailsDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
+    public RecipeDetailsDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -67,10 +57,11 @@ public class RecipeService {
         );
 
         Recipe recipe = Recipe.builder()
-                .title(newRecipe.getTitle())
+                .name(newRecipe.getName())
+                .description(newRecipe.getDescription())
                 .instructions(newRecipe.getInstructions())
-                .preparationTime(newRecipe.getPreparationTime())
-                .cookingTime(newRecipe.getCookingTime())
+                .prepTime(newRecipe.getPrepTime())
+                .cookTime(newRecipe.getCookTime())
                 .servingSize(newRecipe.getServingSize())
                 .dish(dish)
                 .user(user.get())
@@ -91,15 +82,7 @@ public class RecipeService {
         recipe = recipeRepository.save(recipe);
         user.get().setRecipeCount(user.get().getRecipeCount() + 1);
 
-
-            return RecipeDetailDto.builder()
-                    .id(recipe.getId())
-                    .title(recipe.getTitle())
-                    .instructions(recipe.getInstructions())
-                    .preparationTime(recipe.getPreparationTime())
-                    .cookingTime(recipe.getCookingTime())
-                    .dishName(recipe.getDish().getName())
-                    .build();
+        return convertToRecipeDetailsDto(recipe);
 
     }
 
@@ -256,14 +239,17 @@ public class RecipeService {
         // Conversion logic here
         return RecipeDetailsDto.builder()
                 .id(r.getId())
-                .name(r.getTitle())
+                .name(r.getName())
+                .description(r.getDescription())
                 .instructions(r.getInstructions())
                 .ingredients(r.getIngredients().stream().map(IngredientsDto::new).collect(Collectors.toList()))
-                .cookTime(r.getCookingTime())
+                .cookTime(r.getCookTime())
+                .prepTime(r.getPrepTime())
                 .servingSize(r.getServingSize())
                 .cuisine(cuisineDto)
                 .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
                 .avgRating(r.getAverageRating())
+                .ratingsCount(r.getRatings().size())
                 .selfRating(userRating)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
