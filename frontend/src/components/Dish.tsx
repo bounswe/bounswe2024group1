@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useMemo } from "react";
 import { flag } from "country-emoji";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 interface Dish {
   name: string;
@@ -11,7 +13,7 @@ interface Dish {
 }
 
 export const Dish = ({
-  dish: { name, image, description, countries },
+  dish: { id, name, image, description, countries },
 }: {
   dish: Dish;
 }) => {
@@ -35,7 +37,10 @@ export const Dish = ({
         </CardHeader>
         <CardContent className="flex flex-1 flex-col justify-between gap-2">
           <p className="text-sm text-gray-500">{description}</p>
-          <div className="self-end">
+          <div className="flex items-center justify-between">
+            <Link to={`/recipes/new?dishId=` + encodeURIComponent(id)}>
+              <Plus className="h-4 w-4" />
+            </Link>
             <a className="cursor-not-allowed text-sm font-medium text-blue-500 hover:underline">
               See all recipes →
             </a>
