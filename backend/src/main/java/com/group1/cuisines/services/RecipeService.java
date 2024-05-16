@@ -60,6 +60,7 @@ public class RecipeService {
                 .name(newRecipe.getName())
                 .description(newRecipe.getDescription())
                 .instructions(newRecipe.getInstructions())
+                .allergens(newRecipe.getAllergens())
                 .prepTime(newRecipe.getPrepTime())
                 .cookTime(newRecipe.getCookTime())
                 .servingSize(newRecipe.getServingSize())
@@ -231,10 +232,16 @@ public class RecipeService {
             cuisineDto.setName("No cuisine name from wikidata");
         }
 
-        Integer userRating = authenticationService.getUser().map(User::getId)
+        Optional<User> user = authenticationService.getUser();
+
+        Integer userRating = user.map(User::getId)
                 .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
                 .map(Rating::getRatingValue)
                 .orElse(null);
+
+        Boolean selfBookmarked = user.map(User::getId)
+                .map(userId -> bookmarkRepository.findByUserIdAndRecipeId(userId, r.getId()).isPresent())
+                .orElse(false);
 
         // Conversion logic here
         return RecipeDetailsDto.builder()
@@ -243,6 +250,7 @@ public class RecipeService {
                 .description(r.getDescription())
                 .instructions(r.getInstructions())
                 .ingredients(r.getIngredients().stream().map(IngredientsDto::new).collect(Collectors.toList()))
+                .allergens(r.getAllergens())
                 .cookTime(r.getCookTime())
                 .prepTime(r.getPrepTime())
                 .servingSize(r.getServingSize())
@@ -251,6 +259,7 @@ public class RecipeService {
                 .avgRating(r.getAverageRating())
                 .ratingsCount(r.getRatings().size())
                 .selfRating(userRating)
+                .selfBookmarked(selfBookmarked)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
     }
