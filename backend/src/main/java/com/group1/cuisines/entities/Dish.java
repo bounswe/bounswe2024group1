@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,7 +27,6 @@ public class Dish {
     @Column(length = 1000)
     private String ingredients;
     private String foodTypes;
-    private String cuisine;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "dishes")

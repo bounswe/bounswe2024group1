@@ -24,7 +24,9 @@ public class DishDto {
         this.countries = dish.getCountries();
         this.ingredients = dish.getIngredients();
         this.foodTypes = dish.getFoodTypes();
-        this.cuisines = dish.getCuisine();
+        if (!dish.getCuisines().isEmpty()) {
+            this.cuisines = dish.getCuisines().get(0).getName();
+        }
     }
 
 }
