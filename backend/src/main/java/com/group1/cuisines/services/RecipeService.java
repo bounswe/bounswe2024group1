@@ -205,7 +205,7 @@ public class RecipeService {
                 .recipeId(comment.getRecipe().getId())
                 .content(comment.getText())
                 .createdAt(comment.getCreatedDate())
-                .upvoteCount(0)
+                .upvoteCount(comment.getUpvoteCount())
                 .build();
     }
 
