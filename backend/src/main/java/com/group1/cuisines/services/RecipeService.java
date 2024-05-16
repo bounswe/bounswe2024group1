@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class RecipeService {
     @Autowired
@@ -31,10 +32,10 @@ public class RecipeService {
     private RatingRepository ratingRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
-
     @Autowired
     private CommentRepository commentRepository;
-
+    @Autowired
+    private UpvoteRepository upvoteRepository;
 
 
 
@@ -253,5 +254,19 @@ public class RecipeService {
                 .selfRating(userRating)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
+    }
+
+    @Transactional
+    public boolean deleteUpvote(Integer commentId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            return false;
+        }
+        Optional<Upvote> upvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
+        if (upvote.isPresent()) {
+            upvoteRepository.delete(upvote.get());
+            return true;
+        }
+        return false;
     }
 }
