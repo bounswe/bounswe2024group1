@@ -197,33 +197,34 @@ public class RecipeService {
     private CommentsDto convertToCommentsDto(Comment comment) {
         return CommentsDto.builder()
                 .id(comment.getId())
-                .userId(comment.getUser().getId())
+                .author(new AuthorDto(comment.getUser().getId(), comment.getUser().getFirstName(), comment.getUser().getUsername(),
+                        comment.getUser().getFollowing().size(), comment.getUser().getFollowers().size(), comment.getUser().getRecipeCount()))
                 .recipeId(comment.getRecipe().getId())
-                .text(comment.getText())
-                .createdDate(comment.getCreatedDate())
-                .upvoteCount(comment.getUpvoteCount())
+                .content(comment.getText())
+                .createdAt(comment.getCreatedDate())
+                .upvoteCount(0)
                 .build();
     }
 
     @Transactional
-    public CommentsDto addComment(NewCommentDto newComment, String username) {
+    public CommentsDto addComment(Integer recipeId,NewCommentDto newComment, String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException("User not found"));
-        Recipe recipe = recipeRepository.findById(newComment.getRecipeId()).orElseThrow(() -> new IllegalStateException("Recipe not found"));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new IllegalStateException("Recipe not found"));
 
         Comment comment = Comment.builder()
                 .user(user)
                 .recipe(recipe)
-                .text(newComment.getText())
+                .text(newComment.getComment())
                 .createdDate(LocalDateTime.now())
                 .build();
         comment = commentRepository.save(comment);
 
         return CommentsDto.builder()
                 .id(comment.getId())
-                .userId(user.getId())
+                .author(new AuthorDto(user.getId(), user.getFirstName(), user.getUsername(), user.getFollowing().size(), user.getFollowers().size(), user.getRecipeCount()))
                 .recipeId(recipe.getId())
-                .text(comment.getText())
-                .createdDate(comment.getCreatedDate())
+                .content(comment.getText())
+                .createdAt(comment.getCreatedDate())
                 .upvoteCount(0)
                 .build();
     }

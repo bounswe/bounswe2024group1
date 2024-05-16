@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewCommentDto {
-    private Integer recipeId;
-    private String text;
+
+    private String comment;
 }

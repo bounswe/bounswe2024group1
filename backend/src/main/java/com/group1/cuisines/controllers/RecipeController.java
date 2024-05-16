@@ -144,13 +144,13 @@ public class RecipeController {
     public ResponseEntity<?> createComment(@PathVariable Integer recipeId, @RequestBody NewCommentDto newCommentDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
-        newCommentDto.setRecipeId(recipeId);  // Ensure the recipeId in DTO matches path variable
+
         String username = authentication.getName();
 
         try {
-            CommentsDto commentsDto = recipeService.addComment(newCommentDto, username);
+            CommentsDto commentsDto = recipeService.addComment(recipeId,newCommentDto, username);
             return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse<>(201, commentsDto, "Comment added successfully"));
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(400, "Failed to add comment: " + e.getMessage()));
