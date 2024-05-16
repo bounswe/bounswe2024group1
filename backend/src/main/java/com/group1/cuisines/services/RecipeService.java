@@ -54,9 +54,12 @@ public class RecipeService {
         if (user.isEmpty()){
             throw new IllegalStateException("User not found");
         }
-        Dish dish = dishRepository.findById(newRecipe.getDishId()).orElseThrow(
-                () -> new Exception("Dish with ID " + newRecipe.getDishId() + " not found")
-        );
+        Dish dish;
+        if (newRecipe.getDishId() == null) {
+            dish = null;
+        } else {
+            dish = dishRepository.findById(newRecipe.getDishId()).orElse(null);
+        }
 
         Recipe recipe = Recipe.builder()
                 .name(newRecipe.getName())
@@ -262,6 +265,10 @@ public class RecipeService {
             cuisineDto.setId("No cuisine Id from wikidata");
             cuisineDto.setName("No cuisine name from wikidata");
         }
+        else {
+            cuisineDto.setId("No dish Id from wikidata");
+            cuisineDto.setName("No dish name from wikidata");
+        }
 
         Optional<User> user = authenticationService.getUser();
 
@@ -273,6 +280,15 @@ public class RecipeService {
         Boolean selfBookmarked = user.map(User::getId)
                 .map(userId -> bookmarkRepository.findByUserIdAndRecipeId(userId, r.getId()).isPresent())
                 .orElse(false);
+
+        DishDto dish = null;
+        if (r.getDish() != null) {
+            dish = DishDto.builder()
+                    .id(r.getDish().getId())
+                    .name(r.getDish().getName())
+                    .image(r.getDish().getImage())
+                    .build();
+        }
 
         // Conversion logic here
         return RecipeDetailsDto.builder()
@@ -286,7 +302,7 @@ public class RecipeService {
                 .prepTime(r.getPrepTime())
                 .servingSize(r.getServingSize())
                 .cuisine(cuisineDto)
-                .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
+                .dish(dish)
                 .avgRating(r.getAverageRating())
                 .ratingsCount(r.getRatings().size())
                 .selfRating(userRating)

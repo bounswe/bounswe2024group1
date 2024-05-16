@@ -153,6 +153,12 @@ public class UserService {
             cuisineDto.setId("No cuisine Id from wikidata");
             cuisineDto.setName("No cuisine name from wikidata");
         }
+
+        DishDto dishDto = null;
+        if (recipe.getDish() != null) {
+            dishDto = new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage());
+        }
+
         return new BookmarkDto(
                 recipe.getId(),
                 recipe.getName(),
@@ -165,7 +171,7 @@ public class UserService {
                 recipe.getPrepTime(),
                 //recipe.getImages(),
                 cuisineDto,
-                new DishDto(recipe.getDish().getId(), recipe.getDish().getName(), recipe.getDish().getImage()),
+                dishDto,
                 recipe.getAverageRating(),
                 new AuthorDto(recipe.getUser().getId(), recipe.getUser().getUsername(), recipe.getUser().getFirstName(),
                       recipe.getUser().getFollowerCount(),  recipe.getUser().getFollowingCount(),recipe.getUser().getRecipeCount())

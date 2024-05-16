@@ -26,7 +26,7 @@ public class Recipe {
     private double averageRating;
 
     @ManyToOne
-    @JoinColumn(name = "dish_id", nullable = false)
+    @JoinColumn(name = "dish_id")
     private Dish dish;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -50,4 +50,11 @@ public class Recipe {
     @Column(name = "allergen")
     private List<String> allergens = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", name='" + name +
+                '}';
+    }
 }
