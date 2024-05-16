@@ -1,4 +1,3 @@
-import React from "react";
 import { Recipe } from "../components/Recipe";
 import { FullscreenLoading } from "../components/FullscreenLoading";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";

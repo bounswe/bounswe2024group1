@@ -79,7 +79,10 @@
     "pre-commit": "lint-staged && tsc"
   },
   "lint-staged": {
-    "*/**/*.{js,jsx,ts,tsx}": ["prettier --write", "eslint"],
+    "*/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --report-unused-disable-directives --max-warnings 0"
+    ],
     "*/**/*.{json,css,md}": ["prettier --write"]
   },
   "packageManager": "yarn@4.1.1"

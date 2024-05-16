@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
-import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import RatingInput from "@/components/RatingInput";
 import Serving from "@/assets/Icon/General/Serving.svg?react";
 import Clock from "@/assets/Icon/General/Clock.svg?react";
 import Allergies from "@/assets/Icon/General/Allergies.svg?react";
 import Food from "@/assets/Icon/General/Food.svg?react";
-import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
-import { ChevronRight, StarIcon } from "lucide-react";
+// import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
+import { StarIcon } from "lucide-react";
 import {
   useGetRecipeById,
   useRateRecipe,
@@ -16,6 +15,11 @@ import { Link, useParams } from "react-router-dom";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { useState } from "react";
 import ErrorAlert from "@/components/ErrorAlert";
+import { Bookmarkers } from "@/components/Bookmarkers";
+import useAuthStore from "@/services/auth";
+import FollowButton from "@/components/FollowButton";
+import BookmarkButton from "@/components/BookmarkButton";
+import { toast } from "@/components/ui/use-toast";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -28,6 +32,7 @@ export default function RecipePage() {
       enabled: !!recipeId,
     },
   );
+  const { selfProfile } = useAuthStore();
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 
@@ -62,13 +67,21 @@ export default function RecipePage() {
       <div className="flex items-center justify-between">
         <h1>{recipe.name}</h1>
         <div className="flex gap-4">
-          <Button size="icon">
+          <Button
+            size="icon"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast({
+                variant: "default",
+                title: "Link copied",
+                description:
+                  "The link to this recipe has been copied to your clipboard",
+              });
+            }}
+          >
             <LinkIcon className="h-5 w-5" />
           </Button>
-          <Button>
-            Bookmark
-            <Bookmark className="ml-2 h-5 w-5 fill-primary" />
-          </Button>
+          <BookmarkButton recipe={recipe} />
         </div>
       </div>
       <img
@@ -89,7 +102,9 @@ export default function RecipePage() {
           />
           <span className="font-bold">{recipe.author.name}</span>
         </Link>
-        <Button>Follow</Button>
+        {selfProfile?.id !== recipe.author.id && (
+          <FollowButton profile={recipe.author} />
+        )}
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
@@ -109,19 +124,13 @@ export default function RecipePage() {
           }}
         />
       </div>
-      <div className="flex items-center gap-4">
-        <Bookmark className="h-4 w-4 fill-white" />
-        <span className="font-bold">512</span>
-        <span className="flex cursor-pointer items-center text-sm text-gray-600">
-          See bookmarkers <ChevronRight className="h-4 w-4" />
-        </span>
-      </div>
+      <Bookmarkers recipeId={recipe.id} />
 
       <div className="grid grid-cols-2 gap-2 py-2">
-        <span className="flex items-center gap-4 font-bold">
+        {/* <span className="flex items-center gap-4 font-bold">
           <MeatDish className="h-6 w-6" />
           Meat
-        </span>
+        </span> */}
         <span className="flex items-center gap-4 font-bold">
           <Serving className="h-6 w-6" />
           {recipe.servingSize} servings

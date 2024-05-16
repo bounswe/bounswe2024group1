@@ -151,8 +151,36 @@ public class RecipeService {
         return true;
     }
 
-    public List<User> getWhoBookmarked(Integer recipeId) {
-        return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
+    public List<UserDto> getWhoBookmarked(Integer recipeId) {
+        return bookmarkRepository.findByRecipeId(recipeId).stream()
+                .map(bookmark -> UserDto.builder()
+                        .id(bookmark.getUser().getId())
+                        .username(bookmark.getUser().getUsername())
+                        .firstName(bookmark.getUser().getFirstName())
+                        .lastName(bookmark.getUser().getLastName())
+                        .recipeCount(bookmark.getUser().getRecipeCount())
+                        .followerCount(bookmark.getUser().getFollowers().size())
+                        .followingCount(bookmark.getUser().getFollowing().size())
+                        .selfFollowing(bookmark.getUser().getFollowing().contains(bookmark.getUser()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public boolean deleteBookmark(Integer recipeId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null){
+            return false;
+        }
+        Optional<Bookmark> bookmark = bookmarkRepository.findByUserIdAndRecipeId(user.getId(), recipeId);
+        if (bookmark.isEmpty()){
+            return false;
+        }
+        bookmarkRepository.delete(bookmark.get());
+        return true;
     }
 
 

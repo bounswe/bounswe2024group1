@@ -2,15 +2,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
-import BookmarkIcon from "@/assets/Icon/General/Bookmark.svg?react";
 import TimeIcon from "@/assets/Icon/General/Clock.svg";
 import StarIcon from "@/assets/Icon/General/Star.svg";
 import FoodIcon from "@/assets/Icon/General/Food.svg";
 import { RecipeSummary } from "@/services/api/semanticBrowseSchemas";
 import { Link } from "react-router-dom";
+import { toast } from "./ui/use-toast";
+import BookmarkButton from "./BookmarkButton";
 
 export const Recipe = ({
-  recipe: { id, name, images, avgRating, ratingsCount, cookTime, dish, author },
+  recipe: {
+    id,
+    name,
+    images,
+    avgRating,
+    ratingsCount,
+    cookTime,
+    dish,
+    author,
+    selfBookmarked,
+  },
 }: {
   recipe: RecipeSummary;
 }) => {
@@ -35,16 +46,21 @@ export const Recipe = ({
                 className="bg-transparent"
                 size="icon"
                 variant="secondary"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    window.location.origin + `/recipes/${id}`,
+                  );
+                  toast({
+                    variant: "default",
+                    title: "Link copied",
+                    description:
+                      "The link to this recipe has been copied to your clipboard",
+                  });
+                }}
               >
                 <LinkIcon aria-label="Link" />
               </Button>
-              <Button
-                className="bg-transparent"
-                size="icon"
-                variant="secondary"
-              >
-                <BookmarkIcon aria-label="Bookmark" className="fill-white" />
-              </Button>
+              <BookmarkButton asIcon recipe={{ id, selfBookmarked }} />
             </div>
           </div>
         </CardHeader>
@@ -74,7 +90,14 @@ export const Recipe = ({
               />
             </div>
           )}
-          <div className="self-end">
+          <div className="mt-4 flex items-center justify-between">
+            <Link to={`/users/${author.id}`} className="cursor-pointer ">
+              <img
+                src={author.profilePicture || "https://placehold.co/640x640"}
+                alt={author.name}
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            </Link>
             <Link
               to={`/recipes/${id}`}
               className="cursor-pointer text-sm font-medium text-gray-600 hover:underline"

@@ -34,6 +34,7 @@ const links = [{ name: "Home", path: "/" }] as const;
 export const NavbarLayout = () => {
   const fetcher = useFetcher();
   const isAuthenticated = !!useAuthStore().token;
+  const selfProfile = useAuthStore().selfProfile;
   const navigation = useNavigation();
 
   return (
@@ -116,7 +117,11 @@ export const NavbarLayout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                  {selfProfile?.name
+                    ? `Welcome, ${selfProfile?.name}`
+                    : "Account"}
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/users/me">

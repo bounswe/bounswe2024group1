@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { UserSummary } from "@/services/api/semanticBrowseSchemas";
 import { Link } from "react-router-dom";
+import FollowButton from "./FollowButton";
 
 interface ProfileProps {
   profile: UserSummary;
@@ -19,7 +19,7 @@ export const Profile = ({ profile }: ProfileProps) => {
           {profile.username}
         </span>
       </Link>
-      <Button> Follow </Button>
+      <FollowButton profile={profile} />
     </div>
   );
 };
