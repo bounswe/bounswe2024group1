@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -186,16 +187,44 @@ public class RecipeService {
 
 
     public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
+
         return commentRepository.findByRecipeId(recipeId).stream()
-                .map(comment -> CommentsDto.builder()
-                        .id(comment.getId())
-                        .userId(comment.getUser().getId())
-                        .recipeId(comment.getRecipe().getId())
-                        .text(comment.getText())
-                        .createdDate(comment.getCreatedDate())
-                        .upvoteCount(comment.getUpvotes() != null ? comment.getUpvotes().size() : 0)
-                        .build())
+                .map(this::convertToCommentsDto)
                 .collect(Collectors.toList());
+    }
+
+    private CommentsDto convertToCommentsDto(Comment comment) {
+        return CommentsDto.builder()
+                .id(comment.getId())
+                .userId(comment.getUser().getId())
+                .recipeId(comment.getRecipe().getId())
+                .text(comment.getText())
+                .createdDate(comment.getCreatedDate())
+                .upvoteCount(comment.getUpvoteCount())
+                .build();
+    }
+
+    @Transactional
+    public CommentsDto addComment(NewCommentDto newComment, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException("User not found"));
+        Recipe recipe = recipeRepository.findById(newComment.getRecipeId()).orElseThrow(() -> new IllegalStateException("Recipe not found"));
+
+        Comment comment = Comment.builder()
+                .user(user)
+                .recipe(recipe)
+                .text(newComment.getText())
+                .createdDate(LocalDateTime.now())
+                .build();
+        comment = commentRepository.save(comment);
+
+        return CommentsDto.builder()
+                .id(comment.getId())
+                .userId(user.getId())
+                .recipeId(recipe.getId())
+                .text(comment.getText())
+                .createdDate(comment.getCreatedDate())
+                .upvoteCount(0)
+                .build();
     }
 
     public RecipeDetailsDto getRecipeById(Integer recipeId) {
@@ -262,11 +291,52 @@ public class RecipeService {
         if (user == null) {
             return false;
         }
+
         Optional<Upvote> upvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
-        if (upvote.isPresent()) {
-            upvoteRepository.delete(upvote.get());
-            return true;
+        if (!upvote.isPresent()) {
+            return false;
         }
-        return false;
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            return false;
+        }
+
+        // Proceed to delete the upvote
+        upvoteRepository.delete(upvote.get());
+        comment.setUpvoteCount(comment.getUpvoteCount() - 1);
+        commentRepository.save(comment);
+
+        return true;
     }
+
+
+    @Transactional
+    public boolean upvote(Integer commentId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            throw new IllegalStateException("User not found");
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            throw new IllegalStateException("Comment not found");
+        }
+
+        Optional<Upvote> existingUpvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
+        if (existingUpvote.isPresent()) {
+            return false;
+        }
+
+        Upvote upvote = Upvote.builder()
+                .user(user)
+                .comment(comment)
+                .build();
+
+        upvoteRepository.save(upvote);
+        comment.setUpvoteCount(comment.getUpvotes().size() + 1);
+        commentRepository.save(comment);
+        return true;
+    }
+
 }

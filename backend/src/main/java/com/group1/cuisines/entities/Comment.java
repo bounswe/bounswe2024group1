@@ -25,10 +25,12 @@ public class Comment {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
-    @Column(length = 1024) // Adjust length as necessary
+    @Column(length = 1024)
     private String text;
 
-    private LocalDateTime createdDate = LocalDateTime.now(); // Automatically set the date when the comment is created
+    private LocalDateTime createdDate = LocalDateTime.now();
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Upvote> upvotes;
+
+    private int upvoteCount;
 }
