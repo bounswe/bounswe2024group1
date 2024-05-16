@@ -231,10 +231,16 @@ public class RecipeService {
             cuisineDto.setName("No cuisine name from wikidata");
         }
 
-        Integer userRating = authenticationService.getUser().map(User::getId)
+        Optional<User> user = authenticationService.getUser();
+
+        Integer userRating = user.map(User::getId)
                 .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
                 .map(Rating::getRatingValue)
                 .orElse(null);
+
+        Boolean selfBookmarked = user.map(User::getId)
+                .map(userId -> bookmarkRepository.findByUserIdAndRecipeId(userId, r.getId()).isPresent())
+                .orElse(false);
 
         // Conversion logic here
         return RecipeDetailsDto.builder()
@@ -251,6 +257,7 @@ public class RecipeService {
                 .avgRating(r.getAverageRating())
                 .ratingsCount(r.getRatings().size())
                 .selfRating(userRating)
+                .selfBookmarked(selfBookmarked)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
     }

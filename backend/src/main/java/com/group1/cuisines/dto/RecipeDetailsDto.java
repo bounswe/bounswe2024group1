@@ -25,7 +25,7 @@ public class RecipeDetailsDto {
     private Double avgRating;
     private Integer ratingsCount;
     private Integer selfRating;
-
+    private Boolean selfBookmarked;
     private AuthorDto author;
 
 
