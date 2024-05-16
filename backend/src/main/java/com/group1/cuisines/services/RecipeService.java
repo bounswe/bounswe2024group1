@@ -334,7 +334,7 @@ public class RecipeService {
 
 
     @Transactional
-    public boolean upvote(Integer commentId, String username) {
+    public UpvoteDto upvote(Integer commentId, String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
             throw new IllegalStateException("User not found");
@@ -347,18 +347,30 @@ public class RecipeService {
 
         Optional<Upvote> existingUpvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
         if (existingUpvote.isPresent()) {
-            return false;
+            return null;
         }
 
         Upvote upvote = Upvote.builder()
                 .user(user)
                 .comment(comment)
+                .createdDate(LocalDateTime.now())
                 .build();
 
         upvoteRepository.save(upvote);
-        comment.setUpvoteCount(comment.getUpvotes().size() + 1);
+
+        comment.setUpvoteCount(comment.getUpvoteCount()+1);
         commentRepository.save(comment);
-        return true;
+        return new UpvoteDto().builder()
+                .id(upvote.getId())
+                .author(new AuthorDto(comment.getUser().getId(), comment.getUser().getFirstName()+ " " + comment.getUser().getLastName(),
+                        comment.getUser().getUsername(), comment.getUser().getFollowers().size(),
+                        comment.getUser().getFollowing().size(), comment.getUser().getRecipeCount()))
+                .recipeId(comment.getRecipe().getId())
+                .upvoteCount(comment.getUpvoteCount())
+                .content(comment.getText())
+                .createdAt(upvote.getCreatedDate())
+                .build();
+
     }
 
 }
