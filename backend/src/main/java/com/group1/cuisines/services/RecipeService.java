@@ -38,16 +38,16 @@ public class RecipeService {
 
 
 
-    public List<RecipeDto> findRecipes(String sort, String dishId, String cuisineId) {
+    public List<RecipeDetailsDto> findRecipes(String sort, String dishId, String cuisineId) {
         List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
 
         return recipes.stream()
-                .map(RecipeDto::new)
+                .map(this::convertToRecipeDetailsDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
+    public RecipeDetailsDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -81,7 +81,7 @@ public class RecipeService {
         recipe = recipeRepository.save(recipe);
         user.get().setRecipeCount(user.get().getRecipeCount() + 1);
 
-        return new RecipeDetailDto(recipe);
+        return convertToRecipeDetailsDto(recipe);
 
     }
 
