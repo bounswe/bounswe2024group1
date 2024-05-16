@@ -206,6 +206,7 @@ public class RecipeService {
                 .content(comment.getText())
                 .createdAt(comment.getCreatedDate())
                 .upvoteCount(comment.getUpvoteCount())
+                .hasSelfUpvoted(authenticationService.getUser().map(user -> upvoteRepository.findByCommentIdAndUserId(comment.getId(), user.getId()).isPresent()).orElse(false))
                 .build();
     }
 
@@ -308,20 +309,20 @@ public class RecipeService {
     }
 
     @Transactional
-    public boolean deleteUpvote(Integer commentId, String username) {
+    public CommentsDto deleteUpvote(Integer commentId, Integer recipeId, String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
-            return false;
+            return null;
         }
 
         Optional<Upvote> upvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
-        if (!upvote.isPresent()) {
-            return false;
+        if (upvote.isEmpty()) {
+            return null;
         }
 
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (comment == null) {
-            return false;
+            return null;
         }
 
         // Proceed to delete the upvote
@@ -329,7 +330,7 @@ public class RecipeService {
         comment.setUpvoteCount(comment.getUpvoteCount() - 1);
         commentRepository.save(comment);
 
-        return true;
+        return convertToCommentsDto(comment);
     }
 
 

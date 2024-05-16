@@ -159,17 +159,17 @@ public class RecipeController {
 
 
     @DeleteMapping("/recipes/{recipeId}/comments/{commentId}/upvote")
-    public ResponseEntity<?> deleteUpvote(@PathVariable Integer commentId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
+    public ResponseEntity<?> deleteUpvote(@PathVariable Integer commentId, @PathVariable Integer recipeId) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
-        String username = authentication.getName();
-        boolean success = recipeService.deleteUpvote(commentId, username);
-        if (success) {
-            return ResponseEntity.ok().body("Upvote removed successfully.");
+
+        CommentsDto commentsDto = recipeService.deleteUpvote(commentId, recipeId, username);
+        if (commentsDto != null) {
+            return ResponseEntity.ok(new SuccessResponse<>(200, commentsDto, "Upvote removed successfully"));
         } else {
-            return ResponseEntity.badRequest().body("Failed to remove upvote.");
+            return ResponseEntity.ok(new ErrorResponse(400, "Failed to remove upvote"));
         }
     }
 

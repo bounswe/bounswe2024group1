@@ -16,5 +16,6 @@ public class CommentsDto {
     private Integer recipeId;
     private Integer upvoteCount;
     private String content;
+    private Boolean hasSelfUpvoted;
     private LocalDateTime createdAt;
 }
