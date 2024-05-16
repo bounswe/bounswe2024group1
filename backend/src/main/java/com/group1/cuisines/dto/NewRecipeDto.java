@@ -16,4 +16,5 @@ public class NewRecipeDto {
     private int servingSize;
     private String dishId;
     private List<IngredientsDto> ingredients;
+    private List<String> allergens;
 }

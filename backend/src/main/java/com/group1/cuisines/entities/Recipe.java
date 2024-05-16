@@ -44,4 +44,10 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
      @Builder.Default // Ensures that the ingredients list is initialized to an empty ArrayList if not explicitly set
     private List<Ingredient> ingredients = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "recipe_allergens", joinColumns = @JoinColumn(name = "recipe_id"))
+    @Column(name = "allergen")
+    private List<String> allergens = new ArrayList<>();
+
 }

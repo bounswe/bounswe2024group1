@@ -19,7 +19,7 @@ public class RecipeDetailsDto {
     private Integer cookTime;
     private Integer prepTime;
     private Integer servingSize;
-   // private List<String> allergens;
+    private List<String> allergens;
     private CuisineDto cuisine;
     private DishDto dish;
     private Double avgRating;
