@@ -3,6 +3,7 @@ import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 import { cn } from "@/lib/utils";
 import {
   useBookmarkRecipe,
+  useGetMe,
   useGetRecipeById,
   useUnbookmarkRecipe,
 } from "@/services/api/semanticBrowseComponents";
@@ -15,6 +16,7 @@ export default function BookmarkButton({
   recipe: { id?: number; selfBookmarked?: boolean };
   asIcon?: boolean;
 }) {
+  useGetMe({});
   const { isLoading, data, error, refetch } = useGetRecipeById(
     {
       pathParams: {
