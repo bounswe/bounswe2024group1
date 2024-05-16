@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import RatingInput from "@/components/RatingInput";
 import Serving from "@/assets/Icon/General/Serving.svg?react";
