@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+
 import {
   View,
   Text,
   Image,
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -18,6 +20,40 @@ export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('Trending');
+
+  //PLACEHOLDER//
+  const dishes = [
+    {
+      id: '1',
+      name: 'Pepper sweetcorn ramen',
+      chef: 'Niki Samantha',
+      rating: 4.5,
+      reviews: 300,
+      time: '10 Mins',
+      image: 'https://example.com/image1.jpg', // Replace with actual image URL
+    },
+    {
+      id: '2',
+      name: 'Cheddar cheese and shell salad',
+      chef: 'Niki Samantha',
+      rating: 4.5,
+      reviews: 300,
+      time: '20 Mins',
+      image: 'https://example.com/image2.jpg', // Replace with actual image URL
+    },
+    {
+      id: '3',
+      name: 'Spicy chicken curry noodles',
+      chef: 'Niki Samantha',
+      rating: 4.5,
+      reviews: 300,
+      time: '15 Mins',
+      image: 'https://example.com/image3.jpg', // Replace with actual image URL
+    },
+  ];
+
+
   return (
     <ScrollView className="w-screen bg-white p-6 overflow-y-scroll">
       <View className="pt-6">
@@ -45,8 +81,22 @@ export const Home = () => {
           />
         </View>
       </View>
-      {/* <Trending /> */}
-      {results.map((dish) => (
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'Trending' && styles.activeTab]}
+          onPress={() => setSelectedTab('Trending')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'Trending' && styles.activeTabText]}>Trending</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'Following' && styles.activeTab]}
+          onPress={() => setSelectedTab('Following')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'Following' && styles.activeTabText]}>Following</Text>
+        </TouchableOpacity>
+      </View>
+      <Trending /> 
+      {/*results.map((dish) => (
         <DishCard
           key={dish.id}
           dish={{
@@ -56,9 +106,49 @@ export const Home = () => {
           }}
         />
       ))}
-      {/* <Popular /> */}
+    */}
+     <Popular /> 
     </ScrollView>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    marginTop:10,
+    backgroundColor: '#fff',
+  
+    borderBottomColor: '#ddd',
+  },
+  tab: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#ff6347',
+  },
+  tabText: {
+    fontSize: 16,
+    color: '#888',
+  },
+  activeTabText: {
+    color: '#ff6347',
+    fontWeight: 'bold',
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  contentText: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+});
 
 export default Home;
