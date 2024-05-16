@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(new ErrorResponse(204, "User not found"));
     }
 
-    @DeleteMapping("/{userId}/unfollow")
+    @DeleteMapping("/{userId}/follow")
     public ResponseEntity<?> unfollowUser(@PathVariable Integer userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal()=="anonymousUser"){
