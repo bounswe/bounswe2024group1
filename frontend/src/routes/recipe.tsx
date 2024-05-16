@@ -8,7 +8,6 @@ import Food from "@/assets/Icon/General/Food.svg?react";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
 import { StarIcon } from "lucide-react";
 import {
-  useGetCommentsForRecipe,
   useGetRecipeById,
   useRateRecipe,
 } from "@/services/api/semanticBrowseComponents";
@@ -21,7 +20,8 @@ import useAuthStore from "@/services/auth";
 import FollowButton from "@/components/FollowButton";
 import BookmarkButton from "@/components/BookmarkButton";
 import { toast } from "@/components/ui/use-toast";
-import { Comment } from "@/components/Comment";
+import { AddComment} from "@/components/Comment";
+import { Comments } from "@/components/CommentSection";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -35,16 +35,6 @@ export default function RecipePage() {
     },
   );
   const { selfProfile, token } = useAuthStore();
-
-  const { data: comments, isLoading: commentsLoading } =
-    useGetCommentsForRecipe(
-      {
-        pathParams: { recipeId: recipeId ? Number(recipeId) : -1 },
-      },
-      {
-        enabled: !!recipeId,
-      },
-    );
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 
@@ -213,10 +203,8 @@ export default function RecipePage() {
         ))}
       </div>
       <h4 className="font-bold">Comments</h4>
-      {commentsLoading && <span>Loading comments...</span>}
-      {comments?.data?.map((comment) => (
-        <Comment key={comment.id} comment={comment} />
-      ))}
+      <AddComment user={selfProfile} />
+      <Comments recipeId={recipeId}/>
     </div>
   );
 }
