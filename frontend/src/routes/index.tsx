@@ -10,6 +10,7 @@ import Profile from "./profile";
 import RecipePage from "./recipe";
 import { Bookmarks } from "./bookmarks";
 import CreateRecipePage from "./create-recipe";
+import DishPage from "./dish";
 
 export const routes: RouteObject[] = [
   {
@@ -27,6 +28,10 @@ export const routes: RouteObject[] = [
   {
     path: "/feed",
     Component: Feed,
+  },
+  {
+    path: "/dishes/:dishId",
+    Component: DishPage,
   },
   {
     path: "/recipes/:recipeId",

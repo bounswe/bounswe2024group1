@@ -6,7 +6,7 @@ import Clock from "@/assets/Icon/General/Clock.svg?react";
 import Allergies from "@/assets/Icon/General/Allergies.svg?react";
 import Food from "@/assets/Icon/General/Food.svg?react";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
-import { StarIcon, Trash } from "lucide-react";
+import { Flag, StarIcon, Trash } from "lucide-react";
 import {
   useDeleteRecipeById,
   useGetRecipeById,
@@ -154,7 +154,7 @@ export default function RecipePage() {
           />
         )}
       </div>
-      <Bookmarkers recipeId={recipe.id} />
+      {!!token && <Bookmarkers recipeId={recipe.id} />}
 
       <div className="grid grid-cols-2 gap-2 py-2">
         {/* <span className="flex items-center gap-4 font-bold">
@@ -166,10 +166,13 @@ export default function RecipePage() {
           {recipe.servingSize} servings
         </span>
         {recipe.dish && (
-          <span className="flex items-center gap-4 font-bold">
+          <Link
+            to={`/dishes/${recipe.dish.id}`}
+            className="flex items-center gap-4 font-bold"
+          >
             <Food className="h-6 w-6" />
             {recipe.dish?.name}
-          </span>
+          </Link>
         )}
         <span className="flex items-center gap-4 font-bold">
           <Clock className="h-6 w-6" />
@@ -177,7 +180,7 @@ export default function RecipePage() {
         </span>
         {recipe.dish?.countries && (
           <span className="flex items-center gap-4 font-bold">
-            <Clock className="h-6 w-6" />
+            <Flag className="h-6 w-6" />
             {recipe.dish.countries}
           </span>
         )}
@@ -226,7 +229,7 @@ export default function RecipePage() {
               </span>
               <span className="font-bold">{ingredient.name}</span>
             </div>
-            <span className="text-neutral-400">100g</span>
+            <span className="text-neutral-400">{ingredient.amount}</span>
           </div>
         ))}
       </div>

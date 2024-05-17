@@ -1141,8 +1141,8 @@ export const useFollowCuisine = (
 
 export type GetRecipesForEntityQueryParams = {
   sort?: "recent" | "topRated";
-  dishId?: number;
-  cuisineId?: number;
+  dishId?: string;
+  cuisineId?: string;
 };
 
 export type GetRecipesForEntityError = Fetcher.ErrorWrapper<{
