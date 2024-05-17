@@ -1,17 +1,26 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
-import { signout } from "./auth";
+import useAuthStore, { signout } from "./auth";
 import { toast } from "@/components/ui/use-toast";
 import { renderError } from "./api/semanticBrowseFetcher";
 import { router } from "@/routes";
 
 const errorHandler = (error: Error) => {
   if ("status" in error && error.status === 401) {
+    if (!useAuthStore.getState().token) {
+      toast({
+        title: "Authentication required",
+        description: "You need to log in before you perform this action.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Session expired",
+        description: "Please log in again",
+        variant: "destructive",
+      });
+    }
+
     signout();
-    toast({
-      title: "Session expired",
-      description: "Please log in again",
-      variant: "destructive",
-    });
 
     // navigate to /login
     router.navigate(

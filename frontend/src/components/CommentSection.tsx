@@ -31,10 +31,10 @@ export const Comments = ({ recipeId }: { recipeId: number }) => {
   }
 
   return (
-      <div className="mt-4 grid grid-cols-1 gap-8">
-        {commentData?.data
-          ?.reverse()
-          .map((comment) => <Comment key={comment.id} comment={comment} />)}
-      </div>
+    <div className="mt-4 grid grid-cols-1 gap-8">
+      {commentData?.data
+        ?.reverse()
+        .map((comment) => <Comment key={comment.id} comment={comment} />)}
+    </div>
   );
 };

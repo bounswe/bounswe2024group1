@@ -19,8 +19,8 @@ const useAuthStore = create<AuthState>()(
       token: null,
       setToken: (token) => {
         set({ token });
-        queryClient.invalidateQueries();
         useAuthStore.getState().fetchProfile();
+        queryClient.invalidateQueries();
       },
       fetchProfile: async () => {
         if (!useAuthStore.getState().token) {

@@ -590,11 +590,11 @@ paths:
         - in: query
           name: dishId
           schema:
-            type: integer
+            type: string
         - in: query
           name: cuisineId
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: OK

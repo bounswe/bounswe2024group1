@@ -42,9 +42,12 @@ export const Dish = ({
             <Link to={`/recipes/new?dishId=` + encodeURIComponent(id)}>
               <Plus className="h-4 w-4" />
             </Link>
-            <a className="cursor-not-allowed text-sm font-medium text-blue-500 hover:underline">
+            <Link
+              to={`/dishes/${id}`}
+              className="text-sm font-medium text-blue-500 hover:underline"
+            >
               See all recipes →
-            </a>
+            </Link>
           </div>
         </CardContent>
       </Card>
