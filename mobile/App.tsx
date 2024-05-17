@@ -15,6 +15,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./src/services2/query-client";
 import { Search } from "./src/screens/Search/Search";
+import AddRecipe from "./src/screens/AddRecipe/AddRecipe";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
         <Stack.Screen name="Registration" component={Registration} />
        { /* <Stack.Screen name="HomeScreen" component={Home} />*/}
         <Stack.Screen name="Results" component={Results} />
+        <Stack.Screen name="AddRecipe" component={AddRecipe} />
       </Stack.Navigator>
     </NavigationContainer>
     </QueryClientProvider>
