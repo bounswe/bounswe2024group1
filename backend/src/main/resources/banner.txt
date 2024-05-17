@@ -16,6 +16,8 @@
 - Cagatay Colak
 - Yigit Memceroktay
 
+FOR POSTMAN COLLECTION NAVIGATE TO : https://app.getpostman.com/join-team?invite_code=139350c8bc4f87f5f7f8da08a4386a38&target_code=498dc1ff0abd5c8271fc9c745e4428a7
+
 ${application.title} ${application.version}
 Powered by Spring Boot ${spring-boot.version}
 

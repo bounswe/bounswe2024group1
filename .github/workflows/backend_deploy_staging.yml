@@ -1,0 +1,36 @@
+name: backend-staging-workflow
+
+on:
+  workflow_run:
+    workflows: ["backend-test"]
+    types:
+      - completed
+  push:
+    branches:
+      - staging
+    paths:
+      - 'backend/**'
+      - compose.yml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Authorize to with doctl
+        run: echo ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} | doctl auth init --context github-actions
+
+      - name: Login to Docker registry
+        run: doctl registry login --context github-actions
+
+      - name: Build Docker image
+        run: docker compose build
+
+      - name: Tag Docker image
+        run: docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend-staging:latest
+
+      - name: Push Docker image
+        run: docker push registry.digitalocean.com/semantic-browse/backend-staging:latest
+

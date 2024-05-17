@@ -1,4 +1,11 @@
-import { CircleUser, Menu, Package2, UtensilsCrossed } from "lucide-react";
+import {
+  CircleUser,
+  LogOut,
+  Menu,
+  Package2,
+  User,
+  UtensilsCrossed,
+} from "lucide-react";
 import {
   Link,
   NavLink,
@@ -10,6 +17,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
@@ -18,13 +27,14 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { SearchBar } from "./SearchBar";
 import useAuthStore from "../services/auth";
 import { FullscreenLoading } from "./FullscreenLoading";
+import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 
 const links = [{ name: "Home", path: "/" }] as const;
 
 export const NavbarLayout = () => {
   const fetcher = useFetcher();
   const isAuthenticated = !!useAuthStore().token;
-
+  const selfProfile = useAuthStore().selfProfile;
   const navigation = useNavigation();
 
   return (
@@ -36,7 +46,7 @@ export const NavbarLayout = () => {
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
             <UtensilsCrossed className="h-6 w-6" />
-            <span className="sr-only">Semantic Cuisines</span>
+            <h5 className="w-[max-content]">Semantic Cuisines</h5>
           </Link>
           {links.map(({ name, path }) => (
             <NavLink
@@ -107,11 +117,38 @@ export const NavbarLayout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <fetcher.Form method="POST" action="/logout">
-                    <Button type="submit">Log out</Button>
-                  </fetcher.Form>
+                <DropdownMenuLabel>
+                  {selfProfile?.name
+                    ? `Welcome, ${selfProfile?.name}`
+                    : "Account"}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/users/me">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/bookmarks">
+                    <Bookmark className="mr-2 h-4 w-4 fill-white" />
+                    <span>Bookmarks</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <fetcher.Form
+                  className="contents"
+                  method="POST"
+                  action="/logout"
+                >
+                  <DropdownMenuItem asChild>
+                    <button type="submit">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </button>
+                  </DropdownMenuItem>
+                </fetcher.Form>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

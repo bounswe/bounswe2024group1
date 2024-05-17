@@ -3,11 +3,14 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import { useId, useState } from "react";
+import SearchFilterPopover from "./SearchFilterPopover";
 
 export const SearchBar = () => {
   const id = useId();
   const [params] = useSearchParams();
   const [search, setSearch] = useState(params.get("q") || "");
+  const [cuisine, setCuisine] = useState(params.get("cuisine") || "");
+  const [foodType, setFoodType] = useState(params.get("foodType") || "");
 
   const navigate = useNavigate();
 
@@ -16,8 +19,12 @@ export const SearchBar = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          const params = new URLSearchParams();
+          params.append("q", search);
+          if (cuisine) params.append("cuisine", cuisine);
+          if (foodType) params.append("foodType", foodType);
 
-          navigate("/search?q=" + encodeURIComponent(search));
+          navigate("/search?" + params.toString());
         }}
         className="flex gap-4"
       >
@@ -28,6 +35,12 @@ export const SearchBar = () => {
           type="text"
           id={id}
           name="search"
+        />
+        <SearchFilterPopover
+          cuisine={cuisine}
+          setCuisine={setCuisine}
+          foodType={foodType}
+          setFoodType={setFoodType}
         />
         <Button type="submit" className="gap-2">
           <Search size={16} />

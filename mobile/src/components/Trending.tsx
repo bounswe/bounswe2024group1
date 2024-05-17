@@ -1,9 +1,68 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image,FlatList } from 'react-native'
 import React from 'react'
+import RecipeCardFake from './RecipeCardFake'
+import RecipeCard from './RecipeCard'
+const Trending = ({data}) => {
+   
+  //const [bookmarks, setBookmarks] = useState([]);
+  
+  const bookmarks = [];
+  bookmarks[0] = {
+    
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id: 1,
 
-const Trending = () => {
+  };
+  bookmarks[1] = {
+   
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id: 2,
+  };
+  bookmarks[2] = {
+   
+    name: "Bread",
+    author: "Ahmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id:3,
+  };
+  bookmarks[3] = {
+   
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id: 4,
+  };
+  const params = useRoute()
+  const feedType = ["explore", "following"].includes(params.get("type") ?? "")
+  ? (params.get("type") as "explore" | "following")
+  : "explore";
+// const foodType = params.get("foodType") || "";
+// const setFoodType = (val: string) => setParams({ ...params, foodType: val });
+  const {
+    data: feedData,
+    isLoading,
+    error,
+  } = useGetFeed({
+    queryParams: { type: isAuthenticated ? feedType : "explore" },
+  });
+  const renderItem = ({ item }) => (
+    <RecipeCard recipe={item}/>
+  );
+
   return (
-    <View>
+    <View className='pb-80'>
        <View className="pt-8 flex-row items-center justify-between">
         <Text className="font-bold text-xl">Trending now 🔥</Text>
         <TouchableOpacity className="flex-row items-center">
@@ -14,27 +73,14 @@ const Trending = () => {
           />
         </TouchableOpacity>
       </View>
-      <View>
-        <View className="pt-8 flex items-center">
-          <TouchableOpacity className="px-8">
-            <Image
-              className="h-48"
-              resizeMode="contain"
-              source={require("@/assets/Video.png")}
-            />
-          </TouchableOpacity>
-        </View>
-        <View className="flex-row items-center  justify-between">
-          <Text className="font-bold text-l">How to make Sushi</Text>
-          <TouchableOpacity className="flex-row items-center">
-            <Image
-              className="w-6"
-              resizeMode="contain"
-              source={require("@/assets/dot.png")}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
+      
+      <FlatList
+        className="mt-4"
+        data={bookmarks}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+      />
+      
     </View>
   )
 }

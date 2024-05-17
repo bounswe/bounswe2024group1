@@ -1,15 +1,41 @@
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { routeConfig } from "../routes";
-import { expect, test, vi } from "vitest";
-import { signin } from "@/services/auth";
+import { afterEach, expect, test, vi } from "vitest";
+import { fetchLogin } from "@/services/api/semanticBrowseComponents";
+import useAuthStore from "../services/auth";
 
-vi.mock("@/services/auth", async (importOriginal) => {
-  const mod = await importOriginal<typeof import("@/services/auth")>();
+vi.mock("@/services/api/semanticBrowseComponents", async (importOriginal) => {
+  const mod =
+    await importOriginal<
+      typeof import("@/services/api/semanticBrowseComponents")
+    >();
   return {
     ...mod,
-    signin: vi.fn(() => Promise.resolve("token")),
+    useGetFeed: vi.fn(() => ({
+      data: {
+        data: [],
+        status: 200,
+      },
+    })),
+    fetchLogin: vi.fn(() =>
+      Promise.resolve({ data: { token: "token" }, status: 200 }),
+    ),
+    fetchGetMe: vi.fn(() =>
+      Promise.resolve({
+        data: {
+          id: 1,
+          username: "efe",
+          email: "",
+        },
+        status: 200,
+      }),
+    ),
   };
+});
+
+afterEach(() => {
+  useAuthStore.setState(useAuthStore.getInitialState());
 });
 
 test("login calls service", async () => {
@@ -30,9 +56,11 @@ test("login calls service", async () => {
 
   // Assert
   await waitFor(() => {
-    expect(signin).toHaveBeenCalledWith({
-      usernameOrEmail: "efe",
-      password: "password",
+    expect(fetchLogin).toHaveBeenCalledWith({
+      body: {
+        usernameOrEmail: "efe",
+        password: "password",
+      },
     });
   });
 });
