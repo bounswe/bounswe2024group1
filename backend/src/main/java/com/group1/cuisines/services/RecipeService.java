@@ -359,6 +359,7 @@ public class RecipeService {
         upvoteRepository.save(upvote);
 
         comment.setUpvoteCount(comment.getUpvoteCount()+1);
+        comment.getUpvotes().add(upvote);
         commentRepository.save(comment);
         return new UpvoteDto().builder()
                 .id(upvote.getId())

@@ -3,9 +3,12 @@ package com.group1.cuisines.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
-@Builder
+import java.util.Objects;
+
 @Getter
+@Setter
+@Builder
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,4 +25,17 @@ public class Bookmark {
     @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bookmark recipe = (Bookmark) o;
+        return Objects.equals(id, recipe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
