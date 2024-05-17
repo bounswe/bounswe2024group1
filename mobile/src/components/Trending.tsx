@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image,FlatList } from 'react-native'
 import React from 'react'
-
+import RecipeCardFake from './RecipeCardFake'
 import RecipeCard from './RecipeCard'
 const Trending = ({data}) => {
    
@@ -28,8 +28,8 @@ const Trending = ({data}) => {
   };
   bookmarks[2] = {
    
-    name: "ApplePie",
-    author: "Mehmet",
+    name: "Bread",
+    author: "Ahmet",
     avgRating: "4.9",
     ratingsCount:400,
     cookTime:'2 hours',
@@ -44,6 +44,19 @@ const Trending = ({data}) => {
     cookTime:'2 hours',
     id: 4,
   };
+  const params = useRoute()
+  const feedType = ["explore", "following"].includes(params.get("type") ?? "")
+  ? (params.get("type") as "explore" | "following")
+  : "explore";
+// const foodType = params.get("foodType") || "";
+// const setFoodType = (val: string) => setParams({ ...params, foodType: val });
+  const {
+    data: feedData,
+    isLoading,
+    error,
+  } = useGetFeed({
+    queryParams: { type: isAuthenticated ? feedType : "explore" },
+  });
   const renderItem = ({ item }) => (
     <RecipeCard recipe={item}/>
   );
@@ -63,7 +76,7 @@ const Trending = ({data}) => {
       
       <FlatList
         className="mt-4"
-        data={data}
+        data={bookmarks}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
       />

@@ -15,7 +15,7 @@ const Dish = ({ dish }) => (
     <Image source={{ uri: dish.image }} style={styles.dishImage} />
     <Text style={styles.dishName}>{dish.name}</Text>
     <Text style={styles.dishDescription}>{dish.description}</Text>
-    <Text style={styles.dishCountries}>{dish.countries.join(', ')}</Text>
+    <Text style={styles.dishCountries}></Text>
   </View>
 );
 

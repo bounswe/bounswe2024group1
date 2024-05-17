@@ -8,7 +8,7 @@ import {
 } from "./semanticBrowseSchemas";
 import { z } from "zod";
 
-const baseUrl = "/api/v1";
+const baseUrl = "https://semantic-cuisine-wh4f2.ondigitalocean.app/api/v1";
 
 export type ErrorWrapper<TError> =
   | TError
