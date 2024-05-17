@@ -28,8 +28,13 @@ import Title from "@/src/components/Title";
 import Trending from "@/src/components/Trending";
 import Filter from "@/src/components/filter";
 import { searchDishes } from "@/src/services/search";
+<<<<<<< HEAD
 
 import RecipeCard from "@/src/components/RecipeCard";
+=======
+import DishCard from "@/src/components/Dish";
+import { useNavigation } from "@react-navigation/native";
+>>>>>>> mobile/feature/210-recipe-details
 
 export const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,6 +49,7 @@ export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
 
   const [searchFocused, setSearchFocused] = useState(false);
+<<<<<<< HEAD
   const [selectedTab, setSelectedTab] = useState("Explore");
   const isAuthenticated = useAuthStore().token !== null;
 
@@ -104,6 +110,9 @@ export const Home = () => {
     );
   };
 
+=======
+  const nav = useNavigation();
+>>>>>>> mobile/feature/210-recipe-details
   return (
     <SafeAreaView className="w-screen bg-white  pt-6 pl-6 pr-6 h-full box-border">
       <Modal
