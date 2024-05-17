@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserUpdateFormDto {
     private String username;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String bio;
     private String gender;
     private String profilePicture;
