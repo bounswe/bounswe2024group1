@@ -3,6 +3,7 @@ import { createJSONStorage } from "zustand/middleware";
 import { persist } from "zustand/middleware";
 import { UserProfile } from "./api/semanticBrowseSchemas";
 import { fetchGetMe } from "./api/semanticBrowseComponents";
+import { queryClient } from "./query-client";
 
 interface AuthState {
   /* null if logged out */
@@ -18,6 +19,7 @@ const useAuthStore = create<AuthState>()(
       token: null,
       setToken: (token) => {
         set({ token });
+        queryClient.invalidateQueries();
         useAuthStore.getState().fetchProfile();
       },
       fetchProfile: async () => {

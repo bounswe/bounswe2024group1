@@ -12,9 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import java.util.List;
-
 import java.util.List;
 
 @RestController
@@ -41,7 +38,7 @@ public class RecipeController {
     public ResponseEntity<?> getRecipes(@RequestParam(required = false) String sort,
                                                       @RequestParam(required = false) String dishId,
                                                       @RequestParam(required = false) String cuisineId) {
-        List<RecipeDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
+        List<RecipeDetailsDto> recipes = recipeService.findRecipes(sort, dishId, cuisineId);
         return ResponseEntity.ok(new SuccessResponse<>(200, recipes, "Recipes fetched successfully"));
     }
 
@@ -56,7 +53,7 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
-        RecipeDetailDto recipeDetails = recipeService.createRecipe(newRecipe, username);
+        RecipeDetailsDto recipeDetails = recipeService.createRecipe(newRecipe, username);
         if (recipeDetails != null) {
             return ResponseEntity.ok(new SuccessResponse<>(201, recipeDetails, "Recipe created successfully"));
         } else {
@@ -115,8 +112,23 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
         }
 
-        List<User> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
+        List<UserDto> whoBookmarked = recipeService.getWhoBookmarked(recipeId);
         return ResponseEntity.ok(new SuccessResponse<>(200, whoBookmarked, "Bookmarks fetched successfully"));
+    }
+
+    @DeleteMapping("/recipes/{recipeId}/bookmarks")
+    public ResponseEntity<?> deleteBookmark(@PathVariable Integer recipeId) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
+        }
+
+        boolean success = recipeService.deleteBookmark(recipeId, username);
+
+        if (success) {
+            return ResponseEntity.ok(new SuccessResponse<>(200, "", "Bookmark deleted successfully"));
+        }
+        return ResponseEntity.ok(new ErrorResponse(400, "Failed to delete bookmark"));
     }
 
     @GetMapping("/recipes/{recipeId}/comments")
@@ -128,5 +140,58 @@ public class RecipeController {
         return ResponseEntity.ok(new SuccessResponse<>(200, commentsDto, "Comments fetched successfully"));
     }
 
+    @PostMapping("/recipes/{recipeId}/comments")
+    public ResponseEntity<?> createComment(@PathVariable Integer recipeId, @RequestBody NewCommentDto newCommentDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
+        }
 
+        String username = authentication.getName();
+
+        try {
+            CommentsDto commentsDto = recipeService.addComment(recipeId,newCommentDto, username);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse<>(201, commentsDto, "Comment added successfully"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(400, "Failed to add comment: " + e.getMessage()));
+        }
+    }
+
+
+    @DeleteMapping("/recipes/{recipeId}/comments/{commentId}/upvote")
+    public ResponseEntity<?> deleteUpvote(@PathVariable Integer commentId, @PathVariable Integer recipeId) {
+        String username = authenticationService.getUser().map(User::getUsername).orElse(null);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
+        }
+
+        CommentsDto commentsDto = recipeService.deleteUpvote(commentId, recipeId, username);
+        if (commentsDto != null) {
+            return ResponseEntity.ok(new SuccessResponse<>(200, commentsDto, "Upvote removed successfully"));
+        } else {
+            return ResponseEntity.ok(new ErrorResponse(400, "Failed to remove upvote"));
+        }
+    }
+
+        @PostMapping("/recipes/{recipeId}/comments/{commentId}/upvote")
+        public ResponseEntity<?> upvoteComment(@PathVariable Integer recipeId, @PathVariable Integer commentId) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
+            }
+
+            String username = authentication.getName();
+            try {
+                UpvoteDto upvoteDto = recipeService.upvote(commentId, username);
+                if(upvoteDto != null)
+
+                    return ResponseEntity.ok(new SuccessResponse<>(200, upvoteDto, "Comment upvoted successfully"));
+                else {
+                    return ResponseEntity.ok(new ErrorResponse(400, "Failed to upvote comment: "));
+                }
+
+            } catch (IllegalStateException e) {
+                return ResponseEntity.ok(new ErrorResponse(400, "Failed to upvote comment: " ));
+            }
+        }
 }

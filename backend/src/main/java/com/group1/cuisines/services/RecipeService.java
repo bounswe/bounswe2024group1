@@ -7,14 +7,14 @@ import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Service
 public class RecipeService {
@@ -33,44 +33,41 @@ public class RecipeService {
     private RatingRepository ratingRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
-
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UpvoteRepository upvoteRepository;
 
 
 
-
-    public List<RecipeDto> findRecipes(String sort, String dishId, String cuisineId) {
+    public List<RecipeDetailsDto> findRecipes(String sort, String dishId, String cuisineId) {
         List<Recipe> recipes = recipeRepository.findByDishIdAndCuisineIdWithSort(dishId, cuisineId, sort);
 
         return recipes.stream()
-                .map(recipe -> new RecipeDto(
-                        recipe.getId(),
-                        recipe.getTitle(),
-                        recipe.getInstructions(),
-                        recipe.getPreparationTime(),
-                        recipe.getCookingTime(),
-                        recipe.getServingSize(),
-                        recipe.getAverageRating(),
-                        recipe.getTitle()))
+                .map(this::convertToRecipeDetailsDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public RecipeDetailDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
+    public RecipeDetailsDto createRecipe(NewRecipeDto newRecipe, String username) throws Exception {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new IllegalStateException("User not found");
         }
-        Dish dish = dishRepository.findById(newRecipe.getDishId()).orElseThrow(
-                () -> new Exception("Dish with ID " + newRecipe.getDishId() + " not found")
-        );
+        Dish dish;
+        if (newRecipe.getDishId() == null) {
+            dish = null;
+        } else {
+            dish = dishRepository.findById(newRecipe.getDishId()).orElse(null);
+        }
 
         Recipe recipe = Recipe.builder()
-                .title(newRecipe.getTitle())
+                .name(newRecipe.getName())
+                .description(newRecipe.getDescription())
                 .instructions(newRecipe.getInstructions())
-                .preparationTime(newRecipe.getPreparationTime())
-                .cookingTime(newRecipe.getCookingTime())
+                .allergens(newRecipe.getAllergens())
+                .prepTime(newRecipe.getPrepTime())
+                .cookTime(newRecipe.getCookTime())
                 .servingSize(newRecipe.getServingSize())
                 .dish(dish)
                 .user(user.get())
@@ -91,15 +88,7 @@ public class RecipeService {
         recipe = recipeRepository.save(recipe);
         user.get().setRecipeCount(user.get().getRecipeCount() + 1);
 
-
-            return RecipeDetailDto.builder()
-                    .id(recipe.getId())
-                    .title(recipe.getTitle())
-                    .instructions(recipe.getInstructions())
-                    .preparationTime(recipe.getPreparationTime())
-                    .cookingTime(recipe.getCookingTime())
-                    .dishName(recipe.getDish().getName())
-                    .build();
+        return convertToRecipeDetailsDto(recipe);
 
     }
 
@@ -168,22 +157,80 @@ public class RecipeService {
         return true;
     }
 
-    public List<User> getWhoBookmarked(Integer recipeId) {
-        return bookmarkRepository.findByRecipeId(recipeId).stream().map(Bookmark::getUser).toList();
+    public List<UserDto> getWhoBookmarked(Integer recipeId) {
+        return bookmarkRepository.findByRecipeId(recipeId).stream()
+                .map(bookmark -> UserDto.builder()
+                        .id(bookmark.getUser().getId())
+                        .username(bookmark.getUser().getUsername())
+                        .firstName(bookmark.getUser().getFirstName())
+                        .lastName(bookmark.getUser().getLastName())
+                        .recipeCount(bookmark.getUser().getRecipeCount())
+                        .followerCount(bookmark.getUser().getFollowers().size())
+                        .followingCount(bookmark.getUser().getFollowing().size())
+                        .selfFollowing(bookmark.getUser().getFollowing().contains(bookmark.getUser()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public boolean deleteBookmark(Integer recipeId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null){
+            return false;
+        }
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null){
+            return false;
+        }
+        Optional<Bookmark> bookmark = bookmarkRepository.findByUserIdAndRecipeId(user.getId(), recipeId);
+        if (bookmark.isEmpty()){
+            return false;
+        }
+        bookmarkRepository.delete(bookmark.get());
+        return true;
     }
 
 
     public List<CommentsDto> getCommentsByRecipeId(Integer recipeId) {
+
         return commentRepository.findByRecipeId(recipeId).stream()
-                .map(comment -> CommentsDto.builder()
-                        .id(comment.getId())
-                        .userId(comment.getUser().getId())
-                        .recipeId(comment.getRecipe().getId())
-                        .text(comment.getText())
-                        .createdDate(comment.getCreatedDate())
-                        .upvoteCount(comment.getUpvotes() != null ? comment.getUpvotes().size() : 0)
-                        .build())
+                .map(this::convertToCommentsDto)
                 .collect(Collectors.toList());
+    }
+
+    private CommentsDto convertToCommentsDto(Comment comment) {
+        return CommentsDto.builder()
+                .id(comment.getId())
+                .author(new AuthorDto(comment.getUser().getId(), comment.getUser().getFirstName(), comment.getUser().getUsername(),
+                        comment.getUser().getFollowing().size(), comment.getUser().getFollowers().size(), comment.getUser().getRecipeCount()))
+                .recipeId(comment.getRecipe().getId())
+                .content(comment.getText())
+                .createdAt(comment.getCreatedDate())
+                .upvoteCount(comment.getUpvoteCount())
+                .hasSelfUpvoted(authenticationService.getUser().map(user -> upvoteRepository.findByCommentIdAndUserId(comment.getId(), user.getId()).isPresent()).orElse(false))
+                .build();
+    }
+
+    @Transactional
+    public CommentsDto addComment(Integer recipeId,NewCommentDto newComment, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException("User not found"));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new IllegalStateException("Recipe not found"));
+
+        Comment comment = Comment.builder()
+                .user(user)
+                .recipe(recipe)
+                .text(newComment.getComment())
+                .createdDate(LocalDateTime.now())
+                .build();
+        comment = commentRepository.save(comment);
+
+        return CommentsDto.builder()
+                .id(comment.getId())
+                .author(new AuthorDto(user.getId(), user.getFirstName(), user.getUsername(), user.getFollowing().size(), user.getFollowers().size(), user.getRecipeCount()))
+                .recipeId(recipe.getId())
+                .content(comment.getText())
+                .createdAt(comment.getCreatedDate())
+                .upvoteCount(0)
+                .build();
     }
 
     public RecipeDetailsDto getRecipeById(Integer recipeId) {
@@ -219,25 +266,113 @@ public class RecipeService {
             cuisineDto.setId("No cuisine Id from wikidata");
             cuisineDto.setName("No cuisine name from wikidata");
         }
+        else {
+            cuisineDto.setId("No dish Id from wikidata");
+            cuisineDto.setName("No dish name from wikidata");
+        }
 
-        Integer userRating = authenticationService.getUser().map(User::getId)
+        Optional<User> user = authenticationService.getUser();
+
+        Integer userRating = user.map(User::getId)
                 .flatMap(userId -> ratingRepository.findByRecipeIdAndUserId(r.getId(), userId))
                 .map(Rating::getRatingValue)
                 .orElse(null);
 
+        Boolean selfBookmarked = user.map(User::getId)
+                .map(userId -> bookmarkRepository.findByUserIdAndRecipeId(userId, r.getId()).isPresent())
+                .orElse(false);
+
+        DishDto dish = null;
+        if (r.getDish() != null) {
+            dish = new DishDto(r.getDish());
+        }
+
         // Conversion logic here
         return RecipeDetailsDto.builder()
                 .id(r.getId())
-                .name(r.getTitle())
+                .name(r.getName())
+                .description(r.getDescription())
                 .instructions(r.getInstructions())
                 .ingredients(r.getIngredients().stream().map(IngredientsDto::new).collect(Collectors.toList()))
-                .cookTime(r.getCookingTime())
+                .allergens(r.getAllergens())
+                .cookTime(r.getCookTime())
+                .prepTime(r.getPrepTime())
                 .servingSize(r.getServingSize())
                 .cuisine(cuisineDto)
-                .dish(new DishDto(r.getDish().getId(), r.getDish().getName(), r.getDish().getImage()))
+                .dish(dish)
                 .avgRating(r.getAverageRating())
+                .ratingsCount(r.getRatings().size())
                 .selfRating(userRating)
+                .selfBookmarked(selfBookmarked)
                 .author(new AuthorDto(r.getUser().getId(), r.getUser().getFirstName() , r.getUser().getUsername(), r.getUser().getFollowing().size(), r.getUser().getFollowers().size(), r.getUser().getRecipeCount()))
                 .build();
     }
+
+    @Transactional
+    public CommentsDto deleteUpvote(Integer commentId, Integer recipeId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        Optional<Upvote> upvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
+        if (upvote.isEmpty()) {
+            return null;
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            return null;
+        }
+
+        // Proceed to delete the upvote
+        upvoteRepository.delete(upvote.get());
+        comment.setUpvoteCount(comment.getUpvoteCount() - 1);
+        commentRepository.save(comment);
+
+        return convertToCommentsDto(comment);
+    }
+
+
+    @Transactional
+    public UpvoteDto upvote(Integer commentId, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            throw new IllegalStateException("User not found");
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            throw new IllegalStateException("Comment not found");
+        }
+
+        Optional<Upvote> existingUpvote = upvoteRepository.findByCommentIdAndUserId(commentId, user.getId());
+        if (existingUpvote.isPresent()) {
+            return null;
+        }
+
+        Upvote upvote = Upvote.builder()
+                .user(user)
+                .comment(comment)
+                .createdDate(LocalDateTime.now())
+                .build();
+
+        upvoteRepository.save(upvote);
+
+        comment.setUpvoteCount(comment.getUpvoteCount()+1);
+        comment.getUpvotes().add(upvote);
+        commentRepository.save(comment);
+        return new UpvoteDto().builder()
+                .id(upvote.getId())
+                .author(new AuthorDto(comment.getUser().getId(), comment.getUser().getFirstName()+ " " + comment.getUser().getLastName(),
+                        comment.getUser().getUsername(), comment.getUser().getFollowers().size(),
+                        comment.getUser().getFollowing().size(), comment.getUser().getRecipeCount()))
+                .recipeId(comment.getRecipe().getId())
+                .upvoteCount(comment.getUpvoteCount())
+                .content(comment.getText())
+                .createdAt(upvote.getCreatedDate())
+                .build();
+
+    }
+
 }
