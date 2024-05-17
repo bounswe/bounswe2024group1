@@ -16,11 +16,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout 
         uses: actions/checkout@v4
-      
-      - name: Authorize to with doctl
-        run: echo ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} | doctl auth init --context github-actions
+
+      - name: setup doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} 
 
       - name: Login to Docker registry
         run: doctl registry login --context github-actions
