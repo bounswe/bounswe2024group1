@@ -20,7 +20,9 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @Column(length = 5000)
     private String description;
+    @Column(length = 5000)
     private String instructions;
     private int prepTime;
     private int cookTime;
