@@ -173,23 +173,25 @@ public class RecipeController {
         }
     }
 
-    @PostMapping("/recipes/{recipeId}/comments/{commentId}/upvote")
-    public ResponseEntity<?> upvoteComment(@PathVariable Integer recipeId, @PathVariable Integer commentId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required.");
-        }
-
-        String username = authentication.getName();
-        try {
-            boolean success = recipeService.upvote(commentId, username);
-            if (success) {
-                return ResponseEntity.ok().body("Comment upvoted successfully.");
-            } else {
-                return ResponseEntity.badRequest().body("Failed to upvote comment: User has already upvoted.");
+        @PostMapping("/recipes/{recipeId}/comments/{commentId}/upvote")
+        public ResponseEntity<?> upvoteComment(@PathVariable Integer recipeId, @PathVariable Integer commentId) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401, "Authentication required"));
             }
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body("Failed to upvote comment: " + e.getMessage());
+
+            String username = authentication.getName();
+            try {
+                UpvoteDto upvoteDto = recipeService.upvote(commentId, username);
+                if(upvoteDto != null)
+
+                    return ResponseEntity.ok(new SuccessResponse<>(200, upvoteDto, "Comment upvoted successfully"));
+                else {
+                    return ResponseEntity.ok(new ErrorResponse(400, "Failed to upvote comment: "));
+                }
+
+            } catch (IllegalStateException e) {
+                return ResponseEntity.ok(new ErrorResponse(400, "Failed to upvote comment: " ));
+            }
         }
-    }
 }
