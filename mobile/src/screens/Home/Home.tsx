@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-
+import {
+  SearchDishesResponse,
+  useSearchDishes,
+} from "../../services2/api/semanticBrowseComponents";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -14,48 +18,40 @@ import Trending from "@/src/components/Trending";
 import Popular from "@/src/components/Popular";
 import Title from "@/src/components/Title";
 import { searchDishes } from "@/src/services/search";
+import { useRoute } from '@react-navigation/native';
 import DishCard from "@/src/components/Dish";
 import RecipeCard from "@/src/components/RecipeCard";
-
 import Following from "@/src/components/Following";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+
+
 export const Home = () => {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
   const [searchFocused, setSearchFocused] = useState(false);
   const [selectedTab, setSelectedTab] = useState('Trending');
 
+  const params = useRoute();
+
+  const [query, setQuery] = useState('');
+  const [cuisine, setCuisine] = useState('');
+  const [foodType, setFoodType] = useState('');
+  const navigation = useNavigation();
+
+  const handleSearch = () => {
+  
+    navigation.navigate('Search', {
+      q: searchInput,
+      cuisine: '',
+      foodType: '',
+    });
+  };
+
+  
   //PLACEHOLDER//
-  const dishes = [
-    {
-      id: '1',
-      name: 'Pepper sweetcorn ramen',
-      chef: 'Niki Samantha',
-      rating: 4.5,
-      reviews: 300,
-      time: '10 Mins',
-      image: 'https://example.com/image1.jpg', // Replace with actual image URL
-    },
-    {
-      id: '2',
-      name: 'Cheddar cheese and shell salad',
-      chef: 'Niki Samantha',
-      rating: 4.5,
-      reviews: 300,
-      time: '20 Mins',
-      image: 'https://example.com/image2.jpg', // Replace with actual image URL
-    },
-    {
-      id: '3',
-      name: 'Spicy chicken curry noodles',
-      chef: 'Niki Samantha',
-      rating: 4.5,
-      reviews: 300,
-      time: '15 Mins',
-      image: 'https://example.com/image3.jpg', // Replace with actual image URL
-    },
-  ];
- 
+  
+
   return (
     <SafeAreaView className="w-screen bg-white  pt-6 pl-6 pr-6 h-full box-border">
       <View className="pt-6">
@@ -71,9 +67,8 @@ export const Home = () => {
           </View>
           <TextInput
             onSubmitEditing={() => {
-              searchDishes(searchInput).then((res) => {
-                setResults(res);
-              });
+              handleSearch() 
+              
             }}
             onFocus={(searchFocused) => setSearchFocused(true)}
             onBlur={(searchFocused) => setSearchFocused(false)}

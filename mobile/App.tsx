@@ -12,11 +12,14 @@ import "react-native-gesture-handler";
 import Registration from "@/src/screens/Registeration/Registration";
 import TabNav from '@/src/components/TabNav.tsx'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./src/services2/query-client";
+import { Search } from "./src/screens/Search/Search";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <NavigationContainer>
    
       <Stack.Navigator
@@ -28,10 +31,12 @@ export default function App() {
        <Stack.Screen name="HomeScreen" component={TabNav} />
        {/*Remember to change this back to login screen*/}     
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="Search" component={Search}/>
         <Stack.Screen name="Registration" component={Registration} />
        { /* <Stack.Screen name="HomeScreen" component={Home} />*/}
         <Stack.Screen name="Results" component={Results} />
       </Stack.Navigator>
     </NavigationContainer>
+    </QueryClientProvider>
   );
 }

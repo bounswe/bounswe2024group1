@@ -1,16 +1,21 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
-
-const RecipeCard = ({ recipe }) => {
+import { RecipeSummary}  from "../services2/api/semanticBrowseSchemas";
+export const RecipeCard = (
+  {
+    recipe: { id, name, images, avgRating, ratingsCount, cookTime, dish, author },
+  }: {
+    recipe: RecipeSummary;
+  }) => {
   return (
     <View style={styles.card}>
         <View style={styles.container}>
-      <Image source={ recipe.image }  style={styles.image} resizeMode='cover' resizeMethod='scale' />
+      <Image source={{ uri: images?.[0] || "https://placehold.co/640x640"} }  style={styles.image} resizeMode='cover' resizeMethod='scale' />
       </View>
       <View style={styles.details}>
         <View style={styles.header}>
-          <Text style={styles.title}>{recipe.title}</Text>
+          <Text style={styles.title}>{name}</Text>
           <View style={styles.icons}>
             <TouchableOpacity style={styles.iconButton}>
             <Image source={require('@/assets/Link.png')} className="w-8" resizeMode='contain'/>
@@ -22,21 +27,23 @@ const RecipeCard = ({ recipe }) => {
         </View>
         <View style={styles.ratingRow}>
           <Icon name="star" size={14} color="gold" />
-          <Text style={styles.rating}>{recipe.rating}</Text>
-          <Text style={styles.reviewCount}>({recipe.reviews} Reviews)</Text>
+          <Text style={styles.rating}>{avgRating}</Text>
+          <Text style={styles.reviewCount}>({ratingsCount} Reviews)</Text>
         </View>
         <View style={styles.infoRow}>
           <Icon name="clock" type="feather" size={14} color="#888" />
-          <Text style={styles.infoText}>{recipe.time}</Text>
+          <Text style={styles.infoText}>{cookTime}</Text>
         </View>
         <View style={styles.infoRow}>
           <Icon name="utensils" type="font-awesome-5" size={14} color="#888" />
-          <Text style={styles.infoText}>{recipe.category}</Text>
+          <Text style={styles.infoText}>{name}</Text>
         </View>
         <View style={styles.footer}>
-          <Image source={{ uri: recipe.authorImage }} style={styles.authorImage} />
+          <Image source={{ uri: author.profilePicture }} style={styles.authorImage} />
+          <TouchableOpacity>
           <Text style={styles.goToRecipe}>Go to recipe</Text>
           <Icon name="arrow-right" type="feather" size={18} color="#888" />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

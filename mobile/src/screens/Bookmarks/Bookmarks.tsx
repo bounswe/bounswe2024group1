@@ -1,3 +1,5 @@
+import { useGetMe } from "../../services2/api/semanticBrowseComponents"
+import { renderError } from "../../services2/api/semanticBrowseFetcher";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -7,10 +9,10 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Icon } from "react-native-elements";
 import RecipeCard from "@/src/components/RecipeCard";
 const BookmarksScreen = () => {
   //const [bookmarks, setBookmarks] = useState([]);
+  const { data: bookmarksData, isLoading, error } = useGetMe({});
 
   // useEffect(() => {
   // Fetch the bookmarks from the server
@@ -24,7 +26,7 @@ const BookmarksScreen = () => {
   //}, []);
 
   /*PLACEHOLDER*/ /*PLACEHOLDER*/
-  /*PLACEHOLDER*/ /*PLACEHOLDER*/
+  /*PLACEHOLDER*/ /*PLACEHOLDER*/ 
   const bookmarks = [];
   bookmarks[0] = {
     image: require("@/assets/temp2.png"),
@@ -65,7 +67,7 @@ const BookmarksScreen = () => {
       {/*<View className="w-48 bg-white mt-6 h-10 bg-app-red rounded-xl" />*/}
       <FlatList
         className="mt-4"
-        data={bookmarks}
+        data={bookmarksData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
       />
