@@ -149,8 +149,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        List<String> names = new ArrayList<>(List.of(profileDto.getName().split(" ")));
-        user.setLastName(names.removeLast());
+        ArrayList<String> names = new ArrayList<>(List.of(profileDto.getName().split(" ")));
+        user.setLastName(names.remove(names.size() - 1));
         user.setFirstName(String.join(" ", names));
         user.setBio(profileDto.getBio());
         user.setGender(profileDto.getGender());
