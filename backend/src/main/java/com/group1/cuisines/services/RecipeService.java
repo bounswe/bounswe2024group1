@@ -120,13 +120,15 @@ public class RecipeService {
         if (user.isPresent() && recipe != null && ratingValue >= 1 && ratingValue <= 5) {
             Rating existingRating = ratingRepository.findByRecipeIdAndUserId(recipeId, user.get().getId()).orElse(null);
             if (existingRating != null) {
-                return false; // Indicates that the user has already rated
+                existingRating.setRatingValue(ratingValue);
+                ratingRepository.save(existingRating);
+            } else {
+                Rating rating = new Rating();
+                rating.setUser(user.get());
+                rating.setRecipe(recipe);
+                rating.setRatingValue(ratingValue);
+                ratingRepository.save(rating);
             }
-            Rating rating = new Rating();
-            rating.setUser(user.get());
-            rating.setRecipe(recipe);
-            rating.setRatingValue(ratingValue);
-            ratingRepository.save(rating);
             double newAverage = recipeRepository.findAverageByRecipeId(recipeId);
             recipe.setAverageRating(newAverage);
             recipeRepository.save(recipe);

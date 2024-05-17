@@ -3,6 +3,7 @@ import Bookmark from "@/assets/Icon/General/Bookmark.svg?react";
 import { cn } from "@/lib/utils";
 import {
   useBookmarkRecipe,
+  useGetBookmarkers,
   useGetMe,
   useGetRecipeById,
   useUnbookmarkRecipe,
@@ -16,7 +17,12 @@ export default function BookmarkButton({
   recipe: { id?: number; selfBookmarked?: boolean };
   asIcon?: boolean;
 }) {
-  useGetMe({});
+  const { refetch: refetchMe } = useGetMe({});
+  const { refetch: refetchBookmarkers } = useGetBookmarkers({
+    pathParams: {
+      recipeId: recipe.id!,
+    },
+  });
   const { isLoading, data, error, refetch } = useGetRecipeById(
     {
       pathParams: {
@@ -36,6 +42,8 @@ export default function BookmarkButton({
     onSuccess: () => {
       refetch().then(() => {
         setOptimisticBookmarked(null);
+        refetchMe();
+        refetchBookmarkers();
       });
     },
     onError: () => {
@@ -46,6 +54,8 @@ export default function BookmarkButton({
     onSuccess: () => {
       refetch().then(() => {
         setOptimisticBookmarked(null);
+        refetchMe();
+        refetchBookmarkers();
       });
     },
     onError: () => {

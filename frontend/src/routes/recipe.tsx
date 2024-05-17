@@ -204,8 +204,11 @@ export default function RecipePage() {
         ))}
       </div>
       <h4 className="font-bold">Comments</h4>
-      {selfProfile && (
-        <AddComment user={selfProfile as unknown as UserSummary} />
+      {selfProfile && recipeId && (
+        <AddComment
+          recipeId={Number(recipeId)}
+          user={selfProfile as unknown as UserSummary}
+        />
       )}
       {recipeId && <Comments recipeId={Number(recipeId)} />}
     </div>

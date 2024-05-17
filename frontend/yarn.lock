@@ -2022,6 +2022,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/date-fns@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "@types/date-fns@npm:2.6.0"
+  dependencies:
+    date-fns: "npm:*"
+  checksum: 10c0/d39ac03630001aa244d57a88ca08e91d3e7ff95c11979f1ccddba39e456735e15644dbbb706e1bc61458d3dbb70e6258f113784f6adc4f23b9fdea6dc830eb62
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:1.0.5, @types/estree@npm:^1.0.0":
   version: 1.0.5
   resolution: "@types/estree@npm:1.0.5"
@@ -3099,6 +3108,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns@npm:*, date-fns@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "date-fns@npm:3.6.0"
+  checksum: 10c0/0b5fb981590ef2f8e5a3ba6cd6d77faece0ea7f7158948f2eaae7bbb7c80a8f63ae30b01236c2923cf89bb3719c33aeb150c715ea4fe4e86e37dcf06bed42fb6
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
@@ -3766,6 +3782,7 @@ __metadata:
     "@tanstack/react-query": "npm:^5.35.1"
     "@testing-library/jest-dom": "npm:^6.4.2"
     "@testing-library/react": "npm:^15.0.5"
+    "@types/date-fns": "npm:^2.6.0"
     "@types/node": "npm:^20.12.7"
     "@types/react": "npm:^18.2.66"
     "@types/react-dom": "npm:^18.2.22"
@@ -3777,6 +3794,7 @@ __metadata:
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"
     country-emoji: "npm:^1.5.6"
+    date-fns: "npm:^3.6.0"
     eslint: "npm:^8.57.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react-hooks: "npm:^4.6.0"
