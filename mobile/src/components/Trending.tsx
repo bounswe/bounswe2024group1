@@ -5,39 +5,44 @@ import RecipeCard from './RecipeCard'
 const Trending = () => {
    
   //const [bookmarks, setBookmarks] = useState([]);
-
+  
   const bookmarks = [];
   bookmarks[0] = {
-    image: require("@/assets/temp2.png"),
-    title: "matnti",
-    author: "yigit",
-    rating: "4.9",
-    time:'2 hours',
+    
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
     id: 1,
+
   };
   bookmarks[1] = {
-    image: require("@/assets/temp2.png"),
-    title: "matnti",
-    author: "yigit",
-    rating: "4.9",
-    time:'2 hours',
-    id: 1,
+   
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id: 2,
   };
   bookmarks[2] = {
-    image: require("@/assets/bookmarktemp.png"),
-    title: "matnti",
-    author: "yigit",
-    time:'2 hours',
-    rating: "4.9",
-    id: 1,
+   
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id:3,
   };
   bookmarks[3] = {
-    image: require("@/assets/bookmarktemp.png"),
-    title: "matnti",
-    author: "yigit",
-    rating: "4.9",
-    time:'2 hours',
-    id: 1,
+   
+    name: "ApplePie",
+    author: "Mehmet",
+    avgRating: "4.9",
+    ratingsCount:400,
+    cookTime:'2 hours',
+    id: 4,
   };
   const renderItem = ({ item }) => (
     <RecipeCard recipe={item}/>
