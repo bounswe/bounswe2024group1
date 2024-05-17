@@ -36,7 +36,7 @@ export default function BookmarkButton({
 
   const { mutateAsync: bookmark } = useBookmarkRecipe({
     onSuccess: () => {
-      refetch()
+      return refetch()
         .then(() => {
           refetchMe();
           refetchBookmarkers();
