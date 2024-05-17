@@ -60,7 +60,7 @@ export const Registration = () => {
           <Text className="text-sm">Welcome back!👋</Text>
           <Text className="fond-bold text-xl mt-1">Sign Up</Text>
         </View>
-        <View className="px-4">
+        <View className="p-2">
           <View className="mt-2">
             <Text>Name</Text>
             <View className="p-2 rounded border-2 border-solid h-11 mt-2">
