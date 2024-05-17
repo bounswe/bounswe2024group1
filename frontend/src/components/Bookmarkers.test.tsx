@@ -29,10 +29,10 @@ vi.mock("@/services/api/semanticBrowseComponents", () => ({
 }));
 
 describe("Bookmarkers", () => {
-  let recipeId: string;
+  let recipeId: number;
 
   beforeEach(() => {
-    recipeId = "1";
+    recipeId = 1;
     vi.clearAllMocks();
   });
 
@@ -63,7 +63,8 @@ describe("Bookmarkers", () => {
     const bookmarkersButton = screen
       .getByText(/see bookmarkers/i)
       .closest("span");
-    fireEvent.click(bookmarkersButton); // Open the popover
+    expect(bookmarkersButton).toBeInTheDocument();
+    fireEvent.click(bookmarkersButton!); // Open the popover
     expect(
       screen.getByRole("heading", { name: "Bookmarkers" }),
     ).toBeInTheDocument();
