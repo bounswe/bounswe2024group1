@@ -1,53 +1,17 @@
 import { View, Text, TouchableOpacity, Image,FlatList } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import RecipeCardFake from './RecipeCardFake'
+import { useRoute } from '@react-navigation/native';
+import useAuthStore from '../services2/auth';
+import { useGetFeed } from '../services2/api/semanticBrowseComponents';
 import RecipeCard from './RecipeCard'
-const Trending = ({data}) => {
+const Trending = ({data1}) => {
    
   //const [bookmarks, setBookmarks] = useState([]);
-  
-  const bookmarks = [];
-  bookmarks[0] = {
-    
-    name: "ApplePie",
-    author: "Mehmet",
-    avgRating: "4.9",
-    ratingsCount:400,
-    cookTime:'2 hours',
-    id: 1,
-
-  };
-  bookmarks[1] = {
-   
-    name: "ApplePie",
-    author: "Mehmet",
-    avgRating: "4.9",
-    ratingsCount:400,
-    cookTime:'2 hours',
-    id: 2,
-  };
-  bookmarks[2] = {
-   
-    name: "Bread",
-    author: "Ahmet",
-    avgRating: "4.9",
-    ratingsCount:400,
-    cookTime:'2 hours',
-    id:3,
-  };
-  bookmarks[3] = {
-   
-    name: "ApplePie",
-    author: "Mehmet",
-    avgRating: "4.9",
-    ratingsCount:400,
-    cookTime:'2 hours',
-    id: 4,
-  };
+  const [feed,setFeed] = useState([])
+  const isAuthenticated = useAuthStore().token !== null;
   const params = useRoute()
-  const feedType = ["explore", "following"].includes(params.get("type") ?? "")
-  ? (params.get("type") as "explore" | "following")
-  : "explore";
+  const feedType = 'explore'
 // const foodType = params.get("foodType") || "";
 // const setFoodType = (val: string) => setParams({ ...params, foodType: val });
   const {
@@ -57,6 +21,8 @@ const Trending = ({data}) => {
   } = useGetFeed({
     queryParams: { type: isAuthenticated ? feedType : "explore" },
   });
+  
+  
   const renderItem = ({ item }) => (
     <RecipeCard recipe={item}/>
   );
@@ -75,10 +41,10 @@ const Trending = ({data}) => {
       </View>
       
       <FlatList
-        className="mt-4"
-        data={bookmarks}
-        renderItem={renderItem}
+        data={feedData?.data}
         keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <RecipeCard recipe={item} />}
+
       />
       
     </View>
