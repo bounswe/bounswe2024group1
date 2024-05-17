@@ -18,6 +18,7 @@ export default function BookmarkButton({
   asIcon?: boolean;
 }) {
   const { refetch: refetchMe } = useGetMe({});
+  console.log(recipe);
   const { refetch: refetchBookmarkers } = useGetBookmarkers({
     pathParams: {
       recipeId: recipe.id!,
@@ -63,7 +64,9 @@ export default function BookmarkButton({
     },
   });
 
-  const bookmarked = optimisticBookmarked ?? data?.data?.selfBookmarked;
+  const bookmarked =
+    optimisticBookmarked ?? recipe.selfBookmarked ?? data?.data?.selfBookmarked;
+  console.log(recipe.id, bookmarked);
 
   const variant = bookmarked && !isLoading ? "primary-outline" : "default";
 
