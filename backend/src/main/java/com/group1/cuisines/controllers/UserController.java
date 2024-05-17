@@ -66,7 +66,7 @@ public class UserController {
                 return ResponseEntity.ok(new SuccessResponse<>(200, userProfile, "User profile fetched successfully"));
             }
         }
-        return ResponseEntity.ok(new ErrorResponse(204, "User not found"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(401,"Authentication required")  );
     }
 
     @DeleteMapping("/{userId}/follow")

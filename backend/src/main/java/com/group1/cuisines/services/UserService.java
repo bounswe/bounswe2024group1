@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -148,8 +149,9 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        user.setFirstName(profileDto.getFirstName());
-        user.setLastName(profileDto.getLastName());
+        ArrayList<String> names = new ArrayList<>(List.of(profileDto.getName().split(" ")));
+        user.setLastName(names.remove(names.size() - 1));
+        user.setFirstName(String.join(" ", names));
         user.setBio(profileDto.getBio());
         user.setGender(profileDto.getGender());
         user.setProfilePicture(profileDto.getProfilePicture());
