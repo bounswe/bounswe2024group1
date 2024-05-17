@@ -79,11 +79,12 @@ export const Recipe = ({
             <img src={TimeIcon} alt="Time icon" className="h-6 w-6" />
             <span className="text-sm">{cookTime}</span>
           </div>
+
           {dish && (
-            <div className="flex items-center gap-2">
+            <Link to={`/dishes/${dish.id}`} className="flex items-center gap-2">
               <img src={FoodIcon} alt="Food icon" className="h-6 w-6" />
               <span className="text-sm">{dish.name}</span>
-            </div>
+            </Link>
           )}
           {author && author.profilePicture && (
             <div className="flex items-center">
