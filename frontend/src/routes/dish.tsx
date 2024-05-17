@@ -76,7 +76,24 @@ export default function DishPage() {
         className="h-48 w-full rounded-3xl object-cover lg:h-96"
       />
       <span className="">{dish.description}</span>
+
       <span>{countryEmojis}</span>
+      {dish.ingredients && (
+        <>
+          <h5>Ingredients</h5> <span>{dish.ingredients}</span>
+        </>
+      )}
+      {dish.foodTypes && (
+        <>
+          <h5>Food Types</h5> <span>{dish.foodTypes}</span>
+        </>
+      )}
+
+      {dish.cuisines && (
+        <>
+          <h5>Cuisines</h5> <span>{dish.cuisines}</span>
+        </>
+      )}
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
         <div className="flex items-center gap-4">
           <h3>Recipes</h3>

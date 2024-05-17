@@ -1128,13 +1128,10 @@ components:
           format: uri
         countries:
           type: string
+        cuisines:
+          type: string
         ingredients:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
+          type: string
         foodTypes:
           type: string
         cuisine:

@@ -14,7 +14,6 @@ import {
   useUnbookmarkRecipe,
 } from "@/services/api/semanticBrowseComponents";
 import BookmarkButton from "./BookmarkButton";
-import React from "react";
 
 vi.mock("@/services/api/semanticBrowseComponents", () => ({
   useGetMe: vi.fn(),
@@ -44,7 +43,7 @@ describe("BookmarkButton", () => {
   beforeEach(() => {
     bookmarked = false;
 
-    useGetRecipeById.mockImplementation(() => ({
+    (useGetRecipeById as Mock).mockImplementation(() => ({
       isLoading: false,
       data: { data: { selfBookmarked: bookmarked } },
       error: null,
@@ -53,13 +52,15 @@ describe("BookmarkButton", () => {
 
     (useBookmarkRecipe as Mock).mockImplementation(
       ({ onSuccess, onError } = {}) => ({
-        mutateAsync: (...args) =>
+        mutateAsync: (...args: unknown[]) =>
+          // @ts-expect-error we don't care about the args
           bookmarkMock(...args).then(onSuccess, onError),
       }),
     );
     (useUnbookmarkRecipe as Mock).mockImplementation(
       ({ onSuccess, onError } = {}) => ({
-        mutateAsync: (...args) =>
+        mutateAsync: (...args: unknown[]) =>
+          // @ts-expect-error we don't care about the args
           unbookmarkMock(...args).then(onSuccess, onError),
       }),
     );
