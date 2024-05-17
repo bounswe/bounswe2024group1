@@ -6,8 +6,9 @@ import Clock from "@/assets/Icon/General/Clock.svg?react";
 import Allergies from "@/assets/Icon/General/Allergies.svg?react";
 import Food from "@/assets/Icon/General/Food.svg?react";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
-import { StarIcon } from "lucide-react";
+import { StarIcon, Trash } from "lucide-react";
 import {
+  useDeleteRecipeById,
   useGetRecipeById,
   useRateRecipe,
 } from "@/services/api/semanticBrowseComponents";
@@ -35,6 +36,8 @@ export default function RecipePage() {
       enabled: !!recipeId,
     },
   );
+
+  const { mutateAsync: deleteRecipe } = useDeleteRecipeById();
   const { selfProfile, token } = useAuthStore();
 
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
@@ -61,6 +64,17 @@ export default function RecipePage() {
   }
 
   const { data: recipe } = data! || {};
+
+  if (!recipe) {
+    return (
+      <ErrorAlert
+        error={{
+          status: 404,
+          payload: { status: 404, message: "Recipe not found" },
+        }}
+      />
+    );
+  }
   const instructions = Array.isArray(recipe.instructions)
     ? recipe.instructions
     : (recipe.instructions as string).split("<br>");
@@ -85,6 +99,17 @@ export default function RecipePage() {
             <LinkIcon className="h-5 w-5" />
           </Button>
           {!!token && <BookmarkButton recipe={recipe} />}
+          {selfProfile?.id === recipe.author.id && (
+            <Button
+              onClick={() =>
+                deleteRecipe({ pathParams: { recipeId: recipe.id } })
+              }
+              size="icon"
+              variant="destructive"
+            >
+              <Trash className="h-5 w-5" />
+            </Button>
+          )}
         </div>
       </div>
       <img
@@ -140,15 +165,17 @@ export default function RecipePage() {
           <Serving className="h-6 w-6" />
           {recipe.servingSize} servings
         </span>
-        <span className="flex items-center gap-4 font-bold">
-          <Food className="h-6 w-6" />
-          {recipe.dish.name}
-        </span>
+        {recipe.dish && (
+          <span className="flex items-center gap-4 font-bold">
+            <Food className="h-6 w-6" />
+            {recipe.dish?.name}
+          </span>
+        )}
         <span className="flex items-center gap-4 font-bold">
           <Clock className="h-6 w-6" />
           {recipe.cookTime} min
         </span>
-        {recipe.dish.countries && (
+        {recipe.dish?.countries && (
           <span className="flex items-center gap-4 font-bold">
             <Clock className="h-6 w-6" />
             {recipe.dish.countries}

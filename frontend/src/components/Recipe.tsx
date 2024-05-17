@@ -9,6 +9,7 @@ import { RecipeSummary } from "@/services/api/semanticBrowseSchemas";
 import { Link } from "react-router-dom";
 import { toast } from "./ui/use-toast";
 import BookmarkButton from "./BookmarkButton";
+import useAuthStore from "@/services/auth";
 
 export const Recipe = ({
   recipe: {
@@ -25,6 +26,7 @@ export const Recipe = ({
 }: {
   recipe: RecipeSummary;
 }) => {
+  const auth = !!useAuthStore().token;
   return (
     <div className="flex flex-col self-stretch justify-self-stretch">
       <div className="-mb-16 w-[70%] self-center">
@@ -60,7 +62,9 @@ export const Recipe = ({
               >
                 <LinkIcon aria-label="Link" />
               </Button>
-              <BookmarkButton asIcon recipe={{ id, selfBookmarked }} />
+              {auth && (
+                <BookmarkButton asIcon recipe={{ id, selfBookmarked }} />
+              )}
             </div>
           </div>
         </CardHeader>
@@ -98,6 +102,7 @@ export const Recipe = ({
                 className="h-8 w-8 rounded-full object-cover"
               />
             </Link>
+
             <Link
               to={`/recipes/${id}`}
               className="cursor-pointer text-sm font-medium text-gray-600 hover:underline"
