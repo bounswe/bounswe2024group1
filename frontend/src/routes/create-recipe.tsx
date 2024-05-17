@@ -29,11 +29,16 @@ import useAuthStore from "@/services/auth";
 
 const newRecipeSchema = z.object({
   name: z.string().min(1),
-  description: z.string().min(1),
+  description: z.string().min(1).max(5000),
   ingredients: z.array(
     z.object({ name: z.string().min(1), amount: z.string() }),
   ),
-  instructions: z.array(z.string().min(1)),
+  instructions: z
+    .array(z.string().min(1))
+    .refine(
+      (val) => val.reduce((acc, curr) => acc + curr.length + 4, 0) < 5000,
+      "Total length must be less than 5000 characters.",
+    ),
   images: z.array(z.string().min(1)),
   prepTime: z.coerce.number().min(1),
   cookTime: z.coerce.number().min(1),
