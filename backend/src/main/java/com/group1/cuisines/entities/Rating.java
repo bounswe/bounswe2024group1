@@ -2,6 +2,8 @@ package com.group1.cuisines.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
@@ -18,10 +20,12 @@ public class Rating {
     private Integer id;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
