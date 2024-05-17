@@ -9,6 +9,8 @@ import {
   Text,
   Image,
   StyleSheet,
+  Modal,
+ Button,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -19,45 +21,122 @@ import Popular from "@/src/components/Popular";
 import Title from "@/src/components/Title";
 import { searchDishes } from "@/src/services/search";
 import { useRoute } from '@react-navigation/native';
+import useAuthStore from "../../services2/auth";
 import DishCard from "@/src/components/Dish";
 import RecipeCard from "@/src/components/RecipeCard";
 import Following from "@/src/components/Following";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGetFeed } from "../../services2/api/semanticBrowseComponents";
+import { renderError } from "../../services/api/semanticBrowseFetcher";
 
 
 export const Home = () => {
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   const [searchInput, setSearchInput] = useState("");
-  const [results, setResults] = useState([]);
+  
   const [searchFocused, setSearchFocused] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('Trending');
+  const [selectedTab, setSelectedTab] = useState('Explore');
+  const isAuthenticated = useAuthStore().token !== null;
+  
+  const [selectedCuisines, setSelectedCuisines] = useState([]);
+  const [selectedFoodTypes, setSelectedFoodTypes] = useState([]);
+  
 
-  const params = useRoute();
-
-  const [query, setQuery] = useState('');
-  const [cuisine, setCuisine] = useState('');
-  const [foodType, setFoodType] = useState('');
   const navigation = useNavigation();
+  const feedType = selectedTab
+  const {
+    data: feedData,
+    isLoading,
+    error,
+  } = useGetFeed({
+    queryParams: { type: isAuthenticated ? feedType : "explore" },
+  });
+  if(error){
+    console.log(error)
+  }
 
   const handleSearch = () => {
   
     navigation.navigate('Search', {
       q: searchInput,
-      cuisine: '',
-      foodType: '',
+      cuisine: selectedCuisines,
+      foodType: selectedFoodTypes,
     });
   };
 
   
-  //PLACEHOLDER//
-  
+
+  const FilterOption = ({ label, selected, onPress }) => (
+    <TouchableOpacity style={[styles.filterOption, selected && styles.filterOptionSelected]} onPress={onPress}>
+      <Text style={[styles.filterOptionText, selected && styles.filterOptionTextSelected]}>{label}</Text>
+    </TouchableOpacity>
+  );
+  const toggleCuisine = (cuisine) => {
+    setSelectedCuisines((prevSelected) =>
+      prevSelected.includes(cuisine)
+        ? prevSelected.filter((item) => item !== cuisine)
+        : [...prevSelected, cuisine]
+    );
+  };
+
+  const toggleFoodType = (foodType) => {
+    setSelectedFoodTypes((prevSelected) =>
+      prevSelected.includes(foodType)
+        ? prevSelected.filter((item) => item !== foodType)
+        : [...prevSelected, foodType]
+    );
+  };
 
   return (
     <SafeAreaView className="w-screen bg-white  pt-6 pl-6 pr-6 h-full box-border">
+       
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.header}>Filter</Text>
+            <Text style={styles.subHeader}>Cuisines</Text>
+            <View style={styles.filterOptions}>
+              <FilterOption label="Turkey" selected={selectedCuisines.includes('Turkey')} onPress={() => toggleCuisine('Turkey')} />
+              <FilterOption label="Mediterranean" selected={selectedCuisines.includes('Mediterranean')} onPress={() => toggleCuisine('Mediterranean')} />
+              <FilterOption label="Chinese" selected={selectedCuisines.includes('Chinese')} onPress={() => toggleCuisine('Chinese')} />
+              <FilterOption label="Japanese" selected={selectedCuisines.includes('Turkish')} onPress={() => toggleCuisine('Turkish')} />
+              <FilterOption label="Italian" selected={selectedCuisines.includes('Italian')} onPress={() => toggleCuisine('Italian')} />
+              <FilterOption label="French" selected={selectedCuisines.includes('French')} onPress={() => toggleCuisine('French')} />
+            </View>
+            <Text style={styles.subHeader}>Type of Food</Text>
+            <View style={styles.filterOptions}>
+              <FilterOption label="Meat" selected={selectedFoodTypes.includes('Meat')} onPress={() => toggleFoodType('Meat')} />
+              <FilterOption label="Vegetarian" selected={selectedFoodTypes.includes('Vegetarian')} onPress={() => toggleFoodType('Vegetarian')} />
+              <FilterOption label="Baked" selected={selectedFoodTypes.includes('Baked')} onPress={() => toggleFoodType('Baked')} />
+              <FilterOption label="Dairy" selected={selectedFoodTypes.includes('Dairy')} onPress={() => toggleFoodType('Dairy')} />
+              <FilterOption label="Eggs" selected={selectedFoodTypes.includes('Eggs')} onPress={() => toggleFoodType('Eggs')} />
+              <FilterOption label="Vegan" selected={selectedFoodTypes.includes('Vegan')} onPress={() => toggleFoodType('Vegan')} />
+            </View>
+            <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
+              <Text style={styles.confirmButtonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>  
       <View className="pt-6">
         <Title />
+        <View className="flex-row items-center mt-8">
         <View
-          className={` rounded-xl flex-row border-2 border-solid h-11 mt-10 + ${searchFocused ? "border-app-red" : "border-gray-400"}`}
+          className={` rounded-xl flex-row border-2 border-solid h-11  + ${searchFocused ? "border-app-red" : "border-gray-400"}`}
         >
           <View className="absolute left-3 top-3">
             <Image
@@ -72,18 +151,24 @@ export const Home = () => {
             }}
             onFocus={(searchFocused) => setSearchFocused(true)}
             onBlur={(searchFocused) => setSearchFocused(false)}
-            className="w-96 pl-8"
+            className="w-80 pl-8"
             onChangeText={(searchInput) => setSearchInput(searchInput)}
             //onSubmitEditing={search}
           />
+
+         
+        </View>
+        <TouchableOpacity onPress={openModal}>
+            <Image className="w-10 h-10" source={require('@/assets/Filter.png')}/>
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.tabContainer}>
         <TouchableOpacity
-          style={[styles.tab, selectedTab === 'Trending' && styles.activeTab]}
-          onPress={() => setSelectedTab('Trending')}
+          style={[styles.tab, selectedTab === 'Explore' && styles.activeTab]}
+          onPress={() => setSelectedTab('Explore')}
         >
-          <Text style={[styles.tabText, selectedTab === 'Trending' && styles.activeTabText]}>Trending</Text>
+          <Text style={[styles.tabText, selectedTab === 'Explore' && styles.activeTabText]}>Trending</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, selectedTab === 'Following' && styles.activeTab]}
@@ -92,8 +177,8 @@ export const Home = () => {
           <Text style={[styles.tabText, selectedTab === 'Following' && styles.activeTabText]}>Following</Text>
         </TouchableOpacity>
       </View>
-      {selectedTab=='Trending'?
-      <Trending/>:<Following/>}
+      {selectedTab=='Explore'?
+      <Trending data={feedData}/>:<Following/>}
       {/*results.map((dish) => (
         <DishCard
           key={dish.id}
@@ -113,7 +198,11 @@ export const Home = () => {
     
     </SafeAreaView>
   );
+  
 };
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -164,6 +253,67 @@ const styles = StyleSheet.create({
   contentText: {
     fontSize: 18,
     marginVertical: 10,
+  },
+  container2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  filterOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginVertical: 10,
+  },
+  filterOption: {
+    backgroundColor: 'white',
+    borderColor: 'red',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 20,
+    margin: 5,
+  },
+  filterOptionSelected: {
+    backgroundColor: 'red',
+  },
+  filterOptionText: {
+    color: 'red',
+  },
+  filterOptionTextSelected: {
+    color: 'white',
+  },
+  confirmButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 20,
+    marginTop: 20,
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

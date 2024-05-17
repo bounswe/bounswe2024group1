@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image,FlatList } from 'react-native'
 import React from 'react'
 
 import RecipeCard from './RecipeCard'
-const Trending = () => {
+const Trending = ({data}) => {
    
   //const [bookmarks, setBookmarks] = useState([]);
   
@@ -63,7 +63,7 @@ const Trending = () => {
       
       <FlatList
         className="mt-4"
-        data={bookmarks}
+        data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
       />
