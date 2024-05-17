@@ -1,4 +1,4 @@
-import { RouteObject, redirect } from "react-router-dom";
+import { RouteObject, createBrowserRouter, redirect } from "react-router-dom";
 import Login from "./login";
 import Signup from "./signup";
 import { IndexRoute } from "./home";
@@ -65,3 +65,5 @@ export const routeConfig: RouteObject[] = [
     children: routes,
   },
 ];
+
+export const router = createBrowserRouter(routeConfig);

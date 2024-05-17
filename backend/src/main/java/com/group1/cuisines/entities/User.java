@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Data
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +33,9 @@ public class User implements UserDetails {
 
     private String password;
     private String Bio;
+    private String gender;
+    private String profilePicture;
+
     @ManyToMany
     @JoinTable(
             name = "user_followers",
@@ -79,6 +82,7 @@ public class User implements UserDetails {
         User other = (User) obj;
         return Objects.equals(id, other.id);  // Compare only IDs for equality
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

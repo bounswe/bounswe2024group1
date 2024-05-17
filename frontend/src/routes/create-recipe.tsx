@@ -37,7 +37,7 @@ const newRecipeSchema = z.object({
   prepTime: z.coerce.number().min(1),
   cookTime: z.coerce.number().min(1),
   servingSize: z.coerce.number().min(1),
-  allergens: z.string(),
+  allergens: z.array(z.string()),
   dishId: z.string().optional(),
 });
 
@@ -66,7 +66,7 @@ export default function CreateRecipePage() {
       prepTime: 0,
       cookTime: 0,
       servingSize: 0,
-      allergens: "",
+      allergens: [],
       dishId: !dishId ? undefined : dishId,
     },
   });
@@ -224,7 +224,7 @@ export default function CreateRecipePage() {
             <h4>Allergens</h4>
             <FormField
               control={control}
-              name="allergens"
+              name="allergens.0"
               render={({ field }) => (
                 <FormItem className="flex-row items-center gap-4 space-y-0">
                   <Allergies />

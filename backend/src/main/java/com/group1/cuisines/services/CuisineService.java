@@ -37,7 +37,7 @@ public class CuisineService {
 
     private List<DishDto> convertDishes(Set<Dish> dishes) {
         return dishes.stream()
-                .map(dish -> new DishDto(dish.getId(), dish.getName(),dish.getImage()))
+                .map(DishDto::new)
                 .collect(Collectors.toList());
     }
 }

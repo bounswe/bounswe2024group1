@@ -209,7 +209,6 @@ public class WikidataService {
                         .countries(countries)
                         .ingredients(ingredients)
                         .foodTypes(foodTypes)
-                            .cuisine(cuisines)
                         .build()
                 );
             }

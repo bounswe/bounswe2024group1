@@ -39,17 +39,7 @@ export const Search = () => {
         <p>Try searching for "japan", or "sausage"</p>
       )}
       <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {searchResult?.data?.map((dish) => (
-          <Dish
-            key={dish.id}
-            dish={{
-              name: dish.name,
-              description: dish.description,
-              countries: dish.countries,
-              image: dish.image,
-            }}
-          />
-        ))}
+        {searchResult?.data?.map((dish) => <Dish key={dish.id} dish={dish} />)}
       </div>
     </div>
   );

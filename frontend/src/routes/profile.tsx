@@ -8,6 +8,7 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { cn } from "@/lib/utils";
 import { Recipe } from "@/components/Recipe";
 import useAuthStore from "@/services/auth";
+import FollowButton from "@/components/FollowButton";
 
 export default function Profile() {
   const { userId = "" } = useParams<{ userId: string }>();
@@ -76,7 +77,11 @@ export default function Profile() {
               {profile.bio ?? "Empty bio."}
             </p>
           </div>
-          {me && <Button variant="outline">Edit profile</Button>}
+          {me ? (
+            <Button variant="outline">Edit profile</Button>
+          ) : (
+            data?.data && <FollowButton profile={data?.data} />
+          )}
         </div>
       </div>
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
