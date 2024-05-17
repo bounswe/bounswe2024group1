@@ -79,8 +79,13 @@
     "pre-commit": "lint-staged && tsc"
   },
   "lint-staged": {
-    "*/**/*.{js,jsx,ts,tsx}": ["prettier --write", "eslint"],
-    "*/**/*.{json,css,md}": ["prettier --write"]
+    "*/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "*/**/*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "yarn@4.1.1"
 }
