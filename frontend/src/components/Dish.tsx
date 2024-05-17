@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 
 interface Dish {
+  id: string;
   name: string;
   image: string;
   description: string;

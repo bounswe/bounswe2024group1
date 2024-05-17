@@ -26,17 +26,17 @@ export type AuthToken = {
  * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","bio":"I love takoyaki!","followersCount":100,"followingCount":100,"gender":"unknown","profilePicture":"https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640","diets":["keto"],"selfFollowing":true,"recipeCount":10,"bookmarks":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}],"recipes":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}]}
  */
 export type UserProfile = {
-  id?: number;
-  username?: string;
-  name?: string;
-  bio?: string;
-  followersCount?: number;
+  id: number;
+  username: string;
+  name: string;
+  bio: string;
+  followersCount: number;
   followingCount?: number;
   gender?: "male" | "female" | "unknown";
   /**
    * @format uri
    */
-  profilePicture?: string;
+  profilePicture: string;
   diets?: string[];
   recipeCount?: number;
   selfFollowing?: boolean;
@@ -48,7 +48,7 @@ export type UserProfile = {
 };
 
 /**
- * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5,"selfFollowing":false}
+ * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"selfFollowing":false}
  */
 export type UserSummary = {
   id: number;
@@ -61,10 +61,6 @@ export type UserSummary = {
   profilePicture: string;
   selfFollowing?: boolean;
   recipeCount: number;
-  /**
-   * @format float
-   */
-  avgRating: number;
 };
 
 /**

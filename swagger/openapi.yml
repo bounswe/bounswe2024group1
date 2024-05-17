@@ -986,6 +986,15 @@ components:
 
     UserProfile:
       type: object
+      required:
+        - id
+        - username
+        - name
+        - bio
+        - followersCount
+        - following
+        - profilePicture
+        - recipeCountr
       properties:
         id:
           type: integer
@@ -1065,7 +1074,6 @@ components:
         - followersCount
         - profilePicture
         - recipeCount
-        - avgRating
       properties:
         id:
           type: integer
@@ -1082,9 +1090,6 @@ components:
           type: boolean
         recipeCount:
           type: integer
-        avgRating:
-          type: number
-          format: float
       examples:
         - id: 1
           username: "takoyaki_lover"
@@ -1092,7 +1097,6 @@ components:
           followersCount: 100
           profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
           recipeCount: 10
-          avgRating: 4.5
           selfFollowing: false
 
     DishDetails:

@@ -20,8 +20,9 @@ import useAuthStore from "@/services/auth";
 import FollowButton from "@/components/FollowButton";
 import BookmarkButton from "@/components/BookmarkButton";
 import { toast } from "@/components/ui/use-toast";
-import { AddComment} from "@/components/Comment";
+import { AddComment } from "@/components/Comment";
 import { Comments } from "@/components/CommentSection";
+import { UserSummary } from "@/services/api/semanticBrowseSchemas";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -203,8 +204,10 @@ export default function RecipePage() {
         ))}
       </div>
       <h4 className="font-bold">Comments</h4>
-      <AddComment user={selfProfile} />
-      <Comments recipeId={recipeId}/>
+      {selfProfile && (
+        <AddComment user={selfProfile as unknown as UserSummary} />
+      )}
+      {recipeId && <Comments recipeId={Number(recipeId)} />}
     </div>
   );
 }
