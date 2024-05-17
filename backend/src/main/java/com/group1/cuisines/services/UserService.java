@@ -6,6 +6,7 @@ import com.group1.cuisines.entities.Recipe;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,18 +116,21 @@ public class UserService {
 
         boolean isSelf = user.getUsername().equals(currentUsername);
 
-        UserProfileDto profile = new UserProfileDto();
-        profile.setId(user.getId());
-        profile.setUsername(user.getUsername());
-        profile.setName(user.getFirstName() + " " + user.getLastName());
-        profile.setBio(user.getBio());
-        profile.setSelfFollowing(isFollowing(currentUserId, userId));
-        profile.setFollowersCount(user.getFollowers().size());
-        profile.setFollowingCount(user.getFollowing().size());
-        profile.setRecipeCount(user.getRecipes().size());
-        profile.setRecipes(user.getRecipes().stream()
-                .map(recipeService::convertToRecipeDetailsDto)
-                .collect(Collectors.toList()));
+        UserProfileDto profile = UserProfileDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getFirstName() + " " + user.getLastName())
+                .bio(user.getBio())
+                .gender(user.getGender())
+                .profilePicture(user.getProfilePicture())
+                .selfFollowing(isFollowing(currentUserId, userId))
+                .followersCount(user.getFollowers().size())
+                .followingCount(user.getFollowing().size())
+                .recipeCount(user.getRecipes().size())
+                .recipes(user.getRecipes().stream()
+                        .map(recipeService::convertToRecipeDetailsDto)
+                        .collect(Collectors.toList()))
+                .build();
 
         if (isSelf) {
             profile.setBookmarks(user.getBookmarks().stream()
@@ -137,6 +141,22 @@ public class UserService {
         }
 
         return profile;
+    }
+
+    @Transactional
+    public UserProfileDto updateUserProfile(Integer userId, UserUpdateFormDto profileDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        user.setFirstName(profileDto.getFirstName());
+        user.setLastName(profileDto.getLastName());
+        user.setBio(profileDto.getBio());
+        user.setGender(profileDto.getGender());
+        user.setProfilePicture(profileDto.getProfilePicture());
+
+        userRepository.save(user);
+
+        return getUserProfileById(userId, user.getUsername());
     }
 
     private BookmarkDto convertToBookmarkDto(Bookmark bookmark) {
@@ -189,6 +209,8 @@ public class UserService {
         profile.setUsername(user.getUsername());
         profile.setName(user.getFirstName() + " " + user.getLastName());
         profile.setBio(user.getBio());
+        profile.setGender(user.getGender());
+        profile.setProfilePicture(user.getProfilePicture());
 
         profile.setFollowersCount(user.getFollowers().size());
         profile.setFollowingCount(user.getFollowing().size());

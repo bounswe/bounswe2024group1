@@ -4,10 +4,9 @@ import  lombok.*;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class UserProfileDto {
     private Integer id;
     private String username;
@@ -16,8 +15,8 @@ public class UserProfileDto {
     private boolean selfFollowing;
     private Integer followersCount;
     private Integer followingCount;
-    //private String gender;
-   // private String profilePicture;
+    private String gender;
+    private String profilePicture;
    // private List<String> diets;
     private Integer recipeCount;
     private List<BookmarkDto> bookmarks;
