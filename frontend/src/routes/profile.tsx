@@ -1,4 +1,7 @@
-import { useGetUserById } from "@/services/api/semanticBrowseComponents";
+import {
+  useGetUserById,
+  useUpdateUserById,
+} from "@/services/api/semanticBrowseComponents";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AvatarImage, Avatar } from "@/components/ui/avatar";
@@ -9,13 +12,26 @@ import { cn } from "@/lib/utils";
 import { Recipe } from "@/components/Recipe";
 import useAuthStore from "@/services/auth";
 import FollowButton from "@/components/FollowButton";
+import { useEffect, useRef, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Profile() {
   const { userId = "" } = useParams<{ userId: string }>();
-  const { selfProfile } = useAuthStore();
+  const { selfProfile, fetchProfile } = useAuthStore();
   const me = userId === "me" || userId === selfProfile?.id?.toString();
+  const [editing, setEditing] = useState(false);
 
-  const { isLoading, data, error } = useGetUserById(
+  const nameRef = useRef<HTMLInputElement>(null);
+  const bioRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (!me) {
+      setEditing(false);
+    }
+  }, [me]);
+
+  const { isLoading, data, error, refetch } = useGetUserById(
     {
       pathParams: {
         userId: me ? ("me" as unknown as number) : parseInt(userId),
@@ -25,6 +41,17 @@ export default function Profile() {
       enabled: me || !isNaN(Number(userId)),
     },
   );
+  const { mutateAsync, isPending } = useUpdateUserById({
+    onSuccess: () => {
+      fetchProfile();
+      refetch().then(() => {
+        setEditing(false);
+      });
+    },
+    onError: () => {
+      setEditing(false);
+    },
+  });
 
   if (!me && isNaN(Number(userId))) {
     return <h1>Invalid user id</h1>;
@@ -67,19 +94,58 @@ export default function Profile() {
         </div>
         <div className="flex items-center justify-between">
           <div className="flex flex-col ">
-            <h2 className="">{profile.name}</h2>
-            <p
-              className={cn(
-                "text-sm",
-                !profile.bio ? "text-gray-300" : "text-gray-600",
-              )}
-            >
-              {profile.bio ?? "Empty bio."}
-            </p>
+            {editing ? (
+              <Input
+                defaultValue={profile.name}
+                ref={nameRef}
+                placeholder="Name"
+                className="mt-2"
+              />
+            ) : (
+              <h2 className="">{profile.name}</h2>
+            )}
+            {editing ? (
+              <Textarea
+                defaultValue={profile.bio}
+                ref={bioRef}
+                placeholder="Bio"
+                className="mt-2"
+              />
+            ) : (
+              <p
+                className={cn(
+                  "text-sm",
+                  !profile.bio ? "text-gray-300" : "text-gray-600",
+                )}
+              >
+                {profile.bio ?? "Empty bio."}
+              </p>
+            )}
           </div>
           {me ? (
-            <Button variant="outline">Edit profile</Button>
+            editing ? (
+              <Button
+                disabled={isPending}
+                onClick={() => {
+                  mutateAsync({
+                    pathParams: {
+                      userId: profile.id,
+                    },
+                    body: {
+                      ...profile,
+                      name: nameRef.current?.value ?? "",
+                      bio: bioRef.current?.value ?? "",
+                    },
+                  });
+                }}
+              >
+                {isPending ? "Saving..." : "Save"}
+              </Button>
+            ) : null
           ) : (
+            // <Button onClick={() => setEditing(true)} variant="outline">
+            //   Edit profile
+            // </Button>
             data?.data && <FollowButton profile={data?.data} />
           )}
         </div>

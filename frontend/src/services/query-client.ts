@@ -9,7 +9,7 @@ const errorHandler = (error: Error) => {
     if (!useAuthStore.getState().token) {
       toast({
         title: "Authentication required",
-        description: "You need to log in before you perform this action.",
+        description: "You need to log in before you can perform this action.",
         variant: "destructive",
       });
     } else {

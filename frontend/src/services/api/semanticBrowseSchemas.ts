@@ -75,9 +75,8 @@ export type DishDetails = {
    */
   image: string;
   countries: string;
-  ingredients?: {
-    name?: string;
-  }[];
+  cuisines?: string;
+  ingredients?: string;
   foodTypes?: string;
   cuisine?: CuisineSummary;
   /**

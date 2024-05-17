@@ -42,7 +42,9 @@ export const Recipe = ({
       <Card className="flex flex-1 flex-col bg-gray-100 pt-16">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>{name}</CardTitle>
+            <CardTitle>
+              <Link to={`/recipes/${id}`}>{name}</Link>
+            </CardTitle>
             <div className="flex">
               <Button
                 className="bg-transparent"
@@ -79,11 +81,12 @@ export const Recipe = ({
             <img src={TimeIcon} alt="Time icon" className="h-6 w-6" />
             <span className="text-sm">{cookTime}</span>
           </div>
+
           {dish && (
-            <div className="flex items-center gap-2">
+            <Link to={`/dishes/${dish.id}`} className="flex items-center gap-2">
               <img src={FoodIcon} alt="Food icon" className="h-6 w-6" />
               <span className="text-sm">{dish.name}</span>
-            </div>
+            </Link>
           )}
           {author && author.profilePicture && (
             <div className="flex items-center">

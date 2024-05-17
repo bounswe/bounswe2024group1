@@ -18,22 +18,17 @@ export default function BookmarkButton({
   asIcon?: boolean;
 }) {
   const { refetch: refetchMe } = useGetMe({});
-  console.log(recipe);
+
   const { refetch: refetchBookmarkers } = useGetBookmarkers({
     pathParams: {
       recipeId: recipe.id!,
     },
   });
-  const { isLoading, data, error, refetch } = useGetRecipeById(
-    {
-      pathParams: {
-        recipeId: recipe.id!,
-      },
+  const { isLoading, data, error, refetch } = useGetRecipeById({
+    pathParams: {
+      recipeId: recipe.id!,
     },
-    {
-      enabled: typeof recipe.selfBookmarked !== "boolean",
-    },
-  );
+  });
 
   const [optimisticBookmarked, setOptimisticBookmarked] = useState(
     null as boolean | null,
@@ -41,11 +36,14 @@ export default function BookmarkButton({
 
   const { mutateAsync: bookmark } = useBookmarkRecipe({
     onSuccess: () => {
-      refetch().then(() => {
-        setOptimisticBookmarked(null);
-        refetchMe();
-        refetchBookmarkers();
-      });
+      return refetch()
+        .then(() => {
+          refetchMe();
+          refetchBookmarkers();
+        })
+        .finally(() => {
+          setOptimisticBookmarked(null);
+        });
     },
     onError: () => {
       setOptimisticBookmarked(null);
@@ -53,20 +51,21 @@ export default function BookmarkButton({
   });
   const { mutateAsync: unbookmark } = useUnbookmarkRecipe({
     onSuccess: () => {
-      refetch().then(() => {
-        setOptimisticBookmarked(null);
-        refetchMe();
-        refetchBookmarkers();
-      });
+      refetch()
+        .then(() => {
+          refetchMe();
+          refetchBookmarkers();
+        })
+        .finally(() => {
+          setOptimisticBookmarked(null);
+        });
     },
     onError: () => {
       setOptimisticBookmarked(null);
     },
   });
 
-  const bookmarked =
-    optimisticBookmarked ?? recipe.selfBookmarked ?? data?.data?.selfBookmarked;
-  console.log(recipe.id, bookmarked);
+  const bookmarked = optimisticBookmarked ?? data?.data?.selfBookmarked;
 
   const variant = bookmarked && !isLoading ? "primary-outline" : "default";
 
