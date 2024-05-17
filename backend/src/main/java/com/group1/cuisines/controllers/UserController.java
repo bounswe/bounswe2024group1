@@ -4,6 +4,7 @@ import com.group1.cuisines.dao.response.ErrorResponse;
 import com.group1.cuisines.dao.response.SuccessResponse;
 import com.group1.cuisines.dto.UserDto;
 import com.group1.cuisines.dto.UserProfileDto;
+import com.group1.cuisines.dto.UserUpdateFormDto;
 import com.group1.cuisines.entities.User;
 import com.group1.cuisines.repositories.UserRepository;
 import com.group1.cuisines.services.UserService;
@@ -37,9 +38,22 @@ public class UserController {
         String currentUsername = authentication != null ? authentication.getName() : null;
         try {
             UserProfileDto userProfile = userService.getUserProfileById(userId, currentUsername);
-            return ResponseEntity.ok(new SuccessResponse<>(200,userProfile, "User profile fetched successfully"));
+            return ResponseEntity.ok(new SuccessResponse<>(200, userProfile, "User profile fetched successfully"));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.ok(new ErrorResponse(204,"User not found"));
+            return ResponseEntity.ok(new ErrorResponse(204, "User not found"));
+        }
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<?> updateUser(@PathVariable Integer userId, @RequestBody UserUpdateFormDto userUpdateFormDto) {
+        if (userId == null || userUpdateFormDto == null) {
+            return ResponseEntity.ok(new ErrorResponse(204,"Invalid user data"));
+        }
+        try {
+            UserProfileDto updatedUser = userService.updateUserProfile(userId, userUpdateFormDto);
+            return ResponseEntity.ok(new SuccessResponse<>(200, updatedUser, "User updated successfully"));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.ok(new ErrorResponse(204, "User not found"));
         }
     }
 

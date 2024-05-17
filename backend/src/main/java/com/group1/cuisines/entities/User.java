@@ -33,6 +33,9 @@ public class User implements UserDetails {
 
     private String password;
     private String Bio;
+    private String gender;
+    private String profilePicture;
+
     @ManyToMany
     @JoinTable(
             name = "user_followers",
