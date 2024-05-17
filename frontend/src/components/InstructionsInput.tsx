@@ -4,10 +4,11 @@ import { useFormContext } from "react-hook-form";
 import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
+import { FormField, FormMessage } from "./ui/form";
 
 export default function InstructionsInput() {
   const [count, setCount] = useState(1);
-  const { register, setValue, getValues } = useFormContext();
+  const { register, setValue, getValues, control } = useFormContext();
 
   const deleteIndex = (index: number) => {
     setCount(count - 1);
@@ -36,6 +37,11 @@ export default function InstructionsInput() {
           </div>
         </div>
       ))}
+      <FormField
+        name="instructions.root"
+        control={control}
+        render={() => <FormMessage />}
+      />
       <Button
         onClick={(e) => {
           e.preventDefault();

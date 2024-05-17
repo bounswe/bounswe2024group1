@@ -104,7 +104,7 @@ class UserControllerTest {
 
         ResponseEntity<?> response = userController.getUserDetails(userDetails);
 
-        assertEquals(204, ((ErrorResponse) response.getBody()).getStatus());
+        assertEquals(401, ((ErrorResponse) response.getBody()).getStatus());
         verify(userRepository).findByUsername(username);
     }
 

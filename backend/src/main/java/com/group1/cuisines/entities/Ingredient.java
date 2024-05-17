@@ -2,6 +2,8 @@ package com.group1.cuisines.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
@@ -19,6 +21,7 @@ public class Ingredient {
     private String name;
     private String amount; // E.g. grams, cups, etc.
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "recipe_id") // This column in the Ingredient table will hold the foreign key to the Recipe
     private Recipe recipe; // This is the 'recipe' field expected by the 'mappedBy' attribute
     @Override

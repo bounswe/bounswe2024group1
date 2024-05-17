@@ -5,7 +5,7 @@ import {
 import type { NewRecipe } from "@/services/api//semanticBrowseSchemas";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -25,14 +25,20 @@ import { BadgeFormInput, BadgeFormItem } from "@/components/BadgeInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import IngredientsInput from "@/components/IngredientsInput";
 import InstructionsInput from "@/components/InstructionsInput";
+import useAuthStore from "@/services/auth";
 
 const newRecipeSchema = z.object({
   name: z.string().min(1),
-  description: z.string().min(1),
+  description: z.string().min(1).max(5000),
   ingredients: z.array(
     z.object({ name: z.string().min(1), amount: z.string() }),
   ),
-  instructions: z.array(z.string().min(1)),
+  instructions: z
+    .array(z.string().min(1))
+    .refine(
+      (val) => val.reduce((acc, curr) => acc + curr.length + 4, 0) < 5000,
+      "Total length must be less than 5000 characters.",
+    ),
   images: z.array(z.string().min(1)),
   prepTime: z.coerce.number().min(1),
   cookTime: z.coerce.number().min(1),
@@ -47,6 +53,7 @@ export default function CreateRecipePage() {
   const [params] = useSearchParams();
 
   const dishId = params.get("dishId") ?? "";
+  const token = useAuthStore((s) => s.token);
 
   const { data: dish, error: dishError } = useGetDishById(
     {
@@ -83,6 +90,12 @@ export default function CreateRecipePage() {
       navigate(`/recipes/${data.data.id}`);
     },
   });
+
+  if (!token) {
+    return (
+      <Navigate to={"/login?from=" + encodeURIComponent("/recipes/new")} />
+    );
+  }
 
   return (
     <Form {...form}>
