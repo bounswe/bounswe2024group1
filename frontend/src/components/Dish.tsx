@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { flag } from "country-emoji";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
+import useAuthStore from "@/services/auth";
 
 interface Dish {
   id: string;
@@ -21,6 +22,8 @@ export const Dish = ({
   const countryEmojis = useMemo(() => {
     return (countries || "").split(", ").map(flag).join(" ");
   }, [countries]);
+  const token = useAuthStore().token;
+
   return (
     <div className="flex flex-col self-stretch justify-self-stretch">
       <div className="-mb-16 w-[70%] self-center">
@@ -39,9 +42,11 @@ export const Dish = ({
         <CardContent className="flex flex-1 flex-col justify-between gap-2">
           <p className="text-sm text-gray-500">{description}</p>
           <div className="flex items-center justify-between">
-            <Link to={`/recipes/new?dishId=` + encodeURIComponent(id)}>
-              <Plus className="h-4 w-4" />
-            </Link>
+            {!!token && (
+              <Link to={`/recipes/new?dishId=` + encodeURIComponent(id)}>
+                <Plus className="h-4 w-4" />
+              </Link>
+            )}
             <Link
               to={`/dishes/${id}`}
               className="text-sm font-medium text-blue-500 hover:underline"

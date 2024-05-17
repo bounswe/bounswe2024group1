@@ -43,7 +43,7 @@ export function useSemanticBrowseContext<
     "queryKey" | "queryFn"
   >,
 ): SemanticBrowseContext {
-  const token = useAuthStore.getState().token;
+  const token = useAuthStore((s) => s.token);
   return {
     fetcherOptions: {
       headers: token
