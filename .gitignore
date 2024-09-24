@@ -2,5 +2,6 @@
 .idea/
 *.iml
 .DS_Store
+personal_work/
 
 node_modules
