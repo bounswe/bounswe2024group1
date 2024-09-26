@@ -32,8 +32,8 @@ A clear and concise description of the feature to be implemented.
 
 ### 📅 Deadline
 - **Estimated hours of work**: 4 hours
-- **Implementation Deadline:** September 30 
-- **Review Deadline:** October 2
+- **Implementation Deadline:** October 1
+- **Review Deadline:** October 4  <!-- +3 days to implementation deadline by default -->
 
 ## 👁‍🗨 Reviewer
 @reviewer
