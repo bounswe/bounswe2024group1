@@ -10,9 +10,11 @@ about: Track issues for the project
 ## 📅 Deadline
 
 ## 🎯 Issues
-| Issue | Descripiton | Deadline | Status |
+| Issue | Descripton | Deadline | Status |
 | ----- | ----------- | ------ | ---- |
-| #[issue_number] | |  | ⏳ |
+| #[issue_number] | | 26.09.2024 | ⏳ |
 
+<!-- | #1 | | 26.09.2024 | ⏳ | -->
+<!-- | #1 | | 26.09.2024 | ✅ | -->
+<!-- | #1 | | 26.09.2024 | 🔜 | -->
 
-## 📊 Additional context
