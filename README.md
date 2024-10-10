@@ -1,5 +1,4 @@
-﻿# Semantic Browse for Cuisines
-
+﻿# Programming Languages Forum
 This is the repository for Group1 of SWE course in Fall'25.
 
 ## About the Repository
