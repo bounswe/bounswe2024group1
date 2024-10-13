@@ -1,0 +1,57 @@
+name: bounswe2024group1-451-dev
+
+services:
+  s3mock:
+    extends:
+      file: compose.yml
+      service: s3mock
+  swagger:
+    extends:
+      file: compose.yml
+      service: swagger
+  db:
+    extends:
+      file: compose.yml
+      service: db
+    volumes:
+      - db-data:/var/lib/mysql
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.dev
+    platform: linux/amd64
+    volumes:
+      - ./backend:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: cuisines-test
+      DB_USER: root
+      DB_PASSWORD: admin
+      SPRING_PROFILES_ACTIVE: docker
+      DO_SPACES_ENDPOINT: "http://s3mock:9090"
+      DO_SPACES_ACCESS_KEY: "---"
+      DO_SPACES_SECRET_KEY: "---"
+      DO_SPACES_BUCKET: "programmingforum"
+    depends_on:
+      - db
+  web:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.dev
+    environment:
+      - PROXY_API=http://backend:8080
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - ./frontend/node_modules/
+        - action: rebuild
+          path: ./frontend/package.json
+volumes:
+  node_modules:
+  db-data:
+  s3mock-files:
