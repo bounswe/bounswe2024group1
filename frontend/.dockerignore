@@ -1,0 +1,5 @@
+# installed by Dockerfile
+node_modules/
+
+# build output
+dist
