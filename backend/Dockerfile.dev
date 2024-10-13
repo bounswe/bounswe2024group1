@@ -5,5 +5,7 @@ FROM maven:3.8-openjdk-17
 EXPOSE 8080
 WORKDIR /app
 
+COPY . /app
+
 # Command to run the application
 CMD ["mvn", "spring-boot:run"]
