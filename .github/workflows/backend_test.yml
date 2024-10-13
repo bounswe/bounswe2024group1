@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Test with Maven
-        run: cd backend && mvn test
-        # run: docker compose -f dev.yml run --rm backend mvn test
+      - name: Build the Docker image
+        run: docker build -t backend-test -f backend/Dockerfile.dev .
+
+      - name: Run the tests
+        run: docker run backend-test mvn test
+      
