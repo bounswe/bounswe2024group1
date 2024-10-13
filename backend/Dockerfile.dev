@@ -1,0 +1,11 @@
+# Use the maven 4.0.0 image
+FROM maven:3.8-openjdk-17
+
+# Set the port the container will listen on
+EXPOSE 8080
+WORKDIR /app
+
+COPY . /app
+
+# Command to run the application
+CMD ["mvn", "spring-boot:run"]

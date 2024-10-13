@@ -1,0 +1,32 @@
+name: backend-test
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - compose.yml
+      - dev.yml
+      - ".github/workflows/backend_test.yml"
+  pull_request:
+    branches:
+      - main
+      - staging
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build -t backend-test -f backend/Dockerfile.dev ./backend
+
+      - name: List Full Tree
+        run: ls -R
+
+      - name: Run the tests
+        run: docker run backend-test mvn test
+      
