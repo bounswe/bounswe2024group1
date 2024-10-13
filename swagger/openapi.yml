@@ -1,0 +1,706 @@
+openapi: 3.1.0
+info:
+  title: Programming Languages Forum
+  description: |-
+    This is the API specification for the Programming Languages Forum
+  version: 1.0.0
+externalDocs:
+  description: Refer to the requirements
+  url: https://github.com/bounswe/bounswe2024group1/wiki/Requirements
+servers:
+  - url: http://localhost:5173/api/v1
+    description: Development compose
+  - url: http://localhost:80/api/v1
+    description: Production-like compose
+tags:
+  - name: auth
+    description: Operations about authentication
+  - name: user
+    description: Operations about user
+paths:
+  /users/logout:
+    post:
+      operationId: logout
+      tags:
+        - auth
+      summary: User logout
+      security:
+        - auth_jwt: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/verify-email:
+    post:
+      operationId: verifyEmail
+      tags:
+        - auth
+      summary: Verify user's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/resend-verification-email:
+    post:
+      operationId: resendVerificationEmail
+      tags:
+        - auth
+      summary: Resend verification email
+      security:
+        - auth_jwt: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/reset-password-request:
+    post:
+      operationId: resetPasswordRequest
+      tags:
+        - auth
+      summary: Request password reset
+      description:
+        A password reset link will be sent to the user's email if it exists.
+        The response must always be success (even if email does not exist).
+        This is to prevent email enumeration attacks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/reset-password:
+    post:
+      operationId: resetPassword
+      tags:
+        - auth
+      summary: Reset password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/signup:
+    post:
+      operationId: signup
+      tags:
+        - auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistration"
+      responses:
+        "201":
+          $ref: "#/components/responses/CreatedResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/login:
+    post:
+      operationId: login
+      tags:
+        - auth
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AuthToken"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
+  /users/{userId}:
+    get:
+      operationId: getUserById
+      tags:
+        - user
+      summary: Get user profile
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    put:
+      operationId: updateUserById
+      tags:
+        - user
+      summary: Update user profile
+      description: Can only update own profile
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfile"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /users/me:
+    get:
+      operationId: getMe
+      tags:
+        - user
+      summary: Get own profile
+      security:
+        - auth_jwt: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+
+  /users/{userId}/following:
+    get:
+      operationId: getUserFollowing
+      tags:
+        - user
+      summary: Get users being followed
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserArray"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/{userId}/followers:
+    get:
+      operationId: getUserFollowers
+      tags:
+        - user
+      summary: Get user's followers
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserArray"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /users/{userId}/follow:
+    post:
+      operationId: followUser
+      tags:
+        - user
+      summary: Follow a user
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK - returning new user profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+    delete:
+      operationId: unfollowUser
+      tags:
+        - user
+      summary: Unfollow a user
+      security:
+        - auth_jwt: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK - returning new user profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+components:
+  schemas:
+    UserRegistration:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - firstName
+        - lastName
+        - country
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        bio:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        country:
+          type: string
+
+    UserLogin:
+      type: object
+      required:
+        - usernameOrEmail
+        - password
+      properties:
+        usernameOrEmail:
+          type: string
+        password:
+          type: string
+
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+
+    UserProfile:
+      type: object
+      required:
+        - id
+        - username
+        - name
+        - bio
+        - followersCount
+        - following
+        - profilePicture
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        bio:
+          type: string
+        followersCount:
+          type: integer
+        followingCount:
+          type: integer
+        gender:
+          type: string
+          enum: [male, female, unknown]
+        profilePicture:
+          type: string
+          format: uri
+        selfFollowing:
+          type: boolean
+      examples:
+        - id: 1
+          username: "takoyaki_lover"
+          name: "Takoyaki Lover"
+          bio: "I love takoyaki!"
+          followersCount: 100
+          followingCount: 100
+          gender: unknown
+          profilePicture: "https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640"
+          selfFollowing: true
+          recipeCount: 10
+    UserSummary:
+      type: object
+      required:
+        - id
+        - username
+        - name
+        - followersCount
+        - profilePicture
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        followersCount:
+          type: integer
+        profilePicture:
+          type: string
+          format: uri
+        selfFollowing:
+          type: boolean
+      examples:
+        - id: 1
+          username: "takoyaki_lover"
+          name: "Takoyaki Lover"
+          followersCount: 100
+          profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
+          selfFollowing: false
+
+    UserArray:
+      description: An array of users
+      type: array
+      items:
+        $ref: "#/components/schemas/UserSummary"
+
+    ApiResponse:
+      oneOf:
+        - $ref: "#/components/schemas/SuccessResponseObject"
+        - $ref: "#/components/schemas/ErrorResponseObject"
+      examples:
+        - status: 200
+          data: { "message": "Success" }
+        - status: 400
+          errors:
+            - message: "Invalid email"
+              field: "email"
+            - message: "Invalid password"
+              field: "password"
+
+    ApiError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+          description: If empty, indicates an error not related to any field.
+    SuccessResponseObject:
+      description: OK
+      type: object
+      required: ["status", "data"]
+      properties:
+        status:
+          type: integer
+          description:
+            Internal status code of the response. An HTTP 200 response with an internal
+            500 status code is an error response. Prioritize the inner status over the HTTP
+            status.
+          enum:
+            - 200
+            - 201
+          examples: [200, 201]
+        data:
+          oneOf:
+            - type: object
+            - type: array
+    ErrorResponseObject:
+      description: Response with errors
+      type: object
+      required: ["status", "errors"]
+      properties:
+        status:
+          enum:
+            - 400
+            - 401
+            - 403
+            - 404
+            - 409
+            - 500
+          description:
+            Internal status code of the response. An HTTP 200 response with an internal
+            500 status code is an error response. Prioritize the inner status over the HTTP
+            status.
+          examples: [400, 401, 403, 404, 409, 500]
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApiError"
+  responses:
+    OkResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SuccessResponseObject"
+
+    CreatedResponse:
+      description: Created
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/SuccessResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 201
+
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 400
+
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 401
+
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 403
+
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 404
+
+    ConflictResponse:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorResponseObject"
+              - type: object
+                properties:
+                  status:
+                    const: 409
+
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                examples:
+                  - 500
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiError"
+
+  securitySchemes:
+    auth_jwt:
+      type: http
+      description: A bearer token is used to authenticate a user.
+      scheme: bearer
+      bearerFormat: JWT
