@@ -1,0 +1,3 @@
+cd frontend
+yarn test run
+yarn lint-staged
