@@ -13,27 +13,94 @@ import { programmingForumFetch } from "./programmingForumFetcher";
 import type * as Schemas from "./programmingForumSchemas";
 import type * as Responses from "./programmingForumResponses";
 
-export type LogoutError = Fetcher.ErrorWrapper<{
+export type SignUpError = Fetcher.ErrorWrapper<{
   status: 400;
   payload: Responses.BadRequestResponse;
 }>;
 
-export type LogoutResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Record<string, any> | any[];
+export type SignUpVariables = {
+  body: Schemas.UserRegistration;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchSignUp = (variables: SignUpVariables, signal?: AbortSignal) =>
+  programmingForumFetch<
+    Schemas.AuthToken,
+    SignUpError,
+    Schemas.UserRegistration,
+    {},
+    {},
+    {}
+  >({ url: "/auth/signup", method: "post", ...variables, signal });
+
+export const useSignUp = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.AuthToken,
+      SignUpError,
+      SignUpVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    Schemas.AuthToken,
+    SignUpError,
+    SignUpVariables
+  >({
+    mutationFn: (variables: SignUpVariables) =>
+      fetchSignUp({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
 };
+
+export type LoginError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Responses.UnauthorizedResponse;
+}>;
+
+export type LoginVariables = {
+  body: Schemas.UserLogin;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchLogin = (variables: LoginVariables, signal?: AbortSignal) =>
+  programmingForumFetch<
+    Schemas.AuthToken,
+    LoginError,
+    Schemas.UserLogin,
+    {},
+    {},
+    {}
+  >({ url: "/auth/login", method: "post", ...variables, signal });
+
+export const useLogin = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.AuthToken,
+      LoginError,
+      LoginVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<Schemas.AuthToken, LoginError, LoginVariables>({
+    mutationFn: (variables: LoginVariables) =>
+      fetchLogin({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type LogoutError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Responses.UnauthorizedResponse;
+}>;
 
 export type LogoutVariables = ProgrammingForumContext["fetcherOptions"];
 
 export const fetchLogout = (variables: LogoutVariables, signal?: AbortSignal) =>
-  programmingForumFetch<LogoutResponse, LogoutError, undefined, {}, {}, {}>({
-    url: "/users/logout",
+  programmingForumFetch<undefined, LogoutError, undefined, {}, {}, {}>({
+    url: "/auth/logout",
     method: "post",
     ...variables,
     signal,
@@ -41,12 +108,12 @@ export const fetchLogout = (variables: LogoutVariables, signal?: AbortSignal) =>
 
 export const useLogout = (
   options?: Omit<
-    reactQuery.UseMutationOptions<LogoutResponse, LogoutError, LogoutVariables>,
+    reactQuery.UseMutationOptions<undefined, LogoutError, LogoutVariables>,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<LogoutResponse, LogoutError, LogoutVariables>({
+  return reactQuery.useMutation<undefined, LogoutError, LogoutVariables>({
     mutationFn: (variables: LogoutVariables) =>
       fetchLogout({ ...fetcherOptions, ...variables }),
     ...options,
@@ -57,17 +124,6 @@ export type VerifyEmailError = Fetcher.ErrorWrapper<{
   status: 400;
   payload: Responses.BadRequestResponse;
 }>;
-
-export type VerifyEmailResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Record<string, any> | any[];
-};
 
 export type VerifyEmailRequestBody = {
   token: string;
@@ -82,18 +138,18 @@ export const fetchVerifyEmail = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    VerifyEmailResponse,
+    undefined,
     VerifyEmailError,
     VerifyEmailRequestBody,
     {},
     {},
     {}
-  >({ url: "/users/verify-email", method: "post", ...variables, signal });
+  >({ url: "/auth/verify-email", method: "post", ...variables, signal });
 
 export const useVerifyEmail = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      VerifyEmailResponse,
+      undefined,
       VerifyEmailError,
       VerifyEmailVariables
     >,
@@ -102,7 +158,7 @@ export const useVerifyEmail = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    VerifyEmailResponse,
+    undefined,
     VerifyEmailError,
     VerifyEmailVariables
   >({
@@ -112,154 +168,16 @@ export const useVerifyEmail = (
   });
 };
 
-export type ResendVerificationEmailError = Fetcher.ErrorWrapper<{
-  status: 400;
-  payload: Responses.BadRequestResponse;
-}>;
-
-export type ResendVerificationEmailResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Record<string, any> | any[];
-};
-
-export type ResendVerificationEmailVariables =
-  ProgrammingForumContext["fetcherOptions"];
-
-export const fetchResendVerificationEmail = (
-  variables: ResendVerificationEmailVariables,
-  signal?: AbortSignal,
-) =>
-  programmingForumFetch<
-    ResendVerificationEmailResponse,
-    ResendVerificationEmailError,
-    undefined,
-    {},
-    {},
-    {}
-  >({
-    url: "/users/resend-verification-email",
-    method: "post",
-    ...variables,
-    signal,
-  });
-
-export const useResendVerificationEmail = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      ResendVerificationEmailResponse,
-      ResendVerificationEmailError,
-      ResendVerificationEmailVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<
-    ResendVerificationEmailResponse,
-    ResendVerificationEmailError,
-    ResendVerificationEmailVariables
-  >({
-    mutationFn: (variables: ResendVerificationEmailVariables) =>
-      fetchResendVerificationEmail({ ...fetcherOptions, ...variables }),
-    ...options,
-  });
-};
-
-export type ResetPasswordRequestError = Fetcher.ErrorWrapper<{
-  status: 400;
-  payload: Responses.BadRequestResponse;
-}>;
-
-export type ResetPasswordRequestResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Record<string, any> | any[];
-};
-
-export type ResetPasswordRequestRequestBody = {
-  email: string;
-};
-
-export type ResetPasswordRequestVariables = {
-  body: ResetPasswordRequestRequestBody;
-} & ProgrammingForumContext["fetcherOptions"];
-
-/**
- * A password reset link will be sent to the user's email if it exists. The response must always be success (even if email does not exist). This is to prevent email enumeration attacks.
- */
-export const fetchResetPasswordRequest = (
-  variables: ResetPasswordRequestVariables,
-  signal?: AbortSignal,
-) =>
-  programmingForumFetch<
-    ResetPasswordRequestResponse,
-    ResetPasswordRequestError,
-    ResetPasswordRequestRequestBody,
-    {},
-    {},
-    {}
-  >({
-    url: "/users/reset-password-request",
-    method: "post",
-    ...variables,
-    signal,
-  });
-
-/**
- * A password reset link will be sent to the user's email if it exists. The response must always be success (even if email does not exist). This is to prevent email enumeration attacks.
- */
-export const useResetPasswordRequest = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      ResetPasswordRequestResponse,
-      ResetPasswordRequestError,
-      ResetPasswordRequestVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<
-    ResetPasswordRequestResponse,
-    ResetPasswordRequestError,
-    ResetPasswordRequestVariables
-  >({
-    mutationFn: (variables: ResetPasswordRequestVariables) =>
-      fetchResetPasswordRequest({ ...fetcherOptions, ...variables }),
-    ...options,
-  });
-};
-
 export type ResetPasswordError = Fetcher.ErrorWrapper<{
   status: 400;
   payload: Responses.BadRequestResponse;
 }>;
 
-export type ResetPasswordResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Record<string, any> | any[];
-};
-
 export type ResetPasswordRequestBody = {
-  token: string;
-  newPassword: string;
+  /**
+   * @format email
+   */
+  email: string;
 };
 
 export type ResetPasswordVariables = {
@@ -271,18 +189,18 @@ export const fetchResetPassword = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    ResetPasswordResponse,
+    undefined,
     ResetPasswordError,
     ResetPasswordRequestBody,
     {},
     {},
     {}
-  >({ url: "/users/reset-password", method: "post", ...variables, signal });
+  >({ url: "/auth/reset-password", method: "post", ...variables, signal });
 
 export const useResetPassword = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      ResetPasswordResponse,
+      undefined,
       ResetPasswordError,
       ResetPasswordVariables
     >,
@@ -291,7 +209,7 @@ export const useResetPassword = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    ResetPasswordResponse,
+    undefined,
     ResetPasswordError,
     ResetPasswordVariables
   >({
@@ -301,328 +219,218 @@ export const useResetPassword = (
   });
 };
 
-export type SignupError = Fetcher.ErrorWrapper<{
-  status: 400;
-  payload: Responses.BadRequestResponse;
-}>;
-
-export type SignupVariables = {
-  body: Schemas.UserRegistration;
-} & ProgrammingForumContext["fetcherOptions"];
-
-export const fetchSignup = (variables: SignupVariables, signal?: AbortSignal) =>
-  programmingForumFetch<
-    Responses.CreatedResponse,
-    SignupError,
-    Schemas.UserRegistration,
-    {},
-    {},
-    {}
-  >({ url: "/users/signup", method: "post", ...variables, signal });
-
-export const useSignup = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Responses.CreatedResponse,
-      SignupError,
-      SignupVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<
-    Responses.CreatedResponse,
-    SignupError,
-    SignupVariables
-  >({
-    mutationFn: (variables: SignupVariables) =>
-      fetchSignup({ ...fetcherOptions, ...variables }),
-    ...options,
-  });
-};
-
-export type LoginError = Fetcher.ErrorWrapper<{
-  status: 401;
-  payload: Responses.UnauthorizedResponse;
-}>;
-
-export type LoginResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.AuthToken;
-};
-
-export type LoginVariables = {
-  body: Schemas.UserLogin;
-} & ProgrammingForumContext["fetcherOptions"];
-
-export const fetchLogin = (variables: LoginVariables, signal?: AbortSignal) =>
-  programmingForumFetch<
-    LoginResponse,
-    LoginError,
-    Schemas.UserLogin,
-    {},
-    {},
-    {}
-  >({ url: "/users/login", method: "post", ...variables, signal });
-
-export const useLogin = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<LoginResponse, LoginError, LoginVariables>,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<LoginResponse, LoginError, LoginVariables>({
-    mutationFn: (variables: LoginVariables) =>
-      fetchLogin({ ...fetcherOptions, ...variables }),
-    ...options,
-  });
-};
-
-export type GetUserByIdPathParams = {
+export type GetUserProfilePathParams = {
   userId: number;
 };
 
-export type GetUserByIdError = Fetcher.ErrorWrapper<{
+export type GetUserProfileError = Fetcher.ErrorWrapper<{
   status: 404;
   payload: Responses.NotFoundResponse;
 }>;
 
-export type GetUserByIdResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserProfile;
-};
-
-export type GetUserByIdVariables = {
-  pathParams: GetUserByIdPathParams;
+export type GetUserProfileVariables = {
+  pathParams: GetUserProfilePathParams;
 } & ProgrammingForumContext["fetcherOptions"];
 
-export const fetchGetUserById = (
-  variables: GetUserByIdVariables,
+export const fetchGetUserProfile = (
+  variables: GetUserProfileVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    GetUserByIdResponse,
-    GetUserByIdError,
+    Schemas.UserProfile,
+    GetUserProfileError,
     undefined,
     {},
     {},
-    GetUserByIdPathParams
+    GetUserProfilePathParams
   >({ url: "/users/{userId}", method: "get", ...variables, signal });
 
-export const useGetUserById = <TData = GetUserByIdResponse>(
-  variables: GetUserByIdVariables,
+export const useGetUserProfile = <TData = Schemas.UserProfile>(
+  variables: GetUserProfileVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<GetUserByIdResponse, GetUserByIdError, TData>,
+    reactQuery.UseQueryOptions<Schemas.UserProfile, GetUserProfileError, TData>,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
   const { fetcherOptions, queryOptions, queryKeyFn } =
     useProgrammingForumContext(options);
-  return reactQuery.useQuery<GetUserByIdResponse, GetUserByIdError, TData>({
+  return reactQuery.useQuery<Schemas.UserProfile, GetUserProfileError, TData>({
     queryKey: queryKeyFn({
       path: "/users/{userId}",
-      operationId: "getUserById",
+      operationId: "getUserProfile",
       variables,
     }),
     queryFn: ({ signal }) =>
-      fetchGetUserById({ ...fetcherOptions, ...variables }, signal),
+      fetchGetUserProfile({ ...fetcherOptions, ...variables }, signal),
     ...options,
     ...queryOptions,
   });
 };
 
-export type UpdateUserByIdPathParams = {
+export type UpdateUserProfilePathParams = {
   userId: number;
 };
 
-export type UpdateUserByIdError = Fetcher.ErrorWrapper<{
-  status: 404;
-  payload: Responses.NotFoundResponse;
-}>;
+export type UpdateUserProfileError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
+    }
+>;
 
-export type UpdateUserByIdResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserProfile;
-};
-
-export type UpdateUserByIdVariables = {
-  body: Schemas.UserProfile;
-  pathParams: UpdateUserByIdPathParams;
+export type UpdateUserProfileVariables = {
+  body?: Schemas.UserProfileUpdate;
+  pathParams: UpdateUserProfilePathParams;
 } & ProgrammingForumContext["fetcherOptions"];
 
-/**
- * Can only update own profile
- */
-export const fetchUpdateUserById = (
-  variables: UpdateUserByIdVariables,
+export const fetchUpdateUserProfile = (
+  variables: UpdateUserProfileVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    UpdateUserByIdResponse,
-    UpdateUserByIdError,
     Schemas.UserProfile,
+    UpdateUserProfileError,
+    Schemas.UserProfileUpdate,
     {},
     {},
-    UpdateUserByIdPathParams
+    UpdateUserProfilePathParams
   >({ url: "/users/{userId}", method: "put", ...variables, signal });
 
-/**
- * Can only update own profile
- */
-export const useUpdateUserById = (
+export const useUpdateUserProfile = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      UpdateUserByIdResponse,
-      UpdateUserByIdError,
-      UpdateUserByIdVariables
+      Schemas.UserProfile,
+      UpdateUserProfileError,
+      UpdateUserProfileVariables
     >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    UpdateUserByIdResponse,
-    UpdateUserByIdError,
-    UpdateUserByIdVariables
+    Schemas.UserProfile,
+    UpdateUserProfileError,
+    UpdateUserProfileVariables
   >({
-    mutationFn: (variables: UpdateUserByIdVariables) =>
-      fetchUpdateUserById({ ...fetcherOptions, ...variables }),
+    mutationFn: (variables: UpdateUserProfileVariables) =>
+      fetchUpdateUserProfile({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
 
-export type GetMeError = Fetcher.ErrorWrapper<{
-  status: 403;
-  payload: Responses.ForbiddenResponse;
-}>;
-
-export type GetMeResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserProfile;
-};
-
-export type GetMeVariables = ProgrammingForumContext["fetcherOptions"];
-
-export const fetchGetMe = (variables: GetMeVariables, signal?: AbortSignal) =>
-  programmingForumFetch<GetMeResponse, GetMeError, undefined, {}, {}, {}>({
-    url: "/users/me",
-    method: "get",
-    ...variables,
-    signal,
-  });
-
-export const useGetMe = <TData = GetMeResponse>(
-  variables: GetMeVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<GetMeResponse, GetMeError, TData>,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useProgrammingForumContext(options);
-  return reactQuery.useQuery<GetMeResponse, GetMeError, TData>({
-    queryKey: queryKeyFn({
-      path: "/users/me",
-      operationId: "getMe",
-      variables,
-    }),
-    queryFn: ({ signal }) =>
-      fetchGetMe({ ...fetcherOptions, ...variables }, signal),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type GetUserFollowingPathParams = {
+export type FollowUserPathParams = {
   userId: number;
 };
 
-export type GetUserFollowingError = Fetcher.ErrorWrapper<{
-  status: 400;
-  payload: Responses.BadRequestResponse;
-}>;
+export type FollowUserError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
 
-export type GetUserFollowingResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserArray;
-};
-
-export type GetUserFollowingVariables = {
-  pathParams: GetUserFollowingPathParams;
+export type FollowUserVariables = {
+  pathParams: FollowUserPathParams;
 } & ProgrammingForumContext["fetcherOptions"];
 
-export const fetchGetUserFollowing = (
-  variables: GetUserFollowingVariables,
+export const fetchFollowUser = (
+  variables: FollowUserVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    GetUserFollowingResponse,
-    GetUserFollowingError,
+    undefined,
+    FollowUserError,
     undefined,
     {},
     {},
-    GetUserFollowingPathParams
-  >({ url: "/users/{userId}/following", method: "get", ...variables, signal });
+    FollowUserPathParams
+  >({ url: "/users/{userId}/follow", method: "post", ...variables, signal });
 
-export const useGetUserFollowing = <TData = GetUserFollowingResponse>(
-  variables: GetUserFollowingVariables,
+export const useFollowUser = (
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      GetUserFollowingResponse,
-      GetUserFollowingError,
-      TData
+    reactQuery.UseMutationOptions<
+      undefined,
+      FollowUserError,
+      FollowUserVariables
     >,
-    "queryKey" | "queryFn" | "initialData"
+    "mutationFn"
   >,
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useProgrammingForumContext(options);
-  return reactQuery.useQuery<
-    GetUserFollowingResponse,
-    GetUserFollowingError,
-    TData
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    FollowUserError,
+    FollowUserVariables
   >({
-    queryKey: queryKeyFn({
-      path: "/users/{userId}/following",
-      operationId: "getUserFollowing",
-      variables,
-    }),
-    queryFn: ({ signal }) =>
-      fetchGetUserFollowing({ ...fetcherOptions, ...variables }, signal),
+    mutationFn: (variables: FollowUserVariables) =>
+      fetchFollowUser({ ...fetcherOptions, ...variables }),
     ...options,
-    ...queryOptions,
+  });
+};
+
+export type UnfollowUserPathParams = {
+  userId: number;
+};
+
+export type UnfollowUserError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type UnfollowUserVariables = {
+  pathParams: UnfollowUserPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchUnfollowUser = (
+  variables: UnfollowUserVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    UnfollowUserError,
+    undefined,
+    {},
+    {},
+    UnfollowUserPathParams
+  >({ url: "/users/{userId}/follow", method: "delete", ...variables, signal });
+
+export const useUnfollowUser = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      UnfollowUserError,
+      UnfollowUserVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    UnfollowUserError,
+    UnfollowUserVariables
+  >({
+    mutationFn: (variables: UnfollowUserVariables) =>
+      fetchUnfollowUser({ ...fetcherOptions, ...variables }),
+    ...options,
   });
 };
 
@@ -631,20 +439,11 @@ export type GetUserFollowersPathParams = {
 };
 
 export type GetUserFollowersError = Fetcher.ErrorWrapper<{
-  status: 400;
-  payload: Responses.BadRequestResponse;
+  status: 404;
+  payload: Responses.NotFoundResponse;
 }>;
 
-export type GetUserFollowersResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserArray;
-};
+export type GetUserFollowersResponse = Schemas.UserSummary[];
 
 export type GetUserFollowersVariables = {
   pathParams: GetUserFollowersPathParams;
@@ -693,79 +492,186 @@ export const useGetUserFollowers = <TData = GetUserFollowersResponse>(
   });
 };
 
-export type FollowUserPathParams = {
+export type GetUserFollowingPathParams = {
   userId: number;
 };
 
-export type FollowUserError = Fetcher.ErrorWrapper<
+export type GetUserFollowingError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetUserFollowingResponse = Schemas.UserSummary[];
+
+export type GetUserFollowingVariables = {
+  pathParams: GetUserFollowingPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetUserFollowing = (
+  variables: GetUserFollowingVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    GetUserFollowingResponse,
+    GetUserFollowingError,
+    undefined,
+    {},
+    {},
+    GetUserFollowingPathParams
+  >({ url: "/users/{userId}/following", method: "get", ...variables, signal });
+
+export const useGetUserFollowing = <TData = GetUserFollowingResponse>(
+  variables: GetUserFollowingVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetUserFollowingResponse,
+      GetUserFollowingError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<
+    GetUserFollowingResponse,
+    GetUserFollowingError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/users/{userId}/following",
+      operationId: "getUserFollowing",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetUserFollowing({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type CreateQuestionError = Fetcher.ErrorWrapper<
   | {
       status: 400;
       payload: Responses.BadRequestResponse;
     }
   | {
-      status: 404;
-      payload: Responses.NotFoundResponse;
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
     }
 >;
 
-export type FollowUserResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserProfile;
-};
-
-export type FollowUserVariables = {
-  pathParams: FollowUserPathParams;
+export type CreateQuestionVariables = {
+  body: Schemas.NewQuestion;
 } & ProgrammingForumContext["fetcherOptions"];
 
-export const fetchFollowUser = (
-  variables: FollowUserVariables,
+export const fetchCreateQuestion = (
+  variables: CreateQuestionVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    FollowUserResponse,
-    FollowUserError,
-    undefined,
+    Schemas.QuestionDetails,
+    CreateQuestionError,
+    Schemas.NewQuestion,
     {},
     {},
-    FollowUserPathParams
-  >({ url: "/users/{userId}/follow", method: "post", ...variables, signal });
+    {}
+  >({ url: "/questions", method: "post", ...variables, signal });
 
-export const useFollowUser = (
+export const useCreateQuestion = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      FollowUserResponse,
-      FollowUserError,
-      FollowUserVariables
+      Schemas.QuestionDetails,
+      CreateQuestionError,
+      CreateQuestionVariables
     >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    FollowUserResponse,
-    FollowUserError,
-    FollowUserVariables
+    Schemas.QuestionDetails,
+    CreateQuestionError,
+    CreateQuestionVariables
   >({
-    mutationFn: (variables: FollowUserVariables) =>
-      fetchFollowUser({ ...fetcherOptions, ...variables }),
+    mutationFn: (variables: CreateQuestionVariables) =>
+      fetchCreateQuestion({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
 
-export type UnfollowUserPathParams = {
-  userId: number;
+export type GetQuestionDetailsPathParams = {
+  questionId: number;
 };
 
-export type UnfollowUserError = Fetcher.ErrorWrapper<
+export type GetQuestionDetailsError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetQuestionDetailsVariables = {
+  pathParams: GetQuestionDetailsPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetQuestionDetails = (
+  variables: GetQuestionDetailsVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.QuestionDetails,
+    GetQuestionDetailsError,
+    undefined,
+    {},
+    {},
+    GetQuestionDetailsPathParams
+  >({ url: "/questions/{questionId}", method: "get", ...variables, signal });
+
+export const useGetQuestionDetails = <TData = Schemas.QuestionDetails>(
+  variables: GetQuestionDetailsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.QuestionDetails,
+      GetQuestionDetailsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<
+    Schemas.QuestionDetails,
+    GetQuestionDetailsError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/questions/{questionId}",
+      operationId: "getQuestionDetails",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetQuestionDetails({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type UpdateQuestionPathParams = {
+  questionId: number;
+};
+
+export type UpdateQuestionError = Fetcher.ErrorWrapper<
   | {
       status: 400;
       payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
     }
   | {
       status: 404;
@@ -773,52 +679,1205 @@ export type UnfollowUserError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type UnfollowUserResponse = {
-  /**
-   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
-   *
-   * @example 200
-   * @example 201
-   */
-  status: 200 | 201;
-  data: Schemas.UserProfile;
-};
-
-export type UnfollowUserVariables = {
-  pathParams: UnfollowUserPathParams;
+export type UpdateQuestionVariables = {
+  body?: Schemas.UpdateQuestion;
+  pathParams: UpdateQuestionPathParams;
 } & ProgrammingForumContext["fetcherOptions"];
 
-export const fetchUnfollowUser = (
-  variables: UnfollowUserVariables,
+export const fetchUpdateQuestion = (
+  variables: UpdateQuestionVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    UnfollowUserResponse,
-    UnfollowUserError,
-    undefined,
+    Schemas.QuestionDetails,
+    UpdateQuestionError,
+    Schemas.UpdateQuestion,
     {},
     {},
-    UnfollowUserPathParams
-  >({ url: "/users/{userId}/follow", method: "delete", ...variables, signal });
+    UpdateQuestionPathParams
+  >({ url: "/questions/{questionId}", method: "put", ...variables, signal });
 
-export const useUnfollowUser = (
+export const useUpdateQuestion = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      UnfollowUserResponse,
-      UnfollowUserError,
-      UnfollowUserVariables
+      Schemas.QuestionDetails,
+      UpdateQuestionError,
+      UpdateQuestionVariables
     >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    UnfollowUserResponse,
-    UnfollowUserError,
-    UnfollowUserVariables
+    Schemas.QuestionDetails,
+    UpdateQuestionError,
+    UpdateQuestionVariables
   >({
-    mutationFn: (variables: UnfollowUserVariables) =>
-      fetchUnfollowUser({ ...fetcherOptions, ...variables }),
+    mutationFn: (variables: UpdateQuestionVariables) =>
+      fetchUpdateQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type DeleteQuestionPathParams = {
+  questionId: number;
+};
+
+export type DeleteQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type DeleteQuestionVariables = {
+  pathParams: DeleteQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchDeleteQuestion = (
+  variables: DeleteQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    DeleteQuestionError,
+    undefined,
+    {},
+    {},
+    DeleteQuestionPathParams
+  >({ url: "/questions/{questionId}", method: "delete", ...variables, signal });
+
+export const useDeleteQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      DeleteQuestionError,
+      DeleteQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    DeleteQuestionError,
+    DeleteQuestionVariables
+  >({
+    mutationFn: (variables: DeleteQuestionVariables) =>
+      fetchDeleteQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type RateQuestionPathParams = {
+  questionId: number;
+};
+
+export type RateQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type RateQuestionRequestBody = {
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  rating: number;
+};
+
+export type RateQuestionVariables = {
+  body: RateQuestionRequestBody;
+  pathParams: RateQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchRateQuestion = (
+  variables: RateQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    RateQuestionError,
+    RateQuestionRequestBody,
+    {},
+    {},
+    RateQuestionPathParams
+  >({
+    url: "/questions/{questionId}/rate",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useRateQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      RateQuestionError,
+      RateQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    RateQuestionError,
+    RateQuestionVariables
+  >({
+    mutationFn: (variables: RateQuestionVariables) =>
+      fetchRateQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type BookmarkQuestionPathParams = {
+  questionId: number;
+};
+
+export type BookmarkQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type BookmarkQuestionVariables = {
+  pathParams: BookmarkQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchBookmarkQuestion = (
+  variables: BookmarkQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    BookmarkQuestionError,
+    undefined,
+    {},
+    {},
+    BookmarkQuestionPathParams
+  >({
+    url: "/questions/{questionId}/bookmark",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useBookmarkQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      BookmarkQuestionError,
+      BookmarkQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    BookmarkQuestionError,
+    BookmarkQuestionVariables
+  >({
+    mutationFn: (variables: BookmarkQuestionVariables) =>
+      fetchBookmarkQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type RemoveQuestionBookmarkPathParams = {
+  questionId: number;
+};
+
+export type RemoveQuestionBookmarkError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type RemoveQuestionBookmarkVariables = {
+  pathParams: RemoveQuestionBookmarkPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchRemoveQuestionBookmark = (
+  variables: RemoveQuestionBookmarkVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    RemoveQuestionBookmarkError,
+    undefined,
+    {},
+    {},
+    RemoveQuestionBookmarkPathParams
+  >({
+    url: "/questions/{questionId}/bookmark",
+    method: "delete",
+    ...variables,
+    signal,
+  });
+
+export const useRemoveQuestionBookmark = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      RemoveQuestionBookmarkError,
+      RemoveQuestionBookmarkVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    RemoveQuestionBookmarkError,
+    RemoveQuestionBookmarkVariables
+  >({
+    mutationFn: (variables: RemoveQuestionBookmarkVariables) =>
+      fetchRemoveQuestionBookmark({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetQuestionAnswersPathParams = {
+  questionId: number;
+};
+
+export type GetQuestionAnswersError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetQuestionAnswersResponse = Schemas.AnswerDetails[];
+
+export type GetQuestionAnswersVariables = {
+  pathParams: GetQuestionAnswersPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetQuestionAnswers = (
+  variables: GetQuestionAnswersVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    GetQuestionAnswersResponse,
+    GetQuestionAnswersError,
+    undefined,
+    {},
+    {},
+    GetQuestionAnswersPathParams
+  >({
+    url: "/questions/{questionId}/answers",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetQuestionAnswers = <TData = GetQuestionAnswersResponse>(
+  variables: GetQuestionAnswersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetQuestionAnswersResponse,
+      GetQuestionAnswersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<
+    GetQuestionAnswersResponse,
+    GetQuestionAnswersError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/questions/{questionId}/answers",
+      operationId: "getQuestionAnswers",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetQuestionAnswers({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type CreateAnswerPathParams = {
+  questionId: number;
+};
+
+export type CreateAnswerError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type CreateAnswerVariables = {
+  body: Schemas.NewAnswer;
+  pathParams: CreateAnswerPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchCreateAnswer = (
+  variables: CreateAnswerVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.AnswerDetails,
+    CreateAnswerError,
+    Schemas.NewAnswer,
+    {},
+    {},
+    CreateAnswerPathParams
+  >({
+    url: "/questions/{questionId}/answers",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useCreateAnswer = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.AnswerDetails,
+      CreateAnswerError,
+      CreateAnswerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    Schemas.AnswerDetails,
+    CreateAnswerError,
+    CreateAnswerVariables
+  >({
+    mutationFn: (variables: CreateAnswerVariables) =>
+      fetchCreateAnswer({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type UpdateAnswerPathParams = {
+  answerId: number;
+};
+
+export type UpdateAnswerError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type UpdateAnswerVariables = {
+  body?: Schemas.UpdateAnswer;
+  pathParams: UpdateAnswerPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchUpdateAnswer = (
+  variables: UpdateAnswerVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.AnswerDetails,
+    UpdateAnswerError,
+    Schemas.UpdateAnswer,
+    {},
+    {},
+    UpdateAnswerPathParams
+  >({ url: "/answers/{answerId}", method: "put", ...variables, signal });
+
+export const useUpdateAnswer = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.AnswerDetails,
+      UpdateAnswerError,
+      UpdateAnswerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    Schemas.AnswerDetails,
+    UpdateAnswerError,
+    UpdateAnswerVariables
+  >({
+    mutationFn: (variables: UpdateAnswerVariables) =>
+      fetchUpdateAnswer({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type DeleteAnswerPathParams = {
+  answerId: number;
+};
+
+export type DeleteAnswerError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type DeleteAnswerVariables = {
+  pathParams: DeleteAnswerPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchDeleteAnswer = (
+  variables: DeleteAnswerVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    DeleteAnswerError,
+    undefined,
+    {},
+    {},
+    DeleteAnswerPathParams
+  >({ url: "/answers/{answerId}", method: "delete", ...variables, signal });
+
+export const useDeleteAnswer = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      DeleteAnswerError,
+      DeleteAnswerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    DeleteAnswerError,
+    DeleteAnswerVariables
+  >({
+    mutationFn: (variables: DeleteAnswerVariables) =>
+      fetchDeleteAnswer({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type RateAnswerPathParams = {
+  answerId: number;
+};
+
+export type RateAnswerError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type RateAnswerRequestBody = {
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  rating: number;
+};
+
+export type RateAnswerVariables = {
+  body: RateAnswerRequestBody;
+  pathParams: RateAnswerPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchRateAnswer = (
+  variables: RateAnswerVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    RateAnswerError,
+    RateAnswerRequestBody,
+    {},
+    {},
+    RateAnswerPathParams
+  >({ url: "/answers/{answerId}/rate", method: "post", ...variables, signal });
+
+export const useRateAnswer = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      RateAnswerError,
+      RateAnswerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    RateAnswerError,
+    RateAnswerVariables
+  >({
+    mutationFn: (variables: RateAnswerVariables) =>
+      fetchRateAnswer({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetTagDetailsPathParams = {
+  tagId: string;
+};
+
+export type GetTagDetailsError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetTagDetailsVariables = {
+  pathParams: GetTagDetailsPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetTagDetails = (
+  variables: GetTagDetailsVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.TagDetails,
+    GetTagDetailsError,
+    undefined,
+    {},
+    {},
+    GetTagDetailsPathParams
+  >({ url: "/tags/{tagId}", method: "get", ...variables, signal });
+
+export const useGetTagDetails = <TData = Schemas.TagDetails>(
+  variables: GetTagDetailsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.TagDetails, GetTagDetailsError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<Schemas.TagDetails, GetTagDetailsError, TData>({
+    queryKey: queryKeyFn({
+      path: "/tags/{tagId}",
+      operationId: "getTagDetails",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetTagDetails({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type FollowTagPathParams = {
+  tagId: string;
+};
+
+export type FollowTagError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type FollowTagVariables = {
+  pathParams: FollowTagPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchFollowTag = (
+  variables: FollowTagVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    FollowTagError,
+    undefined,
+    {},
+    {},
+    FollowTagPathParams
+  >({ url: "/tags/{tagId}/follow", method: "post", ...variables, signal });
+
+export const useFollowTag = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      FollowTagError,
+      FollowTagVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<undefined, FollowTagError, FollowTagVariables>({
+    mutationFn: (variables: FollowTagVariables) =>
+      fetchFollowTag({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type UnfollowTagPathParams = {
+  tagId: string;
+};
+
+export type UnfollowTagError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type UnfollowTagVariables = {
+  pathParams: UnfollowTagPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchUnfollowTag = (
+  variables: UnfollowTagVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    UnfollowTagError,
+    undefined,
+    {},
+    {},
+    UnfollowTagPathParams
+  >({ url: "/tags/{tagId}/follow", method: "delete", ...variables, signal });
+
+export const useUnfollowTag = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      UnfollowTagError,
+      UnfollowTagVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    UnfollowTagError,
+    UnfollowTagVariables
+  >({
+    mutationFn: (variables: UnfollowTagVariables) =>
+      fetchUnfollowTag({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetProfilePathParams = {
+  userId: number;
+};
+
+export type GetProfileError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Responses.NotFoundResponse;
+}>;
+
+export type GetProfileVariables = {
+  pathParams: GetProfilePathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetProfile = (
+  variables: GetProfileVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.Profile,
+    GetProfileError,
+    undefined,
+    {},
+    {},
+    GetProfilePathParams
+  >({ url: "/profiles/{userId}", method: "get", ...variables, signal });
+
+export const useGetProfile = <TData = Schemas.Profile>(
+  variables: GetProfileVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.Profile, GetProfileError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<Schemas.Profile, GetProfileError, TData>({
+    queryKey: queryKeyFn({
+      path: "/profiles/{userId}",
+      operationId: "getProfile",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetProfile({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type UpdateProfilePathParams = {
+  userId: number;
+};
+
+export type UpdateProfileError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type UpdateProfileVariables = {
+  body?: Schemas.UpdateProfile;
+  pathParams: UpdateProfilePathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchUpdateProfile = (
+  variables: UpdateProfileVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.Profile,
+    UpdateProfileError,
+    Schemas.UpdateProfile,
+    {},
+    {},
+    UpdateProfilePathParams
+  >({ url: "/profiles/{userId}", method: "put", ...variables, signal });
+
+export const useUpdateProfile = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.Profile,
+      UpdateProfileError,
+      UpdateProfileVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    Schemas.Profile,
+    UpdateProfileError,
+    UpdateProfileVariables
+  >({
+    mutationFn: (variables: UpdateProfileVariables) =>
+      fetchUpdateProfile({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type SearchQuestionsQueryParams = {
+  /**
+   * Search query
+   */
+  q: string;
+  /**
+   * Comma-separated list of tag IDs
+   */
+  tags?: string;
+  /**
+   * Page number
+   *
+   * @default 1
+   */
+  page?: number;
+  /**
+   * Number of items per page
+   *
+   * @default 20
+   */
+  pageSize?: number;
+};
+
+export type SearchQuestionsError = Fetcher.ErrorWrapper<undefined>;
+
+export type SearchQuestionsResponse = {
+  items?: Schemas.QuestionSummary[];
+  totalItems?: number;
+  currentPage?: number;
+  totalPages?: number;
+};
+
+export type SearchQuestionsVariables = {
+  queryParams: SearchQuestionsQueryParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchSearchQuestions = (
+  variables: SearchQuestionsVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    SearchQuestionsResponse,
+    SearchQuestionsError,
+    undefined,
+    {},
+    SearchQuestionsQueryParams,
+    {}
+  >({ url: "/search/questions", method: "get", ...variables, signal });
+
+export const useSearchQuestions = <TData = SearchQuestionsResponse>(
+  variables: SearchQuestionsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      SearchQuestionsResponse,
+      SearchQuestionsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<
+    SearchQuestionsResponse,
+    SearchQuestionsError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/search/questions",
+      operationId: "searchQuestions",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchSearchQuestions({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type SearchUsersQueryParams = {
+  /**
+   * Search query
+   */
+  q: string;
+  /**
+   * Page number
+   *
+   * @default 1
+   */
+  page?: number;
+  /**
+   * Number of items per page
+   *
+   * @default 20
+   */
+  pageSize?: number;
+};
+
+export type SearchUsersError = Fetcher.ErrorWrapper<undefined>;
+
+export type SearchUsersResponse = {
+  items?: Schemas.UserSummary[];
+  totalItems?: number;
+  currentPage?: number;
+  totalPages?: number;
+};
+
+export type SearchUsersVariables = {
+  queryParams: SearchUsersQueryParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchSearchUsers = (
+  variables: SearchUsersVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    SearchUsersResponse,
+    SearchUsersError,
+    undefined,
+    {},
+    SearchUsersQueryParams,
+    {}
+  >({ url: "/search/users", method: "get", ...variables, signal });
+
+export const useSearchUsers = <TData = SearchUsersResponse>(
+  variables: SearchUsersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<SearchUsersResponse, SearchUsersError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<SearchUsersResponse, SearchUsersError, TData>({
+    queryKey: queryKeyFn({
+      path: "/search/users",
+      operationId: "searchUsers",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchSearchUsers({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type SearchTagsQueryParams = {
+  /**
+   * Search query
+   */
+  q: string;
+  /**
+   * Page number
+   *
+   * @default 1
+   */
+  page?: number;
+  /**
+   * Number of items per page
+   *
+   * @default 20
+   */
+  pageSize?: number;
+};
+
+export type SearchTagsError = Fetcher.ErrorWrapper<undefined>;
+
+export type SearchTagsResponse = {
+  items?: Schemas.TagSummary[];
+  totalItems?: number;
+  currentPage?: number;
+  totalPages?: number;
+};
+
+export type SearchTagsVariables = {
+  queryParams: SearchTagsQueryParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchSearchTags = (
+  variables: SearchTagsVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    SearchTagsResponse,
+    SearchTagsError,
+    undefined,
+    {},
+    SearchTagsQueryParams,
+    {}
+  >({ url: "/search/tags", method: "get", ...variables, signal });
+
+export const useSearchTags = <TData = SearchTagsResponse>(
+  variables: SearchTagsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<SearchTagsResponse, SearchTagsError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<SearchTagsResponse, SearchTagsError, TData>({
+    queryKey: queryKeyFn({
+      path: "/search/tags",
+      operationId: "searchTags",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchSearchTags({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetUserFeedQueryParams = {
+  /**
+   * Feed type
+   */
+  type: "recent" | "topRated" | "recommended";
+  /**
+   * Page number
+   *
+   * @default 1
+   */
+  page?: number;
+  /**
+   * Number of items per page
+   *
+   * @default 20
+   */
+  pageSize?: number;
+};
+
+export type GetUserFeedError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Responses.UnauthorizedResponse;
+}>;
+
+export type GetUserFeedResponse = {
+  items?: Schemas.QuestionSummary[];
+  totalItems?: number;
+  currentPage?: number;
+  totalPages?: number;
+};
+
+export type GetUserFeedVariables = {
+  queryParams: GetUserFeedQueryParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetUserFeed = (
+  variables: GetUserFeedVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    GetUserFeedResponse,
+    GetUserFeedError,
+    undefined,
+    {},
+    GetUserFeedQueryParams,
+    {}
+  >({ url: "/feed", method: "get", ...variables, signal });
+
+export const useGetUserFeed = <TData = GetUserFeedResponse>(
+  variables: GetUserFeedVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<GetUserFeedResponse, GetUserFeedError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<GetUserFeedResponse, GetUserFeedError, TData>({
+    queryKey: queryKeyFn({
+      path: "/feed",
+      operationId: "getUserFeed",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetUserFeed({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type ExecuteCodeError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 429;
+      payload: Responses.TooManyRequestsResponse;
+    }
+>;
+
+export type ExecuteCodeVariables = {
+  body: Schemas.CodeExecution;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchExecuteCode = (
+  variables: ExecuteCodeVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    Schemas.ExecutionResult,
+    ExecuteCodeError,
+    Schemas.CodeExecution,
+    {},
+    {},
+    {}
+  >({ url: "/execute-code", method: "post", ...variables, signal });
+
+export const useExecuteCode = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.ExecutionResult,
+      ExecuteCodeError,
+      ExecuteCodeVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    Schemas.ExecutionResult,
+    ExecuteCodeError,
+    ExecuteCodeVariables
+  >({
+    mutationFn: (variables: ExecuteCodeVariables) =>
+      fetchExecuteCode({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
@@ -826,13 +1885,13 @@ export const useUnfollowUser = (
 export type QueryOperation =
   | {
       path: "/users/{userId}";
-      operationId: "getUserById";
-      variables: GetUserByIdVariables;
+      operationId: "getUserProfile";
+      variables: GetUserProfileVariables;
     }
   | {
-      path: "/users/me";
-      operationId: "getMe";
-      variables: GetMeVariables;
+      path: "/users/{userId}/followers";
+      operationId: "getUserFollowers";
+      variables: GetUserFollowersVariables;
     }
   | {
       path: "/users/{userId}/following";
@@ -840,7 +1899,42 @@ export type QueryOperation =
       variables: GetUserFollowingVariables;
     }
   | {
-      path: "/users/{userId}/followers";
-      operationId: "getUserFollowers";
-      variables: GetUserFollowersVariables;
+      path: "/questions/{questionId}";
+      operationId: "getQuestionDetails";
+      variables: GetQuestionDetailsVariables;
+    }
+  | {
+      path: "/questions/{questionId}/answers";
+      operationId: "getQuestionAnswers";
+      variables: GetQuestionAnswersVariables;
+    }
+  | {
+      path: "/tags/{tagId}";
+      operationId: "getTagDetails";
+      variables: GetTagDetailsVariables;
+    }
+  | {
+      path: "/profiles/{userId}";
+      operationId: "getProfile";
+      variables: GetProfileVariables;
+    }
+  | {
+      path: "/search/questions";
+      operationId: "searchQuestions";
+      variables: SearchQuestionsVariables;
+    }
+  | {
+      path: "/search/users";
+      operationId: "searchUsers";
+      variables: SearchUsersVariables;
+    }
+  | {
+      path: "/search/tags";
+      operationId: "searchTags";
+      variables: SearchTagsVariables;
+    }
+  | {
+      path: "/feed";
+      operationId: "getUserFeed";
+      variables: GetUserFeedVariables;
     };
