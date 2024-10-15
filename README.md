@@ -114,24 +114,24 @@ docker compose build
 
 ```bash
 # for prod
-docker tag bounswe2024group1-web:latest registry.digitalocean.com/semantic-browse/web:latest
-docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend:latest
+docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages/web:latest
+docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages/backend:latest
 
 # for staging
-docker tag bounswe2024group1-web:latest registry.digitalocean.com/semantic-browse/web-staging:latest
-docker tag bounswe2024group1-backend:latest registry.digitalocean.com/semantic-browse/backend-staging:latest
+docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages/web:staging
+docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages/backend:staging
 ```
 
 3. Push images to the registry.
 
 ```bash
 # for prod
-docker push registry.digitalocean.com/semantic-browse/web:latest
-docker push registry.digitalocean.com/semantic-browse/backend:latest
+docker push registry.digitalocean.com/programming-languages/web:latest
+docker push registry.digitalocean.com/programming-languages/backend:latest
 
 # for staging
-docker push registry.digitalocean.com/semantic-browse/web-staging:latest
-docker push registry.digitalocean.com/semantic-browse/backend-staging:latest
+docker push registry.digitalocean.com/programming-languages/web:staging
+docker push registry.digitalocean.com/programming-languages/backend:staging
 ```
 
 This will trigger a deployment on the DigitalOcean backend.
@@ -184,7 +184,7 @@ To setup a new registry for this application, follow the steps below:
 1. Create a new registry in the DigitalOcean dashboard.
 2. Make sure it has enough space. (At least 1-2GB needed for staging and prod)
 3. (IMPORTANT) Change the repository references to be the new registry in the app.yaml files.
-4. (IMPORTANT) When deploying, change the registry references in the commands with the new registry. Our registry is called `semantic-browse` so rename that in the commands.
+4. (IMPORTANT) When deploying, change the registry references in the commands with the new registry. Our registry is called `programming-languages` so rename that in the commands.
 
 #### DB Containers
 
@@ -193,7 +193,7 @@ We use a mysql:latest container deployed on a Droplet for our database. To set t
 Replace the variables with your secrets, make sure they're consistent with the declared environment variables in the app.yaml file.
 
 ```bash
-docker run -d --name semantic-browse-db --network host -e MYSQL_ROOT_PASSWORD=<root-password> -e MYSQL_DATABASE=semantic_browse -e MYSQL_USER=semantic_browse -e MYSQL_PASSWORD=<user-password> -v semantic-browse-db:/var/lib/mysql mysql:latest
+docker run -d --name programming-languages-db --network host -e MYSQL_ROOT_PASSWORD=<root-password> -e MYSQL_DATABASE=programminglanguages -e MYSQL_USER=semantic_browse -e MYSQL_PASSWORD=<user-password> -v programming-languages-db:/var/lib/mysql mysql:latest
 ```
 
 Expose this container to the internet using DigitalOcean's firewall rules.

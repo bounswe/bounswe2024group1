@@ -2,6 +2,8 @@ name: bounswe2024group1-451-dev
 
 services:
   s3mock:
+    profiles:
+      - dev
     extends:
       file: compose.yml
       service: s3mock

@@ -3,6 +3,8 @@ name: bounswe2024group1-451
 
 services:
   s3mock:
+    profiles:
+      - s3
     image: adobe/s3mock:latest
     environment:
       - retainFilesOnExit=true
@@ -46,8 +48,8 @@ services:
     depends_on:
       - db
   web:
-    platform: linux/amd64
     build: ./frontend
+    platform: linux/amd64
     volumes:
       # these binds are required to reverse proxy the backend through nginx
       # in prod, this is configured through digitalocean
