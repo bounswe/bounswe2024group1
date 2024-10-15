@@ -8,6 +8,11 @@ on:
       - dev.yml
       - ".github/workflows/backend_test.yml"
   pull_request:
+    paths:
+      - "backend/**"
+      - compose.yml
+      - dev.yml
+      - ".github/workflows/backend_test.yml"
     branches:
       - main
       - staging

@@ -15,10 +15,11 @@ jobs:
   test:
     name: Frontend Tests
     runs-on: ubuntu-latest
+    env:
+      working-directory: frontend
     defaults:
       run:
         working-directory: frontend
-
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +28,9 @@ jobs:
         with:
           node-version: "20.x"
           cache: 'yarn'
+
+      - name: Enable corepack
+        run: corepack enable
 
       - name: Install dependencies
         run: yarn install --immutable

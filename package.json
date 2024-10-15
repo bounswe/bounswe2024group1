@@ -4,11 +4,5 @@
     "npm": "run-commands-in-the-frontend-folder",
     "node": "run-commands-in-the-frontend-folder"
   },
-  "dependencies": {
-    "yarn": "^1.22.22"
-  },
-  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
-  "devDependencies": {
-    "vitest": "^1.6.0"
-  }
+  "packageManager": "yarn@4.5.0"
 }
