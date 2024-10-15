@@ -1,9 +1,7 @@
 name: Deploy Production
 
 on:
-  workflow_run:
-    workflows: ['Front-End CI', 'Back-End CI']
-    types: [completed]
+  push:
     branches:
         - 'feature/cont-deploy'
         - 'main'
