@@ -1,3 +1,4 @@
 cd frontend
+yarn install --immutable
 yarn test run
 yarn lint-staged
