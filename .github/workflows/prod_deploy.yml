@@ -3,9 +3,7 @@ name: Deploy Production
 on:
   push:
     branches:
-      - 'feature/cont-deploy'
       - 'main'
-
 
 jobs:
   deploy:
@@ -39,3 +37,9 @@ jobs:
         run: docker push registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7)
 
       # TODO: push to latest
+
+      - name: Push backend image
+        run: docker push registry.digitalocean.com/programming-languages/backend:latest
+
+      - name: Push web image
+        run: docker push registry.digitalocean.com/programming-languages/web:latest
