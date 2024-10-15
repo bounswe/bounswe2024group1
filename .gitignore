@@ -6,3 +6,5 @@
 personal_work/
 
 node_modules
+
+.yarn/install-state.gz
