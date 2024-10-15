@@ -18,7 +18,7 @@ jobs:
         with:
           token: ${{ secrets.DO_ACCESS_TOKEN }}
 
-      # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
+      # Build a Docker image of the application and tag the image with the $GITHUB_SHA.
       - name: Build backend image
         run: docker build -t registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7) ./backend
 
@@ -28,7 +28,7 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
 
-      # Push the Docker image to your registry.
+      # Push the Docker image to registry
 
       - name: Push backend image
         run: docker push registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7)
@@ -36,7 +36,15 @@ jobs:
       - name: Push web image
         run: docker push registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7)
 
-      # TODO: push to latest
+      # tag as latest
+
+      - name: Tag backend image
+        run: docker tag registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/programming-languages/backend:latest
+
+      - name: Tag web image
+        run: docker tag registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/programming-languages/web:latest
+
+      # Push the Docker image to registry
 
       - name: Push backend image
         run: docker push registry.digitalocean.com/programming-languages/backend:latest
