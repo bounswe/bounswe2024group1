@@ -1,0 +1,44 @@
+name: Deploy Production
+
+on:
+  workflow_run:
+    workflows: ['Front-End CI', 'Back-End CI']
+    types: [completed]
+    branches:
+        - 'feature/cont-deploy'
+        - 'main'
+
+
+jobs:
+  deploy:
+    if:  ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Install doctl.
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_ACCESS_TOKEN }}
+
+      # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
+      - name: Build backend image
+        run: docker build -t registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7) ./backend
+
+      - name: Build web image
+        run: docker build -t registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7) ./frontend
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 1200
+
+      # Push the Docker image to your registry.
+
+      - name: Push backend image
+        run: docker push registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7)
+
+      - name: Push web image
+        run: docker push registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7)
+
+      # TODO: push to latest
