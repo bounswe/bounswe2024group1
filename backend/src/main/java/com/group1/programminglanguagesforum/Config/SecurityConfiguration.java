@@ -1,5 +1,7 @@
 package com.group1.programminglanguagesforum.Config;
 
+import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,17 +15,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
     private final CorsConfigurationSource corsConfigurationSource ;
-    public SecurityConfiguration(CorsConfigurationSource corsConfigurationSource){
-        this.corsConfigurationSource = corsConfigurationSource;
-    }
-    // TODO : JWT Filter will be implemented and added here
+    private final JwtAuthenticationFilter JwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
@@ -39,7 +41,7 @@ public class SecurityConfiguration {
                 )
                 ).authenticationProvider(authenticationProvider())
                 ;
-        // TODO : jwt filter will be added before the UsernamePasswordAuthenticationFilter.class
+        httpSecurity.addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
 
 
@@ -48,13 +50,12 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     } // Password encoder
-    // TODO : UserDetailsService will be implemented and imported here
     @Bean
     public AuthenticationProvider authenticationProvider() { // Authentication provider
         DaoAuthenticationProvider authProvider =
                 new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(username -> null);
+        authProvider.setUserDetailsService(customUserDetailsService);
         return authProvider;
     }
 
