@@ -1,7 +1,6 @@
 package com.group1.programminglanguagesforum.Config;
 
 import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +56,6 @@ public class SecurityConfiguration {
                 new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
         authProvider.setUserDetailsService(customUserDetailsService);
-        authProvider.setUserDetailsService(username -> null);
         return authProvider;
     }
 
