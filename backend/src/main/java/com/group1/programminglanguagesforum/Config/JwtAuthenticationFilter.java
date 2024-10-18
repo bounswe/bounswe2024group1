@@ -31,12 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtAuthenticationService;
     private final CustomUserDetailsService customUserDetailsService;
     private final ObjectMapper objectMapper;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
-    ) throws ServletException, IOException{
+    ) throws ServletException, IOException {
         try {
             final String authorizationHeader = request.getHeader("Authorization");
             final String jwt;
