@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private String email;
 
     private String password;
-    private String Bio;
+    private String country;
 
     @ManyToMany
     @JoinTable(
@@ -38,8 +38,9 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_id")
     )
+    @Builder.Default
     private Set<User> followers = new HashSet<>();
-
+    @Builder.Default
     @ManyToMany(mappedBy = "followers")
     private Set<User> following = new HashSet<>();
 
