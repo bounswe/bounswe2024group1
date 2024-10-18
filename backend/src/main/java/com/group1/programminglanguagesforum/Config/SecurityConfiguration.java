@@ -1,5 +1,6 @@
 package com.group1.programminglanguagesforum.Config;
 
+import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ public class SecurityConfiguration {
     private final CorsConfigurationSource corsConfigurationSource ;
     private final JwtAuthenticationFilter JwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
+    private static final String API_BASE = "/api/v1";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -33,6 +35,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         req->req.requestMatchers("GET","/users/me").authenticated()
                                 .requestMatchers("GET","/**").permitAll()
+                                .requestMatchers("POST",API_BASE+ EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()
+                                .requestMatchers("POST",API_BASE+ EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
+                                .requestMatchers("POST","/api/v1/auth/signin").permitAll()
                                 .requestMatchers("POST,PUT,DELETE").authenticated()
                                 .anyRequest().authenticated()
                 ).sessionManagement(

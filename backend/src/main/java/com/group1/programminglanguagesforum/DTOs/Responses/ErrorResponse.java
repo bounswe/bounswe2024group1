@@ -1,11 +1,14 @@
 package com.group1.programminglanguagesforum.DTOs.Responses;
+
 import lombok.*;
 
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SigninResponse {
-    private String token;
+@Setter
+@Getter
+public class ErrorResponse {
+    private String errorMessage;
+    private String stackTrace;
+
 }
