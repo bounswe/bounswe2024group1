@@ -1,6 +1,8 @@
 package com.group1.programminglanguagesforum.Config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
+import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
 import com.group1.programminglanguagesforum.Services.JwtService;
@@ -21,8 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
@@ -41,16 +42,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String authorizationHeader = request.getHeader("Authorization");
             final String jwt;
-            final String userEmail;
+            final String username;
             if (StringUtils.isEmpty(authorizationHeader) || !org.springframework.util.StringUtils.startsWithIgnoreCase(authorizationHeader, "Bearer ")) {
                 logger.info("No JWT token found in request headers");
+                System.out.println("Request: " + request.getMethod() + " " + request.getRequestURI());
                 filterChain.doFilter(request, response);
+                System.out.println("Response Status: " + response.getStatus());
                 return;
             }
             jwt = authorizationHeader.substring(7);
-            userEmail = jwtAuthenticationService.extractEmail(jwt);
-            if (StringUtils.isNotEmpty(userEmail)) {
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+            username = jwtAuthenticationService.extractUsername(jwt);
+            if (StringUtils.isNotEmpty(username)) {
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
                 // Authenticate the user if the token is valid
                 if (jwtAuthenticationService.isTokenValid(jwt, userDetails)) {
@@ -72,12 +75,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         } catch (ExpiredJwtException e) {
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-            responseData.put("message", "Token has expired");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            GenericApiResponse<Void> genericApiResponse = GenericApiResponse.<Void>builder()
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .message("Token has expired")
+                    .error(
+                            ErrorResponse.builder()
+                                    .errorMessage("Token has expired")
+                                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                                    .build()
+                    )
+                    .build();
+
             response.setContentType("application/json");
-            response.getWriter().write(objectMapper.writeValueAsString(responseData));
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(objectMapper.writeValueAsString(genericApiResponse));
+            return;
+        }
+        catch (Exception e){
+            GenericApiResponse<Void> genericApiResponse = GenericApiResponse.<Void>builder()
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .message("Invalid token")
+                    .error(
+                            ErrorResponse.builder()
+                                    .errorMessage("Invalid token")
+                                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                                    .build()
+                    )
+                    .build();
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(objectMapper.writeValueAsString(genericApiResponse));
             return;
         }
         filterChain.doFilter(request, response);
