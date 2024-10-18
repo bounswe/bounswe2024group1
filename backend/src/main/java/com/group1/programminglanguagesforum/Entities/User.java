@@ -2,6 +2,7 @@ package com.group1.programminglanguagesforum.Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,10 +24,12 @@ public class User implements UserDetails {
     private Long id;
     private String firstName;
     @Column(unique = true)
+    @NonNull
     private String username;
 
     private String lastName;
     @Column(unique = true)
+    @NonNull
     private String email;
 
     private String password;

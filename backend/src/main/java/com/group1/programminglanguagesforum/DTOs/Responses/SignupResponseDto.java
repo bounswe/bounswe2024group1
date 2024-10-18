@@ -6,6 +6,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignupResponse {
+public class SignupResponseDto {
     private String token;
 }
