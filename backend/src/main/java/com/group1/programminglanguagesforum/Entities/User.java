@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Table(name="USERS")
+@Table(name = "USERS")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +31,13 @@ public class User implements UserDetails {
     @Column(unique = true)
     @NonNull
     private String email;
+    @Builder.Default
+    private String bio = "";
 
     private String password;
     private String country;
+    @Builder.Default
+    private Long answerCount = 0L;
 
     @ManyToMany
     @JoinTable(
@@ -48,10 +52,13 @@ public class User implements UserDetails {
     private Set<User> following = new HashSet<>();
 
     @Builder.Default
-    private int followerCount = 0;
+    private int followersCount = 0;
 
     @Builder.Default
     private int followingCount = 0;
+    @Builder.Default
+    private int reputationPoints=0;
+
     @Override
     public int hashCode() {
         return Objects.hash(id);  // Use only the ID for hashCode

@@ -1,6 +1,5 @@
 package com.group1.programminglanguagesforum.Services;
 
-import com.group1.programminglanguagesforum.Entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,8 +28,6 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("email", ((User) userDetails).getEmail());
-
         return generateToken(extraClaims, userDetails);
     }
 
@@ -60,7 +57,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(
-                        new Date(System.currentTimeMillis() + 1000 * 60 * 2)
+                        new Date(System.currentTimeMillis() + 1000 * 60*2)
                 )
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
