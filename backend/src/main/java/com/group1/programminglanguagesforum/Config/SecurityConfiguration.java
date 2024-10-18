@@ -18,43 +18,46 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final CorsConfigurationSource corsConfigurationSource ;
+    private final CorsConfigurationSource corsConfigurationSource;
     private final JwtAuthenticationFilter JwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
     private static final String API_BASE = "/api/v1";
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .cors(cors->cors.configurationSource(corsConfigurationSource))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(
-                        req->req.requestMatchers("GET","/users/me").authenticated()
-                                .requestMatchers("GET","/**").permitAll()
-                                .requestMatchers("POST",API_BASE+ EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()
-                                .requestMatchers("POST",API_BASE+ EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
-                                .requestMatchers("POST","/api/v1/auth/signin").permitAll()
+                        req -> req.requestMatchers("GET", "/users/me").authenticated()
+                                .requestMatchers("GET", "/**").permitAll()
+                                .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()
+                                .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
+                                .requestMatchers("POST", "/api/v1/auth/signin").permitAll()
                                 .requestMatchers("POST,PUT,DELETE").authenticated()
                                 .anyRequest().authenticated()
                 ).sessionManagement(
-                session->session.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS
-                )
+                        session -> session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
                 ).authenticationProvider(authenticationProvider())
-                ;
+        ;
         httpSecurity.addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
 
 
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     } // Password encoder
+
     @Bean
     public AuthenticationProvider authenticationProvider() { // Authentication provider
         DaoAuthenticationProvider authProvider =
