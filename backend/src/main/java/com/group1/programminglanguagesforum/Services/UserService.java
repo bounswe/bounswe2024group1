@@ -43,4 +43,18 @@ public class UserService {
         userToFollow.setFollowersCount(userToFollow.getFollowersCount() + 1);
         return userRepository.save(userToFollow);
     }
+    @Transactional
+    public User unfollowUser(User user, Long id) throws UserNotFoundException {
+        Optional<User> userToUnfollowOptional = userRepository.findById(id);
+        if (userToUnfollowOptional.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+        User userToUnfollow = userToUnfollowOptional.get();
+        user.getFollowing().remove(userToUnfollow);
+        user.setFollowingCount(user.getFollowingCount() - 1);
+        userRepository.save(user);
+        userToUnfollow.getFollowers().remove(user);
+        userToUnfollow.setFollowersCount(userToUnfollow.getFollowersCount() - 1);
+        return userRepository.save(userToUnfollow);
+    }
 }

@@ -187,5 +187,46 @@ public class UserController extends BaseController {
 
     }
 
+    @DeleteMapping(value = EndpointConstants.UserEndpoints.USER_UNFOLLOW)
+    public ResponseEntity<GenericApiResponse<UserProfileResponseDto>> unfollowUser(@PathVariable(name = "id")Long id){
+        try{
+            User user = userContextService.getCurrentUser();
+            User unfollowedUser = userService.unfollowUser(user, id);
+            UserProfileResponseDto updatedUserProfileResponseDto = modelMapper.map(unfollowedUser, UserProfileResponseDto.class);
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
+                    updatedUserProfileResponseDto.getClass(),
+                    "User unfollowed successfully",
+                    HttpStatus.OK.value(),
+                    updatedUserProfileResponseDto
+
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        } catch (UnauthorizedAccessException  e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.UNAUTHORIZED.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        } catch (UserNotFoundException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
+    }
+
 }
 
