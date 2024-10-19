@@ -1,4 +1,7 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/e9dc1866d524058e8bbc582fe09b87d9e7b6e879/schemas/v3.1/schema.yaml
+
 openapi: 3.1.0
+
 info:
   title: Programming Languages Forum
   description: |-
@@ -42,16 +45,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRegistration'
+              $ref: "#/components/schemas/UserRegistration"
       responses:
-        '201':
+        "201":
           description: User successfully registered
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthToken'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
+                $ref: "#/components/schemas/AuthToken"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /auth/login:
     post:
@@ -64,16 +67,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserLogin'
+              $ref: "#/components/schemas/UserLogin"
       responses:
-        '200':
+        "200":
           description: Successful login
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthToken'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
+                $ref: "#/components/schemas/AuthToken"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
 
   /auth/logout:
     post:
@@ -84,10 +87,10 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful logout
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
 
   /auth/verify-email:
     post:
@@ -107,10 +110,10 @@ paths:
                 token:
                   type: string
       responses:
-        '200':
+        "200":
           description: Email successfully verified
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /auth/reset-password:
     post:
@@ -131,10 +134,10 @@ paths:
                   type: string
                   format: email
       responses:
-        '200':
+        "200":
           description: Password reset email sent
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /users/{userId}:
     get:
@@ -149,14 +152,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProfile'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/UserProfile"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     put:
       tags:
@@ -176,20 +179,43 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserProfileUpdate'
+              $ref: "#/components/schemas/UserProfileUpdate"
       responses:
-        '200':
+        "200":
           description: Profile successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProfile'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+
+  /users/me:
+    get:
+      operationId: getMe
+      tags:
+        - user
+      summary: Get own profile
+      security:
+        - auth_jwt: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
 
   /users/{userId}/follow:
     post:
@@ -206,12 +232,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successfully followed the user
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     delete:
       tags:
@@ -227,12 +253,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successfully unfollowed the user
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /users/{userId}/followers:
     get:
@@ -247,16 +273,16 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserSummary'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                  $ref: "#/components/schemas/UserSummary"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /users/{userId}/following:
     get:
@@ -271,16 +297,16 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserSummary'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                  $ref: "#/components/schemas/UserSummary"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /questions:
     post:
@@ -295,18 +321,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewQuestion'
+              $ref: "#/components/schemas/NewQuestion"
       responses:
-        '201':
+        "201":
           description: Question successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuestionDetails'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
+                $ref: "#/components/schemas/QuestionDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
 
   /questions/{questionId}:
     get:
@@ -321,14 +347,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuestionDetails'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/QuestionDetails"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     put:
       tags:
@@ -348,22 +374,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateQuestion'
+              $ref: "#/components/schemas/UpdateQuestion"
       responses:
-        '200':
+        "200":
           description: Question successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuestionDetails'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/QuestionDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     delete:
       tags:
@@ -379,14 +405,14 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Question successfully deleted
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /questions/{questionId}/rate:
     post:
@@ -416,14 +442,14 @@ paths:
                   minimum: -1
                   maximum: 1
       responses:
-        '200':
+        "200":
           description: Question successfully rated
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /questions/{questionId}/bookmark:
     post:
@@ -440,12 +466,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Question successfully bookmarked
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     delete:
       tags:
@@ -461,12 +487,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Bookmark successfully removed
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /questions/{questionId}/answers:
     get:
@@ -481,16 +507,16 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AnswerDetails'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                  $ref: "#/components/schemas/AnswerDetails"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     post:
       tags:
@@ -510,20 +536,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewAnswer'
+              $ref: "#/components/schemas/NewAnswer"
       responses:
-        '201':
+        "201":
           description: Answer successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AnswerDetails'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/AnswerDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /answers/{answerId}:
     put:
@@ -544,22 +570,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateAnswer'
+              $ref: "#/components/schemas/UpdateAnswer"
       responses:
-        '200':
+        "200":
           description: Answer successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AnswerDetails'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/AnswerDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     delete:
       tags:
@@ -575,14 +601,14 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Answer successfully deleted
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /answers/{answerId}/rate:
     post:
@@ -612,14 +638,14 @@ paths:
                   minimum: -1
                   maximum: 1
       responses:
-        '200':
+        "200":
           description: Answer successfully rated
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /tags/{tagId}:
     get:
@@ -634,14 +660,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TagDetails'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/TagDetails"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /tags/{tagId}/follow:
     post:
@@ -658,12 +684,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successfully followed the tag
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     delete:
       tags:
@@ -679,12 +705,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successfully unfollowed the tag
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /profiles/{userId}:
     get:
@@ -699,14 +725,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Profile'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/Profile"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
     put:
       tags:
@@ -726,22 +752,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateProfile'
+              $ref: "#/components/schemas/UpdateProfile"
       responses:
-        '200':
+        "200":
           description: Profile successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Profile'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+                $ref: "#/components/schemas/Profile"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /search/questions:
     get:
@@ -774,7 +800,7 @@ paths:
             type: integer
             default: 20
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -784,7 +810,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/QuestionSummary'
+                      $ref: "#/components/schemas/QuestionSummary"
                   totalItems:
                     type: integer
                   currentPage:
@@ -818,7 +844,7 @@ paths:
             type: integer
             default: 20
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -828,7 +854,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/UserSummary'
+                      $ref: "#/components/schemas/UserSummary"
                   totalItems:
                     type: integer
                   currentPage:
@@ -862,7 +888,7 @@ paths:
             type: integer
             default: 20
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -872,7 +898,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TagSummary'
+                      $ref: "#/components/schemas/TagSummary"
                   totalItems:
                     type: integer
                   currentPage:
@@ -909,7 +935,7 @@ paths:
             type: integer
             default: 20
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -919,15 +945,15 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/QuestionSummary'
+                      $ref: "#/components/schemas/QuestionSummary"
                   totalItems:
                     type: integer
                   currentPage:
                     type: integer
                   totalPages:
                     type: integer
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
   /execute-code:
     post:
       tags:
@@ -941,20 +967,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CodeExecution'
+              $ref: "#/components/schemas/CodeExecution"
       responses:
-        '200':
+        "200":
           description: Code successfully executed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExecutionResult'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '429':
-          $ref: '#/components/responses/TooManyRequestsResponse'
+                $ref: "#/components/schemas/ExecutionResult"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
 
 components:
   securitySchemes:
@@ -1028,6 +1054,8 @@ components:
           type: integer
         followingCount:
           type: integer
+        selfFollowing:
+          type: boolean
         questionCount:
           type: integer
         answerCount:
@@ -1043,6 +1071,12 @@ components:
 
     UserSummary:
       type: object
+      required:
+        - id
+        - username
+        - reputationPoints
+        - profilePicture
+        - name
       properties:
         id:
           type: integer
@@ -1050,6 +1084,11 @@ components:
           type: string
         reputationPoints:
           type: integer
+        profilePicture:
+          type: string
+          format: url
+        name:
+          type: string
 
     NewQuestion:
       type: object
@@ -1081,6 +1120,16 @@ components:
 
     QuestionDetails:
       type: object
+      required:
+        - id
+        - title
+        - content
+        - author
+        - createdAt
+        - updatedAt
+        - tags
+        - rating
+        - answerCount
       properties:
         id:
           type: integer
@@ -1089,7 +1138,7 @@ components:
         content:
           type: string
         author:
-          $ref: '#/components/schemas/UserSummary'
+          $ref: "#/components/schemas/UserSummary"
         createdAt:
           type: string
           format: date-time
@@ -1099,7 +1148,7 @@ components:
         tags:
           type: array
           items:
-            $ref: '#/components/schemas/TagSummary'
+            $ref: "#/components/schemas/TagSummary"
         rating:
           type: integer
         answerCount:
@@ -1117,14 +1166,14 @@ components:
         title:
           type: string
         author:
-          $ref: '#/components/schemas/UserSummary'
+          $ref: "#/components/schemas/UserSummary"
         createdAt:
           type: string
           format: date-time
         tags:
           type: array
           items:
-            $ref: '#/components/schemas/TagSummary'
+            $ref: "#/components/schemas/TagSummary"
         rating:
           type: integer
         answerCount:
@@ -1154,7 +1203,7 @@ components:
         content:
           type: string
         author:
-          $ref: '#/components/schemas/UserSummary'
+          $ref: "#/components/schemas/UserSummary"
         createdAt:
           type: string
           format: date-time
@@ -1203,6 +1252,8 @@ components:
           type: integer
         followingCount:
           type: integer
+        selfFollowing:
+          type: boolean
         questionCount:
           type: integer
         answerCount:
@@ -1210,7 +1261,7 @@ components:
         tags:
           type: array
           items:
-            $ref: '#/components/schemas/TagSummary'
+            $ref: "#/components/schemas/TagSummary"
 
     UpdateProfile:
       type: object
@@ -1254,36 +1305,6 @@ components:
           type: string
           enum: [success, error, timeout]
           description: The status of the code execution
-
-  responses:
-    BadRequestResponse:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
-    UnauthorizedResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
-    ForbiddenResponse:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
-    NotFoundResponse:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
     Error:
       type: object
       description: Error
@@ -1299,9 +1320,81 @@ components:
                 type: string
               message:
                 type: string
+
+    SuccessResponseObject:
+      description: OK
+      type: object
+      required: ["status", "data"]
+      properties:
+        status:
+          type: integer
+          description:
+            Internal status code of the response. An HTTP 200 response with an internal
+            500 status code is an error response. Prioritize the inner status over the HTTP
+            status.
+          enum:
+            - 200
+            - 201
+          examples: [200, 201]
+        data:
+          oneOf:
+            - type: object
+            - type: array
+
+    ErrorResponseObject:
+      description: Response with errors
+      type: object
+      required: ["status", "errors"]
+      properties:
+        status:
+          enum:
+            - 400
+            - 401
+            - 403
+            - 404
+            - 409
+            - 500
+          description:
+            Internal status code of the response. An HTTP 200 response with an internal
+            500 status code is an error response. Prioritize the inner status over the HTTP
+            status.
+          examples: [400, 401, 403, 404, 409, 500]
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Error"
+  responses:
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
     TooManyRequestsResponse:
       description: Too Many Requests
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
