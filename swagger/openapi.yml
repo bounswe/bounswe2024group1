@@ -1254,7 +1254,22 @@ components:
           type: string
           enum: [success, error, timeout]
           description: The status of the code execution
-
+    Error:
+      type: object
+      description: Error
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+                
   responses:
     BadRequestResponse:
       description: Bad Request
@@ -1284,21 +1299,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
 
-    Error:
-      type: object
-      description: Error
-      properties:
-        message:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              field:
-                type: string
-              message:
-                type: string
+
     TooManyRequestsResponse:
       description: Too Many Requests
       content:
