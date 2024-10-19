@@ -19,7 +19,12 @@ import { Link, useParams } from "react-router-dom";
 export default function QuestionPage() {
   const { questionId } = useParams();
 
-  const { data, isLoading, error, refetch } = useGetQuestionDetails(
+  const {
+    data: result,
+    isLoading,
+    error,
+    refetch,
+  } = useGetQuestionDetails(
     {
       pathParams: { questionId: questionId ? Number(questionId) : -1 },
     },
@@ -27,6 +32,7 @@ export default function QuestionPage() {
       enabled: !!questionId,
     },
   );
+  const data = result?.data;
 
   const { mutateAsync: deleteQuestion } = useDeleteQuestionById();
   const { selfProfile, token } = useAuthStore();

@@ -5,12 +5,12 @@
  */
 import type * as Schemas from "./programmingForumSchemas";
 
-export type BadRequestResponse = Schemas.Error;
+export type BadRequestResponse = Schemas.ErrorResponseObject;
 
-export type UnauthorizedResponse = Schemas.Error;
+export type UnauthorizedResponse = Schemas.ErrorResponseObject;
 
-export type ForbiddenResponse = Schemas.Error;
+export type ForbiddenResponse = Schemas.ErrorResponseObject;
 
-export type NotFoundResponse = Schemas.Error;
+export type NotFoundResponse = Schemas.ErrorResponseObject;
 
-export type TooManyRequestsResponse = Schemas.Error;
+export type TooManyRequestsResponse = Schemas.ErrorResponseObject;

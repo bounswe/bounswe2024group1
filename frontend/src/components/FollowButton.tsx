@@ -47,7 +47,7 @@ export default function FollowButton({
     },
   });
 
-  const following = optimisticFollowing ?? data?.selfFollowing;
+  const following = optimisticFollowing ?? data?.data?.selfFollowing;
 
   return (
     <Button

@@ -195,11 +195,8 @@ export type ExecutionResult = {
  * Error
  */
 export type Error = {
-  message?: string;
-  errors?: {
-    field?: string;
-    message?: string;
-  }[];
+  errorMessage?: string;
+  stackTrace?: string;
 };
 
 /**
@@ -231,5 +228,5 @@ export type ErrorResponseObject = {
    * @example 500
    */
   status: 400 | 401 | 403 | 404 | 409 | 500;
-  errors: Error[];
+  error?: Error;
 };
