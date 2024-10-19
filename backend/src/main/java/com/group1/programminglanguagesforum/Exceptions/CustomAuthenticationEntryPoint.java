@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Exceptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
+import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,16 +19,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         ObjectMapper objectMapper = new ObjectMapper();
-        GenericApiResponse<Void> genericApiResponse = GenericApiResponse.<Void>builder()
-                .status(HttpServletResponse.SC_UNAUTHORIZED)
-                .message("Unauthorized access. Please log in.")
-                .error(
-                        ErrorResponse.builder()
-                                .errorMessage("Unauthorized access. Please log in.")
-                                .stackTrace(authException.getMessage())
-                                .build()
-                )
-                .build();
+        GenericApiResponse<Void> genericApiResponse =
+        ApiResponseBuilder.buildErrorResponse(Void.class, "Unauthorized access. Please log in.", HttpServletResponse.SC_UNAUTHORIZED, ErrorResponse.builder()
+                .errorMessage("Unauthorized access. Please log in.")
+                .stackTrace(authException.getMessage())
+                .build());
 
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
