@@ -11,7 +11,7 @@ export default function FollowButton({
 }: {
   profile: { id?: number; selfFollowing?: boolean };
 }) {
-  const { isLoading, error, refetch } = useGetUserProfile(
+  const { isLoading, data, error, refetch } = useGetUserProfile(
     {
       pathParams: {
         userId: profile.id!,
@@ -47,7 +47,7 @@ export default function FollowButton({
     },
   });
 
-  const following = optimisticFollowing ?? profile.selfFollowing;
+  const following = optimisticFollowing ?? data?.selfFollowing;
 
   return (
     <Button

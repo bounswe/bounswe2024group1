@@ -1,29 +1,29 @@
-import { Button } from "@/components/ui/button";
-import LinkIcon from "@/assets/Icon/General/Link.svg?react";
-import RatingInput from "@/components/RatingInput";
-import Serving from "@/assets/Icon/General/Serving.svg?react";
-import Clock from "@/assets/Icon/General/Clock.svg?react";
 import Allergies from "@/assets/Icon/General/Allergies.svg?react";
+import Clock from "@/assets/Icon/General/Clock.svg?react";
 import Food from "@/assets/Icon/General/Food.svg?react";
+import LinkIcon from "@/assets/Icon/General/Link.svg?react";
+import Serving from "@/assets/Icon/General/Serving.svg?react";
+import RatingInput from "@/components/RatingInput";
+import { Button } from "@/components/ui/button";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
-import { Flag, StarIcon, Trash } from "lucide-react";
+import BookmarkButton from "@/components/BookmarkButton";
+import { Bookmarkers } from "@/components/Bookmarkers";
+import { AddComment } from "@/components/Comment";
+import { Comments } from "@/components/CommentSection";
+import ErrorAlert from "@/components/ErrorAlert";
+import FollowButton from "@/components/FollowButton";
+import { FullscreenLoading } from "@/components/FullscreenLoading";
+import { toast } from "@/components/ui/use-toast";
 import {
   useDeleteRecipeById,
   useGetRecipeById,
   useRateRecipe,
 } from "@/services/api/semanticBrowseComponents";
-import { Link, useParams } from "react-router-dom";
-import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { useState } from "react";
-import ErrorAlert from "@/components/ErrorAlert";
-import { Bookmarkers } from "@/components/Bookmarkers";
-import useAuthStore from "@/services/auth";
-import FollowButton from "@/components/FollowButton";
-import BookmarkButton from "@/components/BookmarkButton";
-import { toast } from "@/components/ui/use-toast";
-import { AddComment } from "@/components/Comment";
-import { Comments } from "@/components/CommentSection";
 import { UserSummary } from "@/services/api/semanticBrowseSchemas";
+import useAuthStore from "@/services/auth";
+import { Flag, StarIcon, Trash } from "lucide-react";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 export default function RecipePage() {
   const { recipeId } = useParams();
@@ -43,7 +43,7 @@ export default function RecipePage() {
   const [optimisticRating, setOptimisticRating] = useState<number | null>(null);
 
   const { mutateAsync } = useRateRecipe({
-    onMutate: async (rating) => {
+    onMutate: async (rating: { body: { rating: number } }) => {
       setOptimisticRating(rating.body?.rating || 0);
     },
     onSuccess: () => {

@@ -35,6 +35,7 @@ export type UserProfile = {
   reputationPoints?: number;
   followersCount?: number;
   followingCount?: number;
+  selfFollowing?: boolean;
   questionCount?: number;
   answerCount?: number;
 };
@@ -45,9 +46,14 @@ export type UserProfileUpdate = {
 };
 
 export type UserSummary = {
-  id?: number;
-  username?: string;
-  reputationPoints?: number;
+  id: number;
+  username: string;
+  reputationPoints: number;
+  /**
+   * @format url
+   */
+  profilePicture: string;
+  name: string;
 };
 
 export type NewQuestion = {
@@ -63,21 +69,21 @@ export type UpdateQuestion = {
 };
 
 export type QuestionDetails = {
-  id?: number;
-  title?: string;
-  content?: string;
-  author?: UserSummary;
+  id: number;
+  title: string;
+  content: string;
+  author: UserSummary;
   /**
    * @format date-time
    */
-  createdAt?: string;
+  createdAt: string;
   /**
    * @format date-time
    */
-  updatedAt?: string;
-  tags?: TagSummary[];
-  rating?: number;
-  answerCount?: number;
+  updatedAt: string;
+  tags: TagSummary[];
+  rating: number;
+  answerCount: number;
   viewCount?: number;
   bookmarked?: boolean;
 };
@@ -140,6 +146,7 @@ export type Profile = {
   reputationPoints?: number;
   followersCount?: number;
   followingCount?: number;
+  selfFollowing?: boolean;
   questionCount?: number;
   answerCount?: number;
   tags?: TagSummary[];
@@ -193,4 +200,36 @@ export type Error = {
     field?: string;
     message?: string;
   }[];
+};
+
+/**
+ * OK
+ */
+export type SuccessResponseObject = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Record<string, any> | any[];
+};
+
+/**
+ * Response with errors
+ */
+export type ErrorResponseObject = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 400
+   * @example 401
+   * @example 403
+   * @example 404
+   * @example 409
+   * @example 500
+   */
+  status: 400 | 401 | 403 | 404 | 409 | 500;
+  errors: Error[];
 };

@@ -5,13 +5,13 @@
  */
 import * as reactQuery from "@tanstack/react-query";
 import {
-  useProgrammingForumContext,
   ProgrammingForumContext,
+  useProgrammingForumContext,
 } from "./programmingForumContext";
 import type * as Fetcher from "./programmingForumFetcher";
 import { programmingForumFetch } from "./programmingForumFetcher";
-import type * as Schemas from "./programmingForumSchemas";
 import type * as Responses from "./programmingForumResponses";
+import type * as Schemas from "./programmingForumSchemas";
 
 export type SignUpError = Fetcher.ErrorWrapper<{
   status: 400;
@@ -323,6 +323,54 @@ export const useUpdateUserProfile = (
     mutationFn: (variables: UpdateUserProfileVariables) =>
       fetchUpdateUserProfile({ ...fetcherOptions, ...variables }),
     ...options,
+  });
+};
+
+export type GetMeError = Fetcher.ErrorWrapper<{
+  status: 403;
+  payload: Responses.ForbiddenResponse;
+}>;
+
+export type GetMeResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.UserProfile;
+};
+
+export type GetMeVariables = ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetMe = (variables: GetMeVariables, signal?: AbortSignal) =>
+  programmingForumFetch<GetMeResponse, GetMeError, undefined, {}, {}, {}>({
+    url: "/users/me",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetMe = <TData = GetMeResponse>(
+  variables: GetMeVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<GetMeResponse, GetMeError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<GetMeResponse, GetMeError, TData>({
+    queryKey: queryKeyFn({
+      path: "/users/me",
+      operationId: "getMe",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetMe({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
   });
 };
 
@@ -1887,6 +1935,11 @@ export type QueryOperation =
       path: "/users/{userId}";
       operationId: "getUserProfile";
       variables: GetUserProfileVariables;
+    }
+  | {
+      path: "/users/me";
+      operationId: "getMe";
+      variables: GetMeVariables;
     }
   | {
       path: "/users/{userId}/followers";
