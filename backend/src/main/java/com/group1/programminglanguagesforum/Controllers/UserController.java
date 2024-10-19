@@ -144,4 +144,48 @@ public class UserController extends BaseController {
             return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
         }
     }
+    @PostMapping(value = EndpointConstants.UserEndpoints.USER_FOLLOW)
+    public ResponseEntity<GenericApiResponse<UserProfileResponseDto>> followUser(@PathVariable(name = "id")Long id){
+        try{
+            User user = userContextService.getCurrentUser();
+            User followedUser = userService.followUser(user, id);
+            UserProfileResponseDto updatedUserProfileResponseDto = modelMapper.map(followedUser, UserProfileResponseDto.class);
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
+                    updatedUserProfileResponseDto.getClass(),
+                    "User followed successfully",
+                    HttpStatus.OK.value(),
+                    updatedUserProfileResponseDto
+
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        } catch (UnauthorizedAccessException  e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.UNAUTHORIZED.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        } catch (UserNotFoundException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
+
+
+    }
+
 }
+

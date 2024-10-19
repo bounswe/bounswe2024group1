@@ -39,16 +39,14 @@ public class User implements UserDetails {
     @Builder.Default
     private Long answerCount = 0L;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "USER_FOLLOWERS",
-            joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "followed_id")
+            joinColumns = @JoinColumn(name = "followed_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    @Builder.Default
     private Set<User> followers = new HashSet<>();
-    @Builder.Default
-    @ManyToMany(mappedBy = "followers")
+    @ManyToMany(mappedBy = "followers", fetch = FetchType.EAGER)
     private Set<User> following = new HashSet<>();
 
     @Builder.Default
