@@ -5,18 +5,29 @@
  */
 import * as reactQuery from "@tanstack/react-query";
 import {
-  ProgrammingForumContext,
   useProgrammingForumContext,
+  ProgrammingForumContext,
 } from "./programmingForumContext";
 import type * as Fetcher from "./programmingForumFetcher";
 import { programmingForumFetch } from "./programmingForumFetcher";
-import type * as Responses from "./programmingForumResponses";
 import type * as Schemas from "./programmingForumSchemas";
+import type * as Responses from "./programmingForumResponses";
 
 export type SignUpError = Fetcher.ErrorWrapper<{
   status: 400;
   payload: Responses.BadRequestResponse;
 }>;
+
+export type SignUpResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.AuthToken;
+};
 
 export type SignUpVariables = {
   body: Schemas.UserRegistration;
@@ -24,7 +35,7 @@ export type SignUpVariables = {
 
 export const fetchSignUp = (variables: SignUpVariables, signal?: AbortSignal) =>
   programmingForumFetch<
-    Schemas.AuthToken,
+    SignUpResponse,
     SignUpError,
     Schemas.UserRegistration,
     {},
@@ -34,20 +45,12 @@ export const fetchSignUp = (variables: SignUpVariables, signal?: AbortSignal) =>
 
 export const useSignUp = (
   options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.AuthToken,
-      SignUpError,
-      SignUpVariables
-    >,
+    reactQuery.UseMutationOptions<SignUpResponse, SignUpError, SignUpVariables>,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<
-    Schemas.AuthToken,
-    SignUpError,
-    SignUpVariables
-  >({
+  return reactQuery.useMutation<SignUpResponse, SignUpError, SignUpVariables>({
     mutationFn: (variables: SignUpVariables) =>
       fetchSignUp({ ...fetcherOptions, ...variables }),
     ...options,
@@ -59,13 +62,24 @@ export type LoginError = Fetcher.ErrorWrapper<{
   payload: Responses.UnauthorizedResponse;
 }>;
 
+export type LoginResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.AuthToken;
+};
+
 export type LoginVariables = {
   body: Schemas.UserLogin;
 } & ProgrammingForumContext["fetcherOptions"];
 
 export const fetchLogin = (variables: LoginVariables, signal?: AbortSignal) =>
   programmingForumFetch<
-    Schemas.AuthToken,
+    LoginResponse,
     LoginError,
     Schemas.UserLogin,
     {},
@@ -75,16 +89,12 @@ export const fetchLogin = (variables: LoginVariables, signal?: AbortSignal) =>
 
 export const useLogin = (
   options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.AuthToken,
-      LoginError,
-      LoginVariables
-    >,
+    reactQuery.UseMutationOptions<LoginResponse, LoginError, LoginVariables>,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
-  return reactQuery.useMutation<Schemas.AuthToken, LoginError, LoginVariables>({
+  return reactQuery.useMutation<LoginResponse, LoginError, LoginVariables>({
     mutationFn: (variables: LoginVariables) =>
       fetchLogin({ ...fetcherOptions, ...variables }),
     ...options,
@@ -228,6 +238,17 @@ export type GetUserProfileError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
+export type GetUserProfileResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.UserProfile;
+};
+
 export type GetUserProfileVariables = {
   pathParams: GetUserProfilePathParams;
 } & ProgrammingForumContext["fetcherOptions"];
@@ -237,7 +258,7 @@ export const fetchGetUserProfile = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.UserProfile,
+    GetUserProfileResponse,
     GetUserProfileError,
     undefined,
     {},
@@ -245,16 +266,24 @@ export const fetchGetUserProfile = (
     GetUserProfilePathParams
   >({ url: "/users/{userId}", method: "get", ...variables, signal });
 
-export const useGetUserProfile = <TData = Schemas.UserProfile>(
+export const useGetUserProfile = <TData = GetUserProfileResponse>(
   variables: GetUserProfileVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<Schemas.UserProfile, GetUserProfileError, TData>,
+    reactQuery.UseQueryOptions<
+      GetUserProfileResponse,
+      GetUserProfileError,
+      TData
+    >,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
   const { fetcherOptions, queryOptions, queryKeyFn } =
     useProgrammingForumContext(options);
-  return reactQuery.useQuery<Schemas.UserProfile, GetUserProfileError, TData>({
+  return reactQuery.useQuery<
+    GetUserProfileResponse,
+    GetUserProfileError,
+    TData
+  >({
     queryKey: queryKeyFn({
       path: "/users/{userId}",
       operationId: "getUserProfile",
@@ -286,6 +315,17 @@ export type UpdateUserProfileError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type UpdateUserProfileResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.UserProfile;
+};
+
 export type UpdateUserProfileVariables = {
   body?: Schemas.UserProfileUpdate;
   pathParams: UpdateUserProfilePathParams;
@@ -296,7 +336,7 @@ export const fetchUpdateUserProfile = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.UserProfile,
+    UpdateUserProfileResponse,
     UpdateUserProfileError,
     Schemas.UserProfileUpdate,
     {},
@@ -307,7 +347,7 @@ export const fetchUpdateUserProfile = (
 export const useUpdateUserProfile = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.UserProfile,
+      UpdateUserProfileResponse,
       UpdateUserProfileError,
       UpdateUserProfileVariables
     >,
@@ -316,7 +356,7 @@ export const useUpdateUserProfile = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.UserProfile,
+    UpdateUserProfileResponse,
     UpdateUserProfileError,
     UpdateUserProfileVariables
   >({
@@ -491,7 +531,16 @@ export type GetUserFollowersError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
-export type GetUserFollowersResponse = Schemas.UserSummary[];
+export type GetUserFollowersResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Record<string, any> | Schemas.UserSummary[];
+};
 
 export type GetUserFollowersVariables = {
   pathParams: GetUserFollowersPathParams;
@@ -549,7 +598,16 @@ export type GetUserFollowingError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
-export type GetUserFollowingResponse = Schemas.UserSummary[];
+export type GetUserFollowingResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Record<string, any> | Schemas.UserSummary[];
+};
 
 export type GetUserFollowingVariables = {
   pathParams: GetUserFollowingPathParams;
@@ -609,6 +667,17 @@ export type CreateQuestionError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type CreateQuestionResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.QuestionDetails;
+};
+
 export type CreateQuestionVariables = {
   body: Schemas.NewQuestion;
 } & ProgrammingForumContext["fetcherOptions"];
@@ -618,7 +687,7 @@ export const fetchCreateQuestion = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.QuestionDetails,
+    CreateQuestionResponse,
     CreateQuestionError,
     Schemas.NewQuestion,
     {},
@@ -629,7 +698,7 @@ export const fetchCreateQuestion = (
 export const useCreateQuestion = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.QuestionDetails,
+      CreateQuestionResponse,
       CreateQuestionError,
       CreateQuestionVariables
     >,
@@ -638,7 +707,7 @@ export const useCreateQuestion = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.QuestionDetails,
+    CreateQuestionResponse,
     CreateQuestionError,
     CreateQuestionVariables
   >({
@@ -657,6 +726,17 @@ export type GetQuestionDetailsError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
+export type GetQuestionDetailsResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.QuestionDetails;
+};
+
 export type GetQuestionDetailsVariables = {
   pathParams: GetQuestionDetailsPathParams;
 } & ProgrammingForumContext["fetcherOptions"];
@@ -666,7 +746,7 @@ export const fetchGetQuestionDetails = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.QuestionDetails,
+    GetQuestionDetailsResponse,
     GetQuestionDetailsError,
     undefined,
     {},
@@ -674,11 +754,11 @@ export const fetchGetQuestionDetails = (
     GetQuestionDetailsPathParams
   >({ url: "/questions/{questionId}", method: "get", ...variables, signal });
 
-export const useGetQuestionDetails = <TData = Schemas.QuestionDetails>(
+export const useGetQuestionDetails = <TData = GetQuestionDetailsResponse>(
   variables: GetQuestionDetailsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.QuestionDetails,
+      GetQuestionDetailsResponse,
       GetQuestionDetailsError,
       TData
     >,
@@ -688,7 +768,7 @@ export const useGetQuestionDetails = <TData = Schemas.QuestionDetails>(
   const { fetcherOptions, queryOptions, queryKeyFn } =
     useProgrammingForumContext(options);
   return reactQuery.useQuery<
-    Schemas.QuestionDetails,
+    GetQuestionDetailsResponse,
     GetQuestionDetailsError,
     TData
   >({
@@ -727,6 +807,17 @@ export type UpdateQuestionError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type UpdateQuestionResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.QuestionDetails;
+};
+
 export type UpdateQuestionVariables = {
   body?: Schemas.UpdateQuestion;
   pathParams: UpdateQuestionPathParams;
@@ -737,7 +828,7 @@ export const fetchUpdateQuestion = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.QuestionDetails,
+    UpdateQuestionResponse,
     UpdateQuestionError,
     Schemas.UpdateQuestion,
     {},
@@ -748,7 +839,7 @@ export const fetchUpdateQuestion = (
 export const useUpdateQuestion = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.QuestionDetails,
+      UpdateQuestionResponse,
       UpdateQuestionError,
       UpdateQuestionVariables
     >,
@@ -757,7 +848,7 @@ export const useUpdateQuestion = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.QuestionDetails,
+    UpdateQuestionResponse,
     UpdateQuestionError,
     UpdateQuestionVariables
   >({
@@ -1024,7 +1115,16 @@ export type GetQuestionAnswersError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
-export type GetQuestionAnswersResponse = Schemas.AnswerDetails[];
+export type GetQuestionAnswersResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Record<string, any> | Schemas.AnswerDetails[];
+};
 
 export type GetQuestionAnswersVariables = {
   pathParams: GetQuestionAnswersPathParams;
@@ -1097,6 +1197,17 @@ export type CreateAnswerError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type CreateAnswerResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.AnswerDetails;
+};
+
 export type CreateAnswerVariables = {
   body: Schemas.NewAnswer;
   pathParams: CreateAnswerPathParams;
@@ -1107,7 +1218,7 @@ export const fetchCreateAnswer = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.AnswerDetails,
+    CreateAnswerResponse,
     CreateAnswerError,
     Schemas.NewAnswer,
     {},
@@ -1123,7 +1234,7 @@ export const fetchCreateAnswer = (
 export const useCreateAnswer = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.AnswerDetails,
+      CreateAnswerResponse,
       CreateAnswerError,
       CreateAnswerVariables
     >,
@@ -1132,7 +1243,7 @@ export const useCreateAnswer = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.AnswerDetails,
+    CreateAnswerResponse,
     CreateAnswerError,
     CreateAnswerVariables
   >({
@@ -1165,6 +1276,17 @@ export type UpdateAnswerError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type UpdateAnswerResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.AnswerDetails;
+};
+
 export type UpdateAnswerVariables = {
   body?: Schemas.UpdateAnswer;
   pathParams: UpdateAnswerPathParams;
@@ -1175,7 +1297,7 @@ export const fetchUpdateAnswer = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.AnswerDetails,
+    UpdateAnswerResponse,
     UpdateAnswerError,
     Schemas.UpdateAnswer,
     {},
@@ -1186,7 +1308,7 @@ export const fetchUpdateAnswer = (
 export const useUpdateAnswer = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.AnswerDetails,
+      UpdateAnswerResponse,
       UpdateAnswerError,
       UpdateAnswerVariables
     >,
@@ -1195,7 +1317,7 @@ export const useUpdateAnswer = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.AnswerDetails,
+    UpdateAnswerResponse,
     UpdateAnswerError,
     UpdateAnswerVariables
   >({
@@ -1339,6 +1461,17 @@ export type GetTagDetailsError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
+export type GetTagDetailsResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.TagDetails;
+};
+
 export type GetTagDetailsVariables = {
   pathParams: GetTagDetailsPathParams;
 } & ProgrammingForumContext["fetcherOptions"];
@@ -1348,7 +1481,7 @@ export const fetchGetTagDetails = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.TagDetails,
+    GetTagDetailsResponse,
     GetTagDetailsError,
     undefined,
     {},
@@ -1356,16 +1489,20 @@ export const fetchGetTagDetails = (
     GetTagDetailsPathParams
   >({ url: "/tags/{tagId}", method: "get", ...variables, signal });
 
-export const useGetTagDetails = <TData = Schemas.TagDetails>(
+export const useGetTagDetails = <TData = GetTagDetailsResponse>(
   variables: GetTagDetailsVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<Schemas.TagDetails, GetTagDetailsError, TData>,
+    reactQuery.UseQueryOptions<
+      GetTagDetailsResponse,
+      GetTagDetailsError,
+      TData
+    >,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
   const { fetcherOptions, queryOptions, queryKeyFn } =
     useProgrammingForumContext(options);
-  return reactQuery.useQuery<Schemas.TagDetails, GetTagDetailsError, TData>({
+  return reactQuery.useQuery<GetTagDetailsResponse, GetTagDetailsError, TData>({
     queryKey: queryKeyFn({
       path: "/tags/{tagId}",
       operationId: "getTagDetails",
@@ -1491,6 +1628,17 @@ export type GetProfileError = Fetcher.ErrorWrapper<{
   payload: Responses.NotFoundResponse;
 }>;
 
+export type GetProfileResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.Profile;
+};
+
 export type GetProfileVariables = {
   pathParams: GetProfilePathParams;
 } & ProgrammingForumContext["fetcherOptions"];
@@ -1500,7 +1648,7 @@ export const fetchGetProfile = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.Profile,
+    GetProfileResponse,
     GetProfileError,
     undefined,
     {},
@@ -1508,16 +1656,16 @@ export const fetchGetProfile = (
     GetProfilePathParams
   >({ url: "/profiles/{userId}", method: "get", ...variables, signal });
 
-export const useGetProfile = <TData = Schemas.Profile>(
+export const useGetProfile = <TData = GetProfileResponse>(
   variables: GetProfileVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<Schemas.Profile, GetProfileError, TData>,
+    reactQuery.UseQueryOptions<GetProfileResponse, GetProfileError, TData>,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
   const { fetcherOptions, queryOptions, queryKeyFn } =
     useProgrammingForumContext(options);
-  return reactQuery.useQuery<Schemas.Profile, GetProfileError, TData>({
+  return reactQuery.useQuery<GetProfileResponse, GetProfileError, TData>({
     queryKey: queryKeyFn({
       path: "/profiles/{userId}",
       operationId: "getProfile",
@@ -1553,6 +1701,17 @@ export type UpdateProfileError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type UpdateProfileResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.Profile;
+};
+
 export type UpdateProfileVariables = {
   body?: Schemas.UpdateProfile;
   pathParams: UpdateProfilePathParams;
@@ -1563,7 +1722,7 @@ export const fetchUpdateProfile = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.Profile,
+    UpdateProfileResponse,
     UpdateProfileError,
     Schemas.UpdateProfile,
     {},
@@ -1574,7 +1733,7 @@ export const fetchUpdateProfile = (
 export const useUpdateProfile = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.Profile,
+      UpdateProfileResponse,
       UpdateProfileError,
       UpdateProfileVariables
     >,
@@ -1583,7 +1742,7 @@ export const useUpdateProfile = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.Profile,
+    UpdateProfileResponse,
     UpdateProfileError,
     UpdateProfileVariables
   >({
@@ -1616,13 +1775,27 @@ export type SearchQuestionsQueryParams = {
   pageSize?: number;
 };
 
-export type SearchQuestionsError = Fetcher.ErrorWrapper<undefined>;
+export type SearchQuestionsError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
 
 export type SearchQuestionsResponse = {
-  items?: Schemas.QuestionSummary[];
-  totalItems?: number;
-  currentPage?: number;
-  totalPages?: number;
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data:
+    | {
+        items?: Schemas.QuestionSummary[];
+        totalItems?: number;
+        currentPage?: number;
+        totalPages?: number;
+      }
+    | any[];
 };
 
 export type SearchQuestionsVariables = {
@@ -1691,13 +1864,27 @@ export type SearchUsersQueryParams = {
   pageSize?: number;
 };
 
-export type SearchUsersError = Fetcher.ErrorWrapper<undefined>;
+export type SearchUsersError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
 
 export type SearchUsersResponse = {
-  items?: Schemas.UserSummary[];
-  totalItems?: number;
-  currentPage?: number;
-  totalPages?: number;
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data:
+    | {
+        items?: Schemas.UserSummary[];
+        totalItems?: number;
+        currentPage?: number;
+        totalPages?: number;
+      }
+    | any[];
 };
 
 export type SearchUsersVariables = {
@@ -1758,13 +1945,27 @@ export type SearchTagsQueryParams = {
   pageSize?: number;
 };
 
-export type SearchTagsError = Fetcher.ErrorWrapper<undefined>;
+export type SearchTagsError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Responses.BadRequestResponse;
+}>;
 
 export type SearchTagsResponse = {
-  items?: Schemas.TagSummary[];
-  totalItems?: number;
-  currentPage?: number;
-  totalPages?: number;
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data:
+    | {
+        items?: Schemas.TagSummary[];
+        totalItems?: number;
+        currentPage?: number;
+        totalPages?: number;
+      }
+    | any[];
 };
 
 export type SearchTagsVariables = {
@@ -1831,10 +2032,21 @@ export type GetUserFeedError = Fetcher.ErrorWrapper<{
 }>;
 
 export type GetUserFeedResponse = {
-  items?: Schemas.QuestionSummary[];
-  totalItems?: number;
-  currentPage?: number;
-  totalPages?: number;
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data:
+    | {
+        items?: Schemas.QuestionSummary[];
+        totalItems?: number;
+        currentPage?: number;
+        totalPages?: number;
+      }
+    | any[];
 };
 
 export type GetUserFeedVariables = {
@@ -1891,6 +2103,17 @@ export type ExecuteCodeError = Fetcher.ErrorWrapper<
     }
 >;
 
+export type ExecuteCodeResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.ExecutionResult;
+};
+
 export type ExecuteCodeVariables = {
   body: Schemas.CodeExecution;
 } & ProgrammingForumContext["fetcherOptions"];
@@ -1900,7 +2123,7 @@ export const fetchExecuteCode = (
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
-    Schemas.ExecutionResult,
+    ExecuteCodeResponse,
     ExecuteCodeError,
     Schemas.CodeExecution,
     {},
@@ -1911,7 +2134,7 @@ export const fetchExecuteCode = (
 export const useExecuteCode = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.ExecutionResult,
+      ExecuteCodeResponse,
       ExecuteCodeError,
       ExecuteCodeVariables
     >,
@@ -1920,7 +2143,7 @@ export const useExecuteCode = (
 ) => {
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
-    Schemas.ExecutionResult,
+    ExecuteCodeResponse,
     ExecuteCodeError,
     ExecuteCodeVariables
   >({

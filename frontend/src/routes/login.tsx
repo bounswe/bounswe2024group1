@@ -68,8 +68,8 @@ export default function Login() {
       const response = await fetchLogin({
         body: data,
       });
-      if (response.token) {
-        useAuthStore.getState().setToken(response.token);
+      if (response.data.token) {
+        useAuthStore.getState().setToken(response.data.token);
         if (redirectTo) navigate(redirectTo);
       }
     } catch (e) {

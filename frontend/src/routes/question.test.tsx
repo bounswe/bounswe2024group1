@@ -5,29 +5,6 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import QuestionPage from "./question";
-// Mock the API hook
-vi.mock("@/services/api/programmingForumComponents", () => ({
-  useGetQuestionDetails: vi.fn(() => ({
-    data: mockQuestionData,
-    isLoading: false,
-    error: null,
-  })),
-  useDeleteQuestion: vi.fn(() => ({
-    mutateAsync: vi.fn(),
-  })),
-  useVoteQuestion: vi.fn(() => ({
-    mutateAsync: vi.fn(),
-  })),
-  useRateQuestion: vi.fn(() => ({
-    mutateAsync: vi.fn(),
-  })),
-}));
-
-// Mock the auth store
-vi.mock("@/services/auth", () => ({
-  __esModule: true,
-  default: vi.fn(),
-}));
 
 const mockQuestionData = vi.hoisted(
   () =>
@@ -49,13 +26,33 @@ const mockQuestionData = vi.hoisted(
         { id: "2", name: "react" },
       ],
       createdAt: "2023-01-01T00:00:00Z",
+      updatedAt: "2023-01-01T00:00:00Z",
     }) satisfies QuestionDetails,
 );
+// Mock the API hook
+vi.mock("@/services/api/programmingForumComponents", () => ({
+  useGetQuestionDetails: vi.fn(() => {}),
+  useDeleteQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useVoteQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useRateQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+}));
+
+// Mock the auth store
+vi.mock("@/services/auth", () => ({
+  __esModule: true,
+  default: vi.fn(),
+}));
 
 describe("QuestionPage", () => {
   beforeEach(() => {
     (useGetQuestionDetails as Mock).mockReturnValue({
-      data: mockQuestionData,
+      data: { data: mockQuestionData },
       isLoading: false,
       error: null,
     });

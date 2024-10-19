@@ -52,7 +52,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthToken"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AuthToken"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -74,7 +79,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthToken"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AuthToken"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
 
@@ -157,7 +167,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserProfile"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -186,7 +201,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserProfile"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserProfile"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -278,9 +298,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserSummary"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/UserSummary"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -302,9 +327,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserSummary"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/UserSummary"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -328,7 +358,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/QuestionDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionDetails"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -352,7 +387,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/QuestionDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionDetails"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -381,7 +421,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/QuestionDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionDetails"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -512,9 +557,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AnswerDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/AnswerDetails"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -543,7 +593,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnswerDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AnswerDetails"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -577,7 +632,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnswerDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AnswerDetails"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -665,7 +725,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TagDetails"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TagDetails"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -730,7 +795,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Profile"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Profile"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -759,7 +829,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Profile"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Profile"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -805,18 +880,25 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/QuestionSummary"
-                  totalItems:
-                    type: integer
-                  currentPage:
-                    type: integer
-                  totalPages:
-                    type: integer
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/QuestionSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /search/users:
     get:
@@ -849,18 +931,25 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/UserSummary"
-                  totalItems:
-                    type: integer
-                  currentPage:
-                    type: integer
-                  totalPages:
-                    type: integer
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/UserSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /search/tags:
     get:
@@ -893,18 +982,25 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TagSummary"
-                  totalItems:
-                    type: integer
-                  currentPage:
-                    type: integer
-                  totalPages:
-                    type: integer
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/TagSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /feed:
     get:
@@ -940,18 +1036,23 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/QuestionSummary"
-                  totalItems:
-                    type: integer
-                  currentPage:
-                    type: integer
-                  totalPages:
-                    type: integer
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/QuestionSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
   /execute-code:
@@ -974,7 +1075,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExecutionResult"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/ExecutionResult"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -1309,17 +1415,10 @@ components:
       type: object
       description: Error
       properties:
-        message:
+        errorMessage:
           type: string
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              field:
-                type: string
-              message:
-                type: string
+        stackTrace:
+          type: string
 
     SuccessResponseObject:
       description: OK
@@ -1359,38 +1458,36 @@ components:
             500 status code is an error response. Prioritize the inner status over the HTTP
             status.
           examples: [400, 401, 403, 404, 409, 500]
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/Error"
+        error:
+          $ref: "#/components/schemas/Error"
   responses:
     BadRequestResponse:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ErrorResponseObject'
 
     UnauthorizedResponse:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ErrorResponseObject'
 
     ForbiddenResponse:
       description: Forbidden
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ErrorResponseObject'
 
     NotFoundResponse:
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ErrorResponseObject'
 
 
     TooManyRequestsResponse:
@@ -1398,4 +1495,4 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Error"
+            $ref: "#/components/schemas/ErrorResponseObject"
