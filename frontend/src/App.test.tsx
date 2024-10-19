@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { routeConfig } from "./routes";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { expect, test, vi } from "vitest";
+import { routeConfig } from "./routes";
 
 vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
   const mod =
@@ -10,7 +10,7 @@ vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
     >();
   return {
     ...mod,
-    useGetFeed: vi.fn(() => ({
+    useGetUserFeed: vi.fn(() => ({
       data: {
         data: [],
         status: 200,

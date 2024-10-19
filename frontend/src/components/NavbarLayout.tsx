@@ -1,11 +1,11 @@
 import { CodeXml, Menu, Package2 } from "lucide-react";
 import { Link, NavLink, Outlet, useNavigation } from "react-router-dom";
 
-import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { SearchBar } from "./SearchBar";
 import { FullscreenLoading } from "./FullscreenLoading";
+import { SearchBar } from "./SearchBar";
+import { Button } from "./ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 const links = [{ name: "Home", path: "/" }] as const;
 

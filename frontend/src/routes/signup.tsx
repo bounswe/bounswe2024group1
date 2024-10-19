@@ -8,16 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import useAuthStore from "../services/auth";
-import { fetchSignUp } from "../services/api/programmingForumComponents";
-import {
-  FetchError,
-  setFormErrors,
-} from "../services/api/programmingForumFetcher";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -26,7 +16,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../components/ui/form";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { fetchSignUp } from "@/services/api/programmingForumComponents";
+import {
+  FetchError,
+  setFormErrors,
+} from "@/services/api/programmingForumFetcher";
+import useAuthStore from "@/services/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 
 const signupSchema = z.object({
   firstName: z.string().min(1),
@@ -78,6 +78,7 @@ export default function Signup() {
       });
       if (redirectTo) navigate(redirectTo);
     } catch (e) {
+      console.trace(e);
       setFormErrors(e as FetchError, setError);
     }
   };
