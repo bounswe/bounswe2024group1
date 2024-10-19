@@ -1,6 +1,29 @@
-import { CodeXml, Menu, Package2 } from "lucide-react";
-import { Link, NavLink, Outlet, useNavigation } from "react-router-dom";
+import {
+  Bookmark,
+  CircleUser,
+  CodeXml,
+  LogOut,
+  Menu,
+  Package2,
+  User,
+} from "lucide-react";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useFetcher,
+  useNavigation,
+} from "react-router-dom";
 
+import useAuthStore from "@/services/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 import { cn } from "../lib/utils";
 import { FullscreenLoading } from "./FullscreenLoading";
 import { SearchBar } from "./SearchBar";
@@ -11,6 +34,9 @@ const links = [{ name: "Home", path: "/" }] as const;
 
 export const NavbarLayout = () => {
   const navigation = useNavigation();
+  const fetcher = useFetcher();
+  const isAuthenticated = !!useAuthStore().token;
+  const selfProfile = useAuthStore().selfProfile;
 
   return (
     <div className="min-h-screen">
@@ -79,7 +105,7 @@ export const NavbarLayout = () => {
           <div className="ml-auto flex flex-1 sm:flex-initial">
             <SearchBar />
           </div>
-          {/* {isAuthenticated ? (
+          {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -93,8 +119,8 @@ export const NavbarLayout = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>
-                  {selfProfile?.name
-                    ? `Welcome, ${selfProfile?.name}`
+                  {selfProfile?.username
+                    ? `Welcome, ${selfProfile?.username}`
                     : "Account"}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -130,7 +156,7 @@ export const NavbarLayout = () => {
             <Button asChild>
               <NavLink to="/login">Log in</NavLink>
             </Button>
-          )} */}
+          )}
         </div>
       </header>
       {navigation.state === "loading" && (

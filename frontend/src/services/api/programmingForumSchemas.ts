@@ -183,3 +183,14 @@ export type ExecutionResult = {
    */
   status?: "success" | "error" | "timeout";
 };
+
+/**
+ * Error
+ */
+export type Error = {
+  message?: string;
+  errors?: {
+    field?: string;
+    message?: string;
+  }[];
+};

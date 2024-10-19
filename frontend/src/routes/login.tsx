@@ -1,5 +1,5 @@
-import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import useAuthStore from "../services/auth";
-import { z } from "zod";
 import { fetchLogin } from "@/services/api/programmingForumComponents";
-import {
-  FetchError,
-  setFormErrors,
-} from "../services/api/programmingForumFetcher";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -27,6 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from "../components/ui/form";
+import {
+  FetchError,
+  setFormErrors,
+} from "../services/api/programmingForumFetcher";
+import useAuthStore from "../services/auth";
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().min(1, "Username or email is required"),
@@ -80,7 +80,7 @@ export default function Login() {
   return (
     <div className="flex flex-1 items-center justify-center">
       <Card className="mx-auto max-w-sm">
-        {/*auth.token && <Navigate to={from} />*/}
+        {auth.token && <Navigate to={from} />}
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>

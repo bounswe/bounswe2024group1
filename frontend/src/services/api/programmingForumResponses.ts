@@ -13,6 +13,4 @@ export type ForbiddenResponse = Schemas.Error;
 
 export type NotFoundResponse = Schemas.Error;
 
-export type Error = void;
-
 export type TooManyRequestsResponse = Schemas.Error;

@@ -1,17 +1,17 @@
-import { Button } from "./ui/button";
 import {
   useFollowUser,
   useGetUserProfile,
   useUnfollowUser,
 } from "@/services/api/programmingForumComponents";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 export default function FollowButton({
   profile,
 }: {
   profile: { id?: number; selfFollowing?: boolean };
 }) {
-  const { isLoading, data, error, refetch } = useGetUserProfile(
+  const { isLoading, error, refetch } = useGetUserProfile(
     {
       pathParams: {
         userId: profile.id!,
@@ -47,8 +47,7 @@ export default function FollowButton({
     },
   });
 
-  //const following = optimisticFollowing ?? data?.data?.selfFollowing;
-  const following = false;
+  const following = optimisticFollowing ?? profile.selfFollowing;
 
   return (
     <Button
