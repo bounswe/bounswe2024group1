@@ -36,13 +36,16 @@ public class SecurityConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("GET", API_BASE + EndpointConstants.UserEndpoints.USER_ME).authenticated()
-                                .requestMatchers("GET", "/**").permitAll()
-                                .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()
+                        req -> req.requestMatchers("GET", API_BASE + EndpointConstants.UserEndpoints.USER_ME).authenticated()  // Specific GET requests that need authentication
+                                .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()  // Permit signup without authentication
                                 .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
-                                .requestMatchers("POST,PUT,DELETE").authenticated()
+                                .requestMatchers("POST", API_BASE + "/**").authenticated()// Permit signin without authentication// All POSTs need authentication
+                                .requestMatchers("PUT", API_BASE + "/**").authenticated()   // All PUTs need authentication
+                                .requestMatchers("DELETE", API_BASE + "/**").authenticated()// All DELETEs need authentication
+                                .requestMatchers("GET", "/**").permitAll()  // General GET requests, allow everything else
                                 .anyRequest().authenticated()
                 )
+                .anonymous(anonymous -> anonymous.disable())
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
