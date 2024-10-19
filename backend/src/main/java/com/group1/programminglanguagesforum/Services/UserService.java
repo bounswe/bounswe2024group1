@@ -6,6 +6,7 @@ import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,5 +25,22 @@ public class UserService {
         user.setBio(userProfileUpdateRequestDto.getBio());
         user.setCountry(userProfileUpdateRequestDto.getCountry());
         return userRepository.save(user);
+    }
+    @Transactional
+    public User followUser(User user, Long id) throws UserNotFoundException {
+        Optional<User> userToFollowOptional = userRepository.findById(id);
+        if (userToFollowOptional.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+        if(user.getId().equals(id)) {
+            throw new UserNotFoundException("You can't follow yourself");
+        }
+        User userToFollow = userToFollowOptional.get();
+        user.getFollowing().add(userToFollow);
+        user.setFollowingCount(user.getFollowingCount() + 1);
+        userRepository.save(user);
+        userToFollow.getFollowers().add(user);
+        userToFollow.setFollowersCount(userToFollow.getFollowersCount() + 1);
+        return userRepository.save(userToFollow);
     }
 }
