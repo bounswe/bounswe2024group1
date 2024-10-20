@@ -2,7 +2,7 @@ import {
   SearchTagsError,
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
-import { Tag } from "@/services/api/programmingForumSchemas";
+import { TagSummary } from "@/services/api/programmingForumSchemas";
 import { QueryObserverSuccessResult } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -14,9 +14,9 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useSearchTags: vi.fn(),
 }));
 
-const mockTags: Tag[] = [
-  { id: "1", name: "Japan", description: "Japanese cuisine" },
-  { id: "2", name: "Sausage", description: "Various types of sausages" },
+const mockTags: TagSummary[] = [
+  { id: "1", name: "Japan" },
+  { id: "2", name: "Sausage" },
 ];
 
 describe("Search component", () => {
@@ -62,8 +62,7 @@ describe("Search component", () => {
     ).toBeInTheDocument();
 
     mockTags.forEach((tag) => {
-      expect(screen.getByText(tag.name)).toBeInTheDocument();
-      expect(screen.getByText(tag.description)).toBeInTheDocument();
+      expect(screen.getByText(tag.name!)).toBeInTheDocument();
     });
   });
 

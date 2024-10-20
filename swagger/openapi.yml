@@ -782,73 +782,6 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /profiles/{userId}:
-    get:
-      tags:
-        - profiles
-      summary: Get user profile
-      operationId: getProfile
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        $ref: "#/components/schemas/Profile"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-
-    put:
-      tags:
-        - profiles
-      summary: Update user profile
-      operationId: updateProfile
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateProfile"
-      responses:
-        "200":
-          description: Profile successfully updated
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        $ref: "#/components/schemas/Profile"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-
   /search/questions:
     get:
       tags:
@@ -1171,6 +1104,32 @@ components:
           type: integer
         answerCount:
           type: integer
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerDetails"
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
+      examples:
+        - id: 1
+          username: "john_doe"
+          email: "john@doe.com"
+          firstName: "John"
+          lastName: "Doe"
+          bio: "I am a software engineer."
+          country: "USA"
+          reputationPoints: 100
+          followersCount: 100
+          followingCount: 100
+          selfFollowing: false
+          questionCount: 100
+          answerCount: 100
+          questions:
+            - $ref: "#/components/schemas/QuestionSummary/examples/0"
+          answers:
+            - $ref: "#/components/schemas/AnswerDetails/examples/0"
 
     UserProfileUpdate:
       type: object
@@ -1297,10 +1256,21 @@ components:
 
     QuestionSummary:
       type: object
+      required:
+        - id
+        - title
+        - author
+        - content
+        - createdAt
+        - answerCount
+        - rating
+        - tags
       properties:
         id:
           type: integer
         title:
+          type: string
+        content:
           type: string
         author:
           $ref: "#/components/schemas/UserSummary"
@@ -1325,6 +1295,7 @@ components:
       examples:
         - id: 1
           title: "What is the best way to learn programming?"
+          content: "I want to learn programming, but I don't know where to start. What is the best way to learn programming?"
           author:
             $ref: "#/components/schemas/UserSummary/examples/0"
           createdAt: "2024-01-01T00:00:00Z"
@@ -1358,6 +1329,7 @@ components:
         - createdAt
         - updatedAt
         - rating
+        - question
       properties:
         id:
           type: integer
@@ -1377,6 +1349,8 @@ components:
           type: integer
           minimum: -1
           maximum: 1
+        question:
+          $ref: "#/components/schemas/QuestionSummary"
       examples:
         - id: 1
           content: "To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.
@@ -1399,6 +1373,8 @@ components:
           updatedAt: "2024-01-01T00:00:00Z"
           rating: 10
           selfRating: 0
+          question:
+            $ref: "#/components/schemas/QuestionSummary/examples/0"
 
     TagDetails:
       type: object
@@ -1464,12 +1440,22 @@ components:
           type: boolean
         questionCount:
           type: integer
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
         answerCount:
           type: integer
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerDetails"
         tags:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
+      examples:
+
 
     UpdateProfile:
       type: object

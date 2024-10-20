@@ -4,22 +4,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface AnswerCardProps {
-  id: string;
+  id: number;
   title: string;
   content: string;
   votes: number;
+  questionId: number;
   author: {
-    id: string;
+    id: number;
     name: string;
     profilePicture: string;
   };
 }
 
 export const AnswerCard: React.FC<AnswerCardProps> = ({
-  id,
   title,
   content,
   votes,
+  questionId,
   author,
 }) => {
   return (
@@ -53,7 +54,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
             />
           </Link>
           <Link
-            to={`/answers/${id}`}
+            to={`/question/${questionId}`}
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
             Go to answer
