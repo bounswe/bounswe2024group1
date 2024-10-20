@@ -14,8 +14,6 @@
     "production": {}
   },
   "submit": {
-    "production": {
-      "autoIncrement": true
-    }
+    "production": {}
   }
 }

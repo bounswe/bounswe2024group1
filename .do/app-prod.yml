@@ -31,16 +31,16 @@ services:
     envs:
       - key: DB_HOST
         scope: RUN_AND_BUILD_TIME
-        value: ${db.HOSTNAME}:${db.PORT}
+        value: ${programmingforum.HOSTNAME}:${programmingforum.PORT}
       - key: DB_NAME
         scope: RUN_AND_BUILD_TIME
-        value: ${db.DATABASE}
+        value: ${programmingforum.DATABASE}
       - key: DB_USER
         scope: RUN_AND_BUILD_TIME
-        value: ${db.USERNAME}
+        value: ${programmingforum.USERNAME}
       - key: DB_PASSWORD
         scope: RUN_AND_BUILD_TIME
-        value: ${db.PASSWORD}
+        value: ${programmingforum.PASSWORD}
       - key: SPRING_PROFILES_ACTIVE
         scope: RUN_AND_BUILD_TIME
         value: docker
