@@ -48,6 +48,7 @@ public class User implements UserDetails {
     private Set<User> followers = new HashSet<>();
     @ManyToMany(mappedBy = "followers", fetch = FetchType.EAGER)
     private Set<User> following = new HashSet<>();
+    private boolean selfFollowing = false;
 
     @Builder.Default
     private int followersCount = 0;

@@ -34,7 +34,8 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
         if(user.getId().equals(id)) {
-            throw new UserNotFoundException("You can't follow yourself");
+            user.setSelfFollowing(true);
+            return userRepository.save(user);
         }
         User userToFollow = userToFollowOptional.get();
         user.getFollowing().add(userToFollow);
@@ -49,6 +50,10 @@ public class UserService {
         Optional<User> userToUnfollowOptional = userRepository.findById(id);
         if (userToUnfollowOptional.isEmpty()) {
             throw new UserNotFoundException("User not found");
+        }
+        if (user.getId().equals(id)) {
+            user.setSelfFollowing(false);
+            return userRepository.save(user);
         }
         User userToUnfollow = userToUnfollowOptional.get();
         user.getFollowing().remove(userToUnfollow);
