@@ -7,6 +7,7 @@ import Login from "./login";
 import QuestionRoute from "./question";
 import { Search } from "./search";
 import Signup from "./signup";
+import TagPage from "./tag";
 
 export const routes: RouteObject[] = [
   {
@@ -35,6 +36,10 @@ export const routes: RouteObject[] = [
   {
     path: "/search",
     Component: Search,
+  },
+  {
+    path: "tag/:tagId",
+    Component: TagPage,
   },
 ];
 
