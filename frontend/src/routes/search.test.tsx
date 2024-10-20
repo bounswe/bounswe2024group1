@@ -15,8 +15,8 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
 }));
 
 const mockTags: TagSummary[] = [
-  { id: "1", name: "Japan", description: "Japanese cuisine" },
-  { id: "2", name: "Sausage", description: "Various types of sausages" },
+  { id: "1", name: "Japan" },
+  { id: "2", name: "Sausage" },
 ];
 
 describe("Search component", () => {
@@ -62,8 +62,7 @@ describe("Search component", () => {
     ).toBeInTheDocument();
 
     mockTags.forEach((tag) => {
-      expect(screen.getByText(tag.name)).toBeInTheDocument();
-      expect(screen.getByText(tag.description)).toBeInTheDocument();
+      expect(screen.getByText(tag.name!)).toBeInTheDocument();
     });
   });
 
