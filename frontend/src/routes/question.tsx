@@ -1,4 +1,5 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
+import { Answers } from "@/components/Answers";
 // import { AddAnswer } from "@/components/Answer";
 // import { Answers } from "@/components/AnswerSection";
 import ErrorAlert from "@/components/ErrorAlert";
@@ -183,14 +184,8 @@ export default function QuestionPage() {
         <span className="whitespace-pre-wrap">{question.content}</span>
       </div>
 
-      <h4 className="font-bold">Answers</h4>
-      {/* {selfProfile && questionId && (
-        <AddAnswer
-          questionId={Number(questionId)}
-          user={selfProfile as unknown as UserSummary}
-        />
-      )}
-      {questionId && <Answers questionId={Number(questionId)} />} */}
+      <h4 className="text-2xl font-bold">Answers</h4>
+      {questionId && <Answers questionId={Number(questionId)} />}
     </div>
   );
 }

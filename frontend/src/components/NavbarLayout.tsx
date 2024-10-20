@@ -15,7 +15,6 @@ import {
   useNavigation,
 } from "react-router-dom";
 
-import useAuthStore from "@/services/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +22,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import useAuthStore from "@/services/auth";
 import { cn } from "../lib/utils";
 import { FullscreenLoading } from "./FullscreenLoading";
 import { SearchBar } from "./SearchBar";
@@ -144,7 +144,7 @@ export const NavbarLayout = () => {
                   action="/logout"
                 >
                   <DropdownMenuItem asChild>
-                    <button type="submit">
+                    <button className="w-full" type="submit">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </button>
