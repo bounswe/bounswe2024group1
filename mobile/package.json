@@ -11,7 +11,8 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "generate:api": "openapi-codegen gen programmingForum",
-    "watch:api": "nodemon --watch '../swagger/openapi.yml' --exec 'yarn generate:api'"
+    "watch:api": "nodemon --watch '../swagger/openapi.yml' --exec 'yarn generate:api'",
+    "eas-build-pre-install": "corepack enable"
   },
   "jest": {
     "preset": "jest-expo"
