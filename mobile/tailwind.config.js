@@ -169,6 +169,7 @@ module.exports = {
           light: "#FBFBFB",
           dark: "#181719",
         },
+        "neutral-150": "#F1F1F1",
         indicator: {
           primary: "rgb(var(--color-indicator-primary)/<alpha-value>)",
           info: "rgb(var(--color-indicator-info)/<alpha-value>)",

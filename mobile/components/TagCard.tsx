@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui";
+import { Icon, Image, Text } from "@/components/ui";
 import { Card } from "@/components/ui/card";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { Link } from "expo-router";
@@ -12,42 +12,44 @@ interface TagCardProps {
 
 export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
   return (
-    <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
+    <Card className="">
       <View className="flex flex-col gap-6">
         <Text className="line-clamp-2 text-xl font-semibold text-gray-800">
           {tag.name}
         </Text>
         <View className="flex items-start gap-2">
-          <p className="line-clamp-3 text-sm font-light text-gray-600">
+          <Text className="line-clamp-3 text-sm font-light text-gray-600">
             {tag.description}
-          </p>
+          </Text>
         </View>
         <View className="flex flex-col gap-3 text-xs text-gray-500">
-          <View className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
+          <View className="flex flex-row items-center gap-1">
+            <Users size={16} color={"#000"} />
             <Text>{tag.followersCount} followers</Text>
           </View>
-          <View className="flex items-center gap-1">
-            <Hash className="h-4 w-4" />
+          <View className="flex flex-row items-center gap-1">
+            <Hash size={16} color={"#000"} />
             <Text>{tag.questionCount} questions</Text>
           </View>
         </View>
         <View className="flex items-center justify-between">
           {tag.photo && (
-            <View className="h-10 w-10">
-              <img
-                src={tag.photo}
-                alt={tag.name}
-                className="rounded-full object-cover"
-              />
+            <View className="rounded-full">
+              <View className="h-10 w-10 overflow-hidden rounded-full">
+                <Image
+                  source={{ uri: tag.photo }}
+                  alt={tag.name}
+                  resizeMode="contain"
+                />
+              </View>
             </View>
           )}
           <Link
             href={`/tags/${tag.id}`}
-            className="flex items-center text-sm font-medium text-gray-600 hover:underline"
+            className="flex-row items-center text-sm font-medium text-gray-600 hover:underline"
           >
-            View tag
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <Text>View tag</Text>
+            <Icon as={ArrowRight} size="sm" className="ml-1" />
           </Link>
         </View>
       </View>
