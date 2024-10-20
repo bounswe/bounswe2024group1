@@ -8,6 +8,7 @@ interface AnswerCardProps {
   title: string;
   content: string;
   votes: number;
+  questionId: number;
   author: {
     id: number;
     name: string;
@@ -16,10 +17,10 @@ interface AnswerCardProps {
 }
 
 export const AnswerCard: React.FC<AnswerCardProps> = ({
-  id,
   title,
   content,
   votes,
+  questionId,
   author,
 }) => {
   return (
@@ -53,7 +54,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
             />
           </Link>
           <Link
-            to={`/answers/${id}`}
+            to={`/question/${questionId}`}
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
             Go to answer

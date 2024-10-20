@@ -168,7 +168,7 @@ export default function Profile() {
           </TabsList>
 
           <TabsContent value="questions">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 py-4">
               <h3>Questions</h3>
               {me && (
                 <Button
@@ -198,7 +198,7 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="answers">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 py-4">
               <h3>Answers</h3>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -208,6 +208,7 @@ export default function Profile() {
                   id={answer.id}
                   content={answer.content}
                   title={answer.question!.title!}
+                  questionId={answer.question!.id}
                   votes={answer.rating}
                   author={answer.author}
                 />

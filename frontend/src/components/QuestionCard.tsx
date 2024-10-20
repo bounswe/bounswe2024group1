@@ -53,7 +53,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             />
           </Link>
           <Link
-            to={`/questions/${id}`}
+            to={`/question/${id}`}
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
             Go to question
