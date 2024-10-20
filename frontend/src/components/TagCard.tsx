@@ -41,7 +41,7 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
             </div>
           )}
           <Link
-            to={`/tags/${tag.id}`}
+            to={`/tag/${tag.id}`}
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
             View tag
