@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                         req -> req.requestMatchers("GET", API_BASE + EndpointConstants.UserEndpoints.USER_ME).authenticated()  // Specific GET requests that need authentication
                                 .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()  // Permit signup without authentication
                                 .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
+                                .requestMatchers("GET", API_BASE + EndpointConstants.TEST).permitAll()
                                 .requestMatchers("POST", API_BASE + "/**").authenticated()// Permit signin without authentication// All POSTs need authentication
                                 .requestMatchers("PUT", API_BASE + "/**").authenticated()   // All PUTs need authentication
                                 .requestMatchers("DELETE", API_BASE + "/**").authenticated()// All DELETEs need authentication

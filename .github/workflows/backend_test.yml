@@ -22,11 +22,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build the Docker image
-        run: docker build -t backend-test -f backend/Dockerfile.dev ./backend
-
-      - name: List Full Tree
-        run: ls -R
-
-      - name: Run the tests
-        run: docker run backend-test mvn test
+      - name: Test with Maven
+        run: docker compose -f dev.yml run --rm backend mvn test

@@ -1,6 +1,9 @@
 package com.group1.programminglanguagesforum.Constants;
 
 public  class EndpointConstants {
+
+    public static final String TEST = "/test";
+
     public static class AuthenticationEndpoints {
         public static final String  BASE_PATH = "/auth";
         public static final String SIGNIN = BASE_PATH + "/login";
