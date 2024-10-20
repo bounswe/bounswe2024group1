@@ -1502,6 +1502,7 @@ components:
         field:
           type: string
           description: If empty, indicates an error not related to any field.
+
     SuccessResponseObject:
       description: OK
       type: object
@@ -1521,6 +1522,7 @@ components:
           oneOf:
             - type: object
             - type: array
+
     ErrorResponseObject:
       description: Response with errors
       type: object
@@ -1543,6 +1545,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ApiError"
+
   responses:
     OkResponse:
       description: OK

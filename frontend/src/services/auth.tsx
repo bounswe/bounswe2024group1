@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { createJSONStorage } from "zustand/middleware";
-import { persist } from "zustand/middleware";
-import { UserProfile } from "./api/programmingForumSchemas";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { fetchGetMe } from "./api/programmingForumComponents";
+import { UserProfile } from "./api/programmingForumSchemas";
 import { queryClient } from "./query-client";
 
 interface AuthState {

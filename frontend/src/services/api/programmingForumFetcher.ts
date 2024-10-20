@@ -1,14 +1,16 @@
-import { UseFormSetError, FieldValues, FieldPath } from "react-hook-form";
+import { FieldValues, UseFormSetError } from "react-hook-form";
 
+import { z } from "zod";
+import { temporaryMocks } from "../temporaryMocks";
 import { ProgrammingForumContext } from "./programmingForumContext";
 import {
-  ApiResponse,
   ErrorResponseObject,
   SuccessResponseObject,
 } from "./programmingForumSchemas";
-import { z } from "zod";
 
 const baseUrl = "/api/v1";
+
+const USE_TEMPORARY_MOCKS = true;
 
 export type ErrorWrapper<TError> =
   | TError
@@ -35,7 +37,7 @@ export type ProgrammingForumFetcherOptions<
 } & ProgrammingForumContext["fetcherOptions"];
 
 export async function programmingForumFetch<
-  TData extends SuccessResponseObject,
+  TData extends SuccessResponseObject | void,
   TError extends { status: number | "unknown"; payload: ErrorResponseObject },
   // eslint-disable-next-line
   TBody extends any | FormData | undefined | null,
@@ -56,6 +58,16 @@ export async function programmingForumFetch<
   TQueryParams,
   TPathParams
 >): Promise<TData> {
+  if (USE_TEMPORARY_MOCKS && url in temporaryMocks) {
+    const mock = temporaryMocks[url as keyof typeof temporaryMocks];
+
+    if (typeof mock === "function") {
+      return mock(body as unknown) as unknown as TData;
+    }
+
+    return mock.payload as unknown as TData;
+  }
+
   try {
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
@@ -104,7 +116,9 @@ export async function programmingForumFetch<
             )
             .catch(() => ({
               status: "unknown",
-              errors: [{ message: "Could not parse response" }],
+              error: {
+                errorMessage: "Could not parse response",
+              },
             }))) as ErrorResponseObject,
         } as ErrorWrapper<TError>;
       } catch (e) {
@@ -112,14 +126,12 @@ export async function programmingForumFetch<
           status: "unknown",
           payload: {
             status: 500,
-            errors: [
-              {
-                message:
-                  e instanceof Error
-                    ? `Unexpected error (${e.message})`
-                    : "Unexpected error",
-              },
-            ],
+            error: {
+              errorMessage:
+                e instanceof Error
+                  ? `Unexpected error (${e.message})`
+                  : "Unexpected error",
+            },
           },
         };
       }
@@ -128,7 +140,7 @@ export async function programmingForumFetch<
     }
 
     if (response.headers.get("content-type")?.includes("json")) {
-      const data: ApiResponse = await response.json();
+      const data = await response.json();
       if (data.status >= 400) {
         throw {
           status: data.status,
@@ -143,16 +155,14 @@ export async function programmingForumFetch<
     }
   } catch (e) {
     if (e instanceof Error) {
-      const errorObject: ErrorResponseObject = {
+      const errorObject: ErrorWrapper<ErrorResponseObject> = {
         status: 500,
-        errors: [
-          {
-            message:
-              e instanceof Error
-                ? `Network error (${e.message})`
-                : "Network error",
-          },
-        ],
+        error: {
+          errorMessage:
+            e instanceof Error
+              ? `Network error (${e.message})`
+              : "Network error",
+        },
       };
       throw errorObject;
     } else throw e;
@@ -178,85 +188,30 @@ export const errorSchema = z.object({
   status: z.number().or(z.literal("unknown")),
   payload: z.object({
     status: z.number(),
-    errors: z
-      .array(
-        z.object({
-          field: z.string().optional(),
-          message: z.string(),
-        }),
-      )
-      .optional(),
+    error: z.object({
+      errorMessage: z.string().optional(),
+      stackTrace: z.string(),
+    }),
     message: z.string().optional(),
   }),
 });
 
-export const renderError = (
-  unknownError: unknown,
-  excludeFieldErrors: boolean = false,
-): string => {
-  if (!errorSchema.safeParse(unknownError).success) {
+export const renderError = (likelyError: unknown): string => {
+  const error = errorSchema.safeParse(likelyError);
+  if (!error.success) {
     return "Unknown error";
   }
-  const error = errorSchema.parse(unknownError);
-  if (!("errors" in error.payload)) {
-    return error.payload?.["message"] ?? "Unknown error";
-  }
-  const errors = excludeFieldErrors
-    ? error.payload.errors!.filter((e) => !e.field)
-    : error.payload.errors!;
-
-  const fieldErrors = errors
-    .filter((e) => !!e.field)
-    .map((e) => e.field + ": " + e.message);
-  const generalErrors = errors.filter((e) => !e.field).map((e) => e.message);
-
-  const renderedString =
-    errors.length > 0
-      ? generalErrors.join("\n") +
-        (fieldErrors.length
-          ? "\n\nField errors:\n" + fieldErrors.join("\n")
-          : "")
-      : "Unknown error.";
-
-  return renderedString.trim();
-};
-
-export const getFieldErrors = (
-  error: ErrorWrapper<{ status: unknown; payload: ErrorResponseObject }>,
-): Record<string, string> => {
-  if (!("errors" in error.payload)) {
-    return {};
-  }
-  const errors = error.payload.errors;
-
-  const fieldErrors = errors.filter((e) => !!e.field);
-  return fieldErrors.reduce(
-    (acc, item) => {
-      if (item.field! in acc) {
-        acc[item.field!] += "\n" + item.message;
-      } else {
-        acc[item.field!] = item.message;
-      }
-
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
+  return error.data.payload.error.errorMessage ?? "Unknown error";
 };
 
 export const setFormErrors = <T extends FieldValues>(
   error: FetchError,
   setError: UseFormSetError<T>,
 ) => {
-  const fieldErrors = Object.entries(getFieldErrors(error));
-
-  fieldErrors.forEach(([field, message]) => {
-    setError(field as FieldPath<T>, { message });
-  });
-
-  const hasGeneralError = !!error?.payload?.errors?.filter((e) => !e.field)
-    ?.length;
-  if (hasGeneralError || !fieldErrors.length) {
-    setError("root.serverError", { message: renderError(error, true) });
+  const hasGeneralError = !!error?.payload?.error?.errorMessage;
+  if (hasGeneralError) {
+    setError("root.serverError", {
+      message: error.payload.error?.errorMessage,
+    });
   }
 };

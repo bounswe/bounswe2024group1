@@ -4,10 +4,12 @@
  * @version 1.0.0
  */
 export type UserRegistration = {
-  email: string;
   username: string;
+  /**
+   * @format email
+   */
+  email: string;
   password: string;
-  bio?: string;
   firstName: string;
   lastName: string;
   country: string;
@@ -23,212 +25,235 @@ export type AuthToken = {
 };
 
 /**
- * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","bio":"I love takoyaki!","followersCount":100,"followingCount":100,"gender":"unknown","profilePicture":"https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640","diets":["keto"],"selfFollowing":true,"recipeCount":10,"bookmarks":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}],"recipes":[{"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"rating":4.5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki"}}]}
+ * @example {"id":1,"username":"john_doe","email":"john@doe.com","firstName":"John","lastName":"Doe","bio":"I am a software engineer.","country":"USA","reputationPoints":100,"followersCount":100,"followingCount":100,"selfFollowing":false,"questionCount":100,"answerCount":100,"questions":[{"$ref":"#/components/schemas/QuestionSummary/examples/0"}],"answers":[{"$ref":"#/components/schemas/AnswerDetails/examples/0"}]}
  */
 export type UserProfile = {
-  id: number;
-  username: string;
-  name: string;
-  bio: string;
-  followersCount: number;
+  id?: number;
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  bio?: string;
+  country?: string;
+  reputationPoints?: number;
+  followersCount?: number;
   followingCount?: number;
-  gender?: "male" | "female" | "unknown";
-  /**
-   * @format uri
-   */
-  profilePicture: string;
-  diets?: string[];
-  recipeCount?: number;
   selfFollowing?: boolean;
-  /**
-   * Only available when querying the current user's profile.
-   */
-  bookmarks?: RecipeSummary[];
-  recipes?: RecipeSummary[];
+  questionCount?: number;
+  answerCount?: number;
+  answers?: AnswerDetails[];
+  questions?: QuestionSummary[];
+};
+
+export type UserProfileUpdate = {
+  bio?: string;
+  country?: string;
 };
 
 /**
- * @example {"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"selfFollowing":false}
+ * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"https://placehold.co/640x640","name":"John Doe"}
  */
 export type UserSummary = {
   id: number;
   username: string;
-  name: string;
-  followersCount: number;
+  reputationPoints: number;
   /**
-   * @format uri
+   * @format url
    */
   profilePicture: string;
-  selfFollowing?: boolean;
-  recipeCount: number;
-};
-
-/**
- * @example {"id":"Q905527","name":"takoyaki","description":"ball-shaped Japanese snack with octopus","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","countries":"Japan","ingredients":"wheat flour, green laver, octopus as food, beni shōga, katsuobushi, Welsh onion","foodTypes":"konamono, octopus dish, yakimono","cuisines":"Japanese cuisine"}
- */
-export type DishDetails = {
-  id: string;
-  name: string;
-  description: string;
-  /**
-   * @format uri
-   */
-  image: string;
-  countries: string;
-  cuisines?: string;
-  ingredients?: string;
-  foodTypes?: string;
-  cuisine?: CuisineSummary;
-  /**
-   * Only returned when directly querying a dish.
-   */
-  recipes?: RecipeSummary[];
-};
-
-export type CuisineDetails = {
-  id: string;
-  name: string;
-  description: string;
-  /**
-   * @format uri
-   */
-  image: string;
-  isSelfFollowing?: boolean;
-  dishes?: DishSummary[];
-};
-
-/**
- * @example {"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","cookTime":30,"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"avgRating":4.5,"ratingsCount":42,"selfRating":5,"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"},"author":{"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4.5}}
- */
-export type RecipeSummary = {
-  id: number;
-  name: string;
-  description: string;
-  /**
-   * Cook time in minutes
-   */
-  cookTime: number;
-  images: string[];
-  selfBookmarked?: boolean;
-  /**
-   * @format float
-   */
-  avgRating?: number;
-  ratingsCount: number;
-  selfRating?: number;
-  dish: DishSummary;
-  author: UserSummary;
-};
-
-/**
- * @example {"id":1,"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","instructions":["Mix the batter.","Add the octopus.","Cook the takoyaki balls."],"ingredients":[{"name":"wheat flour","amount":"1 cup"},{"name":"green laver","amount":"1/4 cup"},{"name":"octopus as food","amount":"1 cup"},{"name":"beni shōga","amount":"1 cup"},{"name":"katsuobushi","amount":"1 cup"},{"name":"Welsh onion","amount":"1 cup"}],"author":{"id":1,"username":"takoyaki_lover","name":"Takoyaki Lover","followersCount":100,"profilePicture":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg","recipeCount":10,"avgRating":4},"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"cookTime":30,"servingSize":4,"allergens":["seafood"],"cuisine":{"id":1,"name":"Japanese"},"dish":{"id":"http://www.wikidata.org/entity/Q905527","name":"takoyaki","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"},"selfRating":5,"avgRating":4.5,"ratingsCount":10}
- */
-export type RecipeDetails = {
-  id: number;
-  name: string;
-  description: string;
-  instructions: string[];
-  ingredients: {
-    name?: string;
-    amount?: string;
-  }[];
-  images: string[];
-  cookTime: number;
-  servingSize: number;
-  allergens: string[];
-  cuisine?: CuisineSummary;
-  dish: DishSummary;
-  selfBookmarked?: boolean;
-  /**
-   * @format float
-   */
-  avgRating?: number;
-  ratingsCount: number;
-  /**
-   * The current user's rating for this recipe, if any.
-   */
-  selfRating?: number;
-  author: UserSummary;
-};
-
-/**
- * @example {"name":"My Takoyaki Recipe","description":"A delicious takoyaki recipe that I learned from my grandmother.","instructions":["Mix the batter.","Add the octopus.","Cook the takoyaki balls."],"ingredients":["wheat flour","green laver","octopus as food","beni shōga","katsuobushi","Welsh onion"],"images":["http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"],"prepTime":"10 minutes","cookTime":"30 minutes","servingSize":4,"allergens":["seafood"],"dishId":"Q905527"}
- */
-export type NewRecipe = {
-  name: string;
-  description?: string;
-  instructions: string[];
-  ingredients: string[];
-  images?: Blob[];
-  prepTime: number;
-  cookTime: number;
-  servingSize: number;
-  allergens?: string[];
-  dishId?: string;
-};
-
-/**
- * @example {"id":1,"name":"Japanese"}
- */
-export type CuisineSummary = {
-  id: number;
   name: string;
 };
 
-/**
- * @example {"id":1,"name":"takoyaki"}
- */
-export type DishSummary = {
-  id: string;
-  name: string;
-  countries?: string;
-};
-
-export type Comment = {
-  id: number;
-  author: UserSummary;
-  recipeId: number;
-  upvoteCount: number;
+export type NewQuestion = {
+  title: string;
   content: string;
-  hasSelfUpvoted: boolean;
+  tags: string[];
+};
+
+export type UpdateQuestion = {
+  title?: string;
+  content?: string;
+  tags?: string[];
+};
+
+/**
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"bookmarked":false,"selfRating":0}
+ */
+export type QuestionDetails = {
+  id: number;
+  title: string;
+  content: string;
+  author: UserSummary;
   /**
    * @format date-time
    */
   createdAt: string;
+  /**
+   * @format date-time
+   */
+  updatedAt: string;
+  tags: TagSummary[];
+  rating: number;
+  answerCount: number;
+  viewCount?: number;
+  bookmarked?: boolean;
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  selfRating?: number;
 };
 
 /**
- * An array of comments
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"selfRating":0}
  */
-export type CommentArray = Comment[];
-
-/**
- * An array of dishes
- */
-export type DishArray = DishDetails[];
-
-/**
- * An array of recipes
- */
-export type RecipeArray = RecipeDetails[];
-
-/**
- * An array of users
- */
-export type UserArray = UserSummary[];
-
-/**
- * @example {"status":200,"data":{"message":"Success"}}
- * @example {"status":400,"errors":[{"message":"Invalid email","field":"email"},{"message":"Invalid password","field":"password"}]}
- */
-export type ApiResponse = SuccessResponseObject | ErrorResponseObject;
-
-export type ApiError = {
-  message: string;
+export type QuestionSummary = {
+  id: number;
+  title: string;
+  content: string;
+  author: UserSummary;
   /**
-   * If empty, indicates an error not related to any field.
+   * @format date-time
    */
-  field?: string;
+  createdAt: string;
+  tags: TagSummary[];
+  rating: number;
+  answerCount: number;
+  viewCount?: number;
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  selfRating?: number;
+};
+
+export type NewAnswer = {
+  content: string;
+};
+
+export type UpdateAnswer = {
+  content?: string;
+};
+
+/**
+ * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfRating":0,"question":{"$ref":"#/components/schemas/QuestionSummary/examples/0"}}
+ */
+export type AnswerDetails = {
+  id: number;
+  content: string;
+  author: UserSummary;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  /**
+   * @format date-time
+   */
+  updatedAt: string;
+  rating: number;
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  selfRating?: number;
+  question: QuestionSummary;
+};
+
+/**
+ * @example {"id":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ */
+export type TagDetails = {
+  id?: string;
+  name?: string;
+  description?: string;
+  questionCount?: number;
+  followersCount?: number;
+  following?: boolean;
+  /**
+   * @format url
+   */
+  photo?: string;
+};
+
+/**
+ * @example {"id":"python","name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ */
+export type TagSummary = {
+  id?: string;
+  name?: string;
+  questionCount?: number;
+  /**
+   * @format url
+   */
+  photo?: string;
+};
+
+/**
+ * @examples null
+ */
+export type Profile = {
+  id?: number;
+  username?: string;
+  bio?: string;
+  reputationPoints?: number;
+  followersCount?: number;
+  followingCount?: number;
+  selfFollowing?: boolean;
+  questionCount?: number;
+  questions?: QuestionSummary[];
+  answerCount?: number;
+  answers?: AnswerDetails[];
+  tags?: TagSummary[];
+};
+
+export type UpdateProfile = {
+  bio?: string;
+  tags?: string[];
+};
+
+export type CodeExecution = {
+  /**
+   * The code snippet to be executed
+   */
+  code: string;
+  /**
+   * The programming language of the code snippet
+   */
+  language: "c" | "csharp" | "cpp" | "go" | "java" | "javascript" | "python3";
+  /**
+   * Optional input for the code execution
+   */
+  input?: string;
+};
+
+/**
+ * @example {"status":"success","output":"[1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]\n","executionTime":15}
+ */
+export type ExecutionResult = {
+  /**
+   * The standard output of the code execution
+   */
+  output?: string;
+  /**
+   * Any error messages or standard error output
+   */
+  errors?: string;
+  /**
+   * The time taken to execute the code in milliseconds
+   */
+  executionTime?: number;
+  /**
+   * The status of the code execution
+   */
+  status?: "success" | "error" | "timeout";
+};
+
+/**
+ * Error
+ */
+export type Error = {
+  errorMessage?: string;
+  stackTrace?: string;
 };
 
 /**
@@ -260,5 +285,5 @@ export type ErrorResponseObject = {
    * @example 500
    */
   status: 400 | 401 | 403 | 404 | 409 | 500;
-  errors: ApiError[];
+  error?: Error;
 };

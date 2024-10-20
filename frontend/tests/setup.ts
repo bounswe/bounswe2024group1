@@ -1,6 +1,6 @@
-import { afterEach, vi } from "vitest";
-import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
+import { cleanup } from "@testing-library/react";
+import { afterEach, vi } from "vitest";
 
 vi.mock("zustand/middleware", () => ({
   persist: (a: unknown) => a,
@@ -28,3 +28,6 @@ HTMLElement.prototype.dispatchEvent = function (event): boolean {
   }
   return result;
 };
+
+(globalThis as unknown as Record<string, boolean>).IS_REACT_ACT_ENVIRONMENT =
+  true;

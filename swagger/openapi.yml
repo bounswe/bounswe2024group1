@@ -1,4 +1,7 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/e9dc1866d524058e8bbc582fe09b87d9e7b6e879/schemas/v3.1/schema.yaml
+
 openapi: 3.1.0
+
 info:
   title: Programming Languages Forum
   description: |-
@@ -14,165 +17,29 @@ servers:
     description: Production-like compose
 tags:
   - name: auth
-    description: Operations about authentication
-  - name: user
-    description: Operations about user
+    description: Authentication operations
+  - name: users
+    description: User-related operations
+  - name: questions
+    description: Question-related operations
+  - name: answers
+    description: Answer-related operations
+  - name: tags
+    description: Tag-related operations
+  - name: profiles
+    description: Profile-related operations
+  - name: search
+    description: Search operations
+  - name: feed
+    description: Feed-related operations
+
 paths:
-  /users/logout:
+  /auth/signup:
     post:
-      operationId: logout
-      tags:
-        - auth
-      summary: User logout
-      security:
-        - auth_jwt: []
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-
-  /users/verify-email:
-    post:
-      operationId: verifyEmail
-      tags:
-        - auth
-      summary: Verify user's email
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - token
-              properties:
-                token:
-                  type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-
-  /users/resend-verification-email:
-    post:
-      operationId: resendVerificationEmail
-      tags:
-        - auth
-      summary: Resend verification email
-      security:
-        - auth_jwt: []
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-
-  /users/reset-password-request:
-    post:
-      operationId: resetPasswordRequest
-      tags:
-        - auth
-      summary: Request password reset
-      description:
-        A password reset link will be sent to the user's email if it exists.
-        The response must always be success (even if email does not exist).
-        This is to prevent email enumeration attacks.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-
-  /users/reset-password:
-    post:
-      operationId: resetPassword
-      tags:
-        - auth
-      summary: Reset password
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - token
-                - newPassword
-              properties:
-                token:
-                  type: string
-                newPassword:
-                  type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-
-  /users/signup:
-    post:
-      operationId: signup
       tags:
         - auth
       summary: Register a new user
+      operationId: signUp
       requestBody:
         required: true
         content:
@@ -181,16 +48,25 @@ paths:
               $ref: "#/components/schemas/UserRegistration"
       responses:
         "201":
-          $ref: "#/components/responses/CreatedResponse"
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AuthToken"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /users/login:
+  /auth/login:
     post:
-      operationId: login
       tags:
         - auth
       summary: User login
+      operationId: login
       requestBody:
         required: true
         content:
@@ -199,7 +75,7 @@ paths:
               $ref: "#/components/schemas/UserLogin"
       responses:
         "200":
-          description: OK
+          description: Successful login
           content:
             application/json:
               schema:
@@ -212,23 +88,82 @@ paths:
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
 
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: User logout
+      operationId: logout
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful logout
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
+  /auth/verify-email:
+    post:
+      tags:
+        - auth
+      summary: Verify user's email
+      operationId: verifyEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+      responses:
+        "200":
+          description: Email successfully verified
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /auth/reset-password:
+    post:
+      tags:
+        - auth
+      summary: Reset user's password
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Password reset email sent
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
   /users/{userId}:
     get:
-      operationId: getUserById
       tags:
-        - user
+        - users
       summary: Get user profile
-      security:
-        - auth_jwt: []
+      operationId: getUserProfile
       parameters:
-        - in: path
-          name: userId
+        - name: userId
+          in: path
           required: true
           schema:
             type: integer
       responses:
         "200":
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -242,16 +177,15 @@ paths:
           $ref: "#/components/responses/NotFoundResponse"
 
     put:
-      operationId: updateUserById
       tags:
-        - user
+        - users
       summary: Update user profile
-      description: Can only update own profile
+      operationId: updateUserProfile
       security:
-        - auth_jwt: []
+        - bearerAuth: []
       parameters:
-        - in: path
-          name: userId
+        - name: userId
+          in: path
           required: true
           schema:
             type: integer
@@ -260,10 +194,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserProfile"
+              $ref: "#/components/schemas/UserProfileUpdate"
       responses:
         "200":
-          description: OK
+          description: Profile successfully updated
           content:
             application/json:
               schema:
@@ -273,8 +207,12 @@ paths:
                     properties:
                       data:
                         $ref: "#/components/schemas/UserProfile"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
 
   /users/me:
     get:
@@ -299,50 +237,64 @@ paths:
         "403":
           $ref: "#/components/responses/ForbiddenResponse"
 
-  /users/{userId}/following:
-    get:
-      operationId: getUserFollowing
+  /users/{userId}/follow:
+    post:
       tags:
-        - user
-      summary: Get users being followed
+        - users
+      summary: Follow a user
+      operationId: followUser
       security:
-        - auth_jwt: []
+        - bearerAuth: []
       parameters:
-        - in: path
-          name: userId
+        - name: userId
+          in: path
           required: true
           schema:
             type: integer
       responses:
         "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        $ref: "#/components/schemas/UserArray"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          description: Successfully followed the user
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    delete:
+      tags:
+        - users
+      summary: Unfollow a user
+      operationId: unfollowUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successfully unfollowed the user
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /users/{userId}/followers:
     get:
-      operationId: getUserFollowers
       tags:
-        - user
+        - users
       summary: Get user's followers
+      operationId: getUserFollowers
       parameters:
-        - in: path
-          name: userId
+        - name: userId
+          in: path
           required: true
           schema:
             type: integer
       responses:
         "200":
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -351,27 +303,713 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: "#/components/schemas/UserArray"
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/UserSummary"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /users/{userId}/following:
+    get:
+      tags:
+        - users
+      summary: Get users being followed
+      operationId: getUserFollowing
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/UserSummary"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /questions:
+    post:
+      tags:
+        - questions
+      summary: Create a new question
+      operationId: createQuestion
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewQuestion"
+      responses:
+        "201":
+          description: Question successfully created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
+  /questions/{questionId}:
+    get:
+      tags:
+        - questions
+      summary: Get question details
+      operationId: getQuestionDetails
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionDetails"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    put:
+      tags:
+        - questions
+      summary: Update a question
+      operationId: updateQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQuestion"
+      responses:
+        "200":
+          description: Question successfully updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    delete:
+      tags:
+        - questions
+      summary: Delete a question
+      operationId: deleteQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Question successfully deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /questions/{questionId}/rate:
+    post:
+      tags:
+        - questions
+      summary: Rate a question
+      operationId: rateQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+              properties:
+                rating:
+                  type: integer
+                  minimum: -1
+                  maximum: 1
+      responses:
+        "200":
+          description: Question successfully rated
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /questions/{questionId}/bookmark:
+    post:
+      tags:
+        - questions
+      summary: Bookmark a question
+      operationId: bookmarkQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Question successfully bookmarked
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    delete:
+      tags:
+        - questions
+      summary: Remove bookmark from a question
+      operationId: removeQuestionBookmark
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Bookmark successfully removed
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /questions/{questionId}/answers:
+    get:
+      tags:
+        - answers
+      summary: Get answers for a question
+      operationId: getQuestionAnswers
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/AnswerDetails"
+                          totalPages:
+                            type: integer
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    post:
+      tags:
+        - answers
+      summary: Create a new answer
+      operationId: createAnswer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAnswer"
+      responses:
+        "201":
+          description: Answer successfully created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AnswerDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /answers/{answerId}:
+    put:
+      tags:
+        - answers
+      summary: Update an answer
+      operationId: updateAnswer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: answerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAnswer"
+      responses:
+        "200":
+          description: Answer successfully updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AnswerDetails"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    delete:
+      tags:
+        - answers
+      summary: Delete an answer
+      operationId: deleteAnswer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: answerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Answer successfully deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /answers/{answerId}/rate:
+    post:
+      tags:
+        - answers
+      summary: Rate an answer
+      operationId: rateAnswer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: answerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+              properties:
+                rating:
+                  type: integer
+                  minimum: -1
+                  maximum: 1
+      responses:
+        "200":
+          description: Answer successfully rated
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /tags/{tagId}:
+    get:
+      tags:
+        - tags
+      summary: Get tag details
+      operationId: getTagDetails
+      parameters:
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TagDetails"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /tags/{tagId}/follow:
+    post:
+      tags:
+        - tags
+      summary: Follow a tag
+      operationId: followTag
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully followed the tag
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    delete:
+      tags:
+        - tags
+      summary: Unfollow a tag
+      operationId: unfollowTag
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully unfollowed the tag
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /search/questions:
+    get:
+      tags:
+        - search
+      summary: Search questions
+      operationId: searchQuestions
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          required: true
+          schema:
+            type: string
+        - name: tags
+          in: query
+          description: Comma-separated list of tag IDs
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/QuestionSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /users/{userId}/follow:
+  /search/users:
+    get:
+      tags:
+        - search
+      summary: Search users
+      operationId: searchUsers
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/UserSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /search/tags:
+    get:
+      tags:
+        - search
+      summary: Search tags
+      operationId: searchTags
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/TagSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /feed:
+    get:
+      tags:
+        - feed
+      summary: Get user feed
+      operationId: getUserFeed
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          description: Feed type
+          required: true
+          schema:
+            type: string
+            enum: [recent, topRated, recommended]
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/QuestionSummary"
+                          totalItems:
+                            type: integer
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+  /execute-code:
     post:
-      operationId: followUser
       tags:
-        - user
-      summary: Follow a user
+        - code-execution
+      summary: Execute a code snippet
+      operationId: executeCode
       security:
-        - auth_jwt: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CodeExecution"
       responses:
         "200":
-          description: OK - returning new user profile
+          description: Code successfully executed
           content:
             application/json:
               schema:
@@ -380,42 +1018,21 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: "#/components/schemas/UserProfile"
+                        $ref: "#/components/schemas/ExecutionResult"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-    delete:
-      operationId: unfollowUser
-      tags:
-        - user
-      summary: Unfollow a user
-      security:
-        - auth_jwt: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: OK - returning new user profile
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        $ref: "#/components/schemas/UserProfile"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     UserRegistration:
       type: object
@@ -427,13 +1044,12 @@ components:
         - lastName
         - country
       properties:
-        email:
-          type: string
         username:
           type: string
-        password:
+        email:
           type: string
-        bio:
+          format: email
+        password:
           type: string
         firstName:
           type: string
@@ -461,106 +1077,441 @@ components:
 
     UserProfile:
       type: object
-      required:
-        - id
-        - username
-        - name
-        - bio
-        - followersCount
-        - following
-        - profilePicture
       properties:
         id:
           type: integer
         username:
           type: string
-        name:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
           type: string
         bio:
           type: string
+        country:
+          type: string
+        reputationPoints:
+          type: integer
         followersCount:
           type: integer
         followingCount:
           type: integer
-        gender:
-          type: string
-          enum: [male, female, unknown]
-        profilePicture:
-          type: string
-          format: uri
         selfFollowing:
           type: boolean
+        questionCount:
+          type: integer
+        answerCount:
+          type: integer
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerDetails"
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
       examples:
         - id: 1
-          username: "takoyaki_lover"
-          name: "Takoyaki Lover"
-          bio: "I love takoyaki!"
+          username: "john_doe"
+          email: "john@doe.com"
+          firstName: "John"
+          lastName: "Doe"
+          bio: "I am a software engineer."
+          country: "USA"
+          reputationPoints: 100
           followersCount: 100
           followingCount: 100
-          gender: unknown
-          profilePicture: "https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640"
-          selfFollowing: true
-          recipeCount: 10
+          selfFollowing: false
+          questionCount: 100
+          answerCount: 100
+          questions:
+            - $ref: "#/components/schemas/QuestionSummary/examples/0"
+          answers:
+            - $ref: "#/components/schemas/AnswerDetails/examples/0"
+
+    UserProfileUpdate:
+      type: object
+      properties:
+        bio:
+          type: string
+        country:
+          type: string
+
     UserSummary:
       type: object
       required:
         - id
         - username
-        - name
-        - followersCount
+        - reputationPoints
         - profilePicture
+        - name
       properties:
         id:
           type: integer
         username:
           type: string
-        name:
-          type: string
-        followersCount:
+        reputationPoints:
           type: integer
         profilePicture:
           type: string
-          format: uri
-        selfFollowing:
-          type: boolean
+          format: url
+        name:
+          type: string
       examples:
         - id: 1
-          username: "takoyaki_lover"
-          name: "Takoyaki Lover"
-          followersCount: 100
-          profilePicture: "http://commons.wikimedia.org/wiki/Special:FilePath/Takoyaki%20by%20yomi955.jpg"
-          selfFollowing: false
+          username: "john_doe"
+          reputationPoints: 100
+          profilePicture: "https://placehold.co/640x640"
+          name: "John Doe"
 
-    UserArray:
-      description: An array of users
-      type: array
-      items:
-        $ref: "#/components/schemas/UserSummary"
-
-    ApiResponse:
-      oneOf:
-        - $ref: "#/components/schemas/SuccessResponseObject"
-        - $ref: "#/components/schemas/ErrorResponseObject"
-      examples:
-        - status: 200
-          data: { "message": "Success" }
-        - status: 400
-          errors:
-            - message: "Invalid email"
-              field: "email"
-            - message: "Invalid password"
-              field: "password"
-
-    ApiError:
+    NewQuestion:
       type: object
       required:
-        - message
+        - title
+        - content
+        - tags
       properties:
-        message:
+        title:
           type: string
-        field:
+        content:
           type: string
-          description: If empty, indicates an error not related to any field.
+        tags:
+          type: array
+          items:
+            type: string
+
+    UpdateQuestion:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+
+    QuestionDetails:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - author
+        - createdAt
+        - updatedAt
+        - tags
+        - rating
+        - answerCount
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: "#/components/schemas/UserSummary"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagSummary"
+        rating:
+          type: integer
+        answerCount:
+          type: integer
+        viewCount:
+          type: integer
+        bookmarked:
+          type: boolean
+        selfRating:
+          type: integer
+          minimum: -1
+          maximum: 1
+
+      examples:
+        - id: 1
+          title: "What is the best way to learn programming?"
+          content: "I want to learn programming, but I don't know where to start. What is the best way to learn programming?"
+          author:
+            $ref: "#/components/schemas/UserSummary/examples/0"
+          createdAt: "2024-01-01T00:00:00Z"
+          updatedAt: "2024-01-01T00:00:00Z"
+          tags:
+            - $ref: "#/components/schemas/TagSummary/examples/0"
+          rating: 10
+          answerCount: 2
+          viewCount: 100
+          bookmarked: false
+          selfRating: 0
+
+    QuestionSummary:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - content
+        - createdAt
+        - answerCount
+        - rating
+        - tags
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: "#/components/schemas/UserSummary"
+        createdAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagSummary"
+        rating:
+          type: integer
+        answerCount:
+          type: integer
+        viewCount:
+          type: integer
+        selfRating:
+          type: integer
+          minimum: -1
+          maximum: 1
+
+      examples:
+        - id: 1
+          title: "What is the best way to learn programming?"
+          content: "I want to learn programming, but I don't know where to start. What is the best way to learn programming?"
+          author:
+            $ref: "#/components/schemas/UserSummary/examples/0"
+          createdAt: "2024-01-01T00:00:00Z"
+          tags:
+            - $ref: "#/components/schemas/TagSummary/examples/0"
+          rating: 10
+          answerCount: 2
+          viewCount: 100
+          selfRating: 0
+
+    NewAnswer:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+
+    UpdateAnswer:
+      type: object
+      properties:
+        content:
+          type: string
+
+    AnswerDetails:
+      type: object
+      required:
+        - id
+        - content
+        - author
+        - createdAt
+        - updatedAt
+        - rating
+        - question
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        author:
+          $ref: "#/components/schemas/UserSummary"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        rating:
+          type: integer
+        selfRating:
+          type: integer
+          minimum: -1
+          maximum: 1
+        question:
+          $ref: "#/components/schemas/QuestionSummary"
+      examples:
+        - id: 1
+          content: "To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.
+
+            1. Using the `sort()` method:
+              The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.
+
+            ```python3-exec
+
+            my_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+
+            my_list.sort()
+
+            print(my_list)
+
+            ```"
+          author:
+            $ref: "#/components/schemas/UserSummary/examples/0"
+          createdAt: "2024-01-01T00:00:00Z"
+          updatedAt: "2024-01-01T00:00:00Z"
+          rating: 10
+          selfRating: 0
+          question:
+            $ref: "#/components/schemas/QuestionSummary/examples/0"
+
+    TagDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        questionCount:
+          type: integer
+        followersCount:
+          type: integer
+        following:
+          type: boolean
+        photo:
+          type: string
+          format: url
+      examples:
+        - id: "python"
+          name: "Python"
+          description: "Python is a programming language."
+          questionCount: 100
+          followersCount: 1000
+          following: false
+          photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"
+    TagSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        questionCount:
+          type: integer
+        photo:
+          type: string
+          format: url
+      examples:
+        - id: "python"
+          name: "Python"
+          questionCount: 100
+          photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"
+
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        bio:
+          type: string
+        reputationPoints:
+          type: integer
+        followersCount:
+          type: integer
+        followingCount:
+          type: integer
+        selfFollowing:
+          type: boolean
+        questionCount:
+          type: integer
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
+        answerCount:
+          type: integer
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerDetails"
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagSummary"
+      examples:
+
+
+    UpdateProfile:
+      type: object
+      properties:
+        bio:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    CodeExecution:
+      type: object
+      required:
+        - code
+        - language
+      properties:
+        code:
+          type: string
+          description: The code snippet to be executed
+        language:
+          type: string
+          enum: [c, csharp, cpp, go, java, javascript, python3]
+          description: The programming language of the code snippet
+        input:
+          type: string
+          description: Optional input for the code execution
+
+    ExecutionResult:
+      type: object
+      properties:
+        output:
+          type: string
+          description: The standard output of the code execution
+        errors:
+          type: string
+          description: Any error messages or standard error output
+        executionTime:
+          type: number
+          description: The time taken to execute the code in milliseconds
+        status:
+          type: string
+          enum: [success, error, timeout]
+          description: The status of the code execution
+      examples:
+        - status: "success"
+          output: "[1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]\n"
+          executionTime: 15
+    Error:
+      type: object
+      description: Error
+      properties:
+        errorMessage:
+          type: string
+        stackTrace:
+          type: string
+
     SuccessResponseObject:
       description: OK
       type: object
@@ -580,6 +1531,7 @@ components:
           oneOf:
             - type: object
             - type: array
+
     ErrorResponseObject:
       description: Response with errors
       type: object
@@ -598,109 +1550,41 @@ components:
             500 status code is an error response. Prioritize the inner status over the HTTP
             status.
           examples: [400, 401, 403, 404, 409, 500]
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ApiError"
+        error:
+          $ref: "#/components/schemas/Error"
   responses:
-    OkResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/SuccessResponseObject"
-
-    CreatedResponse:
-      description: Created
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessResponseObject"
-              - type: object
-                properties:
-                  status:
-                    const: 201
-
     BadRequestResponse:
       description: Bad Request
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorResponseObject"
-              - type: object
-                properties:
-                  status:
-                    const: 400
+            $ref: '#/components/schemas/ErrorResponseObject'
 
     UnauthorizedResponse:
       description: Unauthorized
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorResponseObject"
-              - type: object
-                properties:
-                  status:
-                    const: 401
+            $ref: '#/components/schemas/ErrorResponseObject'
 
     ForbiddenResponse:
       description: Forbidden
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorResponseObject"
-              - type: object
-                properties:
-                  status:
-                    const: 403
+            $ref: '#/components/schemas/ErrorResponseObject'
 
     NotFoundResponse:
       description: Not Found
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorResponseObject"
-              - type: object
-                properties:
-                  status:
-                    const: 404
+            $ref: '#/components/schemas/ErrorResponseObject'
 
-    ConflictResponse:
-      description: Conflict
+
+    TooManyRequestsResponse:
+      description: Too Many Requests
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorResponseObject"
-              - type: object
-                properties:
-                  status:
-                    const: 409
-
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                examples:
-                  - 500
-              errors:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiError"
-
-  securitySchemes:
-    auth_jwt:
-      type: http
-      description: A bearer token is used to authenticate a user.
-      scheme: bearer
-      bearerFormat: JWT
+            $ref: "#/components/schemas/ErrorResponseObject"

@@ -1,4 +1,5 @@
 cd frontend
+corepack enable
 yarn install --immutable
 yarn test run
 yarn lint-staged

@@ -4,3 +4,9 @@
  | | |_ |  _  /| |  | | |  | |  ___/   | |
  | |__| | | \ \| |__| | |__| | |       | |
   \_____|_|  \_\\____/ \____/|_|       |_|
+
+Spring Boot Version is : ${spring-boot.version}
+
+Application is running on port : ${server.port}
+
+----------------------------------------------------------
