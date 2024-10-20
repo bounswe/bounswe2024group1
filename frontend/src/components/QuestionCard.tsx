@@ -5,13 +5,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface QuestionCardProps {
-  id: string;
+  id: number;
   title: string;
   content: string;
   votes: number;
   answerCount: number;
   author: {
-    id: string;
+    id: number;
     name: string;
     profilePicture: string;
   };

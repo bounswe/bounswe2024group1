@@ -4,12 +4,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface AnswerCardProps {
-  id: string;
+  id: number;
   title: string;
   content: string;
   votes: number;
   author: {
-    id: string;
+    id: number;
     name: string;
     profilePicture: string;
   };
