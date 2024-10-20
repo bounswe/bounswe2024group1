@@ -15,25 +15,29 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-    public User updateUser(User user, UserProfileUpdateRequestDto userProfileUpdateRequestDto) throws UserNotFoundException {
+
+    public User updateUser(User user, UserProfileUpdateRequestDto userProfileUpdateRequestDto)
+            throws UserNotFoundException {
         Optional<User> userOptional = userRepository.findById(user.getId());
         if (userOptional.isEmpty()) {
-           throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("User not found");
         }
         user.setBio(userProfileUpdateRequestDto.getBio());
         user.setCountry(userProfileUpdateRequestDto.getCountry());
         return userRepository.save(user);
     }
+
     @Transactional
     public User followUser(User user, Long id) throws UserNotFoundException {
         Optional<User> userToFollowOptional = userRepository.findById(id);
         if (userToFollowOptional.isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
-        if(user.getId().equals(id)) {
+        if (user.getId().equals(id)) {
             throw new UserNotFoundException("You can't follow yourself");
         }
         User userToFollow = userToFollowOptional.get();
@@ -44,6 +48,7 @@ public class UserService {
         userToFollow.setFollowersCount(userToFollow.getFollowersCount() + 1);
         return userRepository.save(userToFollow);
     }
+
     @Transactional
     public User unfollowUser(User user, Long id) throws UserNotFoundException {
         Optional<User> userToUnfollowOptional = userRepository.findById(id);
@@ -61,6 +66,10 @@ public class UserService {
 
     public List<User> getFollowers(User user) {
         return user.getFollowers().stream().toList();
+    }
+
+    public List<User> getFollowing(User user) {
+        return user.getFollowing().stream().toList();
     }
 
 }
