@@ -67,6 +67,8 @@ public class UserController extends BaseController {
             Optional<User> user = userService.getUserById(id);
             if (user.isPresent()) {
                 UserProfileResponseDto userProfileResponseDto = modelMapper.map(user.get(), UserProfileResponseDto.class);
+                userProfileResponseDto.setSelfFollowing(userService.selfFollowing(user.get()));
+
                 GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                         userProfileResponseDto.getClass(),
                         "User retrieved successfully",
@@ -152,6 +154,8 @@ public class UserController extends BaseController {
             User user = userContextService.getCurrentUser();
             User followedUser = userService.followUser(user, id);
             UserProfileResponseDto updatedUserProfileResponseDto = modelMapper.map(followedUser, UserProfileResponseDto.class);
+            updatedUserProfileResponseDto.setSelfFollowing(userService.selfFollowing(followedUser));
+
             GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                     updatedUserProfileResponseDto.getClass(),
                     "User followed successfully",
@@ -195,6 +199,8 @@ public class UserController extends BaseController {
             User user = userContextService.getCurrentUser();
             User unfollowedUser = userService.unfollowUser(user, id);
             UserProfileResponseDto updatedUserProfileResponseDto = modelMapper.map(unfollowedUser, UserProfileResponseDto.class);
+            updatedUserProfileResponseDto.setSelfFollowing(userService.selfFollowing(unfollowedUser));
+
             GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                     updatedUserProfileResponseDto.getClass(),
                     "User unfollowed successfully",

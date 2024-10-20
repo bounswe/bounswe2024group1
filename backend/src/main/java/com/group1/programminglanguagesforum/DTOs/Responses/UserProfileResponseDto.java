@@ -16,5 +16,6 @@ public class UserProfileResponseDto {
     private Long answerCount;
     private int followersCount;
     private int followingCount;
+    private boolean selfFollowing;
     private int reputationPoints;
 }
