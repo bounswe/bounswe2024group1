@@ -1,6 +1,7 @@
 package com.group1.programminglanguagesforum.Config;
 
 import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.UserProfileResponseDto;
 import com.group1.programminglanguagesforum.Entities.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -20,6 +21,15 @@ public class ModelMapperConfig {
                 skip(destination.getPassword());
                 skip(destination.getFollowers());
                 skip(destination.getFollowing());
+            }
+        });
+        modelMapper.addMappings(new PropertyMap <UserProfileResponseDto,User>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPassword());
+                skip(destination.getFollowers());
+                skip(destination.getFollowing());
+
             }
         });
 

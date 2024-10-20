@@ -8,6 +8,7 @@ import com.group1.programminglanguagesforum.DTOs.Responses.SigninResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.SignupResponseDto;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
+import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,15 +29,14 @@ public class AuthenticationService {
 
     public GenericApiResponse<SignupResponseDto> signup(SignupRequestDto requestDto) {
         if (userRepository.findByUsernameOrEmail(requestDto.getUsername(), requestDto.getEmail()).isPresent()) {
-            return GenericApiResponse.<SignupResponseDto>builder()
-                    .status(HttpStatus.CONFLICT.value())
-                    .message("Username or email already exists")
-                    .error(
-                            ErrorResponse.builder()
-                                    .errorMessage("Username or email already exists")
-                                    .build()
-                    )
-                    .build();
+            return ApiResponseBuilder.buildErrorResponse(
+                    SignupResponseDto.class,
+                    "Username or email already exists",
+                    HttpStatus.CONFLICT.value(),
+                    ErrorResponse.builder()
+                            .errorMessage("Username or email already exists")
+                            .build()
+            );
         }
         User user = User.builder()
                 .email(requestDto.getEmail())
@@ -51,12 +51,14 @@ public class AuthenticationService {
 
         String token = jwtService.generateToken(user);
 
-        return GenericApiResponse.<SignupResponseDto>builder()
-                .status(HttpStatus.CREATED.value())
-                .message("User created successfully")
-                .data(SignupResponseDto.builder().token(token).build())
-                .build()
-                ;
+        return ApiResponseBuilder.buildSuccessResponse(
+                SignupResponseDto.class,
+                "User created successfully",
+                HttpStatus.CREATED.value(),
+                SignupResponseDto.builder()
+                        .token(token)
+                        .build()
+        );
 
     }
 
@@ -67,15 +69,14 @@ public class AuthenticationService {
                         request.getUsernameOrEmail()
                 );
         if (userOptional.isEmpty()) {
-            return GenericApiResponse.<SigninResponseDto>builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .message("Invalid email/username or password.")
-                    .error(
-                            ErrorResponse.builder()
-                                    .errorMessage("Invalid email/username or password.")
-                                    .build()
-                    )
-                    .build();
+            return ApiResponseBuilder.buildErrorResponse(
+                    SigninResponseDto.class,
+                    "Invalid email/username or password.",
+                    HttpStatus.UNAUTHORIZED.value(),
+                    ErrorResponse.builder()
+                            .errorMessage("Invalid email/username or password.")
+                            .build()
+            );
         }
         User user = userOptional.get();
         try {
@@ -86,26 +87,24 @@ public class AuthenticationService {
                     )
             );
         } catch (AuthenticationException e) {
-            return GenericApiResponse.<SigninResponseDto>builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .message("Invalid email/username or password.")
-                    .error(
-                            ErrorResponse.builder()
-                                    .errorMessage("Invalid email/username or password.")
-                                    .build()
-                    )
-                    .build();
+            return ApiResponseBuilder.buildErrorResponse(
+                    SigninResponseDto.class,
+                    "Invalid email/username or password.",
+                    HttpStatus.UNAUTHORIZED.value(),
+                    ErrorResponse.builder()
+                            .errorMessage("Invalid email/username or password.")
+                            .build()
+            );
         }
         String token = jwtService.generateToken(user);
-        return GenericApiResponse.<SigninResponseDto>builder()
-                .status(HttpStatus.OK.value())
-                .message("User logged in successfully.")
-                .data(
-                        SigninResponseDto.builder()
-                                .token(token)
-                                .build()
-                )
-                .build();
+        return ApiResponseBuilder.buildSuccessResponse(
+                SigninResponseDto.class,
+                "User logged in successfully.",
+                HttpStatus.OK.value(),
+                SigninResponseDto.builder()
+                        .token(token)
+                        .build()
+        );
 
 
     }
