@@ -9,6 +9,7 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { queryClient } from "@/services/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,10 +32,11 @@ export default function RootLayout() {
 
   return (
     <GluestackUIProvider>
-      <QueryClientProvider client={queryClient}>
-
-        <Slot />
-      </QueryClientProvider>
+      <GestureHandlerRootView>
+        <QueryClientProvider client={queryClient}>
+          <Slot />
+        </QueryClientProvider>
+      </GestureHandlerRootView>
     </GluestackUIProvider>
   );
 }
