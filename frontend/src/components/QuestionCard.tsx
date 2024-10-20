@@ -5,13 +5,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface QuestionCardProps {
-  id: string;
+  id: number;
   title: string;
   content: string;
   votes: number;
   answerCount: number;
   author: {
-    id: string;
+    id: number;
     name: string;
     profilePicture: string;
   };
@@ -53,7 +53,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             />
           </Link>
           <Link
-            to={`/questions/${id}`}
+            to={`/question/${id}`}
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
             Go to question

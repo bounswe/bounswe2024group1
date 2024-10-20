@@ -2,7 +2,7 @@ import {
   SearchTagsError,
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
-import { Tag } from "@/services/api/programmingForumSchemas";
+import { TagSummary } from "@/services/api/programmingForumSchemas";
 import { QueryObserverSuccessResult } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -14,7 +14,7 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useSearchTags: vi.fn(),
 }));
 
-const mockTags: Tag[] = [
+const mockTags: TagSummary[] = [
   { id: "1", name: "Japan", description: "Japanese cuisine" },
   { id: "2", name: "Sausage", description: "Various types of sausages" },
 ];
