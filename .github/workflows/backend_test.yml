@@ -23,4 +23,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test with Maven
-        run: docker compose -f dev.yml run --rm backend mvn test -B
+        run: docker compose -f dev.yml run --rm backend sh -c "mvn clean install -q && mvn test -B"
