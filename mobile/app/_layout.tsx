@@ -7,6 +7,8 @@ import "../global.css";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { queryClient } from "@/services/query-client";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,7 +31,10 @@ export default function RootLayout() {
 
   return (
     <GluestackUIProvider>
-      <Slot />
+      <QueryClientProvider client={queryClient}>
+
+        <Slot />
+      </QueryClientProvider>
     </GluestackUIProvider>
   );
 }

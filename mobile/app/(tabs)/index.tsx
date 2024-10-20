@@ -1,8 +1,12 @@
 import { Image, Text } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { Button, ButtonText } from "@/components/ui";
+import useAuthStore from "@/services/auth";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
+  const auth = useAuthStore();
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -14,6 +18,33 @@ export default function HomeScreen() {
       }
     >
       <Text className="text-2xl ml-4 font-bold">Welcome to React Native!</Text>
+      {!auth.token && (
+        <>
+          <Button
+            onPress={() => {
+              router.push("/login");
+            }}
+          >
+            <ButtonText>Login</ButtonText>
+          </Button>
+          <Button
+            onPress={() => {
+              router.push("/signup");
+            }}
+          >
+            <ButtonText>Signup</ButtonText>
+          </Button>
+        </>
+      )}
+      {auth.token && (
+        <Button
+          onPress={() => {
+            router.push("/logout");
+          }}
+        >
+          <ButtonText>Logout</ButtonText>
+        </Button>
+      )}
     </ParallaxScrollView>
   );
 }
