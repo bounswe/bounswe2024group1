@@ -1274,6 +1274,10 @@ components:
           type: integer
         bookmarked:
           type: boolean
+        selfRating:
+          type: integer
+          minimum: -1
+          maximum: 1
 
       examples:
         - id: 1
@@ -1289,6 +1293,7 @@ components:
           answerCount: 2
           viewCount: 100
           bookmarked: false
+          selfRating: 0
 
     QuestionSummary:
       type: object
@@ -1312,6 +1317,23 @@ components:
           type: integer
         viewCount:
           type: integer
+        selfRating:
+          type: integer
+          minimum: -1
+          maximum: 1
+
+      examples:
+        - id: 1
+          title: "What is the best way to learn programming?"
+          author:
+            $ref: "#/components/schemas/UserSummary/examples/0"
+          createdAt: "2024-01-01T00:00:00Z"
+          tags:
+            - $ref: "#/components/schemas/TagSummary/examples/0"
+          rating: 10
+          answerCount: 2
+          viewCount: 100
+          selfRating: 0
 
     NewAnswer:
       type: object
@@ -1351,6 +1373,10 @@ components:
           format: date-time
         rating:
           type: integer
+        selfRating:
+          type: integer
+          minimum: -1
+          maximum: 1
       examples:
         - id: 1
           content: "To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.
@@ -1372,6 +1398,7 @@ components:
           createdAt: "2024-01-01T00:00:00Z"
           updatedAt: "2024-01-01T00:00:00Z"
           rating: 10
+          selfRating: 0
 
     TagDetails:
       type: object
@@ -1388,6 +1415,9 @@ components:
           type: integer
         following:
           type: boolean
+        photo:
+          type: string
+          format: url
       examples:
         - id: "python"
           name: "Python"
@@ -1395,7 +1425,7 @@ components:
           questionCount: 100
           followersCount: 1000
           following: false
-
+          photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"
     TagSummary:
       type: object
       properties:
@@ -1403,9 +1433,16 @@ components:
           type: string
         name:
           type: string
+        questionCount:
+          type: integer
+        photo:
+          type: string
+          format: url
       examples:
         - id: "python"
           name: "Python"
+          questionCount: 100
+          photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"
 
 
     Profile:

@@ -1,8 +1,8 @@
+import { Search } from "lucide-react";
+import { useId, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Search } from "lucide-react";
-import { useId, useState } from "react";
 
 export const SearchBar = () => {
   const id = useId();
@@ -17,6 +17,7 @@ export const SearchBar = () => {
         onSubmit={(e) => {
           e.preventDefault();
           const params = new URLSearchParams();
+          params.append("type", "tags"); // TODO: Add select parameter
           params.append("q", search);
 
           navigate("/search?" + params.toString());

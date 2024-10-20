@@ -1,6 +1,7 @@
 import { FieldValues, UseFormSetError } from "react-hook-form";
 
 import { z } from "zod";
+import { temporaryMocks } from "../temporaryMocks";
 import { ProgrammingForumContext } from "./programmingForumContext";
 import {
   ErrorResponseObject,
@@ -8,6 +9,8 @@ import {
 } from "./programmingForumSchemas";
 
 const baseUrl = "/api/v1";
+
+const USE_TEMPORARY_MOCKS = true;
 
 export type ErrorWrapper<TError> =
   | TError
@@ -55,6 +58,16 @@ export async function programmingForumFetch<
   TQueryParams,
   TPathParams
 >): Promise<TData> {
+  if (USE_TEMPORARY_MOCKS && url in temporaryMocks) {
+    const mock = temporaryMocks[url as keyof typeof temporaryMocks];
+
+    if (typeof mock === "function") {
+      return mock(body as unknown) as unknown as TData;
+    }
+
+    return mock.payload as unknown as TData;
+  }
+
   try {
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
@@ -175,47 +188,20 @@ export const errorSchema = z.object({
   status: z.number().or(z.literal("unknown")),
   payload: z.object({
     status: z.number(),
-    errors: z
-      .array(
-        z.object({
-          field: z.string().optional(),
-          message: z.string(),
-        }),
-      )
-      .optional(),
+    error: z.object({
+      errorMessage: z.string().optional(),
+      stackTrace: z.string(),
+    }),
     message: z.string().optional(),
   }),
 });
 
-export const renderError = (
-  unknownError: unknown,
-  excludeFieldErrors: boolean = false,
-): string => {
-  if (!errorSchema.safeParse(unknownError).success) {
+export const renderError = (likelyError: unknown): string => {
+  const error = errorSchema.safeParse(likelyError);
+  if (!error.success) {
     return "Unknown error";
   }
-  const error = errorSchema.parse(unknownError);
-  if (!("errors" in error.payload)) {
-    return error.payload?.["message"] ?? "Unknown error";
-  }
-  const errors = excludeFieldErrors
-    ? error.payload.errors!.filter((e) => !e.field)
-    : error.payload.errors!;
-
-  const fieldErrors = errors
-    .filter((e) => !!e.field)
-    .map((e) => e.field + ": " + e.message);
-  const generalErrors = errors.filter((e) => !e.field).map((e) => e.message);
-
-  const renderedString =
-    errors.length > 0
-      ? generalErrors.join("\n") +
-        (fieldErrors.length
-          ? "\n\nField errors:\n" + fieldErrors.join("\n")
-          : "")
-      : "Unknown error.";
-
-  return renderedString.trim();
+  return error.data.payload.error.errorMessage ?? "Unknown error";
 };
 
 export const setFormErrors = <T extends FieldValues>(

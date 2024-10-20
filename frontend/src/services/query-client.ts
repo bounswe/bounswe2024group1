@@ -1,10 +1,10 @@
-import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
-import useAuthStore, { signout } from "./auth";
 import { toast } from "@/components/ui/use-toast";
-import { renderError } from "./api/programmingForumFetcher";
 import { router } from "@/routes";
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
+import { renderError } from "./api/programmingForumFetcher";
+import useAuthStore, { signout } from "./auth";
 
-const errorHandler = (error: Error) => {
+const errorHandler = async (error: Error) => {
   if ("status" in error && error.status === 401) {
     if (!useAuthStore.getState().token) {
       toast({
@@ -20,10 +20,10 @@ const errorHandler = (error: Error) => {
       });
     }
 
-    signout();
+    await signout();
 
     // navigate to /login
-    router.navigate(
+    await router.navigate(
       "/login?from=" +
         encodeURIComponent(window.location.pathname + window.location.search),
     );

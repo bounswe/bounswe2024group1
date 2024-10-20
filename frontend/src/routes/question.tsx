@@ -144,6 +144,7 @@ export default function QuestionPage() {
           <div className="flex gap-2">
             <Button
               size="sm"
+              disabled={question.selfRating === 1}
               onClick={() =>
                 voteQuestion({
                   pathParams: { questionId: question.id },
@@ -156,6 +157,7 @@ export default function QuestionPage() {
             <Button
               size="sm"
               variant="outline"
+              disabled={question.selfRating === -1}
               onClick={() =>
                 voteQuestion({
                   pathParams: { questionId: question.id },

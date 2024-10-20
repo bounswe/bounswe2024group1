@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useNavigate } from "react-router-dom";
 import { expect, test, vi } from "vitest";
 import { SearchBar } from "./SearchBar";
-import { useNavigate } from "react-router-dom";
 
 vi.mock("react-router-dom", () => {
   const navigate = vi.fn();
@@ -24,6 +24,6 @@ test("searching something goes to /search", async () => {
 
   // Assert
   await waitFor(() => {
-    expect(useNavigate()).toHaveBeenCalledWith("/search?q=hello");
+    expect(useNavigate()).toHaveBeenCalledWith("/search?type=tags&q=hello");
   });
 });
