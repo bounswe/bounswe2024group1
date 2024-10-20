@@ -1353,7 +1353,20 @@ components:
           type: integer
       examples:
         - id: 1
-          content: "The best way to learn programming is to start with a good book and practice regularly."
+          content: "To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.
+
+            1. Using the `sort()` method:
+              The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.
+
+            ```python3-exec
+
+            my_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+
+            my_list.sort()
+
+            print(my_list)
+
+            ```"
           author:
             $ref: "#/components/schemas/UserSummary/examples/0"
           createdAt: "2024-01-01T00:00:00Z"
@@ -1463,6 +1476,10 @@ components:
           type: string
           enum: [success, error, timeout]
           description: The status of the code execution
+      examples:
+        - status: "success"
+          output: "[1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]\n"
+          executionTime: 15
     Error:
       type: object
       description: Error
