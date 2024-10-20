@@ -5,6 +5,7 @@ import useAuthStore from "@/services/auth";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import { ContentWithSnippets } from "./ContentWithSnippets";
 
 interface AnswerItemProps {
   answer: AnswerDetails;
@@ -22,9 +23,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
   return (
     <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-4">
-        <p className="whitespace-pre-wrap text-sm text-gray-600">
-          {answer.content}
-        </p>
+        <ContentWithSnippets content={answer.content} />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
