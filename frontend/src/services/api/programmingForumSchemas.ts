@@ -45,6 +45,9 @@ export type UserProfileUpdate = {
   country?: string;
 };
 
+/**
+ * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"https://placehold.co/640x640","name":"John Doe"}
+ */
 export type UserSummary = {
   id: number;
   username: string;
@@ -68,6 +71,9 @@ export type UpdateQuestion = {
   tags?: string[];
 };
 
+/**
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"bookmarked":false,"selfRating":0}
+ */
 export type QuestionDetails = {
   id: number;
   title: string;
@@ -86,8 +92,16 @@ export type QuestionDetails = {
   answerCount: number;
   viewCount?: number;
   bookmarked?: boolean;
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  selfRating?: number;
 };
 
+/**
+ * @example {"id":1,"title":"What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"selfRating":0}
+ */
 export type QuestionSummary = {
   id?: number;
   title?: string;
@@ -100,6 +114,11 @@ export type QuestionSummary = {
   rating?: number;
   answerCount?: number;
   viewCount?: number;
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  selfRating?: number;
 };
 
 export type NewAnswer = {
@@ -110,6 +129,9 @@ export type UpdateAnswer = {
   content?: string;
 };
 
+/**
+ * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfRating":0}
+ */
 export type AnswerDetails = {
   id: number;
   content: string;
@@ -123,8 +145,16 @@ export type AnswerDetails = {
    */
   updatedAt: string;
   rating: number;
+  /**
+   * @minimum -1
+   * @maximum 1
+   */
+  selfRating?: number;
 };
 
+/**
+ * @example {"id":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ */
 export type TagDetails = {
   id?: string;
   name?: string;
@@ -132,11 +162,23 @@ export type TagDetails = {
   questionCount?: number;
   followersCount?: number;
   following?: boolean;
+  /**
+   * @format url
+   */
+  photo?: string;
 };
 
+/**
+ * @example {"id":"python","name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ */
 export type TagSummary = {
   id?: string;
   name?: string;
+  questionCount?: number;
+  /**
+   * @format url
+   */
+  photo?: string;
 };
 
 export type Profile = {
@@ -172,6 +214,9 @@ export type CodeExecution = {
   input?: string;
 };
 
+/**
+ * @example {"status":"success","output":"[1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]\n","executionTime":15}
+ */
 export type ExecutionResult = {
   /**
    * The standard output of the code execution

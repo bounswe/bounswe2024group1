@@ -23,7 +23,10 @@ export const FullscreenLoading = ({
         overlay && "fixed inset-0 z-20 bg-white bg-opacity-70",
       )}
     >
-      <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      <Loader2
+        aria-label="Loading"
+        className="h-16 w-16 animate-spin text-primary"
+      />
       {takingLong && (
         <div className="ml-4 text-lg font-normal duration-500 animate-in fade-in">
           This is taking a while...

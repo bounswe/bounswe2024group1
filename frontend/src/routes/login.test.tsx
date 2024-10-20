@@ -1,17 +1,13 @@
-import { RouterProvider, createMemoryRouter } from "react-router-dom";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { routeConfig } from "../routes";
-import { afterEach, expect, test, vi } from "vitest";
 import { fetchLogin } from "@/services/api/programmingForumComponents";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act } from "react";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
+import { afterEach, expect, test, vi } from "vitest";
+import { routeConfig } from "../routes";
 import useAuthStore from "../services/auth";
 
-vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
-  const mod =
-    await importOriginal<
-      typeof import("@/services/api/programmingForumComponents")
-    >();
+vi.mock("@/services/api/programmingForumComponents", () => {
   return {
-    ...mod,
     useGetFeed: vi.fn(() => ({
       data: {
         data: [],
@@ -34,8 +30,10 @@ vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
   };
 });
 
-afterEach(() => {
-  useAuthStore.setState(useAuthStore.getInitialState());
+afterEach(async () => {
+  await act(() => {
+    useAuthStore.setState(useAuthStore.getInitialState());
+  });
 });
 
 test("login calls service", async () => {
@@ -52,7 +50,7 @@ test("login calls service", async () => {
   const passwordField = screen.getByLabelText("Password");
   fireEvent.change(passwordField, { target: { value: "password" } }); // not a valid email
   const submit = screen.getByText("Login", { selector: "button" });
-  fireEvent.click(submit);
+  await fireEvent.click(submit);
 
   // Assert
   await waitFor(() => {
@@ -65,7 +63,7 @@ test("login calls service", async () => {
   });
 });
 
-/*test("log in button goes to /login", async () => {
+test("log in button goes to /login", async () => {
   // Arrange
   const router = createMemoryRouter(routeConfig, {
     initialEntries: ["/"],
@@ -75,10 +73,10 @@ test("login calls service", async () => {
 
   // Act
   const button = screen.getAllByText("Log in");
-  fireEvent.click(button[0]);
+  await fireEvent.click(button[0]);
 
   // Assert
   await waitFor(() => {
     expect(router.state.location.pathname).toBe("/login");
   });
-});*/
+});
