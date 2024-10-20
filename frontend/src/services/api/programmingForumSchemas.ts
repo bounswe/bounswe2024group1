@@ -111,18 +111,18 @@ export type UpdateAnswer = {
 };
 
 export type AnswerDetails = {
-  id?: number;
-  content?: string;
-  author?: UserSummary;
+  id: number;
+  content: string;
+  author: UserSummary;
   /**
    * @format date-time
    */
-  createdAt?: string;
+  createdAt: string;
   /**
    * @format date-time
    */
-  updatedAt?: string;
-  rating?: number;
+  updatedAt: string;
+  rating: number;
 };
 
 export type TagDetails = {

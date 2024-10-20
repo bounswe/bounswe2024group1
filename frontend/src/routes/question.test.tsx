@@ -32,6 +32,7 @@ const mockQuestionData = vi.hoisted(
 // Mock the API hook
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetQuestionDetails: vi.fn(() => {}),
+  useGetQuestionAnswers: vi.fn(() => ({ data: null, isLoading: true })),
   useDeleteQuestion: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
@@ -39,6 +40,9 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
     mutateAsync: vi.fn(),
   })),
   useRateQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useRateAnswer: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
 }));

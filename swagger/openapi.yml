@@ -562,9 +562,14 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/AnswerDetails"
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/AnswerDetails"
+                          totalPages:
+                            type: integer
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -1195,6 +1200,12 @@ components:
           format: url
         name:
           type: string
+      examples:
+        - id: 1
+          username: "john_doe"
+          reputationPoints: 100
+          profilePicture: "https://placehold.co/640x640"
+          name: "John Doe"
 
     NewQuestion:
       type: object
@@ -1264,6 +1275,21 @@ components:
         bookmarked:
           type: boolean
 
+      examples:
+        - id: 1
+          title: "What is the best way to learn programming?"
+          content: "I want to learn programming, but I don't know where to start. What is the best way to learn programming?"
+          author:
+            $ref: "#/components/schemas/UserSummary/examples/0"
+          createdAt: "2024-01-01T00:00:00Z"
+          updatedAt: "2024-01-01T00:00:00Z"
+          tags:
+            - $ref: "#/components/schemas/TagSummary/examples/0"
+          rating: 10
+          answerCount: 2
+          viewCount: 100
+          bookmarked: false
+
     QuestionSummary:
       type: object
       properties:
@@ -1303,6 +1329,13 @@ components:
 
     AnswerDetails:
       type: object
+      required:
+        - id
+        - content
+        - author
+        - createdAt
+        - updatedAt
+        - rating
       properties:
         id:
           type: integer
@@ -1318,6 +1351,14 @@ components:
           format: date-time
         rating:
           type: integer
+      examples:
+        - id: 1
+          content: "The best way to learn programming is to start with a good book and practice regularly."
+          author:
+            $ref: "#/components/schemas/UserSummary/examples/0"
+          createdAt: "2024-01-01T00:00:00Z"
+          updatedAt: "2024-01-01T00:00:00Z"
+          rating: 10
 
     TagDetails:
       type: object
@@ -1334,6 +1375,13 @@ components:
           type: integer
         following:
           type: boolean
+      examples:
+        - id: "python"
+          name: "Python"
+          description: "Python is a programming language."
+          questionCount: 100
+          followersCount: 1000
+          following: false
 
     TagSummary:
       type: object
@@ -1342,6 +1390,10 @@ components:
           type: string
         name:
           type: string
+      examples:
+        - id: "python"
+          name: "Python"
+
 
     Profile:
       type: object

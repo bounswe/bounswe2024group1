@@ -1123,7 +1123,12 @@ export type GetQuestionAnswersResponse = {
    * @example 201
    */
   status: 200 | 201;
-  data: Record<string, any> | Schemas.AnswerDetails[];
+  data:
+    | {
+        items?: Schemas.AnswerDetails[];
+        totalPages?: number;
+      }
+    | any[];
 };
 
 export type GetQuestionAnswersVariables = {
