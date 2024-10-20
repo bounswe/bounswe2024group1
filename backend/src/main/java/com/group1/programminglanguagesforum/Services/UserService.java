@@ -2,6 +2,7 @@ package com.group1.programminglanguagesforum.Services;
 
 import com.group1.programminglanguagesforum.DTOs.Requests.UserProfileUpdateRequestDto;
 import com.group1.programminglanguagesforum.Entities.User;
+import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserContextService userContextService;
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
@@ -62,6 +65,14 @@ public class UserService {
         userToUnfollow.getFollowers().remove(user);
         userToUnfollow.setFollowersCount(userToUnfollow.getFollowersCount() - 1);
         return userRepository.save(userToUnfollow);
+    }
+
+    public boolean selfFollowing(User userToCheck) {
+        try {
+            return userContextService.getCurrentUser().getFollowing().contains(userToCheck);
+        } catch (UnauthorizedAccessException e) {
+            return false;
+        }
     }
 
     public List<User> getFollowers(User user) {
