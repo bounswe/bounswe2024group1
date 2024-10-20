@@ -6,6 +6,7 @@ import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.UserProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.UserSummaryDto;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -228,5 +230,33 @@ public class UserController extends BaseController {
         }
     }
 
+    @GetMapping(value = EndpointConstants.UserEndpoints.USER_FOLLOWERS)
+    public ResponseEntity<GenericApiResponse<List<UserSummaryDto>>> getFollowers(@PathVariable(name = "id") Long id) {
+        try {
+            User user = userService.getUserById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+            List<UserSummaryDto> followers = userService.getFollowers(user).stream()
+                    .map(u -> modelMapper.map(u, UserSummaryDto.class))
+                    .toList();
+            return buildResponse(
+                    ApiResponseBuilder.buildSuccessResponse(
+                            followers.getClass(),
+                            "Followers retrieved successfully",
+                            HttpStatus.OK.value(),
+                            followers
+                    ),
+                    HttpStatus.OK
+            );
+        } catch (UserNotFoundException e) {
+            return buildResponse(
+                    ApiResponseBuilder.buildErrorResponse(
+                            List.class,
+                            e.getMessage(),
+                            HttpStatus.NOT_FOUND.value(),
+                            ErrorResponse.builder().errorMessage(e.getMessage()).build()
+                    ),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+    }
 }
 
