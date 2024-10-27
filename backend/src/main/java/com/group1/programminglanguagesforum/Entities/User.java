@@ -55,6 +55,8 @@ public class User implements UserDetails {
     private int reputationPoints = 0;
     @OneToMany(mappedBy = "askedBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
+    @OneToMany(mappedBy = "answeredBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Answer> answers = new HashSet<>();  // Set to hold all answers given by the user
 
 
     @Override

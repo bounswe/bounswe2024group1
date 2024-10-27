@@ -1,14 +1,11 @@
 package com.group1.programminglanguagesforum.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
-
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,8 +19,10 @@ public class Question {
     private String title;
     private String description;
     private String questionBody;
-    private Long likeCount;
-    private Long commentCount;
+    @Builder.Default
+    private Long likeCount =0L;
+    @Builder.Default
+    private Long commentCount = 0L;
     @Column(name = "CREATED_AT")
     private String date;
     @ManyToOne(fetch = FetchType.LAZY)
