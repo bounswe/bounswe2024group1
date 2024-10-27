@@ -6,10 +6,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @NoArgsConstructor
@@ -55,7 +52,10 @@ public class User implements UserDetails {
     @Builder.Default
     private int followingCount = 0;
     @Builder.Default
-    private int reputationPoints=0;
+    private int reputationPoints = 0;
+    @OneToMany(mappedBy = "askedBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
+
 
     @Override
     public int hashCode() {
