@@ -1,5 +1,5 @@
 package com.group1.programminglanguagesforum.Services;
-
+public class WikidataService{
 String queryString =
         """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -79,3 +79,4 @@ String queryString =
 
 
         """;
+}
