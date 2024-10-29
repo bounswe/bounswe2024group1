@@ -1,5 +1,6 @@
 package com.group1.programminglanguagesforum.Services;
 
+import com.group1.programminglanguagesforum.DTOs.Responses.QuestionDownvoteResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.QuestionUpvoteResponseDto;
 import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
@@ -28,6 +29,19 @@ public class VoteService {
                     .questionId(questionId)
                     .upvoteCount(question.getUpvoteCount())
                     .build();
+    }
+    public QuestionDownvoteResponseDto downvoteQuestion(Long questionId) throws UnauthorizedAccessException {
+        User user = userContextService.getCurrentUser();
+        Vote vote = new Vote();
+        Question question = questionRepository.findById(questionId).orElseThrow();
+        vote.setQuestion(question);
+        vote.setUser(user);
+        vote.setUpvote(false);
+        voteRepository.save(vote);
+        return QuestionDownvoteResponseDto.builder()
+                .questionId(questionId)
+                .downvoteCount(question.getDownvoteCount())
+                .build();
     }
 
 }
