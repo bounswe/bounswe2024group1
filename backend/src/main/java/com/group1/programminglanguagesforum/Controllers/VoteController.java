@@ -1,20 +1,14 @@
 package com.group1.programminglanguagesforum.Controllers;
 
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
-import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
-import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
-import com.group1.programminglanguagesforum.DTOs.Responses.QuestionUpvoteResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.UserProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.VoteService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -57,6 +51,47 @@ public class VoteController extends BaseController {
                     .stackTrace(Arrays.toString(e.getStackTrace()))
                     .build();
             GenericApiResponse<QuestionUpvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
+    }
+
+    @PostMapping (EndpointConstants.QuestionEndpoints.QUESTION_DOWNVOTE)
+    public  ResponseEntity<GenericApiResponse<QuestionDownvoteResponseDto>> downvoteQuestion(@PathVariable(name = "id") Long questionId) {
+        try {
+            QuestionDownvoteResponseDto response = voteService.downvoteQuestion(questionId);
+            GenericApiResponse<QuestionDownvoteResponseDto> genericApiResponse =
+                    ApiResponseBuilder.buildSuccessResponse(
+                            response.getClass(),
+                            "Question downvoted successfully",
+                            HttpStatus.OK.value(),
+                            response
+                    );
+            return buildResponse(genericApiResponse, HttpStatus.OK);
+
+        } catch (UnauthorizedAccessException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDownvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.UNAUTHORIZED.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+
+        } catch (NoSuchElementException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDownvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
                     UserProfileResponseDto.class,
                     e.getMessage(),
                     HttpStatus.NOT_FOUND.value(),
