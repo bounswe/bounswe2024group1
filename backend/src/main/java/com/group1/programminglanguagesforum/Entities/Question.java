@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @Builder
 @NoArgsConstructor
@@ -35,6 +36,14 @@ public class Question {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vote> votes;
+    public Long getUpvoteCount() {
+        return votes.stream().filter(Vote::isUpvote).count();
+    }
+    public Long getDownvoteCount() {
+        return votes.stream().filter(vote -> !vote.isUpvote()).count();
+    }
 
 
 }

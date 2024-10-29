@@ -3,6 +3,8 @@ package com.group1.programminglanguagesforum.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +27,17 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)  // Fetch lazily for better performance
     @JoinColumn(name = "user_id", nullable = false)  // Foreign key column
     private User answeredBy;  // Field to hold the User who answered
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vote> votes;
+
+    public Long getUpvoteCount() {
+        return votes.stream().filter(Vote::isUpvote).count();
+    }
+
+    public Long getDownvoteCount() {
+        return votes.stream().filter(vote -> !vote.isUpvote()).count();
+    }
+
 
 
 }
