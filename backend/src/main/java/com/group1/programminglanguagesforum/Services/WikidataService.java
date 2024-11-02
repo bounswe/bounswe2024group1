@@ -4,6 +4,8 @@ import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.Constants.GeneralConstants;
 import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
 import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
+import com.group1.programminglanguagesforum.Entities.ComputerScienceTermTag;
+import com.group1.programminglanguagesforum.Entities.SoftwareLibraryTag;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,62 @@ public class WikidataService {
     public void init() {
         runProgrammingLanguagesQuery();
         runProgrammingParadigmQuery();
+        runComputerScienceTermQuery();
+        runSoftwareLibraryQuery();
+    }
+    private void runSoftwareLibraryQuery() {
+        String sparqlEndpoint = EndpointConstants.SparqlEndpoints.BASE_PATH;
+        SPARQLRepository repo = new SPARQLRepository(sparqlEndpoint);
+        String userAgent = GeneralConstants.SparqlConstants.USER_AGENT;
+        repo.setAdditionalHttpHeaders(Collections.singletonMap("User-Agent", userAgent));
+        String querySelect = GeneralConstants.SparqlConstants.SOFTWARE_LIBRARY_QUERY;
 
+        try (var connection = repo.getConnection()) {
+            TupleQueryResult result = connection.prepareTupleQuery(querySelect).evaluate();
+            while (result.hasNext()) {
+                BindingSet bindingSet = result.next();
+                SoftwareLibraryTag tag = new SoftwareLibraryTag();
+                tag.setWikidataId(bindingSet.getValue("library").stringValue().replace("http://www.wikidata.org/entity/", ""));
+                tag.setTagName(bindingSet.getValue("libraryLabelS").stringValue());
+                tag.setTagDescription(bindingSet.getValue("descriptionS").stringValue());
+                tag.setLogoImage(getValueOrNull(bindingSet, "logoImageS"));
+                tag.setOfficialWebsite(getValueOrNull(bindingSet, "officialWebSiteS"));
+                tag.setStackExchangeTag(getValueOrNull(bindingSet, "stackExchangeTagS"));
+
+                // Save the tag to the database
+                tagRepository.save(tag);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            repo.getConnection().close();
+        }
+    }
+    private void runComputerScienceTermQuery() {
+        String sparqlEndpoint = EndpointConstants.SparqlEndpoints.BASE_PATH;
+        SPARQLRepository repo = new SPARQLRepository(sparqlEndpoint);
+        String userAgent = GeneralConstants.SparqlConstants.USER_AGENT;
+        repo.setAdditionalHttpHeaders(Collections.singletonMap("User-Agent", userAgent));
+        String querySelect = GeneralConstants.SparqlConstants.COMPUTER_SCIENCE_TERM_QUERY;
+        try (var connection = repo.getConnection()) {
+            TupleQueryResult result = connection.prepareTupleQuery(querySelect).evaluate();
+            while (result.hasNext()) {
+                BindingSet bindingSet = result.next();
+                ComputerScienceTermTag tag = new ComputerScienceTermTag();
+                tag.setWikidataId(bindingSet.getValue("term").stringValue().replace("http://www.wikidata.org/entity/", ""));
+
+                tag.setTagName(bindingSet.getValue("termLabelS").stringValue());
+                tag.setTagDescription(getValueOrNull(bindingSet, "descriptionS"));
+                tag.setStackExchangeTag(getValueOrNull(bindingSet, "stackExchangeTagS"));
+
+                // Save the tag to the database
+                tagRepository.save(tag);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            repo.getConnection().close();
+        }
     }
 
     private void runProgrammingParadigmQuery() {
