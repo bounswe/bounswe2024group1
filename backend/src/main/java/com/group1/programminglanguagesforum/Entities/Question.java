@@ -19,6 +19,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(name = "QUESTION_BODY", columnDefinition = "BLOB")
     private String questionBody;
     @Builder.Default
     private Long likeCount =0L;
