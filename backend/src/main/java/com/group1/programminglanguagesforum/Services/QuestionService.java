@@ -21,7 +21,9 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserContextService userContextService;
     private final TagService tagService;
-
+    public Optional<Question> findById(Long id) {
+        return questionRepository.findById(id);
+    }
     public CreateQuestionResponseDto createQuestion(CreateQuestionRequestDto dto) throws UnauthorizedAccessException {
         List<Long> tagIds = dto.getTagIds();
         Set<Tag> existingTags = new HashSet<>(tagService.findAllByIdIn(tagIds));
