@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,14 +19,19 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private String description;
     private String questionBody;
     @Builder.Default
     private Long likeCount =0L;
     @Builder.Default
     private Long commentCount = 0L;
     @Column(name = "CREATED_AT")
-    private String date;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "UPDATED_AT")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User askedBy;
@@ -35,6 +41,7 @@ public class Question {
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @Builder.Default
     private Set<Tag> tags = new HashSet<>();
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;

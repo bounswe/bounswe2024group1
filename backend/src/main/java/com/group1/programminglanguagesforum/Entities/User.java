@@ -42,8 +42,10 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "followed_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
+    @Builder.Default
     private Set<User> followers = new HashSet<>();
     @ManyToMany(mappedBy = "followers", fetch = FetchType.EAGER)
+    @Builder.Default
     private Set<User> following = new HashSet<>();
 
     @Builder.Default
@@ -52,8 +54,9 @@ public class User implements UserDetails {
     @Builder.Default
     private int followingCount = 0;
     @Builder.Default
-    private int reputationPoints = 0;
+    private Long reputationPoints = 0L;
     @OneToMany(mappedBy = "askedBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Question> questions = new ArrayList<>();
     @OneToMany(mappedBy = "answeredBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Answer> answers = new HashSet<>();  // Set to hold all answers given by the user

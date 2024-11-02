@@ -42,7 +42,7 @@ public class WikidataService {
                 SoftwareLibraryTag tag = new SoftwareLibraryTag();
                 tag.setWikidataId(bindingSet.getValue("library").stringValue().replace("http://www.wikidata.org/entity/", ""));
                 tag.setTagName(bindingSet.getValue("libraryLabelS").stringValue());
-                tag.setTagDescription(bindingSet.getValue("descriptionS").stringValue());
+                tag.setTagDescription(getValueOrNull(bindingSet, "descriptionS"));
                 tag.setLogoImage(getValueOrNull(bindingSet, "logoImageS"));
                 tag.setOfficialWebsite(getValueOrNull(bindingSet, "officialWebSiteS"));
                 tag.setStackExchangeTag(getValueOrNull(bindingSet, "stackExchangeTagS"));
