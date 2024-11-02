@@ -26,4 +26,8 @@ public  class EndpointConstants {
     public static class SparqlEndpoints {
         public static final String  BASE_PATH = "https://query.wikidata.org/sparql";
     }
+    public static class TagEndpoints {
+        public static final String  BASE_PATH = "/tags";
+        public static final String TAG_ID = BASE_PATH + "/{id}";
+    }
 }
