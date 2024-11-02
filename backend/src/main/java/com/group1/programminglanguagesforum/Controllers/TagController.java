@@ -1,6 +1,7 @@
 package com.group1.programminglanguagesforum.Controllers;
 
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
+import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetTagDetailsResponseDto;
@@ -9,10 +10,7 @@ import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -50,6 +48,33 @@ public class TagController extends BaseController {
 
         }
 
+
+    }
+    @PostMapping(value = EndpointConstants.TagEndpoints.BASE_PATH)
+    public ResponseEntity<GenericApiResponse<GetTagDetailsResponseDto>> createTag(@RequestBody CreateTagRequestDto dto){
+        try{
+            GetTagDetailsResponseDto tagDetails = tagService.createTag(dto);
+            GenericApiResponse<GetTagDetailsResponseDto> response = GenericApiResponse.<GetTagDetailsResponseDto>builder()
+                    .status(201)
+                    .message("Tag created successfully")
+                    .data(tagDetails)
+                    .build();
+            ApiResponseBuilder.buildSuccessResponse(GetTagDetailsResponseDto.class, "Tag created successfully", 201, tagDetails);
+            return buildResponse(response, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<GetTagDetailsResponseDto> response = GenericApiResponse.<GetTagDetailsResponseDto>builder()
+                    .status(400)
+                    .message("Invalid tag type")
+                    .error(errorResponse)
+                    .data(null)
+                    .build();
+            ApiResponseBuilder.buildErrorResponse(GetTagDetailsResponseDto.class, "Invalid tag type", 400, errorResponse);
+            return buildResponse(response, HttpStatus.BAD_REQUEST);
+        }
 
     }
 }

@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @Table(name = "TAGS")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Tag {
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,5 +18,11 @@ public abstract class Tag {
     private String wikidataId;
     private String tagName;
     private String tagDescription;
+    public Tag(String wikidataId, String tagName, String tagDescription) {
+        this.wikidataId = wikidataId;
+        this.tagName = tagName;
+        this.tagDescription = tagDescription;
+    }
+
 
 }
