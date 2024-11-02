@@ -1,82 +1,93 @@
 package com.group1.programminglanguagesforum.Services;
-public class WikidataService{
-String queryString =
-        """
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX wikibase: <http://wikiba.se/ontology#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX schema: <http://schema.org/>
-    
-        SELECT DISTINCT ?language 
-            (SAMPLE(?languageLabel) AS ?languageLabelS) 
-            (SAMPLE(?description) AS ?descriptionS) 
-            (SAMPLE(?logoImage) AS ?logoImageS)
-            (SAMPLE(?authorLabel) AS ?authorS)
-            (SAMPLE(YEAR(?inceptionYear)) AS ?inceptionYearS)
-            (SAMPLE(?fileExtension) AS ?fileExtensionS)
-        WHERE {
-            ?language wdt:P31 ?class;
-                    wdt:P154 ?logoImage.
 
-            # Include both programming languages and scripting languages
-            VALUES ?class { wd:Q9143 wd:Q12772052 }
+import com.group1.programminglanguagesforum.Constants.EndpointConstants;
+import com.group1.programminglanguagesforum.Constants.GeneralConstants;
+import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
+import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
+import com.group1.programminglanguagesforum.Repositories.TagRepository;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
+import org.springframework.stereotype.Service;
 
-            OPTIONAL {
-                ?language schema:description ?description.
-                FILTER((LANG(?description)) = "en")
-            }
+import java.util.Collections;
 
-            OPTIONAL {
-                ?language rdfs:label ?languageLabel.
-                FILTER((LANG(?languageLabel)) = "en")
-            }
+@Service
+@RequiredArgsConstructor
+public class WikidataService {
+    private final TagRepository tagRepository;
 
-            OPTIONAL {
-                ?language wdt:P178 ?author.
-                ?author rdfs:label ?authorLabel.
-                FILTER((LANG(?authorLabel)) = "en")
+    @PostConstruct
+    public void init() {
+        runProgrammingLanguagesQuery();
+        runProgrammingParadigmQuery();
+
+    }
+
+    private void runProgrammingParadigmQuery() {
+        String sparqlEndpoint = EndpointConstants.SparqlEndpoints.BASE_PATH;
+        SPARQLRepository repo = new SPARQLRepository(sparqlEndpoint);
+        String userAgent = GeneralConstants.SparqlConstants.USER_AGENT;
+        repo.setAdditionalHttpHeaders(Collections.singletonMap("User-Agent", userAgent));
+        String querySelect = GeneralConstants.SparqlConstants.PROGRAMMING_PARADIGM_QUERY;
+        try (var connection = repo.getConnection()) {
+            TupleQueryResult result = connection.prepareTupleQuery(querySelect).evaluate();
+            while (result.hasNext()) {
+                BindingSet bindingSet = result.next();
+                ProgrammingParadigmTag tag = new ProgrammingParadigmTag();
+                tag.setWikidataId(bindingSet.getValue("paradigm").stringValue().replace("http://www.wikidata.org/entity/", ""));
+
+                tag.setTagName(bindingSet.getValue("paradigmLabelS").stringValue());
+                tag.setTagDescription(getValueOrNull(bindingSet, "descriptionS"));
+                tag.setStackExchangeTag(getValueOrNull(bindingSet, "stackExchangeTagS"));
+
+                // Save the tag to the database
+                tagRepository.save(tag);
             }
-            
-            OPTIONAL {
-                ?language wdt:P571 ?inceptionYear.
-            }
-            
-            OPTIONAL {
-                ?language wdt:P1195 ?fileExtension.
-            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            repo.getConnection().close();
         }
-        GROUP BY ?language
-        HAVING (BOUND(?languageLabelS))
+    }
 
+    private String getValueOrNull(BindingSet bindingSet, String variable) {
+        return bindingSet.getValue(variable) != null ? bindingSet.getValue(variable).stringValue() : null;
+    }
 
+    private void runProgrammingLanguagesQuery() {
+        String sparqlEndpoint = EndpointConstants.SparqlEndpoints.BASE_PATH;
+        SPARQLRepository repo = new SPARQLRepository(sparqlEndpoint);
+        String userAgent = GeneralConstants.SparqlConstants.USER_AGENT;
+        repo.setAdditionalHttpHeaders(Collections.singletonMap("User-Agent", userAgent));
+        String querySelect = GeneralConstants.SparqlConstants.PROGRAMMING_LANGUAGES_QUERY;
 
+        try (var connection = repo.getConnection()) {
+            TupleQueryResult result = connection.prepareTupleQuery(querySelect).evaluate();
+            while (result.hasNext()) {
+                BindingSet bindingSet = result.next();
+                ProgrammingLanguagesTag tag = new ProgrammingLanguagesTag();
+                tag.setWikidataId(bindingSet.getValue("language").stringValue().replace("http://www.wikidata.org/entity/", ""));
+                tag.setTagName(bindingSet.getValue("languageLabelS").stringValue());
+                tag.setTagDescription(bindingSet.getValue("descriptionS").stringValue());
+                tag.setLogoImage(getValueOrNull(bindingSet, "logoImageS"));
+                tag.setAuthor(getValueOrNull(bindingSet, "authorS"));
+                tag.setInceptionYear(getValueOrNull(bindingSet, "inceptionYearS"));
+                tag.setFileExtension(getValueOrNull(bindingSet, "fileExtensionS"));
+                tag.setOfficialWebsite(getValueOrNull(bindingSet, "officialWebSiteS"));
+                tag.setStackExchangeTag(getValueOrNull(bindingSet, "stackExchangeTagS"));
 
-        SELECT DISTINCT ?paradigm 
-            (SAMPLE(?paradigmLabel) AS ?paradigmLabelS) 
-            (SAMPLE(?description) AS ?descriptionS) 
-            (SAMPLE(?stackExchangeTag) AS ?stackExchangeTagS)
-
-        WHERE {
-            ?paradigm wdt:P31 wd:Q188267.
-
-            OPTIONAL {
-                ?paradigm schema:description ?description.
-                FILTER((LANG(?description)) = "en") 
+                // Save the tag to the database
+                tagRepository.save(tag);
             }
-
-            OPTIONAL {
-                ?paradigm rdfs:label ?paradigmLabel.
-                FILTER((LANG(?paradigmLabel)) = "en") 
-            }
-
-            OPTIONAL {
-                ?paradigm wdt:P1482 ?stackExchangeTag. 
-            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            repo.getConnection().close();
         }
-        GROUP BY ?paradigm
-        HAVING (BOUND(?paradigmLabelS))
+    }
 
 
-        """;
 }
