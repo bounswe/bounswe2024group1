@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -19,7 +20,9 @@ public class TagService {
     private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
 
-
+    public List<Tag> findAllByIdIn(List<Long> tagIds) {
+        return tagRepository.findAllByIdIn(tagIds);
+    }
     private TagType getTagType(Tag tag) {
         if (tag instanceof ProgrammingLanguagesTag) {
             return TagType.PROGRAMMING_LANGUAGE;
