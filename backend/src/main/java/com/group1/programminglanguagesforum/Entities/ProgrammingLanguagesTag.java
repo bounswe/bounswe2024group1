@@ -14,4 +14,6 @@ public class ProgrammingLanguagesTag extends Tag{
     private String author;
     private String inceptionYear;
     private String fileExtension;
+    private String officialWebsite;
+    private String stackExchangeTag;
 }
