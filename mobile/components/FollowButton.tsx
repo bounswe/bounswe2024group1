@@ -4,7 +4,7 @@ import {
   useUnfollowUser,
 } from "@/services/api/programmingForumComponents";
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button, ButtonText } from "./ui/button";
 
 export default function FollowButton({
   profile,
@@ -52,8 +52,8 @@ export default function FollowButton({
   return (
     <Button
       disabled={!!error || isLoading}
-      variant={following && !isLoading ? "primary-outline" : "default"}
-      onClick={() => {
+      variant={following && !isLoading ? "outline" : "solid"}
+      onPress={() => {
         if (following) {
           unfollow({
             pathParams: {
@@ -71,13 +71,15 @@ export default function FollowButton({
         }
       }}
     >
-      {isLoading
+      <ButtonText>
+        {isLoading
         ? "Loading..."
         : error
           ? "Error"
           : following
             ? "Following"
             : "Follow"}
+      </ButtonText>
     </Button>
   );
 }

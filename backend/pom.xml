@@ -49,6 +49,13 @@
 			<artifactId>modelmapper</artifactId>
 			<version>3.2.1</version> <!-- Use the latest version -->
 		</dependency>
+		<!-- RDF4J Dependency -->
+		<dependency>
+		<groupId>org.eclipse.rdf4j</groupId>
+		<artifactId>rdf4j-spring</artifactId>
+		<version>5.0.2</version>
+	</dependency>
+		<!-- RDF4J Dependency -->
 
 
 		<!-- For database & JPA dependencies -->
@@ -113,6 +120,11 @@
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<version>5.2.0</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20231013</version>
 		</dependency>
 
 	</dependencies>

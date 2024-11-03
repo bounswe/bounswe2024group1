@@ -1,8 +1,10 @@
 import { Card } from "@/components/ui/card";
 
+import { Image, Text } from "@/components/ui";
 import { Link } from "expo-router";
-import { ArrowRight, MessageSquare, Star } from "lucide-react";
+import { ArrowRight, MessageSquare, Star } from "lucide-react-native";
 import React from "react";
+import { View } from "react-native";
 
 interface QuestionCardProps {
   id: string;
@@ -31,9 +33,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         <Text className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
         </Text>
-        <p className="line-clamp-3 text-sm font-light text-gray-600">
+        <Text className="line-clamp-3 text-sm font-light text-gray-600">
           {content}
-        </p>
+        </Text>
         <View className="flex flex-col gap-3 text-xs text-gray-500">
           <View className="flex items-center gap-1">
             <Star className="h-4 w-4" />
@@ -45,18 +47,18 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           </View>
         </View>
         <View className="flex items-center justify-between">
-          <Link to={`/users/${author.id}`} className="h-10 w-10">
-            <img
-              src={author.profilePicture}
+          <Link href={`/users/${author.id}`} className="h-10 w-10">
+            <Image
+              source={{ uri: author.profilePicture }}
               alt={author.name}
               className="h-full w-full rounded-full object-cover"
             />
           </Link>
           <Link
-            to={`/questions/${id}`}
+            href={`/question/${id}`}
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
-            Go to question
+            <Text>Go to question</Text>
             <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
         </View>
