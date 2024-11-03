@@ -3,41 +3,37 @@ import { Tabs } from "expo-router";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import useAuthStore from "@/services/auth";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  const auth = useAuthStore();
+
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
+        tabBarStyle: {
+          display: auth.token ? "flex" : "none",
+        },
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-      }}
+        tabBarHideOnKeyboard: true,
+      })}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Profile",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+              name={focused ? "person" : "person-outline"}
               color={color}
             />
           ),
         }}
       />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="search"
         options={{
