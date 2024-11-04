@@ -100,4 +100,86 @@ public class VoteController extends BaseController {
             return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
         }
     }
+
+    @DeleteMapping(EndpointConstants.QuestionEndpoints.QUESTION_DELETE_UPVOTE)
+    public ResponseEntity<GenericApiResponse<QuestionDeleteUpvoteResponseDto>> removeUpvote(@PathVariable(name = "id") Long questionId) {
+        try {
+            QuestionDeleteUpvoteResponseDto response = voteService.removeUpvote(questionId);
+            GenericApiResponse<QuestionDeleteUpvoteResponseDto> genericApiResponse =
+                    ApiResponseBuilder.buildSuccessResponse(
+                            response.getClass(),
+                            "Question upvote removed successfully",
+                            HttpStatus.OK.value(),
+                            response
+                    );
+            return buildResponse(genericApiResponse, HttpStatus.OK);
+
+        } catch (UnauthorizedAccessException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDeleteUpvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    QuestionDeleteUpvoteResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.UNAUTHORIZED.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+
+        } catch (NoSuchElementException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDeleteUpvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    QuestionDeleteUpvoteResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
+    }
+
+    @DeleteMapping(EndpointConstants.QuestionEndpoints.QUESTION_DELETE_DOWNVOTE)
+    public ResponseEntity<GenericApiResponse<QuestionDeleteDownvoteResponseDto>> removeDownvote(@PathVariable(name = "id") Long questionId) {
+        try {
+            QuestionDeleteDownvoteResponseDto response = voteService.removeDownvote(questionId);
+            GenericApiResponse<QuestionDeleteDownvoteResponseDto> genericApiResponse =
+                    ApiResponseBuilder.buildSuccessResponse(
+                            response.getClass(),
+                            "Question downvote removed successfully",
+                            HttpStatus.OK.value(),
+                            response
+                    );
+            return buildResponse(genericApiResponse, HttpStatus.OK);
+
+        } catch (UnauthorizedAccessException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDeleteDownvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    QuestionDeleteDownvoteResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.UNAUTHORIZED.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+
+        } catch (NoSuchElementException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDeleteDownvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    QuestionDeleteDownvoteResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
+    }
 }

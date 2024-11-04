@@ -17,12 +17,16 @@ public  class EndpointConstants {
         public static final String USER_UNFOLLOW = BASE_PATH + "/{id}/unfollow";
         public static final String USER_FOLLOWERS = BASE_PATH + "/{id}/followers";
     }
+
     public static class QuestionEndpoints {
-        public static final String  BASE_PATH = "/questions";
+        public static final String BASE_PATH = "/questions";
         public static final String QUESTION_ID = BASE_PATH + "/{id}";
         public static final String QUESTION_UPVOTE = QUESTION_ID + "/upvote";
         public static final String QUESTION_DOWNVOTE = QUESTION_ID + "/downvote";
+        public static final String QUESTION_DELETE_UPVOTE = QUESTION_ID + "/deleteUpvote";
+        public static final String QUESTION_DELETE_DOWNVOTE = QUESTION_ID + "/deleteDownvote";
     }
+
     public static class SparqlEndpoints {
         public static final String  BASE_PATH = "https://query.wikidata.org/sparql";
     }
