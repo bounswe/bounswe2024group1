@@ -47,6 +47,7 @@ services:
     develop:
       watch:
         - action: sync
+          x-initialSync: true
           path: ./frontend
           target: /app
           ignore:

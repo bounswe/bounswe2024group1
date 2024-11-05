@@ -40,6 +40,12 @@ export const NavbarLayout = () => {
 
   return (
     <div className="min-h-screen">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:block focus:bg-background focus:p-4"
+      >
+        Skip to main content
+      </a>
       <header className="container sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
@@ -165,6 +171,7 @@ export const NavbarLayout = () => {
         </div>
       )}
       <main
+        id="main-content"
         className={cn(
           "flex min-h-[calc(100vh-4rem)] flex-col transition-all duration-200",
           navigation.state === "loading" && "pointer-events-none opacity-30",
