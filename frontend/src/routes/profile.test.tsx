@@ -4,6 +4,7 @@ import {
   useUpdateUserProfile,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
+import { testAccessibility } from "@/utils/test-accessibility";
 import {
   act,
   fireEvent,
@@ -30,6 +31,14 @@ describe("Profile component", () => {
     });
   });
 
+  it("should have no accessibility violations", async () => {
+    // Arrange
+    const router = createMemoryRouter(routeConfig, {
+      initialEntries: ["/users/1"],
+    });
+
+    await testAccessibility(<RouterProvider router={router} />);
+  });
   it("renders loading state", () => {
     (useGetUserProfile as ReturnType<typeof vi.fn>).mockReturnValue({
       isLoading: true,

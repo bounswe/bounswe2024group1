@@ -1,7 +1,7 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
-import { ExerciseCard } from "@/components/ExerciseCard";
 import ErrorAlert from "@/components/ErrorAlert";
+import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export default function QuestionPage() {
     },
     {
       enabled: !!questionId,
-    }
+    },
   );
   const data = result?.data;
 
@@ -42,7 +42,7 @@ export default function QuestionPage() {
   const { mutateAsync: voteQuestion } = useVoteQuestion({
     onMutate: async (vote) => {
       setOptimisticVotes(
-        (prev) => (prev ?? data?.rating ?? 0) + vote.body.rating
+        (prev) => (prev ?? data?.rating ?? 0) + vote.body.rating,
       );
     },
     onSuccess: () => {
@@ -79,7 +79,7 @@ export default function QuestionPage() {
     <div className="container mx-auto flex gap-6 py-16">
       {/* Left Column: Question and Answers */}
       <div className="flex-1">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h1 className="text-3xl font-bold">{question.title}</h1>
           <div className="flex gap-2">
             <Button
@@ -93,6 +93,7 @@ export default function QuestionPage() {
                     "The link to this question has been copied to your clipboard",
                 });
               }}
+              aria-label="Copy link"
             >
               <LinkIcon className="h-5 w-5" />
             </Button>
@@ -112,7 +113,7 @@ export default function QuestionPage() {
         </div>
 
         {/* Author Info and Follow Button */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <Link
             to={`/users/${question.author.id}`}
             className="flex items-center gap-4"
@@ -121,7 +122,7 @@ export default function QuestionPage() {
               src={
                 question.author.profilePicture || "https://placehold.co/640x640"
               }
-              alt={question.author.name}
+              alt={question.author.name + " profile picture"}
               className="h-8 w-8 rounded-full object-cover"
             />
             <span className="font-semibold">{question.author.name}</span>
@@ -132,7 +133,7 @@ export default function QuestionPage() {
         </div>
 
         {/* Voting and Answer Count */}
-        <div className="flex items-center gap-4 mb-4">
+        <div className="mb-4 flex items-center gap-4">
           <div className="flex items-center gap-2">
             <ThumbsUp className="h-4 w-4" />
             <span className="font-bold">
@@ -175,7 +176,7 @@ export default function QuestionPage() {
         </div>
 
         {/* Metadata and Tags */}
-        <div className="grid grid-cols-2 gap-2 py-2 mb-4">
+        <div className="mb-4 grid grid-cols-2 gap-2 py-2">
           <span className="flex items-center gap-4 font-semibold">
             <Flag className="h-6 w-6" />
             {question.tags.map((s) => s.name).join(", ")}
@@ -186,23 +187,25 @@ export default function QuestionPage() {
         </div>
 
         {/* Question Content */}
-        <div className="rounded-lg bg-neutral-150 p-4 mb-6">
+        <div className="mb-6 rounded-lg bg-neutral-150 p-4">
           <span className="whitespace-pre-wrap">{question.content}</span>
         </div>
 
         {/* Answers Section */}
-        <h4 className="text-2xl font-bold mb-4">Answers</h4>
+        <h1 className="mb-4 text-2xl font-bold">Answers</h1>
         {questionId && <Answers questionId={Number(questionId)} />}
       </div>
-      
+
       {/* Vertical Divider */}
       <div className="w-px bg-gray-300"></div>
 
       {/* Right Column: Collection of Links */}
       {/* Right Column: Collection of Exercise Cards */}
-      <div className="w-1/4 p-4 space-y-4 bg-white rounded-lg shadow-md">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Related Exercises</h2>
-        
+      <div className="w-1/4 space-y-4 rounded-lg bg-white p-4 shadow-md">
+        <h2 className="mb-4 text-lg font-semibold text-gray-800">
+          Related Exercises
+        </h2>
+
         {/* Exercise Card 1 */}
         <ExerciseCard
           id={1}
@@ -230,7 +233,6 @@ export default function QuestionPage() {
           tags={["dynamic-programming", "algorithms"]}
         />
       </div>
-
     </div>
   );
 }

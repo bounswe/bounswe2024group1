@@ -1,6 +1,16 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import "@testing-library/jest-dom/vitest";
-import { cleanup } from "@testing-library/react";
-import { afterEach, vi } from "vitest";
+import { cleanup, render } from "@testing-library/react";
+import { afterEach, expect, vi } from "vitest";
+import { axe, AxeMatchers } from "vitest-axe";
+import * as matchers from "vitest-axe/matchers";
+expect.extend(matchers);
+
+declare module "vitest" {
+  interface Assertion<>extends AxeMatchers {}
+  // @ts-expect-error vitest-axe types are not fully compatible with our version of vitest
+  interface AsymmetricMatchersContaining extends AxeMatchers {}
+}
 
 vi.mock("zustand/middleware", () => ({
   persist: (a: unknown) => a,
@@ -28,6 +38,44 @@ HTMLElement.prototype.dispatchEvent = function (event): boolean {
   }
   return result;
 };
+
+async function testAccessibility(ui: React.ReactElement) {
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+
+  render(ui, { container });
+
+  const results = await axe(container, {
+    rules: {
+      "color-contrast": { enabled: true },
+      "html-has-lang": { enabled: true },
+      "aria-roles": { enabled: true },
+      "button-name": { enabled: true },
+      "image-alt": { enabled: true },
+      "link-name": { enabled: true },
+    },
+  });
+
+  expect(results).toHaveNoViolations();
+  document.body.removeChild(container);
+}
+
+// function renderWithRouter(
+//   ui: React.ReactElement,
+//   { route = "/", ...renderOptions }: RenderOptions & { route?: string } = {},
+// ) {
+//   const router = createMemoryRouter(routeConfig, {
+//     initialEntries: [route],
+//   });
+
+//   return {
+//     ...render(<RouterProvider router={router} />, renderOptions),
+//     testAccessibility: () =>
+//       testAccessibility(<RouterProvider router={router} />),
+//   };
+// }
+
+export { testAccessibility };
 
 (globalThis as unknown as Record<string, boolean>).IS_REACT_ACT_ENVIRONMENT =
   true;
