@@ -78,7 +78,7 @@ export default function Profile() {
         <div className="flex items-center justify-between space-x-8 py-4">
           <Avatar className="h-24 w-24">
             <AvatarImage
-              alt="Profile picture"
+              alt={`Profile picture of ${profile.username}`}
               src="https://placehold.co/640x640"
             />
           </Avatar>
