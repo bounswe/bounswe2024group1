@@ -35,7 +35,8 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
             <div className="h-10 w-10">
               <img
                 src={tag.photo}
-                alt={tag.name}
+                alt={`The logo image of ${tag.name}`} 
+                title={`alt:The logo image of ${tag.name}`}
                 className="rounded-full object-cover"
               />
             </div>
