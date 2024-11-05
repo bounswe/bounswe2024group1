@@ -60,6 +60,37 @@ public class UserController extends BaseController {
                 }
         }
 
+    }
+
+    @GetMapping(value = EndpointConstants.UserEndpoints.USER_ID)
+    public ResponseEntity<GenericApiResponse<UserProfileResponseDto>> getUserById(@PathVariable(name = "id") Long id) {
+            Optional<User> user = userService.getUserById(id);
+            if (user.isPresent()) {
+                UserProfileResponseDto userProfileResponseDto = modelMapper.map(user.get(), UserProfileResponseDto.class);
+                userProfileResponseDto.setSelfFollowing(userService.selfFollowing(user.get()));
+
+                GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
+                        userProfileResponseDto.getClass(),
+                        "User retrieved successfully",
+                        HttpStatus.OK.value(),
+                        userProfileResponseDto
+                );
+                return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+
+            }
+            else{
+                ErrorResponse errorResponse = ErrorResponse.builder()
+                        .errorMessage("User not found")
+                        .build();
+                GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                        UserProfileResponseDto.class,
+                        "User not found",
+                        HttpStatus.NOT_FOUND.value(),
+                        errorResponse
+                );
+                return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+            }
+
         @GetMapping(value = EndpointConstants.UserEndpoints.USER_ID)
         public ResponseEntity<GenericApiResponse<UserProfileResponseDto>> getUserById(
                         @PathVariable(name = "id") Long id) {
@@ -87,6 +118,22 @@ public class UserController extends BaseController {
                 }
 
         }
+
+    }
+    @PostMapping(value = EndpointConstants.UserEndpoints.USER_FOLLOW)
+    public ResponseEntity<GenericApiResponse<UserProfileResponseDto>> followUser(@PathVariable(name = "id")Long id){
+        try{
+            User user = userContextService.getCurrentUser();
+            User followedUser = userService.followUser(user, id);
+            UserProfileResponseDto updatedUserProfileResponseDto = modelMapper.map(followedUser, UserProfileResponseDto.class);
+            updatedUserProfileResponseDto.setSelfFollowing(userService.selfFollowing(followedUser));
+
+            GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
+                    updatedUserProfileResponseDto.getClass(),
+                    "User followed successfully",
+                    HttpStatus.OK.value(),
+                    updatedUserProfileResponseDto
+
 
         @PutMapping(value = EndpointConstants.UserEndpoints.USER_ID)
         public ResponseEntity<GenericApiResponse<UserProfileResponseDto>> updateUser(@PathVariable(name = "id") Long id,
@@ -181,6 +228,7 @@ public class UserController extends BaseController {
                         return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
                 }
 
+
         }
 
         @DeleteMapping(value = EndpointConstants.UserEndpoints.USER_UNFOLLOW)
@@ -196,6 +244,7 @@ public class UserController extends BaseController {
                                         "User unfollowed successfully",
                                         HttpStatus.OK.value(),
                                         updatedUserProfileResponseDto
+
 
                         );
                         return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
