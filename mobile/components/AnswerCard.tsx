@@ -34,11 +34,11 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
           <View className="mt-2 flex-shrink-0">
             <CornerDownRight size={24} />
           </View>
-          <p className="line-clamp-3 text-sm font-light text-gray-600">
+          <p className="line-clamp-3 text-sm font-light text-gray-800">
             {content}
           </p>
         </View>
-        <View className="flex flex-col gap-3 text-xs text-gray-500">
+        <View className="flex flex-col gap-3 text-xs text-gray-700">
           <View className="flex items-center gap-1">
             <Star size={16} />
             <Text>{votes} votes</Text>
@@ -54,7 +54,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
           </Link>
           <Link
             href={`/question/${id}?answerId=${id}`}
-            className="flex items-center text-sm font-medium text-gray-600 hover:underline"
+            className="flex items-center text-sm font-medium text-gray-800 hover:underline"
           >
             Go to answer
             <ArrowRight size={16} />
