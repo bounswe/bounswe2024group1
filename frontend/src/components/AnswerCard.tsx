@@ -35,11 +35,11 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
             height={24}
             className="mt-2 flex-shrink-0"
           />
-          <p className="line-clamp-3 text-sm font-light text-gray-600">
+          <p className="line-clamp-3 text-sm font-light text-gray-800">
             {content}
           </p>
         </div>
-        <div className="flex flex-col gap-3 text-xs text-gray-500">
+        <div className="flex flex-col gap-3 text-xs text-gray-800">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4" />
             <span>{votes} votes</span>
@@ -55,7 +55,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
           </Link>
           <Link
             to={`/question/${questionId}`}
-            className="flex items-center text-sm font-medium text-gray-600 hover:underline"
+            className="flex items-center text-sm font-medium text-gray-800 hover:underline"
           >
             Go to answer
             <ArrowRight className="ml-1 h-4 w-4" />

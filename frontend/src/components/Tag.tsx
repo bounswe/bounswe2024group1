@@ -30,7 +30,7 @@ export const Tag = ({
           </div>
         </CardHeader>
         <CardContent className="flex flex-1 flex-col justify-between gap-2">
-          <p className="text-sm text-gray-500">{description}</p>
+          <p className="text-sm text-gray-700">{description}</p>
           <div className="flex items-center justify-between">
             {!!token && (
               <Link to={`/questions/new?tagId=` + encodeURIComponent(id || "")}>

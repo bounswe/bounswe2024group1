@@ -85,19 +85,19 @@ export default function Profile() {
           <div className="flex space-x-4 text-center">
             <div>
               <div className="font-bold">{profile.questionCount}</div>
-              <div className="text-sm text-gray-500">Questions</div>
+              <div className="text-sm text-gray-700">Questions</div>
             </div>
             <div>
               <div className="font-bold">{profile.answerCount}</div>
-              <div className="text-sm text-gray-500">Answers</div>
+              <div className="text-sm text-gray-700">Answers</div>
             </div>
             <div>
               <div className="font-bold">{profile.followersCount}</div>
-              <div className="text-sm text-gray-500">Followers</div>
+              <div className="text-sm text-gray-700">Followers</div>
             </div>
             <div>
               <div className="font-bold">{profile.followingCount}</div>
-              <div className="text-sm text-gray-500">Following</div>
+              <div className="text-sm text-gray-700">Following</div>
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function Profile() {
               <p
                 className={cn(
                   "text-sm",
-                  !profile.bio ? "text-gray-300" : "text-gray-600",
+                  !profile.bio ? "text-gray-500" : "text-gray-800",
                 )}
               >
                 {profile.bio ?? "Empty bio."}
