@@ -28,6 +28,7 @@ public class VoteService {
                 User user = userContextService.getCurrentUser();
                 Vote vote = new Vote();
                 Question question = questionRepository.findById(questionId).orElseThrow();
+                question.setLikeCount(question.getLikeCount()+1);
                 vote.setQuestion(question);
                 vote.setUser(user);
                 vote.setUpvote(true);

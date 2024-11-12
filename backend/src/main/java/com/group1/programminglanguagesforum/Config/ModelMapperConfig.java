@@ -1,22 +1,25 @@
 package com.group1.programminglanguagesforum.Config;
 
-import com.group1.programminglanguagesforum.DTOs.Responses.GetProgrammingLanguageTagResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.GetProgrammingParadigmResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.UserProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
 import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
+import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.SimpleDateFormat;
+
 @Configuration
 public class ModelMapperConfig {
+
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+
 
         // Define a PropertyMap to skip certain fields
         modelMapper.addMappings(new PropertyMap<SelfProfileResponseDto, User>() {
@@ -34,6 +37,14 @@ public class ModelMapperConfig {
                 skip(destination.getFollowers());
                 skip(destination.getFollowing());
 
+            }
+        });
+        modelMapper.addMappings(new PropertyMap< GetQuestionWithTagDto,Question>() {
+            @Override
+            protected void configure() {
+                skip(destination.getTags());
+                skip(destination.getVotes());
+                skip(destination.getAskedBy());
             }
         });
         modelMapper.addMappings(new PropertyMap<ProgrammingLanguagesTag, GetProgrammingLanguageTagResponseDto>() {
