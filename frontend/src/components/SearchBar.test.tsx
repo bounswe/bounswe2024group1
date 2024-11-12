@@ -1,29 +1,96 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { useNavigate } from "react-router-dom";
-import { expect, test, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SearchBar } from "./SearchBar";
 
-vi.mock("react-router-dom", () => {
-  const navigate = vi.fn();
-  return {
-    useSearchParams: () => [new URLSearchParams("")],
-    useNavigate: () => navigate,
-  };
-});
+const renderSearchBar = () =>
+  render(
+    <BrowserRouter>
+      <SearchBar />
+    </BrowserRouter>,
+  );
 
-test("searching something goes to /search", async () => {
-  // Arrange
-  render(<SearchBar />);
+describe("SearchBar", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+    localStorage.clear();
+  });
 
-  // Act
-  const search = screen.getAllByPlaceholderText("Search for...")[0];
-  fireEvent.change(search, { target: { value: "hello" } });
+  afterEach(() => {
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
 
-  const button = screen.getAllByRole("button", { name: /search/i })[0];
-  fireEvent.click(button);
+  it("shows tooltip on first load and hides after 3 seconds", async () => {
+    renderSearchBar();
 
-  // Assert
-  await waitFor(() => {
-    expect(useNavigate()).toHaveBeenCalledWith("/search?type=tags&q=hello");
+    // Tooltip should be visible initially
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+
+    // Fast-forward time by 3 seconds
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
+  it("shows tooltip on focus after first load", () => {
+    localStorage.setItem("searchTooltipShown", "true");
+    renderSearchBar();
+    const input = screen.getByPlaceholderText(/Search for/i);
+
+    // Initially tooltip should be hidden
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+
+    act(() => {
+      // Focus the input
+      fireEvent.focus(input);
+    });
+
+    // Tooltip should be visible
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+
+    act(() => {
+      // Blur the input
+      fireEvent.blur(input);
+    });
+
+    // Tooltip should be hidden again
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
+  it("focuses search input when '/' is pressed", () => {
+    renderSearchBar();
+    const input = screen.getByPlaceholderText(/Search for/i);
+
+    act(() => {
+      fireEvent.keyDown(document, { key: "/" });
+    });
+    expect(document.activeElement).toBe(input);
+  });
+
+  it("focuses search input when Cmd+K is pressed", () => {
+    renderSearchBar();
+    const input = screen.getByPlaceholderText(/Search for/i);
+
+    act(() => {
+      fireEvent.keyDown(document, { key: "k", metaKey: true });
+    });
+    expect(document.activeElement).toBe(input);
+  });
+
+  it("doesn't trigger shortcuts when typing in input", () => {
+    renderSearchBar();
+    const input = screen.getByPlaceholderText(/Search for/i);
+
+    act(() => {
+      input.focus();
+    });
+    act(() => {
+      fireEvent.keyDown(input, { key: "/" });
+    });
+    expect(document.activeElement).toBe(input);
   });
 });

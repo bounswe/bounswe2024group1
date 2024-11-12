@@ -1,5 +1,6 @@
 package com.group1.programminglanguagesforum.DTOs.Responses;
 
+import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,6 @@ public class UserSummaryDto {
     private Long id;
     private String username;
     private int reputationPoints;
+    private ExperienceLevel experienceLevel;
     // add profile picture
 }

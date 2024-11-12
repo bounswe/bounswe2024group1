@@ -18,6 +18,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { fetchSignUp } from "@/services/api/programmingForumComponents";
 import {
   FetchError,
@@ -36,6 +43,7 @@ const signupSchema = z.object({
   password: z.string().min(8),
   country: z.string().min(1),
   redirectTo: z.string().optional(),
+  experienceLevel: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -82,6 +90,7 @@ export default function Signup() {
       setFormErrors(e as FetchError, setError);
     }
   };
+
   return (
     <div className="flex flex-1 items-center justify-center">
       <Card className="mx-auto max-w-sm">
@@ -210,6 +219,36 @@ export default function Signup() {
                       </FormControl>
                       <FormDescription>
                         Please enter your country code
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <FormField
+                  control={control}
+                  name="experienceLevel"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Experience Level</FormLabel>
+                      <FormControl>
+                        <Select {...field} onValueChange={field.onChange}>
+                          <SelectTrigger aria-label="Experience level select box">
+                            <SelectValue placeholder="Select experience level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="BEGINNER">Beginner</SelectItem>
+                            <SelectItem value="INTERMEDIATE">
+                              Intermediate
+                            </SelectItem>
+                            <SelectItem value="ADVANCED">Advanced</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription>
+                        Please select your programming experience level
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

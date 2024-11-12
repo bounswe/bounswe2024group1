@@ -3,6 +3,8 @@
  *
  * @version 1.0.0
  */
+export type ExperienceLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+
 export type UserRegistration = {
   username: string;
   /**
@@ -13,6 +15,7 @@ export type UserRegistration = {
   firstName: string;
   lastName: string;
   country: string;
+  experienceLevel: ExperienceLevel;
 };
 
 export type UserLogin = {
@@ -40,6 +43,7 @@ export type UserProfile = {
   followingCount?: number;
   selfFollowing?: boolean;
   questionCount?: number;
+  experienceLevel?: ExperienceLevel;
   answerCount?: number;
   answers?: AnswerDetails[];
   questions?: QuestionSummary[];
@@ -48,6 +52,7 @@ export type UserProfile = {
 export type UserProfileUpdate = {
   bio?: string;
   country?: string;
+  experienceLevel?: ExperienceLevel;
 };
 
 /**
@@ -173,6 +178,7 @@ export type TagDetails = {
    * @format url
    */
   photo?: string;
+  highlightedQuestions?: QuestionSummary[];
 };
 
 /**
