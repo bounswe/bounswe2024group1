@@ -24,7 +24,8 @@
     /* Base URL and Aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "#/*": ["./*"]
     }
   },
   "include": ["src", "tests/setup.ts"],

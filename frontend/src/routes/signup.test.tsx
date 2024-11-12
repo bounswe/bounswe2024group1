@@ -1,5 +1,6 @@
 import { fetchSignUp } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
+import { testAccessibility } from "@/utils/test-accessibility";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { afterEach, expect, test, vi } from "vitest";
@@ -20,6 +21,15 @@ vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
 afterEach(() => {
   useAuthStore.setState(useAuthStore.getInitialState());
   vi.clearAllMocks();
+});
+
+test("should have no accessibility violations", async () => {
+  // Arrange
+  const router = createMemoryRouter(routeConfig, {
+    initialEntries: ["/signup"],
+  });
+
+  await testAccessibility(<RouterProvider router={router} />);
 });
 
 test("signup calls service", async () => {

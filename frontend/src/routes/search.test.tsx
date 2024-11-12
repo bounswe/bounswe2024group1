@@ -3,10 +3,18 @@ import {
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
 import { TagSummary } from "@/services/api/programmingForumSchemas";
+import { testAccessibility } from "@/utils/test-accessibility";
 import { QueryObserverSuccessResult } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import {
+  createMemoryRouter,
+  MemoryRouter,
+  Route,
+  RouterProvider,
+  Routes,
+} from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { routeConfig } from ".";
 import { Search } from "./search";
 
 // Mock the useSearchTags hook
@@ -22,6 +30,14 @@ const mockTags: TagSummary[] = [
 describe("Search component", () => {
   beforeEach(() => {
     vi.mocked(useSearchTags).mockReset();
+  });
+  it("should have no accessibility violations", async () => {
+    // Arrange
+    const router = createMemoryRouter(routeConfig, {
+      initialEntries: ["/search?q=test"],
+    });
+
+    await testAccessibility(<RouterProvider router={router} />);
   });
 
   it("renders loading state", () => {

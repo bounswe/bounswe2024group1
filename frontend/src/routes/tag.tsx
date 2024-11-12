@@ -80,7 +80,8 @@ export default function TagPage() {
       </div>
       <img
         src={tag?.photo || "https://placehold.co/400x300"}
-        alt={tag.name}
+        alt={`The logo image of ${tag.name}`}
+        title={`alt:The logo image of ${tag.name}`}
         className="h-48 w-full rounded-3xl object-contain lg:h-96"
       />
       <span className="">{tag.description}</span>

@@ -1,7 +1,9 @@
-import { RouterProvider, createMemoryRouter } from "react-router-dom";
+import { testAccessibility } from "@/utils/test-accessibility";
 import { render, screen, waitFor } from "@testing-library/react";
-import { routeConfig } from "../routes";
+import { Home } from "lucide-react";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { expect, test, vi } from "vitest";
+import { routeConfig } from "../routes";
 
 vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
   const mod =
@@ -11,6 +13,10 @@ vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
   return {
     ...mod,
   };
+});
+
+test("should have no accessibility violations", async () => {
+  await testAccessibility(<Home />);
 });
 
 test("home route renders", async () => {

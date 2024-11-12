@@ -50,6 +50,19 @@
     --input: 0 0% 14.9%;
     --ring: 0 74% 56%;
   }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  /* Ensure all interactive elements have proper focus states */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary ring-0;
+  }
 }
 
 @layer base {
