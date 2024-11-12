@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui";
+import { Image, Text } from "@/components/ui";
 import { Card } from "@/components/ui/card";
 import { Link } from "expo-router";
 import { ArrowRight, CornerDownRight, Star } from "lucide-react-native";
@@ -45,8 +45,8 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
         </View>
         <View className="flex items-center justify-between">
           <Link href={`/users/${author.id}`}>
-            <img
-              src={author.profilePicture}
+            <Image
+              source={{ uri: author.profilePicture }}
               alt={author.name}
               className="rounded-full object-cover"
             />

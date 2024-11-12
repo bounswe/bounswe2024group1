@@ -3,9 +3,9 @@ import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { TagCard } from "@/components/TagCard";
 import {
   Button,
+  ButtonIcon,
   ButtonText,
   HStack,
-  Icon,
   Input,
   InputField,
   Text,
@@ -54,12 +54,12 @@ export default function SearchScreen() {
         </Input>
         <Button
           variant="outline"
-          size="sm"
+          size="md"
           onPress={() => {
             router.setParams({ q: searchQuery });
           }}
         >
-          <Icon as={Search} size="sm" />
+          <ButtonIcon as={Search} size="sm" />
           <ButtonText>Search</ButtonText>
         </Button>
       </HStack>
