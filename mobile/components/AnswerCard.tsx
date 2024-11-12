@@ -4,6 +4,7 @@ import { Link } from "expo-router";
 import { ArrowRight, CornerDownRight, Star } from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
+import { ContentWithSnippets } from "./ContentWithSnippets";
 
 interface AnswerCardProps {
   id: string;
@@ -34,9 +35,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
           <View className="mt-2 flex-shrink-0">
             <CornerDownRight size={24} />
           </View>
-          <p className="line-clamp-3 text-sm font-light text-gray-800">
-            {content}
-          </p>
+          <ContentWithSnippets content={content} />
         </View>
         <View className="flex flex-col gap-3 text-xs text-gray-700">
           <View className="flex items-center gap-1">
