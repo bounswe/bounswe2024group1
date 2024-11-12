@@ -60,7 +60,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
                   });
                 }}
                 aria-label="Copy link"
-                className="absolute right-4 top-10 mr-4 mt-4" // Positioning classes
+                className="absolute right-4 top-10 mr-4 mt-4" //adjust the button position
               >
                 <LinkIcon className="h-5 w-5" />
               </Button>
