@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Services;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.*;
+import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -11,12 +12,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TagService {
     private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
+    private final QuestionRepository questionRepository;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -61,16 +64,22 @@ public class TagService {
         }
         Tag tagEntity = tag.get();
         TagType tagType = getTagType(tagEntity);
+        List<Question> questions = questionRepository.findQuestionsByTagId(tagId);
+        List<GetQuestionWithTagDto> relatedQuestions = questions.stream()
+                .map(question -> modelMapper.map(question, GetQuestionWithTagDto.class))
+                .toList();
 
         if (tagType == TagType.PROGRAMMING_LANGUAGE) {
             ProgrammingLanguagesTag languageTag = (ProgrammingLanguagesTag) tagEntity;
             GetProgrammingLanguageTagResponseDto responseDto = modelMapper.map(languageTag, GetProgrammingLanguageTagResponseDto.class);
             responseDto.setTagType(tagType.toString());
+            responseDto.setRelatedQuestions(relatedQuestions);
             return responseDto;
         } else if (tagType == TagType.PROGRAMMING_PARADIGM) {
             ProgrammingParadigmTag paradigmTag = (ProgrammingParadigmTag) tagEntity;
             GetProgrammingParadigmResponseDto responseDto = modelMapper.map(paradigmTag, GetProgrammingParadigmResponseDto.class);
             responseDto.setTagType(tagType.toString());
+            responseDto.setRelatedQuestions(relatedQuestions);
             return responseDto;
         }
 
@@ -80,6 +89,7 @@ public class TagService {
                 .name(tagEntity.getTagName())
                 .description(tagEntity.getTagDescription())
                 .tagType(getTagType(tagEntity).toString())
+                .relatedQuestions(relatedQuestions)
 
                 .build();
 
