@@ -1074,39 +1074,22 @@ components:
       type: object
       required:
         - name
-        - type
         - description
       properties:
         name:
           type: string
-        type:
-          $ref: '#/components/schemas/TagType'
         description:
-          type: string
-        # Optional fields based on type
-        authors:
-          type: array
-          items:
-            type: string
-        inceptionYear:
-          type: string
-        fileExtension:
-          type: string
-        officialWebsite:
-          type: string
-          format: url
-        stackExchangeTag:
           type: string
 
     TagType:
         type: string
         enum:
           - PROGRAMMING_LANGUAGE
-
           - PROGRAMMING_PARADIGM
           - COMPUTER_SCIENCE_TERM
           - SOFTWARE_LIBRARY
           - USER_DEFINED
+
     UserRegistration:
       type: object
       required:
@@ -1258,10 +1241,10 @@ components:
           type: string
         content:
           type: string
-        tags:
+        tagIds:
           type: array
           items:
-            type: string
+            type: number
         difficultyLevel:
           $ref: '#/components/schemas/DifficultyLevel'
 
@@ -1473,13 +1456,13 @@ components:
           type: string
         name:
           type: string
-        type:
+        tagType:
           $ref: '#/components/schemas/TagType'
         description:
           type: string
         questionCount:
           type: integer
-        followersCount:
+        followerCount:
           type: integer
         following:
           type: boolean
@@ -1487,10 +1470,12 @@ components:
           type: string
           format: url
         # Additional fields based on tag type
-        authors:
-          type: array
-          items:
-            type: string
+        logoImage:
+          type: string
+          format: url
+          description: For Programming Language tags
+        author:
+          type: string
           description: For Programming Language tags
         inceptionYear:
           type: string
@@ -1501,10 +1486,10 @@ components:
         officialWebsite:
           type: string
           format: url
-          description: For Programming Language and Software Library tags
+          description: For Programming Language tags
         stackExchangeTag:
           type: string
-          description: Available for all tag types
+          description: Available for Programming Language, Programming Paradigm and Computer Science Term tags
       examples:
         - id: "python"
           name: "Python"
