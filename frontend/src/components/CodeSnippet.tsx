@@ -4,6 +4,8 @@ import { CodeExecution } from "@/services/api/programmingForumSchemas";
 import React from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { toast } from "@/components/ui/use-toast";
+import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 
 interface CodeSnippetProps {
   code: string;
@@ -40,9 +42,35 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
         ] ?? "Unknown"}{" "}
         Code Snippet
       </h4>
-      <SyntaxHighlighter language={language} style={docco}>
+      <SyntaxHighlighter
+        language={language}
+        style={docco}
+        PreTag={({ children, ...rest }) => {
+          return (
+            <div {...rest}>
+              <pre children={children} />
+              <Button
+                size="icon"
+                onClick={() => {
+                  navigator.clipboard.writeText(code);
+                  toast({
+                    variant: "default",
+                    title: "Link copied",
+                    description: "The code is copied to the clipboard",
+                  });
+                }}
+                aria-label="Copy link"
+                className="absolute right-4 top-10 mr-4 mt-4" // Positioning classes
+              >
+                <LinkIcon className="h-5 w-5" />
+              </Button>
+            </div>
+          );
+        }}
+      >
         {code}
       </SyntaxHighlighter>
+
       <Button
         className="self-start"
         onClick={handleExecute}
