@@ -30,6 +30,7 @@ export const temporaryMocks = {
           reputationPoints: 100,
           profilePicture: "https://placehold.co/640x640",
           name: "John Doe",
+          experienceLevel: "INTERMEDIATE"
         },
         createdAt: "2024-01-01T00:00:00Z",
         updatedAt: "2024-01-01T00:00:00Z",
@@ -63,6 +64,7 @@ export const temporaryMocks = {
               reputationPoints: 150,
               profilePicture: "https://placehold.co/640x640",
               name: "Jane Doe",
+              experienceLevel: "EXPERT"
             },
             createdAt: "2024-01-01T00:00:00Z",
             updatedAt: "2024-01-01T00:00:00Z",
@@ -83,6 +85,7 @@ export const temporaryMocks = {
         reputationPoints: 100,
         profilePicture: "https://placehold.co/640x640",
         name: "John Doe",
+        experienceLevel: "INTERMEDIATE"
       },
     },
   },
@@ -110,6 +113,50 @@ export const temporaryMocks = {
           following: false,
           photo:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png",
+          highlightedQuestions: [
+            {
+              id: 1,
+              title: "What is the best way to learn programming?",
+              content: "I want to learn programming, but I don't know where to start...",
+              author: {
+                id: 2,
+                username: "john_doe",
+                reputationPoints: 100,
+                experienceLevel: "INTERMEDIATE"
+              },
+              createdAt: "2024-01-01T00:00:00Z",
+              rating: 10,
+              answerCount: 2
+            },
+            {
+              id: 2,
+              title: "How to handle exceptions in Python?",
+              content: "I'm struggling with error handling in Python...",
+              author: {
+                id: 3,
+                username: "alice_smith",
+                reputationPoints: 250,
+                experienceLevel: "ADVANCED"
+              },
+              createdAt: "2024-01-02T00:00:00Z",
+              rating: 15,
+              answerCount: 3
+            },
+            {
+              id: 3,
+              title: "Python list comprehension examples",
+              content: "Could someone explain list comprehensions with practical examples?",
+              author: {
+                id: 4,
+                username: "bob_wilson",
+                reputationPoints: 180,
+                experienceLevel: "INTERMEDIATE"
+              },
+              createdAt: "2024-01-03T00:00:00Z",
+              rating: 12,
+              answerCount: 4
+            }
+          ]
         },
       ],
     },
@@ -127,6 +174,50 @@ export const temporaryMocks = {
         following: false,
         photo:
           "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png",
+        highlightedQuestions: [
+          {
+            id: 1,
+            title: "What is the best way to learn programming?",
+            content: "I want to learn programming, but I don't know where to start...",
+            author: {
+              id: 2,
+              username: "john_doe",
+              reputationPoints: 100,
+              experienceLevel: "INTERMEDIATE"
+            },
+            createdAt: "2024-01-01T00:00:00Z",
+            rating: 10,
+            answerCount: 2
+          },
+          {
+            id: 2,
+            title: "How to handle exceptions in Python?",
+            content: "I'm struggling with error handling in Python...",
+            author: {
+              id: 3,
+              username: "alice_smith",
+              reputationPoints: 250,
+              experienceLevel: "ADVANCED"
+            },
+            createdAt: "2024-01-02T00:00:00Z",
+            rating: 15,
+            answerCount: 3
+          },
+          {
+            id: 3,
+            title: "Python list comprehension examples",
+            content: "Could someone explain list comprehensions with practical examples?",
+            author: {
+              id: 4,
+              username: "bob_wilson",
+              reputationPoints: 180,
+              experienceLevel: "INTERMEDIATE"
+            },
+            createdAt: "2024-01-03T00:00:00Z",
+            rating: 12,
+            answerCount: 4
+          }
+        ]
       },
     },
   },
@@ -145,6 +236,50 @@ export const temporaryMocks = {
               "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png",
             followersCount: 100,
             following: false,
+            highlightedQuestions: [
+              {
+                id: 1,
+                title: "What is the best way to learn programming?",
+                content: "I want to learn programming, but I don't know where to start...",
+                author: {
+                  id: 2,
+                  username: "john_doe",
+                  reputationPoints: 100,
+                  experienceLevel: "INTERMEDIATE"
+                },
+                createdAt: "2024-01-01T00:00:00Z",
+                rating: 10,
+                answerCount: 2
+              },
+              {
+                id: 2,
+                title: "How to handle exceptions in Python?",
+                content: "I'm struggling with error handling in Python...",
+                author: {
+                  id: 3,
+                  username: "alice_smith",
+                  reputationPoints: 250,
+                  experienceLevel: "ADVANCED"
+                },
+                createdAt: "2024-01-02T00:00:00Z",
+                rating: 15,
+                answerCount: 3
+              },
+              {
+                id: 3,
+                title: "Python list comprehension examples",
+                content: "Could someone explain list comprehensions with practical examples?",
+                author: {
+                  id: 4,
+                  username: "bob_wilson",
+                  reputationPoints: 180,
+                  experienceLevel: "INTERMEDIATE"
+                },
+                createdAt: "2024-01-03T00:00:00Z",
+                rating: 12,
+                answerCount: 4
+              }
+            ]
           },
         ],
         totalItems: 1,
