@@ -59,6 +59,9 @@ export default function TagPage() {
   const token = useAuthStore((s) => s.token);
   const [tab, setTab] = useState<"top-rated" | "recent">("top-rated");
 
+  const highlightedQuestions = data?.data.highlightedQuestions;
+  const [scrollQuestions, setScrollQuestions] = useState(1);
+
   if (isLoading || isLoadingRecent || isLoadingTop) {
     return <FullscreenLoading overlay />;
   }
@@ -126,6 +129,21 @@ export default function TagPage() {
               <ButtonText>Recent</ButtonText>
             </Button>
           </ButtonGroup>
+
+          {highlightedQuestions?.map((question, index) => (
+            (index < scrollQuestions*10) && // TODO: don't show all cards initially, reload after user asks
+              <QuestionCard
+                key={question.id}
+                id={question.id}
+                title={question.title}
+                content={question.content}
+                votes={question.rating}
+                answerCount={question.answerCount}
+                author={question.author}
+                highlighted={true}
+              />
+          ))} 
+
           {tab === "top-rated" ? (
             <View style={{ gap: 16 }}>
               {questionsTop?.data &&
