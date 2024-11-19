@@ -27,6 +27,13 @@ public  class EndpointConstants {
         public static final String QUESTION_DELETE_DOWNVOTE = QUESTION_ID + "/deleteDownvote";
     }
 
+    public static class AnswerEndpoints {
+        public static final String BASE_PATH = "/answers";
+        public static final String ANSWER_ID = BASE_PATH + "/{id}";
+        public static final String ANSWER_UPVOTE = ANSWER_ID + "/upvote";
+        public static final String ANSWER_DOWNVOTE = ANSWER_ID + "/downvote";
+    }
+
     public static class SparqlEndpoints {
         public static final String  BASE_PATH = "https://query.wikidata.org/sparql";
     }

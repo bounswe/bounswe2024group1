@@ -64,7 +64,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
               />
               <Text className="text-sm font-medium">{answer.author?.name}</Text>
             </Link>
-            <Text className="text-xs text-gray-500">
+            <Text className="text-xs text-gray-700">
               Answered: {new Date(answer.createdAt || "").toLocaleDateString()}
             </Text>
           </View>

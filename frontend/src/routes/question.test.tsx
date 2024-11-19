@@ -1,9 +1,17 @@
 import { useGetQuestionDetails } from "@/services/api/programmingForumComponents";
 import { QuestionDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
+import { testAccessibility } from "@/utils/test-accessibility";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import {
+  createMemoryRouter,
+  MemoryRouter,
+  Route,
+  RouterProvider,
+  Routes,
+} from "react-router-dom";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import { routeConfig } from ".";
 import QuestionPage from "./question";
 
 const mockQuestionData = vi.hoisted(
@@ -64,6 +72,15 @@ describe("QuestionPage", () => {
       selfProfile: null,
       token: null,
     });
+  });
+
+  it("should have no accessibility violations", async () => {
+    // Arrange
+    const router = createMemoryRouter(routeConfig, {
+      initialEntries: ["/question/1"],
+    });
+
+    await testAccessibility(<RouterProvider router={router} />);
   });
 
   it("renders question details correctly", () => {

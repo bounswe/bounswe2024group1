@@ -19,7 +19,7 @@ export const Tag = ({
     <div className="flex flex-col self-stretch justify-self-stretch">
       <div className="-mb-16 w-[70%] self-center">
         <AspectRatio ratio={16 / 9}>
-          <img src={photo} className="h-full w-full rounded-2xl object-cover" />
+          <img src={photo} alt={`The logo image of ${Tag.name}`} title={`alt:The logo image of ${Tag.name}`} className="h-full w-full rounded-2xl object-cover" />
         </AspectRatio>
       </div>
 
@@ -30,7 +30,7 @@ export const Tag = ({
           </div>
         </CardHeader>
         <CardContent className="flex flex-1 flex-col justify-between gap-2">
-          <p className="text-sm text-gray-500">{description}</p>
+          <p className="text-sm text-gray-700">{description}</p>
           <div className="flex items-center justify-between">
             {!!token && (
               <Link to={`/questions/new?tagId=` + encodeURIComponent(id || "")}>

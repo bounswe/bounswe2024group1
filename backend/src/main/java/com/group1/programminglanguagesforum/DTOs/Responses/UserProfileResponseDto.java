@@ -1,4 +1,5 @@
 package com.group1.programminglanguagesforum.DTOs.Responses;
+import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
 import lombok.*;
 
 @Builder
@@ -18,4 +19,5 @@ public class UserProfileResponseDto {
     private int followingCount;
     private boolean selfFollowing;
     private int reputationPoints;
+    private ExperienceLevel experienceLevel;
 }

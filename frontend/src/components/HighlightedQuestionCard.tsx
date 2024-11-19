@@ -1,14 +1,15 @@
 import { Card } from "@/components/ui/card";
-import { ArrowRight, CornerDownRight, Star } from "lucide-react";
+
+import { ArrowRight, MessageSquare, Star } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-interface AnswerCardProps {
+interface HighlightedQuestionCardProps {
   id: number;
   title: string;
   content: string;
   votes: number;
-  questionId: number;
+  answerCount: number;
   author: {
     id: number;
     name: string;
@@ -16,33 +17,31 @@ interface AnswerCardProps {
   };
 }
 
-export const AnswerCard: React.FC<AnswerCardProps> = ({
+export const HighlightedQuestionCard: React.FC<HighlightedQuestionCardProps> = ({
+  id,
   title,
   content,
   votes,
-  questionId,
+  answerCount,
   author,
 }) => {
   return (
-    <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
+    <Card className="border-none bg-blue-100 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-6">
         <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
         </h3>
-        <div className="flex items-start gap-2">
-          <CornerDownRight
-            width={24}
-            height={24}
-            className="mt-2 flex-shrink-0"
-          />
-          <p className="line-clamp-3 text-sm font-light text-gray-800">
-            {content}
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 text-xs text-gray-800">
+        <p className="line-clamp-3 text-sm font-light text-gray-800">
+          {content}
+        </p>
+        <div className="flex flex-col gap-3 text-xs text-gray-700">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4" />
             <span>{votes} votes</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <MessageSquare className="h-4 w-4"/>
+            <span>{answerCount} answers</span>
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -50,14 +49,14 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
             <img
               src={author.profilePicture}
               alt={author.name}
-              className="rounded-full object-cover"
+              className="h-full w-full rounded-full object-cover"
             />
           </Link>
           <Link
-            to={`/question/${questionId}`}
+            to={`/question/${id}`}
             className="flex items-center text-sm font-medium text-gray-800 hover:underline"
           >
-            Go to answer
+            Go to question
             <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
         </div>

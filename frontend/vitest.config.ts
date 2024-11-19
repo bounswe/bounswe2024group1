@@ -4,6 +4,11 @@ import viteConfig from "./vite.config";
 export default mergeConfig(
   viteConfig,
   defineConfig({
+    resolve: {
+      alias: {
+        "#": "./",
+      },
+    },
     test: {
       setupFiles: ["./tests/setup.ts"],
       globals: true,

@@ -18,11 +18,11 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
           {tag.name}
         </Text>
         <View className="flex items-start gap-2">
-          <Text className="line-clamp-3 text-sm font-light text-gray-600">
+          <Text className="line-clamp-3 text-sm font-light text-gray-800">
             {tag.description}
           </Text>
         </View>
-        <View className="flex flex-col gap-3 text-xs text-gray-500">
+        <View className="flex flex-col gap-3 text-xs text-gray-700">
           <View className="flex flex-row items-center gap-1">
             <Users size={16} color={"#000"} />
             <Text>{tag.followersCount} followers</Text>
@@ -46,7 +46,7 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
           )}
           <Link
             href={`/tags/${tag.id}`}
-            className="flex-row items-center text-sm font-medium text-gray-600 hover:underline"
+            className="flex-row items-center text-sm font-medium text-gray-800 hover:underline"
           >
             <Text>View tag</Text>
             <Icon as={ArrowRight} size="sm" className="ml-1" />

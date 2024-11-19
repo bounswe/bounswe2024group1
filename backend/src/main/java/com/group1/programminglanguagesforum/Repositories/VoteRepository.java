@@ -1,5 +1,6 @@
 package com.group1.programminglanguagesforum.Repositories;
 
+import com.group1.programminglanguagesforum.Entities.Answer;
 import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Entities.Vote;
@@ -11,4 +12,5 @@ import java.util.Optional;
 @Repository
 public interface VoteRepository extends JpaRepository<Vote,Long> {
     Optional<Vote> findByUserAndQuestionAndIsUpvote(User user, Question question, boolean isUpvote);
+    Optional<Vote> findByUserAndAnswer(User user, Answer answer);
 }

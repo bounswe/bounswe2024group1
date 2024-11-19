@@ -30,7 +30,9 @@ public class User implements UserDetails {
     private String email;
     @Builder.Default
     private String bio = "";
-
+    @Builder.Default
+    @Column(name = "experience_level", nullable = false)
+    private ExperienceLevel experienceLevel= ExperienceLevel.BEGINNER;
     private String password;
     private String country;
     @Builder.Default
