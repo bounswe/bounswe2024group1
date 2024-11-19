@@ -105,7 +105,7 @@ export default function TagPage() {
           <HStack style={{ alignItems: "center", gap: 16 }}>
             <Text style={{ fontSize: 20, fontWeight: "600" }}>Questions</Text>
             {!!token && (
-              <Link href={`/questions/new?tagId=${tag.id}`} asChild>
+              <Link href={`/question/new?tagId=${tag.id}`} asChild>
                 <Button
                   size="icon"
                   style={{ borderRadius: 9999, backgroundColor: "#ef4444" }}
