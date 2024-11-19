@@ -1,18 +1,25 @@
 package com.group1.programminglanguagesforum.Config;
 
-import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.UserProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.*;
+import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
+import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
+import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.SimpleDateFormat;
+
 @Configuration
 public class ModelMapperConfig {
+
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+
 
         // Define a PropertyMap to skip certain fields
         modelMapper.addMappings(new PropertyMap<SelfProfileResponseDto, User>() {
@@ -30,6 +37,39 @@ public class ModelMapperConfig {
                 skip(destination.getFollowers());
                 skip(destination.getFollowing());
 
+            }
+        });
+        modelMapper.addMappings(new PropertyMap< GetQuestionWithTagDto,Question>() {
+            @Override
+            protected void configure() {
+                skip(destination.getTags());
+                skip(destination.getVotes());
+                skip(destination.getAskedBy());
+            }
+        });
+        modelMapper.addMappings(new PropertyMap<ProgrammingLanguagesTag, GetProgrammingLanguageTagResponseDto>() {
+            @Override
+            protected void configure() {
+                map(source.getId(), destination.getTagId());
+                map(source.getTagName(), destination.getName());
+                map(source.getTagDescription(), destination.getDescription());
+                map(source.getLogoImage(), destination.getLogoImage());
+                map(source.getAuthor(), destination.getAuthor());
+                map(source.getInceptionYear(), destination.getInceptionYear());
+                map(source.getFileExtension(), destination.getFileExtension());
+                map(source.getOfficialWebsite(), destination.getOfficialWebsite());
+                map(source.getStackExchangeTag(), destination.getStackExchangeTag());
+            }
+        });
+
+        // Map ProgrammingParadigmTag to GetProgrammingParadigmResponseDto
+        modelMapper.addMappings(new PropertyMap<ProgrammingParadigmTag, GetProgrammingParadigmResponseDto>() {
+            @Override
+            protected void configure() {
+                map(source.getId(), destination.getTagId());
+                map(source.getTagName(), destination.getName());
+                map(source.getTagDescription(), destination.getDescription());
+                map(source.getStackExchangeTag(), destination.getStackExchangeTag());
             }
         });
 

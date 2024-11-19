@@ -28,6 +28,7 @@ public class UserService {
         }
         user.setBio(userProfileUpdateRequestDto.getBio());
         user.setCountry(userProfileUpdateRequestDto.getCountry());
+        user.setExperienceLevel(userProfileUpdateRequestDto.getExperienceLevel());
         return userRepository.save(user);
     }
     @Transactional

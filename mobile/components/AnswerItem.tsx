@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui";
+import { HStack, Image, Text } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AnswerDetails } from "@/services/api/programmingForumSchemas";
@@ -26,16 +26,16 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
     <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
       <View className="flex flex-col gap-4">
         <ContentWithSnippets content={answer.content} />
-        <View className="flex items-center justify-between">
-          <View className="flex items-center gap-4">
-            <View className="flex items-center gap-2">
-              <ThumbsUp className="h-4 w-4" />
+        <HStack className="flex items-center justify-between">
+          <HStack space="md" className="flex items-center gap-4">
+            <HStack space="md" className="flex items-center gap-2">
+              <ThumbsUp color="black" className="h-4 w-4" />
               <Text className="font-bold">{answer.rating}</Text>
-            </View>
+            </HStack>
             {token && (
-              <View className="flex gap-2">
+              <HStack space="md" className="flex gap-2">
                 <Button aria-label="Upvote" size="sm" onPress={onUpvote}>
-                  <ThumbsUp className="h-4 w-4" />
+                  <ThumbsUp color="white" className="h-4 w-4" />
                 </Button>
                 <Button
                   aria-label="Downvote"
@@ -43,32 +43,33 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
                   variant="outline"
                   onPress={onDownvote}
                 >
-                  <ThumbsDown className="h-4 w-4" />
+                  <ThumbsDown color="black" className="h-4 w-4" />
                 </Button>
-              </View>
+              </HStack>
             )}
-          </View>
+          </HStack>
           <View className="flex flex-col items-end gap-1">
             <Link
               href={`/users/${answer.author?.id}`}
               className="flex items-center gap-2"
             >
-              <img
-                src={
-                  answer.author?.profilePicture ||
-                  "https://placehold.co/100x100"
-                }
+              <Image
+                source={{
+                  uri:
+                    answer.author?.profilePicture ||
+                    "https://placehold.co/100x100",
+                }}
                 alt={answer.author?.name}
                 className="h-8 w-8 rounded-full object-cover"
               />
               <Text className="text-sm font-medium">{answer.author?.name}</Text>
             </Link>
-            <Text className="text-xs text-gray-500">
+            <Text className="text-xs text-gray-700">
               Answered: {new Date(answer.createdAt || "").toLocaleDateString()}
             </Text>
           </View>
+        </HStack>
         </View>
-      </View>
     </Card>
   );
 };

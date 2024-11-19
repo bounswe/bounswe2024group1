@@ -51,6 +51,11 @@ export const ContentWithSnippets: React.FC<ContentWithSnippetsProps> = ({
           <CodeSnippet key={index} code={part.code} language={part.language} />
         );
       }
+      return (
+        <Text className="font-mono" key={index}>
+          {part.code}
+        </Text>
+      );
       return <Text key={index}>{part.content}</Text>;
     });
   }, [content]);

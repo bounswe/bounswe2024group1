@@ -5,6 +5,9 @@ import FollowButton from "@/components/FollowButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import {
   Button,
+  ButtonText,
+  HStack,
+  Image,
   LinkIcon,
   Text,
   Toast,
@@ -21,7 +24,7 @@ import useAuthStore from "@/services/auth";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react-native";
 import { useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 export default function QuestionPage() {
   const { questionId } = useLocalSearchParams();
 
@@ -83,10 +86,10 @@ export default function QuestionPage() {
   }
 
   return (
-    <View className="container flex flex-col gap-4 py-16">
-      <View className="flex items-center justify-between">
-        <Text>{question.title}</Text>
-        <View className="flex gap-4">
+    <ScrollView contentContainerClassName="container flex gap-4 py-16 px-6">
+      <HStack className="flex flex-row items-center justify-between">
+        <Text className="text-2xl font-bold">{question.title}</Text>
+        <HStack className="hidden" space="md">
           <Button
             size="xs"
             onPress={() => {
@@ -114,7 +117,7 @@ export default function QuestionPage() {
               });
             }}
           >
-            <LinkIcon className="h-5 w-5" />
+            <LinkIcon color="white" className="h-5 w-5" />
           </Button>
           {selfProfile?.id === question.author.id && (
             <Button
@@ -128,43 +131,49 @@ export default function QuestionPage() {
               <Trash size={20} />
             </Button>
           )}
-        </View>
-      </View>
+        </HStack>
+      </HStack>
 
-      <View className="flex items-center justify-between">
+      <HStack className=" items-center justify-between">
+        <HStack space="md">
+
         <Link
           href={`/users/${question.author.id}`}
-          className="flex items-center gap-4"
+          className="flex flex-row items-center gap-4"
         >
-          <img
-            src={
-              question.author.profilePicture || "https://placehold.co/640x640"
-            }
+          <Image
+            source={{
+              uri: question.author.profilePicture || "https://placehold.co/640x640",
+            }}
             alt={question.author.name}
-            className="h-8 w-8 rounded-full object-cover"
+            width={32}
+            height={32}
+            className="rounded-full"
           />
           <Text className="font-bold">{question.author.name}</Text>
         </Link>
+        </HStack>
         {token && selfProfile?.id !== question.author.id && (
           <FollowButton profile={question.author} />
         )}
-      </View>
+      </HStack>
 
-      <View className="flex items-center gap-4">
-        <View className="flex items-center gap-2">
-          <ThumbsUp size={20} />
+      <View className="flex flex-row items-center gap-4">
+        <HStack className="flex items-center gap-2">
+          <ThumbsUp size={20} color={"#000"} />
           <Text className="font-bold">
             {optimisticVotes ?? question.rating}
           </Text>
-        </View>
-        <View className="flex items-center gap-2">
-          <MessageSquare size={20} />
+        </HStack>
+        <HStack space="md">
+          <MessageSquare size={20} color="black"/>
           <Text className="font-bold">{question.answerCount}</Text>
-        </View>
+        </HStack>
         {!!token && (
-          <View className="flex gap-2">
+          <HStack space="md">
             <Button
               size="sm"
+              variant={question.selfRating === 1 ? "solid" : "outline"}
               disabled={question.selfRating === 1}
               onPress={() =>
                 voteQuestion({
@@ -173,11 +182,11 @@ export default function QuestionPage() {
                 })
               }
             >
-              Upvote
+              <ButtonText>Upvote</ButtonText>
             </Button>
             <Button
               size="sm"
-              variant="outline"
+              variant={question.selfRating === -1 ? "solid" : "outline"}
               disabled={question.selfRating === -1}
               onPress={() =>
                 voteQuestion({
@@ -186,18 +195,19 @@ export default function QuestionPage() {
                 })
               }
             >
-              Downvote
+              <ButtonText>Downvote</ButtonText>
             </Button>
-          </View>
+          </HStack>
         )}
       </View>
 
-      <View className="grid grid-cols-2 gap-2 py-2">
-        <Text className="flex items-center gap-4 font-bold">
-          <Flag size={20} />
-
-          {question.tags.map((s) => s.name).join(", ")}
-        </Text>
+      <View className="flex flex-row justify-between items-center gap-2 py-2">
+        <HStack space="md">
+          <Flag size={20} color="black" />
+          <Text className="font-bold">
+            {question.tags.map((s) => s.name).join(", ")}
+          </Text>
+        </HStack>
         <Text className="flex items-center gap-4 font-bold">
           Asked: {new Date(question.createdAt).toLocaleDateString()}
         </Text>
@@ -209,6 +219,6 @@ export default function QuestionPage() {
 
       <Text className="text-2xl font-bold">Answers</Text>
       {questionId && <Answers questionId={Number(questionId)} />}
-    </View>
+    </ScrollView>
   );
 }

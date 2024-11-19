@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
@@ -24,6 +25,7 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
+    SystemUI.setBackgroundColorAsync("white");
   }, [loaded]);
 
   if (!loaded) {

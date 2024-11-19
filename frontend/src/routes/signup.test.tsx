@@ -1,5 +1,6 @@
 import { fetchSignUp } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
+import { testAccessibility } from "@/utils/test-accessibility";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { afterEach, expect, test, vi } from "vitest";
@@ -20,6 +21,15 @@ vi.mock("@/services/api/programmingForumComponents", async (importOriginal) => {
 afterEach(() => {
   useAuthStore.setState(useAuthStore.getInitialState());
   vi.clearAllMocks();
+});
+
+test("should have no accessibility violations", async () => {
+  // Arrange
+  const router = createMemoryRouter(routeConfig, {
+    initialEntries: ["/signup"],
+  });
+
+  await testAccessibility(<RouterProvider router={router} />);
 });
 
 test("signup calls service", async () => {
@@ -49,6 +59,11 @@ test("signup calls service", async () => {
   const countryField = screen.getByPlaceholderText("TR");
   fireEvent.change(countryField, { target: { value: "TR" } });
 
+  const experienceLevelSelect = screen.getByRole("combobox");
+  fireEvent.click(experienceLevelSelect);
+  const beginnerOption = screen.getAllByText("Beginner");
+  fireEvent.click(beginnerOption[1]);
+
   const submit = screen.getByText("Create an account", { selector: "button" });
   fireEvent.click(submit);
 
@@ -62,6 +77,7 @@ test("signup calls service", async () => {
         firstName: "John",
         lastName: "Doe",
         country: "TR",
+        experienceLevel: "BEGINNER",
       },
     });
   });
@@ -92,6 +108,11 @@ test("signup with invalid email shows validation error", async () => {
 
   const countryField = screen.getByPlaceholderText("TR");
   fireEvent.change(countryField, { target: { value: "US" } });
+
+  const experienceLevelSelect = screen.getByRole("combobox");
+  fireEvent.click(experienceLevelSelect);
+  const beginnerOption = screen.getAllByText("Beginner");
+  fireEvent.click(beginnerOption[1]);
 
   const submit = screen.getByText("Create an account", { selector: "button" });
   fireEvent.click(submit);
@@ -128,6 +149,11 @@ test("signup with invalid password shows validation error", async () => {
 
   const countryField = screen.getByPlaceholderText("TR");
   fireEvent.change(countryField, { target: { value: "US" } });
+
+  const experienceLevelSelect = screen.getByRole("combobox");
+  fireEvent.click(experienceLevelSelect);
+  const beginnerOption = screen.getAllByText("Beginner");
+  fireEvent.click(beginnerOption[1]);
 
   const submit = screen.getByText("Create an account", { selector: "button" });
   fireEvent.click(submit);

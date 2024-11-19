@@ -13,6 +13,7 @@ import { FullscreenLoading } from "@/components/FullscreenLoading";
 import ErrorAlert from "@/components/ErrorAlert";
 // import { Recipe } from "@/components/Recipe";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
+import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { Button } from "@/components/ui/button";
 import useAuthStore from "@/services/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,6 +29,7 @@ export default function TagPage() {
       enabled: !!tagId,
     },
   );
+  console.log(data?.data.highlightedQuestions)
   const { data: questionsRecent } = useGetQuestionDetails(
     {
       pathParams: { questionId: 1 },
@@ -80,7 +82,8 @@ export default function TagPage() {
       </div>
       <img
         src={tag?.photo || "https://placehold.co/400x300"}
-        alt={tag.name}
+        alt={`The logo image of ${tag.name}`}
+        title={`alt:The logo image of ${tag.name}`}
         className="h-48 w-full rounded-3xl object-contain lg:h-96"
       />
       <span className="">{tag.description}</span>
@@ -105,7 +108,8 @@ export default function TagPage() {
             <TabsTrigger value="top-rated">Top Rated</TabsTrigger>
             <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
-          <TabsContent value="top-rated">
+          <TabsContent value="top-rated" className="gap-4 flex flex-col">
+          <HighlightedQuestionsBox questions={data?.data?.highlightedQuestions || []} />  
             <div className="grid grid-cols-3 gap-4">
               {questionsTop?.data && (
                 <QuestionCard
@@ -119,7 +123,8 @@ export default function TagPage() {
               )}
             </div>
           </TabsContent>
-          <TabsContent value="recent">
+          <TabsContent value="recent" className="gap-4 flex flex-col">
+          <HighlightedQuestionsBox questions={data?.data?.highlightedQuestions || []} />   
             <div className="grid grid-cols-3 gap-4">
               {questionsRecent?.data && (
                 <QuestionCard

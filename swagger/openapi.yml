@@ -1034,6 +1034,13 @@ components:
       bearerFormat: JWT
 
   schemas:
+    ExperienceLevel:
+      type: string
+      enum:
+        - BEGINNER
+        - INTERMEDIATE
+        - ADVANCED
+
     UserRegistration:
       type: object
       required:
@@ -1043,6 +1050,7 @@ components:
         - firstName
         - lastName
         - country
+        - experienceLevel
       properties:
         username:
           type: string
@@ -1057,6 +1065,8 @@ components:
           type: string
         country:
           type: string
+        experienceLevel:
+          $ref: "#/components/schemas/ExperienceLevel"
 
     UserLogin:
       type: object
@@ -1102,6 +1112,8 @@ components:
           type: boolean
         questionCount:
           type: integer
+        experienceLevel:
+          $ref: "#/components/schemas/ExperienceLevel"
         answerCount:
           type: integer
         answers:
@@ -1138,6 +1150,8 @@ components:
           type: string
         country:
           type: string
+        experienceLevel:
+          $ref: "#/components/schemas/ExperienceLevel"
 
     UserSummary:
       type: object
@@ -1394,6 +1408,10 @@ components:
         photo:
           type: string
           format: url
+        highlightedQuestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
       examples:
         - id: "python"
           name: "Python"

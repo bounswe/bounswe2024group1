@@ -3,6 +3,8 @@
  *
  * @version 1.0.0
  */
+export type ExperienceLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+
 export type UserRegistration = {
   username: string;
   /**
@@ -13,6 +15,7 @@ export type UserRegistration = {
   firstName: string;
   lastName: string;
   country: string;
+  experienceLevel: ExperienceLevel;
 };
 
 export type UserLogin = {
@@ -24,6 +27,9 @@ export type AuthToken = {
   token?: string;
 };
 
+/**
+ * @example {"id":1,"username":"john_doe","email":"john@doe.com","firstName":"John","lastName":"Doe","bio":"I am a software engineer.","country":"USA","reputationPoints":100,"followersCount":100,"followingCount":100,"selfFollowing":false,"questionCount":100,"answerCount":100,"questions":[{"$ref":"#/components/schemas/QuestionSummary/examples/0"}],"answers":[{"$ref":"#/components/schemas/AnswerDetails/examples/0"}]}
+ */
 export type UserProfile = {
   id?: number;
   username?: string;
@@ -37,12 +43,16 @@ export type UserProfile = {
   followingCount?: number;
   selfFollowing?: boolean;
   questionCount?: number;
+  experienceLevel?: ExperienceLevel;
   answerCount?: number;
+  answers?: AnswerDetails[];
+  questions?: QuestionSummary[];
 };
 
 export type UserProfileUpdate = {
   bio?: string;
   country?: string;
+  experienceLevel?: ExperienceLevel;
 };
 
 /**
@@ -100,19 +110,20 @@ export type QuestionDetails = {
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"selfRating":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"selfRating":0}
  */
 export type QuestionSummary = {
-  id?: number;
-  title?: string;
-  author?: UserSummary;
+  id: number;
+  title: string;
+  content: string;
+  author: UserSummary;
   /**
    * @format date-time
    */
-  createdAt?: string;
-  tags?: TagSummary[];
-  rating?: number;
-  answerCount?: number;
+  createdAt: string;
+  tags: TagSummary[];
+  rating: number;
+  answerCount: number;
   viewCount?: number;
   /**
    * @minimum -1
@@ -130,7 +141,7 @@ export type UpdateAnswer = {
 };
 
 /**
- * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfRating":0}
+ * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfRating":0,"question":{"$ref":"#/components/schemas/QuestionSummary/examples/0"}}
  */
 export type AnswerDetails = {
   id: number;
@@ -150,6 +161,7 @@ export type AnswerDetails = {
    * @maximum 1
    */
   selfRating?: number;
+  question: QuestionSummary;
 };
 
 /**
@@ -166,6 +178,7 @@ export type TagDetails = {
    * @format url
    */
   photo?: string;
+  highlightedQuestions?: QuestionSummary[];
 };
 
 /**
@@ -181,6 +194,9 @@ export type TagSummary = {
   photo?: string;
 };
 
+/**
+ * @examples null
+ */
 export type Profile = {
   id?: number;
   username?: string;
@@ -190,7 +206,9 @@ export type Profile = {
   followingCount?: number;
   selfFollowing?: boolean;
   questionCount?: number;
+  questions?: QuestionSummary[];
   answerCount?: number;
+  answers?: AnswerDetails[];
   tags?: TagSummary[];
 };
 

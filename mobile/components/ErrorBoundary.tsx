@@ -33,7 +33,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               <Text className="mt-6 text-3xl font-extrabold text-gray-900">
                 Oops! Something went wrong.
               </Text>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-gray-800">
                 We apologize for the inconvenience. Please try refreshing the
                 page or contact support if the problem persists.
               </p>

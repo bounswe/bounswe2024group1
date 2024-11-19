@@ -31,10 +31,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
         </h3>
-        <p className="line-clamp-3 text-sm font-light text-gray-600">
+        <p className="line-clamp-3 text-sm font-light text-gray-800">
           {content}
         </p>
-        <div className="flex flex-col gap-3 text-xs text-gray-500">
+        <div className="flex flex-col gap-3 text-xs text-gray-700">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4" />
             <span>{votes} votes</span>
@@ -54,7 +54,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           </Link>
           <Link
             to={`/question/${id}`}
-            className="flex items-center text-sm font-medium text-gray-600 hover:underline"
+            className="flex items-center text-sm font-medium text-gray-800 hover:underline"
           >
             Go to question
             <ArrowRight className="ml-1 h-4 w-4" />

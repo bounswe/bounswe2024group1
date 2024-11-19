@@ -7,6 +7,7 @@ import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -36,14 +37,14 @@ public class SecurityConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("GET", API_BASE + EndpointConstants.UserEndpoints.USER_ME).authenticated()  // Specific GET requests that need authentication
-                                .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()  // Permit signup without authentication
-                                .requestMatchers("POST", API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
-                                .requestMatchers("GET", API_BASE + EndpointConstants.TEST).permitAll()
-                                .requestMatchers("POST", API_BASE + "/**").authenticated()// Permit signin without authentication// All POSTs need authentication
-                                .requestMatchers("PUT", API_BASE + "/**").authenticated()   // All PUTs need authentication
-                                .requestMatchers("DELETE", API_BASE + "/**").authenticated()// All DELETEs need authentication
-                                .requestMatchers("GET", "/**").permitAll()  // General GET requests, allow everything else
+                        req -> req.requestMatchers(HttpMethod.GET, API_BASE + EndpointConstants.UserEndpoints.USER_ME).authenticated()  // Specific GET requests that need authentication
+                                .requestMatchers(HttpMethod.POST, API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNUP).permitAll()  // Permit signup without authentication
+                                .requestMatchers(HttpMethod.POST, API_BASE + EndpointConstants.AuthenticationEndpoints.SIGNIN).permitAll()
+                                .requestMatchers(HttpMethod.GET, API_BASE + EndpointConstants.TEST).permitAll()
+                                .requestMatchers(HttpMethod.POST, API_BASE + "/**").authenticated()// Permit signin without authentication// All POSTs need authentication
+                                .requestMatchers(HttpMethod.PUT, API_BASE + "/**").authenticated()   // All PUTs need authentication
+                                .requestMatchers(HttpMethod.DELETE, API_BASE + "/**").authenticated()// All DELETEs need authentication
+                                .requestMatchers(HttpMethod.GET, "/**").permitAll()  // General GET requests, allow everything else
                                 .anyRequest().authenticated()
                 )
                 .anonymous(anonymous -> anonymous.disable())
