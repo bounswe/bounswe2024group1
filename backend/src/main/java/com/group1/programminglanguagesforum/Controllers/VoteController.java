@@ -2,6 +2,7 @@ package com.group1.programminglanguagesforum.Controllers;
 
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Responses.*;
+import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.VoteService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
@@ -182,4 +183,45 @@ public class VoteController extends BaseController {
             return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
         }
     }
+
+    @PostMapping(EndpointConstants.AnswerEndpoints.ANSWER_UPVOTE)
+    public ResponseEntity<GenericApiResponse<AnswerVoteResponseDTO>> upvoteAnswer(@PathVariable(name = "id") Long answerId) {
+        try {
+            AnswerVoteResponseDTO response = voteService.upvoteAnswer(answerId);
+            GenericApiResponse<AnswerVoteResponseDTO> genericApiResponse =
+                    ApiResponseBuilder.buildSuccessResponse(
+                            response.getClass(),
+                            "Answer upvoted successfully",
+                            HttpStatus.OK.value(),
+                            response
+                    );
+            return buildResponse(genericApiResponse, HttpStatus.OK);
+
+        } catch (UnauthorizedAccessException e) {
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
+        } catch (Exception e) {
+            return ExceptionResponseHandler.Exception(e);
+        }
+    }
+
+    @PostMapping(EndpointConstants.AnswerEndpoints.ANSWER_DOWNVOTE)
+    public ResponseEntity<GenericApiResponse<AnswerVoteResponseDTO>> downvoteAnswer(@PathVariable(name = "id") Long answerId) {
+        try {
+            AnswerVoteResponseDTO response = voteService.downvoteAnswer(answerId);
+            GenericApiResponse<AnswerVoteResponseDTO> genericApiResponse =
+                    ApiResponseBuilder.buildSuccessResponse(
+                            response.getClass(),
+                            "Answer downvoted successfully",
+                            HttpStatus.OK.value(),
+                            response
+                    );
+            return buildResponse(genericApiResponse, HttpStatus.OK);
+
+        } catch (UnauthorizedAccessException e) {
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
+        } catch (Exception e) {
+            return ExceptionResponseHandler.Exception(e);
+        }
+    }
+
 }

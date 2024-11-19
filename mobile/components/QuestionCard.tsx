@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-
 import { Image, Text } from "@/components/ui";
 import { Link } from "expo-router";
 import { ArrowRight, MessageSquare, Star } from "lucide-react-native";
@@ -17,6 +16,7 @@ interface QuestionCardProps {
     name: string;
     profilePicture: string;
   };
+  highlighted?: boolean;
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({
@@ -26,23 +26,40 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   votes,
   answerCount,
   author,
+  highlighted = false,
 }) => {
   return (
-    <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
+    <Card
+      className={`px-6 py-8 shadow-sm ${
+        highlighted ? "bg-blue-100 border-blue-500" : "bg-neutral-150"
+      }`}
+    >
       <View className="flex flex-col gap-6">
-        <Text className="line-clamp-2 text-xl font-semibold text-gray-800">
+        {highlighted && (
+          <Text className="text-xs font-semibold text-blue-700">Beginner Friendly</Text>
+        )}
+        
+        <Text
+          className={`line-clamp-2 text-xl font-semibold ${
+            highlighted ? "text-blue-800" : "text-gray-800"
+          }`}
+        >
           {title}
         </Text>
-        <Text className="line-clamp-3 text-sm font-light text-gray-800">
+        <Text
+          className={`line-clamp-3 text-sm font-light ${
+            highlighted ? "text-blue-700" : "text-gray-800"
+          }`}
+        >
           {content}
         </Text>
         <View className="flex flex-col gap-3 text-xs text-gray-700">
           <View className="flex items-center gap-1">
-            <Star className="h-4 w-4" />
+            <Star className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`} />
             <Text>{votes} votes</Text>
           </View>
           <View className="flex items-center gap-1">
-            <MessageSquare className="h-4 w-4" />
+            <MessageSquare className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`} />
             <Text>{answerCount} answers</Text>
           </View>
         </View>
@@ -56,7 +73,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           </Link>
           <Link
             href={`/question/${id}`}
-            className="flex items-center text-sm font-medium text-gray-800 hover:underline"
+            className={`flex items-center text-sm font-medium ${
+              highlighted ? "text-blue-600" : "text-gray-800"
+            }`}
           >
             <Text>Go to question</Text>
             <ArrowRight className="ml-1 h-4 w-4" />

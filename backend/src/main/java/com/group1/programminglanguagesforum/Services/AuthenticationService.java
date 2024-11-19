@@ -6,6 +6,7 @@ import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.SigninResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.SignupResponseDto;
+import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
@@ -45,6 +46,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .firstName(requestDto.getFirstName())
                 .lastName(requestDto.getLastName())
+                .experienceLevel(ExperienceLevel.fromValue(requestDto.getExperienceLevel()))
                 .build();
 
         userRepository.save(user);
