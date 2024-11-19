@@ -4,7 +4,7 @@ WORKDIR /app
 # cache package installs
 COPY .yarnrc.yml yarn.lock package.json /app/
 RUN corepack enable
-RUN yarn install --immutable
+RUN yarn install
 
 COPY . /app
 RUN yarn build
