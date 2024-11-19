@@ -2,21 +2,21 @@
 
 // import { useMemo } from "react";
 // import { flag } from "country-emoji";
-import { Link, useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
-import {
-  useGetTagDetails,
-  useGetQuestionDetails,
-} from "@/services/api/programmingForumComponents";
-import { FullscreenLoading } from "@/components/FullscreenLoading";
 import ErrorAlert from "@/components/ErrorAlert";
+import { FullscreenLoading } from "@/components/FullscreenLoading";
+import {
+  useGetQuestionDetails,
+  useGetTagDetails,
+} from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
-import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
+import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
 import { Button } from "@/components/ui/button";
-import useAuthStore from "@/services/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useAuthStore from "@/services/auth";
 
 export default function TagPage() {
   const { tagId } = useParams();
@@ -29,7 +29,7 @@ export default function TagPage() {
       enabled: !!tagId,
     },
   );
-  console.log(data?.data.highlightedQuestions)
+  console.log(data?.data.highlightedQuestions);
   const { data: questionsRecent } = useGetQuestionDetails(
     {
       pathParams: { questionId: 1 },
@@ -78,7 +78,9 @@ export default function TagPage() {
   return (
     <div className="container flex flex-col gap-4 self-stretch justify-self-stretch py-16">
       <div className="flex items-center justify-between">
-        <h1>{tag.name}</h1>
+        <div className="flex items-center gap-2 ">
+          <h1>{tag.name}</h1>
+        </div>
       </div>
       <img
         src={tag?.photo || "https://placehold.co/400x300"}
@@ -86,7 +88,13 @@ export default function TagPage() {
         title={`alt:The logo image of ${tag.name}`}
         className="h-48 w-full rounded-3xl object-contain lg:h-96"
       />
-      <span className="">{tag.description}</span>
+      <div className="mb-4 flex items-center justify-between px-1">
+        <span className="flex-1">{tag.description}</span>
+        <div className="flex items-center gap-1">
+          <div className="font-bold">{tag.followersCount}</div>
+          <div className="text-sm text-gray-500">Followers</div>
+        </div>
+      </div>
 
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
         <div className="flex items-center gap-4">
@@ -108,8 +116,10 @@ export default function TagPage() {
             <TabsTrigger value="top-rated">Top Rated</TabsTrigger>
             <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
-          <TabsContent value="top-rated" className="gap-4 flex flex-col">
-          <HighlightedQuestionsBox questions={data?.data?.highlightedQuestions || []} />  
+          <TabsContent value="top-rated" className="flex flex-col gap-4">
+            <HighlightedQuestionsBox
+              questions={data?.data?.highlightedQuestions || []}
+            />
             <div className="grid grid-cols-3 gap-4">
               {questionsTop?.data && (
                 <QuestionCard
@@ -123,8 +133,10 @@ export default function TagPage() {
               )}
             </div>
           </TabsContent>
-          <TabsContent value="recent" className="gap-4 flex flex-col">
-          <HighlightedQuestionsBox questions={data?.data?.highlightedQuestions || []} />   
+          <TabsContent value="recent" className="flex flex-col gap-4">
+            <HighlightedQuestionsBox
+              questions={data?.data?.highlightedQuestions || []}
+            />
             <div className="grid grid-cols-3 gap-4">
               {questionsRecent?.data && (
                 <QuestionCard
