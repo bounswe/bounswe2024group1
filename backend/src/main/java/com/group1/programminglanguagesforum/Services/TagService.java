@@ -32,27 +32,24 @@ public class TagService {
             return TagType.PROGRAMMING_PARADIGM;
         } else if (tag instanceof SoftwareLibraryTag) {
             return TagType.SOFTWARE_LIBRARY;
-        } else if (
-                tag instanceof ComputerScienceTermTag) {
+        } else if (tag instanceof ComputerScienceTermTag) {
             return TagType.COMPUTER_SCIENCE_TOPIC;
-        } else if (
-                tag != null
-        ) {
+        } else if (tag != null) {
 
             return TagType.USER_DEFINED;
         } else {
             throw new IllegalArgumentException("Unknown tag type");
         }
 
-
     }
-    public GetTagDetailsResponseDto createTag(CreateTagRequestDto dto){
+
+    public GetTagDetailsResponseDto createTag(CreateTagRequestDto dto) {
         Tag tag = new Tag(null, dto.getName(), dto.getDescription());
-        tagRepository.save(tag);
+        Tag savedTag = tagRepository.save(tag); // Use the returned Tag object with the generated ID
         return GetTagDetailsResponseDto.builder()
-                .tagId(tag.getId())
-                .name(tag.getTagName())
-                .description(tag.getTagDescription())
+                .tagId(savedTag.getId()) // Use savedTag.getId() to get the correct ID
+                .name(savedTag.getTagName())
+                .description(savedTag.getTagDescription())
                 .tagType(TagType.USER_DEFINED.toString())
                 .build();
     }
@@ -71,18 +68,19 @@ public class TagService {
 
         if (tagType == TagType.PROGRAMMING_LANGUAGE) {
             ProgrammingLanguagesTag languageTag = (ProgrammingLanguagesTag) tagEntity;
-            GetProgrammingLanguageTagResponseDto responseDto = modelMapper.map(languageTag, GetProgrammingLanguageTagResponseDto.class);
+            GetProgrammingLanguageTagResponseDto responseDto = modelMapper.map(languageTag,
+                    GetProgrammingLanguageTagResponseDto.class);
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             return responseDto;
         } else if (tagType == TagType.PROGRAMMING_PARADIGM) {
             ProgrammingParadigmTag paradigmTag = (ProgrammingParadigmTag) tagEntity;
-            GetProgrammingParadigmResponseDto responseDto = modelMapper.map(paradigmTag, GetProgrammingParadigmResponseDto.class);
+            GetProgrammingParadigmResponseDto responseDto = modelMapper.map(paradigmTag,
+                    GetProgrammingParadigmResponseDto.class);
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             return responseDto;
         }
-
 
         return GetTagDetailsResponseDto.builder()
                 .tagId(tagEntity.getId())
@@ -92,7 +90,6 @@ public class TagService {
                 .relatedQuestions(relatedQuestions)
 
                 .build();
-
 
     }
 

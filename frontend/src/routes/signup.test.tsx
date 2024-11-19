@@ -54,7 +54,7 @@ test("signup calls service", async () => {
   fireEvent.change(emailField, { target: { value: "m@example.com" } });
 
   const passwordField = screen.getByLabelText("Password");
-  fireEvent.change(passwordField, { target: { value: "password" } });
+  fireEvent.change(passwordField, { target: { value: "Password123" } });
 
   const countryField = screen.getByPlaceholderText("TR");
   fireEvent.change(countryField, { target: { value: "TR" } });
@@ -73,7 +73,7 @@ test("signup calls service", async () => {
       body: {
         username: "john_doe",
         email: "m@example.com",
-        password: "password",
+        password: "Password123",
         firstName: "John",
         lastName: "Doe",
         country: "TR",
