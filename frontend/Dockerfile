@@ -1,10 +1,11 @@
-FROM node:20-alpine AS build
+FROM node:20 AS build
 WORKDIR /app
+RUN apt-get update && apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
 # cache package installs
 COPY .yarnrc.yml yarn.lock package.json /app/
 RUN corepack enable
-RUN yarn install
+RUN yarn install --immutable
 
 COPY . /app
 RUN yarn build

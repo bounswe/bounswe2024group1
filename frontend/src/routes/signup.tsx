@@ -40,7 +40,23 @@ const signupSchema = z.object({
   lastName: z.string().min(1),
   username: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z
+    .string()
+    .min(8)
+    .refine(
+      (password) => {
+        return (
+          password.length >= 8 &&
+          /[A-Z]/.test(password) &&
+          /[a-z]/.test(password) &&
+          /[0-9]/.test(password)
+        );
+      },
+      {
+        message:
+          "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number",
+      },
+    ),
   country: z.string().min(1),
   redirectTo: z.string().optional(),
   experienceLevel: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]),
