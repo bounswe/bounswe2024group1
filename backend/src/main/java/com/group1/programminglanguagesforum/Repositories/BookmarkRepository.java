@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     Optional<Bookmark> findByUserAndQuestion(User user, Question Question);
+
+    boolean existsByUserAndQuestion(User user, Question question);
 }
