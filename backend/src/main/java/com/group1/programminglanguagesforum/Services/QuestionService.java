@@ -1,6 +1,7 @@
 package com.group1.programminglanguagesforum.Services;
 
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateQuestionRequestDto;
+import com.group1.programminglanguagesforum.DTOs.Requests.UpdateQuestionRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.AuthorDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.CreateQuestionResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetQuestionDetailsResponseDto;
@@ -80,6 +81,7 @@ public class QuestionService {
         Question question = questionOptional.get();
         User currentUser = userContextService.getCurrentUser();
         boolean selfQuestion = currentUser.getId().equals(question.getAskedBy().getId());
+
         return GetQuestionDetailsResponseDto.builder()
                 .id(question.getId())
                 .title(question.getTitle())
@@ -97,6 +99,10 @@ public class QuestionService {
                         .name(question.getAskedBy().getFirstName() + " " + question.getAskedBy().getLastName())
                         .build())
                 .rating(0L)
+                .tags(question.getTags().stream().map(tag -> TagDto.builder()
+                        .id(tag.getId())
+                        .name(tag.getTagName())
+                        .build()).toList())
                 .answerCount((long) question.getAnswers().size())
                 .bookmarked(isBookmarked(id))
                 .build();
@@ -117,5 +123,45 @@ public class QuestionService {
         Question question = questionOptional.get();
         questionRepository.delete(question);
         return "Question deleted successfully";
+    }
+
+
+    public CreateQuestionResponseDto updateQuestion(Long id, UpdateQuestionRequestDto dto) {
+        Optional<Question> questionOptional = questionRepository.findById(id);
+        if (questionOptional.isEmpty()) {
+            throw new NoSuchElementException("Question not found");
+        }
+        Date date = new Date();
+        Question question = questionOptional.get();
+        List<Long> tagIds = dto.getTags();
+        Set<Tag> existingTags = new HashSet<>(tagService.findAllByIdIn(tagIds));
+        question.setTitle(dto.getTitle());
+        question.setQuestionBody(dto.getContent());
+        question.setTags(existingTags);
+        question.setUpdatedAt(date);
+        questionRepository.save(question);
+        List<TagDto> tags = existingTags.stream().map(tag -> TagDto.builder()
+                .id(tag.getId())
+                .name(tag.getTagName())
+                .build()).toList();
+        return CreateQuestionResponseDto.builder()
+                .id(question.getId())
+                .title(question.getTitle())
+                .content(question.getQuestionBody())
+                .tags(tags)
+                .author(AuthorDto.builder()
+                        .id(question.getAskedBy().getId())
+                        .username(question.getAskedBy().getUsername())
+                        .reputationPoints(question.getAskedBy().getReputationPoints())
+                        .name(question.getAskedBy().getFirstName() + " " + question.getAskedBy().getLastName())
+                        .build())
+                .createdAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getCreatedAt()))
+                .updatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getUpdatedAt()))
+                .upvoteCount(question.getUpvoteCount())
+                .downvoteCount(question.getDownvoteCount())
+                .build();
+
+
+
     }
 }
