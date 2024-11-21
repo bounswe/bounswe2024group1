@@ -1457,6 +1457,67 @@ export const useRateAnswer = (
   });
 };
 
+export type CreateTagError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+>;
+
+export type CreateTagResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.TagDetails;
+};
+
+export type CreateTagVariables = {
+  body: Schemas.NewTag;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchCreateTag = (
+  variables: CreateTagVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    CreateTagResponse,
+    CreateTagError,
+    Schemas.NewTag,
+    {},
+    {},
+    {}
+  >({ url: "/tags", method: "post", ...variables, signal });
+
+export const useCreateTag = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      CreateTagResponse,
+      CreateTagError,
+      CreateTagVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    CreateTagResponse,
+    CreateTagError,
+    CreateTagVariables
+  >({
+    mutationFn: (variables: CreateTagVariables) =>
+      fetchCreateTag({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
 export type GetTagDetailsPathParams = {
   tagId: string;
 };
@@ -1633,6 +1694,10 @@ export type SearchQuestionsQueryParams = {
    * Comma-separated list of tag IDs
    */
   tags?: string;
+  /**
+   * Filter by difficulty level
+   */
+  difficulty?: Schemas.DifficultyLevel;
   /**
    * Page number
    *

@@ -5,6 +5,18 @@
  */
 export type ExperienceLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
+export type NewTag = {
+  name: string;
+  description: string;
+};
+
+export type TagType =
+  | "PROGRAMMING_LANGUAGE"
+  | "PROGRAMMING_PARADIGM"
+  | "COMPUTER_SCIENCE_TERM"
+  | "SOFTWARE_LIBRARY"
+  | "USER_DEFINED";
+
 export type UserRegistration = {
   username: string;
   /**
@@ -69,10 +81,13 @@ export type UserSummary = {
   name: string;
 };
 
+export type DifficultyLevel = "EASY" | "MEDIUM" | "HARD";
+
 export type NewQuestion = {
   title: string;
   content: string;
-  tags: string[];
+  tagIds?: number[];
+  difficultyLevel: DifficultyLevel;
 };
 
 export type UpdateQuestion = {
@@ -115,12 +130,13 @@ export type QuestionDetails = {
 export type QuestionSummary = {
   id: number;
   title: string;
-  content: string;
+  content?: string;
   author: UserSummary;
   /**
    * @format date-time
    */
   createdAt: string;
+  difficultyLevel: DifficultyLevel;
   tags: TagSummary[];
   rating: number;
   answerCount: number;
@@ -165,20 +181,52 @@ export type AnswerDetails = {
 };
 
 /**
- * @example {"id":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ * @example {"id":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
+ * @example {"id":"java","name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
+ * @example {"id":"react","name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
+ * @example {"id":"oop","name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
  */
 export type TagDetails = {
-  id?: string;
-  name?: string;
-  description?: string;
+  id: string;
+  name: string;
+  tagType?: TagType;
+  description: string;
   questionCount?: number;
-  followersCount?: number;
+  followerCount?: number;
   following?: boolean;
   /**
    * @format url
    */
   photo?: string;
   highlightedQuestions?: QuestionSummary[];
+  /**
+   * For Programming Language tags
+   *
+   * @format url
+   */
+  logoImage?: string;
+  /**
+   * For Programming Language tags
+   */
+  author?: string;
+  /**
+   * For Programming Language tags
+   */
+  inceptionYear?: string;
+  /**
+   * For Programming Language tags
+   */
+  fileExtension?: string;
+  /**
+   * For Programming Language tags
+   *
+   * @format url
+   */
+  officialWebsite?: string;
+  /**
+   * Available for Programming Language, Programming Paradigm and Computer Science Term tags
+   */
+  stackExchangeTag?: string;
 };
 
 /**
