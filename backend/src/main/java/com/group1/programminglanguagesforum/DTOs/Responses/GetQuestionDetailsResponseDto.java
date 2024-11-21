@@ -2,6 +2,9 @@ package com.group1.programminglanguagesforum.DTOs.Responses;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
@@ -16,6 +19,8 @@ public class GetQuestionDetailsResponseDto {
     private Long commentCount;
     private Boolean selfQuestion;
     private String createdAt;
+    @Builder.Default
+    private List<TagDto> tags= new ArrayList<>();
     private String updatedAt;
     private AuthorDto author;
     @Builder.Default

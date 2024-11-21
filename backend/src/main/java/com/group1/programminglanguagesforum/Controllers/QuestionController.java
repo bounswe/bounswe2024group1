@@ -2,6 +2,7 @@ package com.group1.programminglanguagesforum.Controllers;
 
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateQuestionRequestDto;
+import com.group1.programminglanguagesforum.DTOs.Requests.UpdateQuestionRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.CreateQuestionResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
@@ -73,4 +74,21 @@ public class QuestionController extends BaseController {
         }
 
     }
+
+    @PutMapping(value = EndpointConstants.QuestionEndpoints.QUESTION_ID)
+    public ResponseEntity<GenericApiResponse<CreateQuestionResponseDto>> updateQuestion(@PathVariable(value = "id") Long id, @RequestBody UpdateQuestionRequestDto dto) {
+        try {
+            GenericApiResponse<CreateQuestionResponseDto> response = ApiResponseBuilder.buildSuccessResponse(CreateQuestionResponseDto.class, "Question updated successfully", 200, questionService.updateQuestion(id, dto));
+            return buildResponse(response, org.springframework.http.HttpStatus.OK);
+        }
+        catch (NoSuchElementException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<CreateQuestionResponseDto> response = ApiResponseBuilder.buildErrorResponse(CreateQuestionResponseDto.class, e.getMessage(), 404, errorResponse);
+            return buildResponse(response, org.springframework.http.HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
