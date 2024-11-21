@@ -45,4 +45,9 @@ public class AnswerService {
                 .build();
 
     }
+
+    public void deleteAnswer(Long answerId) throws UnauthorizedAccessException {
+        Answer answer = answerRepository.findById(answerId).orElseThrow();
+        answerRepository.delete(answer);
+    }
 }
