@@ -108,4 +108,14 @@ public class QuestionService {
         Question question = findById(questionId).orElseThrow();
         return bookmarkRepository.existsByUserAndQuestion(user, question);
     }
+
+    public String deleteQuestion(Long id) {
+        Optional<Question> questionOptional = questionRepository.findById(id);
+        if (questionOptional.isEmpty()) {
+            throw new NoSuchElementException("Question not found");
+        }
+        Question question = questionOptional.get();
+        questionRepository.delete(question);
+        return "Question deleted successfully";
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,6 +37,7 @@ public class QuestionController extends BaseController {
 
         }
     }
+
     @GetMapping(value = EndpointConstants.QuestionEndpoints.QUESTION_ID)
     public ResponseEntity<GenericApiResponse<GetQuestionDetailsResponseDto>> getQuestion(@PathVariable(value = "id") Long id) {
         try {
@@ -54,13 +56,21 @@ public class QuestionController extends BaseController {
     }
 
 
+    @DeleteMapping(value = EndpointConstants.QuestionEndpoints.QUESTION_ID)
+    public ResponseEntity<GenericApiResponse<String>> deleteQuestion(@PathVariable(value = "id") Long id) {
+        try {
 
 
+            GenericApiResponse<String> response = ApiResponseBuilder.buildSuccessResponse(String.class, "Question deleted successfully", 200, questionService.deleteQuestion(id));
+            return buildResponse(response, org.springframework.http.HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<String> response = ApiResponseBuilder.buildErrorResponse(String.class, e.getMessage(), 404, errorResponse);
+            return buildResponse(response, org.springframework.http.HttpStatus.NOT_FOUND);
+        }
 
-
-
-
-
-
-
+    }
 }
