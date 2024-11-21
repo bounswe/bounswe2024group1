@@ -3,13 +3,17 @@ package com.group1.programminglanguagesforum.Controllers;
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateAnswerRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.CreateAnswerResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.AnswerService;
+import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +31,26 @@ public class AnswerController extends BaseController {
                 .data(response)
                 .build();
         return buildResponse(apiResponse, HttpStatus.CREATED);
+    }
+    @DeleteMapping(value= EndpointConstants.AnswerEndpoints.ANSWER_ID)
+    public ResponseEntity<GenericApiResponse<String>> deleteAnswer(@PathVariable(value = "id") Long answerId) throws UnauthorizedAccessException {
+        try {
+            answerService.deleteAnswer(answerId);
+            GenericApiResponse<String> apiResponse = GenericApiResponse.<String>builder()
+                    .status(200)
+                    .message("Answer deleted successfully")
+                    .data("Answer deleted successfully")
+                    .build();
+            return buildResponse(apiResponse, HttpStatus.OK);
+        }
+      catch (Exception e){
+          ErrorResponse errorResponse = ErrorResponse.builder()
+                  .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                  .build();
+          ApiResponseBuilder.buildErrorResponse(String.class, "An error occurred", 500, errorResponse);
+            return buildResponse(ApiResponseBuilder.buildErrorResponse(String.class, "An error occurred", 500, errorResponse), HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
 
 }
