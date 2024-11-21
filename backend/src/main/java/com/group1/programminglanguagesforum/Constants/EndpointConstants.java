@@ -3,6 +3,9 @@ package com.group1.programminglanguagesforum.Constants;
 public class EndpointConstants {
 
     public static final String TEST = "/test";
+    // This class should not be instantiated. It should be used only by referencing the class itself.
+    private EndpointConstants() {
+    }
 
     public static class AuthenticationEndpoints {
         public static final String BASE_PATH = "/auth";
@@ -42,6 +45,7 @@ public class EndpointConstants {
     public static class TagEndpoints {
         public static final String BASE_PATH = "/tags";
         public static final String TAG_ID = BASE_PATH + "/{id}";
+        public static final String SEARCH = "/search"+ BASE_PATH ;
     }
 
     public static class BookmarkEndpoints {
