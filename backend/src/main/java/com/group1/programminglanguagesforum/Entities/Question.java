@@ -47,6 +47,10 @@ public class Question {
     @Builder.Default
     private List<Vote> votes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Answer> answers = new ArrayList<>(); // Mapping to Answer
+
     public Long getUpvoteCount() {
         return votes.stream().filter(Vote::isUpvote).count();
     }

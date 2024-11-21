@@ -91,8 +91,8 @@ class TagServiceTest {
 
         Tag mockTag = new Tag(1L, null, "Tag1", "Description1");
         List<Question> mockQuestions = Arrays.asList(
-                new Question(1L, "Question1", "Body1", 0L, 0L, null, null, null, null, null),
-                new Question(2L, "Question2", "Body2", 0L, 0L, null, null, null, null, null));
+                new Question(1L, "Question1", "Body1", 0L, 0L, null, null, null, null, null,null),
+                new Question(2L, "Question2", "Body2", 0L, 0L, null, null, null, null, null,null));
 
         when(tagRepository.findById(tagId)).thenReturn(Optional.of(mockTag));
         when(questionRepository.findQuestionsByTagId(tagId)).thenReturn(mockQuestions);
