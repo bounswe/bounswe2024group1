@@ -20,6 +20,19 @@ import java.util.Arrays;
 @RequestMapping("/api/v1")
 public class AnswerController extends BaseController {
     private final AnswerService answerService;
+
+    @PutMapping(value= EndpointConstants.AnswerEndpoints.ANSWER_ID)
+    public ResponseEntity<GenericApiResponse<CreateAnswerResponseDto>> updateAnswer(
+            @PathVariable(value = "id") Long answerId,
+            @RequestBody CreateAnswerRequestDto createAnswerRequestDto) throws UnauthorizedAccessException {
+        CreateAnswerResponseDto response = answerService.updateAnswer(answerId, createAnswerRequestDto);
+        GenericApiResponse<CreateAnswerResponseDto> apiResponse = GenericApiResponse.<CreateAnswerResponseDto>builder()
+                .status(200)
+                .message("Answer updated successfully")
+                .data(response)
+                .build();
+        return buildResponse(apiResponse, HttpStatus.OK);
+    }
     @PostMapping(value= EndpointConstants.QuestionEndpoints.QUESTION_ANSWERS)
     public ResponseEntity<GenericApiResponse<CreateAnswerResponseDto>> createAnswer(
             @PathVariable(value = "questionId") Long questionId,
