@@ -50,4 +50,24 @@ public class AnswerService {
         Answer answer = answerRepository.findById(answerId).orElseThrow();
         answerRepository.delete(answer);
     }
+
+    public CreateAnswerResponseDto updateAnswer(Long answerId, CreateAnswerRequestDto createAnswerRequestDto) {
+        Answer answer = answerRepository.findById(answerId).orElseThrow();
+        answer.setAnswerBody(createAnswerRequestDto.getContent());
+        answerRepository.save(answer);
+        return CreateAnswerResponseDto.builder()
+                .id(answer.getId())
+                .content(answer.getAnswerBody())
+                .author(
+                        AuthorDto.builder()
+                                .id(answer.getAnsweredBy().getId())
+                                .username(answer.getAnsweredBy().getUsername())
+                                .reputationPoints(answer.getAnsweredBy().getReputationPoints())
+                                .name(answer.getAnsweredBy().getFirstName() + " " + answer.getAnsweredBy().getLastName())
+                                .build()
+                )
+                .createdAt(answer.getCreatedAt())
+                .updatedAt(answer.getUpdatedAt())
+                .build();
+    }
 }
