@@ -7,6 +7,7 @@ import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
 import com.group1.programminglanguagesforum.Services.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -91,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(objectMapper.writeValueAsString(genericApiResponse));
             return;
         }
-        catch (Exception e){
+        catch (JwtException e){
             GenericApiResponse<Void> genericApiResponse = GenericApiResponse.<Void>builder()
                     .status(HttpServletResponse.SC_UNAUTHORIZED)
                     .message("Invalid token")
