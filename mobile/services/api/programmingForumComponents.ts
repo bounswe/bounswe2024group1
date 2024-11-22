@@ -1951,7 +1951,7 @@ export type SearchTagsResponse = {
   status: 200 | 201;
   data:
     | {
-        items?: Schemas.TagSummary[];
+        items?: Schemas.TagDetails[];
         totalItems?: number;
         currentPage?: number;
         totalPages?: number;
