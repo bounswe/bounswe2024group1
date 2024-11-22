@@ -24,6 +24,8 @@ public class Question {
     @Column(name = "QUESTION_BODY", columnDefinition = "BLOB")
     private String questionBody;
     @Builder.Default
+    private DifficultyLevel difficulty = DifficultyLevel.EASY;
+    @Builder.Default
     private Long likeCount = 0L;
     @Builder.Default
     private Long commentCount = 0L;

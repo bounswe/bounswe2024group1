@@ -6,6 +6,7 @@ import com.group1.programminglanguagesforum.DTOs.Requests.UpdateQuestionRequestD
 import com.group1.programminglanguagesforum.DTOs.Responses.CreateQuestionResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
+import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetQuestionDetailsResponseDto;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.QuestionService;
@@ -29,13 +30,7 @@ public class QuestionController extends BaseController {
             GenericApiResponse<CreateQuestionResponseDto> response = ApiResponseBuilder.buildSuccessResponse(CreateQuestionResponseDto.class, "Question created successfully", 200, questionService.createQuestion(dto));
             return buildResponse(response, org.springframework.http.HttpStatus.OK);
         } catch (UnauthorizedAccessException e) {
-            ErrorResponse errorResponse = ErrorResponse.builder()
-                    .errorMessage(e.getMessage())
-                    .stackTrace(Arrays.toString(e.getStackTrace()))
-                    .build();
-            GenericApiResponse<CreateQuestionResponseDto> response = ApiResponseBuilder.buildErrorResponse(CreateQuestionResponseDto.class, e.getMessage(), 401, errorResponse);
-            return buildResponse(response, org.springframework.http.HttpStatus.UNAUTHORIZED);
-
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
         }
     }
 
