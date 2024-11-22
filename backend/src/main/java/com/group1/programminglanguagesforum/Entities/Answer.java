@@ -3,7 +3,9 @@ package com.group1.programminglanguagesforum.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -25,7 +27,6 @@ public class Answer {
          // text
     @Column(name = "answer_body", columnDefinition = "BLOB")
     private String answerBody;
-    private String answerDate;
     @ManyToOne(fetch = FetchType.LAZY) // Fetch lazily for better performance
     @JoinColumn(name = "user_id", nullable = false) // Foreign key column
     private User answeredBy; // Field to hold the User who answered
@@ -33,12 +34,36 @@ public class Answer {
     @Builder.Default
     private List<Vote> votes = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY) // Link answer to a question
+    @JoinColumn(name = "question_id", nullable = false) // Foreign key column
+    private Question question;
+    @Column(name = "CREATED_AT")
+    private String createdAt;
+
+    @Column(name = "UPDATED_AT")
+    private String updatedAt;
+
     public Long getUpvoteCount() {
         return votes.stream().filter(Vote::isUpvote).count();
     }
 
     public Long getDownvoteCount() {
         return votes.stream().filter(vote -> !vote.isUpvote()).count();
+    }
+
+
+    @PrePersist
+    public void prePersist() {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        createdAt = formatter.format(date);
+        updatedAt = formatter.format(date);
+    }
+    @PreUpdate
+    public void preUpdate() {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        updatedAt = formatter.format(date);
     }
 
 }
