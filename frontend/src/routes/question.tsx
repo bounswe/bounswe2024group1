@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import {
   useDeleteQuestion as useDeleteQuestionById,
+  useDownvoteQuestion,
   useGetQuestionDetails,
-  useRateQuestion as useVoteQuestion,
+  useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react";
@@ -39,11 +40,9 @@ export default function QuestionPage() {
 
   const [optimisticVotes, setOptimisticVotes] = useState<number | null>(null);
 
-  const { mutateAsync: voteQuestion } = useVoteQuestion({
-    onMutate: async (vote) => {
-      setOptimisticVotes(
-        (prev) => (prev ?? data?.rating ?? 0) + vote.body.rating,
-      );
+  const { mutateAsync: upvoteQuestion } = useUpvoteQuestion({
+    onMutate: async () => {
+      setOptimisticVotes((prev) => (prev ?? data?.likeCount ?? 0) + 1);
     },
     onSuccess: () => {
       refetch().then(() => {
@@ -52,6 +51,17 @@ export default function QuestionPage() {
     },
     onError: () => {
       setOptimisticVotes(null);
+    },
+  });
+
+  const { mutateAsync: downvoteQuestion } = useDownvoteQuestion({
+    onMutate: async () => {
+      setOptimisticVotes((prev) => (prev ?? data?.likeCount ?? 0) - 1);
+    },
+    onSuccess: () => {
+      refetch().then(() => {
+        setOptimisticVotes(null);
+      });
     },
   });
 
@@ -137,12 +147,12 @@ export default function QuestionPage() {
           <div className="flex items-center gap-2">
             <ThumbsUp className="h-4 w-4" />
             <span className="font-bold">
-              {optimisticVotes ?? question.rating}
+              {optimisticVotes ?? question.likeCount}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            <span className="font-bold">{question.answerCount}</span>
+            <span className="font-bold">{question.commentCount}</span>
           </div>
           {!!token && (
             <div className="flex gap-2">
@@ -150,9 +160,8 @@ export default function QuestionPage() {
                 size="sm"
                 disabled={question.selfRating === 1}
                 onClick={() =>
-                  voteQuestion({
+                  upvoteQuestion({
                     pathParams: { questionId: question.id },
-                    body: { rating: 1 },
                   })
                 }
               >
@@ -163,9 +172,8 @@ export default function QuestionPage() {
                 variant="outline"
                 disabled={question.selfRating === -1}
                 onClick={() =>
-                  voteQuestion({
+                  downvoteQuestion({
                     pathParams: { questionId: question.id },
-                    body: { rating: -1 },
                   })
                 }
               >

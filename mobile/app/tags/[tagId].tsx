@@ -13,12 +13,9 @@ import {
   View,
   VStack,
 } from "@/components/ui";
-import {
-  useGetQuestionDetails,
-  useGetTagDetails,
-} from "@/services/api/programmingForumComponents";
+import { useGetTagDetails } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Href, Link, useLocalSearchParams } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useState } from "react";
 
@@ -34,35 +31,13 @@ export default function TagPage() {
     }
   );
 
-  const { data: questionsRecent, isLoading: isLoadingRecent } =
-    useGetQuestionDetails(
-      {
-        pathParams: { questionId: 1 }, // TODO fix later
-        queryParams: { sort: "recent", limit: 10 },
-      },
-      {
-        enabled: !!tagId,
-      }
-    );
-
-  const { data: questionsTop, isLoading: isLoadingTop } = useGetQuestionDetails(
-    {
-      pathParams: { questionId: 1 }, // TODO fix later
-      queryParams: { sort: "top", limit: 10 },
-    },
-    {
-      enabled: !!tagId,
-    }
-  );
-
   const tag = data?.data;
   const token = useAuthStore((s) => s.token);
   const [tab, setTab] = useState<"top-rated" | "recent">("top-rated");
 
-  const highlightedQuestions = data?.data.highlightedQuestions;
-  const [scrollQuestions, setScrollQuestions] = useState(1);
+  const highlightedQuestions = tag?.relatedQuestions;
 
-  if (isLoading || isLoadingRecent || isLoadingTop) {
+  if (isLoading) {
     return <FullscreenLoading overlay />;
   }
 
@@ -80,6 +55,9 @@ export default function TagPage() {
       />
     );
   }
+
+  // TODO: fix this when backend catches up
+  const questions = tag?.relatedQuestions || [];
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, paddingVertical: 16 }}>
@@ -105,9 +83,9 @@ export default function TagPage() {
           <HStack style={{ alignItems: "center", gap: 16 }}>
             <Text style={{ fontSize: 20, fontWeight: "600" }}>Questions</Text>
             {!!token && (
-              <Link href={`/questions/new?tagId=${tag.id}`} asChild>
+              <Link href={`/question/new?tagId=${tag.tagId}` as Href} asChild>
                 <Button
-                  size="icon"
+                  size="md"
                   style={{ borderRadius: 9999, backgroundColor: "#ef4444" }}
                 >
                   <Icon as={Plus} color="white" />
@@ -130,46 +108,45 @@ export default function TagPage() {
             </Button>
           </ButtonGroup>
 
-          {highlightedQuestions?.map((question, index) => (
-            (index < scrollQuestions*10) && // TODO: don't show all cards initially, reload after user asks
-              <QuestionCard
-                key={question.id}
-                id={question.id}
-                title={question.title}
-                content={question.content}
-                votes={question.rating}
-                answerCount={question.answerCount}
-                author={question.author}
-                highlighted={true}
-              />
-          ))} 
+          {highlightedQuestions?.map((question) => (
+            <QuestionCard
+              key={question.id}
+              id={String(question.id)}
+              title={question.title}
+              content={question.questionBody}
+              votes={question.likeCount}
+              answerCount={question.commentCount}
+              author={question.author}
+              highlighted={true}
+            />
+          ))}
 
           {tab === "top-rated" ? (
             <View style={{ gap: 16 }}>
-              {questionsTop?.data &&
-                [questionsTop?.data].map((question) => (
+              {questions &&
+                questions.map((question) => (
                   <QuestionCard
                     key={question.id}
-                    id={question.id}
+                    id={String(question.id)}
                     title={question.title}
-                    content={question.content}
-                    votes={question.rating}
-                    answerCount={question.answerCount}
+                    content={question.questionBody}
+                    votes={question.likeCount}
+                    answerCount={question.commentCount}
                     author={question.author}
                   />
                 ))}
             </View>
           ) : (
             <View style={{ gap: 16 }}>
-              {questionsRecent?.data &&
-                [questionsRecent?.data].map((question) => (
+              {questions &&
+                questions.map((question) => (
                   <QuestionCard
                     key={question.id}
-                    id={question.id}
+                    id={String(question.id)}
                     title={question.title}
-                    content={question.content}
-                    votes={question.rating}
-                    answerCount={question.answerCount}
+                    content={question.questionBody}
+                    votes={question.likeCount}
+                    answerCount={question.commentCount}
                     author={question.author}
                   />
                 ))}

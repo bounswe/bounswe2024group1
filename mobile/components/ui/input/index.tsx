@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { createInput } from '@gluestack-ui/input';
 import { Svg } from 'react-native-svg';
 import { View, Pressable, TextInput, Platform } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { tva } from '@gluestack-ui/nativewind-utils/tva';
 import {
   withStyleContext,
@@ -179,15 +180,18 @@ cssInterop(UIInput.Icon, {
 
 type IInputProps = React.ComponentProps<typeof UIInput> &
   VariantProps<typeof inputStyle> & { className?: string };
+
 const Input = React.forwardRef<React.ElementRef<typeof UIInput>, IInputProps>(
   ({ className, variant = 'outline', size = 'md', ...props }, ref) => {
     return (
-      <UIInput
-        ref={ref}
-        {...props}
-        className={inputStyle({ variant, size, class: className })}
-        context={{ variant, size }}
-      />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <UIInput
+          ref={ref}
+          {...props}
+          className={inputStyle({ variant, size, class: className })}
+          context={{ variant, size }}
+        />
+      </TouchableWithoutFeedback>
     );
   }
 );
@@ -268,6 +272,7 @@ const InputField = React.forwardRef<
     <UIInput.Input
       ref={ref}
       {...props}
+      onEndEditing={Keyboard.dismiss}
       className={inputFieldStyle({
         parentVariants: {
           variant: parentVariant,

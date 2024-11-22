@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card";
 import { Image, Text } from "@/components/ui";
+import { Card } from "@/components/ui/card";
 import { Link } from "expo-router";
 import { ArrowRight, MessageSquare, Star } from "lucide-react-native";
 import React from "react";
@@ -8,11 +8,11 @@ import { View } from "react-native";
 interface QuestionCardProps {
   id: string;
   title: string;
-  content: string;
+  content?: string;
   votes: number;
   answerCount: number;
-  author: {
-    id: string;
+  author?: {
+    id: number;
     name: string;
     profilePicture: string;
   };
@@ -36,9 +36,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
     >
       <View className="flex flex-col gap-6">
         {highlighted && (
-          <Text className="text-xs font-semibold text-blue-700">Beginner Friendly</Text>
+          <Text className="text-xs font-semibold text-blue-700">
+            Beginner Friendly
+          </Text>
         )}
-        
+
         <Text
           className={`line-clamp-2 text-xl font-semibold ${
             highlighted ? "text-blue-800" : "text-gray-800"
@@ -59,18 +61,22 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             <Text>{votes} votes</Text>
           </View>
           <View className="flex items-center gap-1">
-            <MessageSquare className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`} />
+            <MessageSquare
+              className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`}
+            />
             <Text>{answerCount} answers</Text>
           </View>
         </View>
         <View className="flex items-center justify-between">
-          <Link href={`/users/${author.id}`} className="h-10 w-10">
-            <Image
-              source={{ uri: author.profilePicture }}
-              alt={author.name}
-              className="h-full w-full rounded-full object-cover"
-            />
-          </Link>
+          {author && (
+            <Link href={`/users/${author.id}`} className="h-10 w-10">
+              <Image
+                source={{ uri: author.profilePicture }}
+                alt={author.name}
+                className="h-full w-full rounded-full object-cover"
+              />
+            </Link>
+          )}
           <Link
             href={`/question/${id}`}
             className={`flex items-center text-sm font-medium ${

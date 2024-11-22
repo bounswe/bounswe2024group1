@@ -459,12 +459,12 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /questions/{questionId}/rate:
+  /questions/{questionId}/upvote:
     post:
       tags:
         - questions
-      summary: Rate a question
-      operationId: rateQuestion
+      summary: Upvote a question
+      operationId: upvoteQuestion
       security:
         - bearerAuth: []
       parameters:
@@ -473,22 +473,33 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - rating
-              properties:
-                rating:
-                  type: integer
-                  minimum: -1
-                  maximum: 1
       responses:
         "200":
           description: Question successfully rated
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /questions/{questionId}/downvote:
+    post:
+      tags:
+        - questions
+      summary: Downvote a question
+      operationId: downvoteQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Question successfully downvoted
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -712,6 +723,37 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
+  /tags:
+    post:
+      tags:
+        - tags
+      summary: Create a new tag
+      operationId: createTag
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTag'
+      responses:
+        '201':
+          description: Tag successfully created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponseObject'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TagDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+
   /tags/{tagId}:
     get:
       tags:
@@ -800,6 +842,11 @@ paths:
           description: Comma-separated list of tag IDs
           schema:
             type: string
+        - name: difficulty
+          in: query
+          description: Filter by difficulty level
+          schema:
+            $ref: '#/components/schemas/DifficultyLevel'
         - name: page
           in: query
           description: Page number
@@ -1040,6 +1087,25 @@ components:
         - BEGINNER
         - INTERMEDIATE
         - ADVANCED
+    NewTag:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    TagType:
+        type: string
+        enum:
+          - PROGRAMMING_LANGUAGE
+          - PROGRAMMING_PARADIGM
+          - COMPUTER_SCIENCE_TERM
+          - SOFTWARE_LIBRARY
+          - USER_DEFINED
 
     UserRegistration:
       type: object
@@ -1180,21 +1246,31 @@ components:
           profilePicture: "https://placehold.co/640x640"
           name: "John Doe"
 
+    DifficultyLevel:
+      type: string
+      enum:
+        - EASY
+        - MEDIUM
+        - HARD
+
     NewQuestion:
       type: object
       required:
         - title
         - content
         - tags
+        - difficultyLevel
       properties:
         title:
           type: string
         content:
           type: string
-        tags:
+        tagIds:
           type: array
           items:
-            type: string
+            type: number
+        difficultyLevel:
+          $ref: '#/components/schemas/DifficultyLevel'
 
     UpdateQuestion:
       type: object
@@ -1218,8 +1294,8 @@ components:
         - createdAt
         - updatedAt
         - tags
-        - rating
-        - answerCount
+        - likeCount
+        - commentCount
       properties:
         id:
           type: integer
@@ -1239,9 +1315,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
-        rating:
+        likeCount:
           type: integer
-        answerCount:
+        commentCount:
           type: integer
         viewCount:
           type: integer
@@ -1262,8 +1338,8 @@ components:
           updatedAt: "2024-01-01T00:00:00Z"
           tags:
             - $ref: "#/components/schemas/TagSummary/examples/0"
-          rating: 10
-          answerCount: 2
+          likeCount: 10
+          commentCount: 2
           viewCount: 100
           bookmarked: false
           selfRating: 0
@@ -1273,31 +1349,32 @@ components:
       required:
         - id
         - title
-        - author
-        - content
+        - likeCount
+        - difficultyLevel
         - createdAt
-        - answerCount
-        - rating
+        - commentCount
         - tags
       properties:
         id:
           type: integer
         title:
           type: string
-        content:
+        questionBody:
           type: string
         author:
           $ref: "#/components/schemas/UserSummary"
         createdAt:
           type: string
           format: date-time
+        difficultyLevel:
+          $ref: '#/components/schemas/DifficultyLevel'
         tags:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
-        rating:
+        likeCount:
           type: integer
-        answerCount:
+        commentCount:
           type: integer
         viewCount:
           type: integer
@@ -1392,16 +1469,23 @@ components:
 
     TagDetails:
       type: object
+      required:
+        - tagId
+        - name
+        - type
+        - description
       properties:
-        id:
+        tagId:
           type: string
         name:
           type: string
+        tagType:
+          $ref: '#/components/schemas/TagType'
         description:
           type: string
         questionCount:
           type: integer
-        followersCount:
+        followerCount:
           type: integer
         following:
           type: boolean
@@ -1412,14 +1496,79 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/QuestionSummary"
+        # Additional fields based on tag type
+        logoImage:
+          type: string
+          format: url
+          description: For Programming Language tags
+        author:
+          type: string
+          description: For Programming Language tags
+        inceptionYear:
+          type: string
+          description: For Programming Language tags
+        fileExtension:
+          type: string
+          description: For Programming Language tags
+        officialWebsite:
+          type: string
+          format: url
+          description: For Programming Language tags
+        stackExchangeTag:
+          type: string
+          description: Available for Programming Language, Programming Paradigm and Computer Science Term tags
+        relatedQuestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
       examples:
-        - id: "python"
+        - tagId: "python"
           name: "Python"
           description: "Python is a programming language."
           questionCount: 100
           followersCount: 1000
           following: false
           photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"
+          authors:
+            - "Guido van Rossum"
+          inceptionYear: "1991"
+          fileExtension: ".py"
+          officialWebsite: "https://www.python.org"
+          stackExchangeTag: "python"
+        - tagId: "java"
+          name: "Java"
+          type: "PROGRAMMING_LANGUAGE"
+          description: "Java is a class-based, object-oriented programming language."
+          questionCount: 200
+          followersCount: 800
+          following: true
+          photo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png"
+          authors:
+            - "James Gosling"
+          inceptionYear: "1995"
+          fileExtension: ".java"
+          officialWebsite: "https://www.java.com"
+          stackExchangeTag: "java"
+        - tagId: "react"
+          name: "React"
+          type: "SOFTWARE_LIBRARY"
+          description: "React is a JavaScript library for building user interfaces."
+          questionCount: 150
+          followersCount: 600
+          following: false
+          photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png"
+          officialWebsite: "https://reactjs.org"
+          stackExchangeTag: "reactjs"
+        - tagId: "oop"
+          name: "Object-Oriented Programming"
+          type: "PROGRAMMING_PARADIGM"
+          description: "OOP is a programming paradigm based on objects containing data and code."
+          questionCount: 80
+          followersCount: 400
+          following: true
+          photo: "https://example.com/oop-icon.png"
+          stackExchangeTag: "oop"
+
     TagSummary:
       type: object
       properties:
