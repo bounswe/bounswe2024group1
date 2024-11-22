@@ -42,7 +42,7 @@ export default function SearchScreen() {
   const tags = (searchResult?.data as { items?: TagSummary[] })?.items || [];
 
   return (
-    <View className="flex flex-col gap-4 py-8">
+    <View className="flex flex-col gap-4 py-8 my-16">
       <HStack space="md" className="px-4">
         <Input className="flex-1 mb-4">
           <InputField

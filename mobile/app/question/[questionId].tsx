@@ -17,8 +17,9 @@ import {
 } from "@/components/ui";
 import {
   useDeleteQuestion as useDeleteQuestionById,
+  useDownvoteQuestion,
   useGetQuestionDetails,
-  useRateQuestion as useVoteQuestion,
+  useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { Link, useLocalSearchParams } from "expo-router";
@@ -49,11 +50,23 @@ export default function QuestionPage() {
 
   const [optimisticVotes, setOptimisticVotes] = useState<number | null>(null);
 
-  const { mutateAsync: voteQuestion } = useVoteQuestion({
-    onMutate: async (vote) => {
-      setOptimisticVotes(
-        (prev) => (prev ?? data?.rating ?? 0) + vote.body.rating
-      );
+  const { mutateAsync: upvoteQuestion } = useUpvoteQuestion({
+    onMutate: async () => {
+      setOptimisticVotes((prev) => (prev ?? data?.likeCount ?? 0) + 1);
+    },
+    onSuccess: () => {
+      refetch().then(() => {
+        setOptimisticVotes(null);
+      });
+    },
+    onError: () => {
+      setOptimisticVotes(null);
+    },
+  });
+
+  const { mutateAsync: downvoteQuestion } = useDownvoteQuestion({
+    onMutate: async () => {
+      setOptimisticVotes((prev) => (prev ?? data?.likeCount ?? 0) - 1);
     },
     onSuccess: () => {
       refetch().then(() => {
@@ -136,22 +149,23 @@ export default function QuestionPage() {
 
       <HStack className=" items-center justify-between">
         <HStack space="md">
-
-        <Link
-          href={`/users/${question.author.id}`}
-          className="flex flex-row items-center gap-4"
-        >
-          <Image
-            source={{
-              uri: question.author.profilePicture || "https://placehold.co/640x640",
-            }}
-            alt={question.author.name}
-            width={32}
-            height={32}
-            className="rounded-full"
-          />
-          <Text className="font-bold">{question.author.name}</Text>
-        </Link>
+          <Link
+            href={`/users/${question.author.id}`}
+            className="flex flex-row items-center gap-4"
+          >
+            <Image
+              source={{
+                uri:
+                  question.author.profilePicture ||
+                  "https://placehold.co/640x640",
+              }}
+              alt={question.author.name}
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <Text className="font-bold">{question.author.name}</Text>
+          </Link>
         </HStack>
         {token && selfProfile?.id !== question.author.id && (
           <FollowButton profile={question.author} />
@@ -162,12 +176,12 @@ export default function QuestionPage() {
         <HStack className="flex items-center gap-2">
           <ThumbsUp size={20} color={"#000"} />
           <Text className="font-bold">
-            {optimisticVotes ?? question.rating}
+            {optimisticVotes ?? question.likeCount}
           </Text>
         </HStack>
         <HStack space="md">
-          <MessageSquare size={20} color="black"/>
-          <Text className="font-bold">{question.answerCount}</Text>
+          <MessageSquare size={20} color="black" />
+          <Text className="font-bold">{question.commentCount}</Text>
         </HStack>
         {!!token && (
           <HStack space="md">
@@ -176,9 +190,8 @@ export default function QuestionPage() {
               variant={question.selfRating === 1 ? "solid" : "outline"}
               disabled={question.selfRating === 1}
               onPress={() =>
-                voteQuestion({
+                upvoteQuestion({
                   pathParams: { questionId: question.id },
-                  body: { rating: 1 },
                 })
               }
             >
@@ -189,9 +202,8 @@ export default function QuestionPage() {
               variant={question.selfRating === -1 ? "solid" : "outline"}
               disabled={question.selfRating === -1}
               onPress={() =>
-                voteQuestion({
+                downvoteQuestion({
                   pathParams: { questionId: question.id },
-                  body: { rating: -1 },
                 })
               }
             >
