@@ -10,7 +10,7 @@ interface QuestionCardProps {
   content: string;
   votes: number;
   answerCount: number;
-  author: {
+  author?: {
     id: number;
     name: string;
     profilePicture: string;
@@ -45,13 +45,15 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <Link to={`/users/${author.id}`} className="h-10 w-10">
-            <img
-              src={author.profilePicture}
-              alt={author.name}
-              className="h-full w-full rounded-full object-cover"
-            />
-          </Link>
+          {author && (
+            <Link to={`/users/${author.id}`} className="h-10 w-10">
+              <img
+                src={author.profilePicture}
+                alt={author.name}
+                className="h-full w-full rounded-full object-cover"
+              />
+            </Link>
+          )}
           <Link
             to={`/question/${id}`}
             className="flex items-center text-sm font-medium text-gray-800 hover:underline"

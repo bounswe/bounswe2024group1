@@ -459,12 +459,12 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /questions/{questionId}/rate:
+  /questions/{questionId}/upvote:
     post:
       tags:
         - questions
-      summary: Rate a question
-      operationId: rateQuestion
+      summary: Upvote a question
+      operationId: upvoteQuestion
       security:
         - bearerAuth: []
       parameters:
@@ -473,22 +473,33 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - rating
-              properties:
-                rating:
-                  type: integer
-                  minimum: -1
-                  maximum: 1
       responses:
         "200":
           description: Question successfully rated
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /questions/{questionId}/downvote:
+    post:
+      tags:
+        - questions
+      summary: Downvote a question
+      operationId: downvoteQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Question successfully downvoted
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -1283,8 +1294,8 @@ components:
         - createdAt
         - updatedAt
         - tags
-        - rating
-        - answerCount
+        - likeCount
+        - commentCount
       properties:
         id:
           type: integer
@@ -1304,9 +1315,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
-        rating:
+        likeCount:
           type: integer
-        answerCount:
+        commentCount:
           type: integer
         viewCount:
           type: integer
@@ -1327,8 +1338,8 @@ components:
           updatedAt: "2024-01-01T00:00:00Z"
           tags:
             - $ref: "#/components/schemas/TagSummary/examples/0"
-          rating: 10
-          answerCount: 2
+          likeCount: 10
+          commentCount: 2
           viewCount: 100
           bookmarked: false
           selfRating: 0
@@ -1338,18 +1349,17 @@ components:
       required:
         - id
         - title
-        - author
+        - likeCount
         - difficultyLevel
         - createdAt
-        - answerCount
-        - rating
+        - commentCount
         - tags
       properties:
         id:
           type: integer
         title:
           type: string
-        content:
+        questionBody:
           type: string
         author:
           $ref: "#/components/schemas/UserSummary"
@@ -1362,9 +1372,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
-        rating:
+        likeCount:
           type: integer
-        answerCount:
+        commentCount:
           type: integer
         viewCount:
           type: integer
@@ -1460,12 +1470,12 @@ components:
     TagDetails:
       type: object
       required:
-        - id
+        - tagId
         - name
         - type
         - description
       properties:
-        id:
+        tagId:
           type: string
         name:
           type: string
@@ -1507,8 +1517,12 @@ components:
         stackExchangeTag:
           type: string
           description: Available for Programming Language, Programming Paradigm and Computer Science Term tags
+        relatedQuestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionSummary"
       examples:
-        - id: "python"
+        - tagId: "python"
           name: "Python"
           description: "Python is a programming language."
           questionCount: 100
@@ -1521,7 +1535,7 @@ components:
           fileExtension: ".py"
           officialWebsite: "https://www.python.org"
           stackExchangeTag: "python"
-        - id: "java"
+        - tagId: "java"
           name: "Java"
           type: "PROGRAMMING_LANGUAGE"
           description: "Java is a class-based, object-oriented programming language."
@@ -1535,7 +1549,7 @@ components:
           fileExtension: ".java"
           officialWebsite: "https://www.java.com"
           stackExchangeTag: "java"
-        - id: "react"
+        - tagId: "react"
           name: "React"
           type: "SOFTWARE_LIBRARY"
           description: "React is a JavaScript library for building user interfaces."
@@ -1545,7 +1559,7 @@ components:
           photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png"
           officialWebsite: "https://reactjs.org"
           stackExchangeTag: "reactjs"
-        - id: "oop"
+        - tagId: "oop"
           name: "Object-Oriented Programming"
           type: "PROGRAMMING_PARADIGM"
           description: "OOP is a programming paradigm based on objects containing data and code."

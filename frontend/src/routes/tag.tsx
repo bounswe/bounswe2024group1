@@ -7,10 +7,7 @@ import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
 import ErrorAlert from "@/components/ErrorAlert";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
-import {
-  useGetQuestionDetails,
-  useGetTagDetails,
-} from "@/services/api/programmingForumComponents";
+import { useGetTagDetails } from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
@@ -29,32 +26,8 @@ export default function TagPage() {
       enabled: !!tagId,
     },
   );
-  console.log(data?.data.highlightedQuestions);
-  const { data: questionsRecent } = useGetQuestionDetails(
-    {
-      pathParams: { questionId: 1 },
-    },
-    {
-      enabled: true,
-    },
-  );
 
-  const { data: questionsTop } = useGetQuestionDetails(
-    {
-      pathParams: { questionId: 1 },
-    },
-    {
-      enabled: true,
-    },
-  );
-  const tag = data?.data;
   const token = useAuthStore((s) => s.token);
-  //const { countries } = dish || {};
-
-  // const countryEmojis = useMemo(() => {
-  //   return (countries || "").split(", ").map(flag).join(" ");
-  // }, [countries]);
-  // const token = useAuthStore((s) => s.token);
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -64,6 +37,7 @@ export default function TagPage() {
     return <ErrorAlert error={error} />;
   }
 
+  const tag = data?.data;
   if (!tag) {
     return (
       <ErrorAlert
@@ -74,6 +48,9 @@ export default function TagPage() {
       />
     );
   }
+
+  // TODO: fix this when backend catches up
+  const questions = tag?.relatedQuestions || [];
 
   return (
     <div className="container flex flex-col gap-4 self-stretch justify-self-stretch py-16">
@@ -91,7 +68,7 @@ export default function TagPage() {
       <div className="mb-4 flex items-center justify-between px-1">
         <span className="flex-1">{tag.description}</span>
         <div className="flex items-center gap-1">
-          <div className="font-bold">{tag.followersCount}</div>
+          <div className="font-bold">{tag.followerCount}</div>
           <div className="text-sm text-gray-500">Followers</div>
         </div>
       </div>
@@ -117,37 +94,35 @@ export default function TagPage() {
             <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
           <TabsContent value="top-rated" className="flex flex-col gap-4">
-            <HighlightedQuestionsBox
-              questions={data?.data?.highlightedQuestions || []}
-            />
+            <HighlightedQuestionsBox questions={questions || []} />
             <div className="grid grid-cols-3 gap-4">
-              {questionsTop?.data && (
-                <QuestionCard
-                  id={questionsTop.data.id}
-                  title={questionsTop.data.title}
-                  content={questionsTop.data.content}
-                  votes={questionsTop.data.rating}
-                  answerCount={questionsTop.data.answerCount}
-                  author={questionsTop.data.author}
-                />
-              )}
+              {questions &&
+                questions.map((question) => (
+                  <QuestionCard
+                    id={question.id}
+                    title={question.title}
+                    content={question.questionBody!}
+                    votes={question.likeCount}
+                    answerCount={question.commentCount}
+                    author={question.author}
+                  />
+                ))}
             </div>
           </TabsContent>
           <TabsContent value="recent" className="flex flex-col gap-4">
-            <HighlightedQuestionsBox
-              questions={data?.data?.highlightedQuestions || []}
-            />
+            <HighlightedQuestionsBox questions={questions || []} />
             <div className="grid grid-cols-3 gap-4">
-              {questionsRecent?.data && (
-                <QuestionCard
-                  id={questionsRecent.data.id}
-                  title={questionsRecent.data.title}
-                  content={questionsRecent.data.content}
-                  votes={questionsRecent.data.rating}
-                  answerCount={questionsRecent.data.answerCount}
-                  author={questionsRecent?.data?.author}
-                />
-              )}
+              {questions &&
+                questions.map((question) => (
+                  <QuestionCard
+                    id={question.id}
+                    title={question.title}
+                    content={question.questionBody!}
+                    votes={question.likeCount}
+                    answerCount={question.commentCount}
+                    author={question.author}
+                  />
+                ))}
             </div>
           </TabsContent>
         </Tabs>
