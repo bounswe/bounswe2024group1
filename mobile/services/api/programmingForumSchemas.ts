@@ -72,7 +72,7 @@ export type UserSummary = {
 export type NewQuestion = {
   title: string;
   content: string;
-  tags: string[];
+  tagIds: number[];
 };
 
 export type UpdateQuestion = {
@@ -185,7 +185,7 @@ export type TagDetails = {
  * @example {"id":"python","name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
  */
 export type TagSummary = {
-  id?: string;
+  id?: number;
   name?: string;
   questionCount?: number;
   /**

@@ -36,7 +36,7 @@ export const temporaryMocks = {
         updatedAt: "2024-01-01T00:00:00Z",
         tags: [
           {
-            id: "python",
+            id: 1,
             name: "Python",
           },
         ],
@@ -105,7 +105,7 @@ export const temporaryMocks = {
       status: 200,
       data: [
         {
-          id: "python",
+          id: 1,
           name: "Python",
           description: "Python is a programming language.",
           questionCount: 100,
@@ -166,7 +166,7 @@ export const temporaryMocks = {
     payload: {
       status: 200,
       data: {
-        id: "python",
+        id: 1,
         name: "Python",
         description: "Python is a programming language.",
         questionCount: 100,
@@ -228,7 +228,7 @@ export const temporaryMocks = {
       data: {
         items: [
           {
-            id: "python",
+            id: 1,
             name: "Python",
             description: "general-purpose programming language",
             questionCount: 100,
