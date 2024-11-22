@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +22,8 @@ public class Question {
     private String title;
     @Column(name = "QUESTION_BODY", columnDefinition = "BLOB")
     private String questionBody;
+    @Builder.Default
+    private ExperienceLevel difficulty = ExperienceLevel.BEGINNER;
     @Builder.Default
     private Long likeCount =0L;
     @Builder.Default

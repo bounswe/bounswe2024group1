@@ -3,6 +3,8 @@ import lombok.*;
 
 import java.util.List;
 
+import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
+
 @Builder
 @Getter
 @Setter
@@ -11,6 +13,7 @@ import java.util.List;
 public class CreateQuestionRequestDto {
     private String title;
     private String content;
+    private ExperienceLevel difficulty;
     private List<Long> tagIds;
 
 }
