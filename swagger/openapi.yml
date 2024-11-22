@@ -977,7 +977,7 @@ paths:
                           items:
                             type: array
                             items:
-                              $ref: "#/components/schemas/TagSummary"
+                              $ref: "#/components/schemas/TagDetails"
                           totalItems:
                             type: integer
                           currentPage:
@@ -1582,7 +1582,7 @@ components:
           type: string
           format: url
       examples:
-        - id: "python"
+        - tagId: "python"
           name: "Python"
           questionCount: 100
           photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"

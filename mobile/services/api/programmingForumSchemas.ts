@@ -82,18 +82,21 @@ export type UserSummary = {
 };
 
 export type DifficultyLevel = "EASY" | "MEDIUM" | "HARD";
+export const EASY: DifficultyLevel = "EASY";
+export const MEDIUM: DifficultyLevel = "MEDIUM";
+export const HARD: DifficultyLevel = "HARD";
 
 export type NewQuestion = {
   title: string;
   content: string;
   tagIds?: number[];
-  difficultyLevel: DifficultyLevel;
+  difficulty: DifficultyLevel;
 };
 
 export type UpdateQuestion = {
   title?: string;
   content?: string;
-  tags?: string[];
+  tags?: number[];
 };
 
 /**
@@ -181,13 +184,13 @@ export type AnswerDetails = {
 };
 
 /**
- * @example {"tagId":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
- * @example {"tagId":"java","name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
- * @example {"tagId":"react","name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
- * @example {"tagId":"oop","name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
+ * @example {"tagId":1,"name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
+ * @example {"tagId":2,"name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
+ * @example {"tagId":3,"name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
+ * @example {"tagId":4,"name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
  */
 export type TagDetails = {
-  tagId: string;
+  tagId: number;
   name: string;
   tagType?: TagType;
   description: string;
@@ -231,10 +234,10 @@ export type TagDetails = {
 };
 
 /**
- * @example {"id":"python","name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ * @example {"id":1,"name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
  */
 export type TagSummary = {
-  id?: string;
+  id?: number;
   name?: string;
   questionCount?: number;
   /**
