@@ -97,7 +97,7 @@ export type UpdateQuestion = {
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"bookmarked":false,"selfRating":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"commentCount":2,"viewCount":100,"bookmarked":false,"selfRating":0}
  */
 export type QuestionDetails = {
   id: number;
@@ -113,8 +113,8 @@ export type QuestionDetails = {
    */
   updatedAt: string;
   tags: TagSummary[];
-  rating: number;
-  answerCount: number;
+  likeCount: number;
+  commentCount: number;
   viewCount?: number;
   bookmarked?: boolean;
   /**
@@ -130,16 +130,16 @@ export type QuestionDetails = {
 export type QuestionSummary = {
   id: number;
   title: string;
-  content?: string;
-  author: UserSummary;
+  questionBody?: string;
+  author?: UserSummary;
   /**
    * @format date-time
    */
   createdAt: string;
   difficultyLevel: DifficultyLevel;
   tags: TagSummary[];
-  rating: number;
-  answerCount: number;
+  likeCount: number;
+  commentCount: number;
   viewCount?: number;
   /**
    * @minimum -1
@@ -181,13 +181,13 @@ export type AnswerDetails = {
 };
 
 /**
- * @example {"id":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
- * @example {"id":"java","name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
- * @example {"id":"react","name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
- * @example {"id":"oop","name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
+ * @example {"tagId":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
+ * @example {"tagId":"java","name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
+ * @example {"tagId":"react","name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
+ * @example {"tagId":"oop","name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
  */
 export type TagDetails = {
-  id: string;
+  tagId: string;
   name: string;
   tagType?: TagType;
   description: string;
@@ -227,6 +227,7 @@ export type TagDetails = {
    * Available for Programming Language, Programming Paradigm and Computer Science Term tags
    */
   stackExchangeTag?: string;
+  relatedQuestions?: QuestionSummary[];
 };
 
 /**

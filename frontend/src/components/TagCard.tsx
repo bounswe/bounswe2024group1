@@ -23,7 +23,7 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
         <div className="flex flex-col gap-3 text-xs text-gray-700">
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            <span>{tag.followersCount} followers</span>
+            <span>{tag.followerCount} followers</span>
           </div>
           <div className="flex items-center gap-1">
             <Hash className="h-4 w-4" />
@@ -35,14 +35,14 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
             <div className="h-10 w-10">
               <img
                 src={tag.photo}
-                alt={`The logo image of ${tag.name}`} 
+                alt={`The logo image of ${tag.name}`}
                 title={`alt:The logo image of ${tag.name}`}
                 className="rounded-full object-cover"
               />
             </div>
           )}
           <Link
-            to={`/tag/${tag.id}`}
+            to={`/tag/${tag.tagId}`}
             className="flex items-center text-sm font-medium text-gray-800 hover:underline"
           >
             View tag

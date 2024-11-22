@@ -916,11 +916,11 @@ export const useDeleteQuestion = (
   });
 };
 
-export type RateQuestionPathParams = {
+export type UpvoteQuestionPathParams = {
   questionId: number;
 };
 
-export type RateQuestionError = Fetcher.ErrorWrapper<
+export type UpvoteQuestionError = Fetcher.ErrorWrapper<
   | {
       status: 400;
       payload: Responses.BadRequestResponse;
@@ -935,43 +935,34 @@ export type RateQuestionError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type RateQuestionRequestBody = {
-  /**
-   * @minimum -1
-   * @maximum 1
-   */
-  rating: number;
-};
-
-export type RateQuestionVariables = {
-  body: RateQuestionRequestBody;
-  pathParams: RateQuestionPathParams;
+export type UpvoteQuestionVariables = {
+  pathParams: UpvoteQuestionPathParams;
 } & ProgrammingForumContext["fetcherOptions"];
 
-export const fetchRateQuestion = (
-  variables: RateQuestionVariables,
+export const fetchUpvoteQuestion = (
+  variables: UpvoteQuestionVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
     undefined,
-    RateQuestionError,
-    RateQuestionRequestBody,
+    UpvoteQuestionError,
+    undefined,
     {},
     {},
-    RateQuestionPathParams
+    UpvoteQuestionPathParams
   >({
-    url: "/questions/{questionId}/rate",
+    url: "/questions/{questionId}/upvote",
     method: "post",
     ...variables,
     signal,
   });
 
-export const useRateQuestion = (
+export const useUpvoteQuestion = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       undefined,
-      RateQuestionError,
-      RateQuestionVariables
+      UpvoteQuestionError,
+      UpvoteQuestionVariables
     >,
     "mutationFn"
   >,
@@ -979,11 +970,74 @@ export const useRateQuestion = (
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
     undefined,
-    RateQuestionError,
-    RateQuestionVariables
+    UpvoteQuestionError,
+    UpvoteQuestionVariables
   >({
-    mutationFn: (variables: RateQuestionVariables) =>
-      fetchRateQuestion({ ...fetcherOptions, ...variables }),
+    mutationFn: (variables: UpvoteQuestionVariables) =>
+      fetchUpvoteQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type DownvoteQuestionPathParams = {
+  questionId: number;
+};
+
+export type DownvoteQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type DownvoteQuestionVariables = {
+  pathParams: DownvoteQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchDownvoteQuestion = (
+  variables: DownvoteQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    DownvoteQuestionError,
+    undefined,
+    {},
+    {},
+    DownvoteQuestionPathParams
+  >({
+    url: "/questions/{questionId}/downvote",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useDownvoteQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      DownvoteQuestionError,
+      DownvoteQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    DownvoteQuestionError,
+    DownvoteQuestionVariables
+  >({
+    mutationFn: (variables: DownvoteQuestionVariables) =>
+      fetchDownvoteQuestion({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
