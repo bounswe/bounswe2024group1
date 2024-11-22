@@ -9,6 +9,7 @@ import { Search } from "./search";
 import Signup from "./signup";
 import TagPage from "./tag";
 import Profile from "./profile";
+import QuestionCreationPage from "./create-question";
 
 export const routes: RouteObject[] = [
   {
@@ -45,6 +46,10 @@ export const routes: RouteObject[] = [
   {
     path: "tag/:tagId",
     Component: TagPage,
+  },
+  {
+    path: "/questions/new",
+    Component: QuestionCreationPage, // Ensure this route is defined
   },
 ];
 
