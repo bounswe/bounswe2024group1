@@ -31,11 +31,12 @@ public class VoteService {
                 User user = userContextService.getCurrentUser();
                 Vote vote = new Vote();
                 Question question = questionRepository.findById(questionId).orElseThrow();
-                question.setLikeCount(question.getLikeCount()+1);
+                question.setLikeCount(question.getLikeCount() + 1);
                 vote.setQuestion(question);
                 vote.setUser(user);
                 vote.setUpvote(true);
                 voteRepository.save(vote);
+
                 return QuestionUpvoteResponseDto.builder()
                                 .questionId(questionId)
                                 .upvoteCount(question.getUpvoteCount())
@@ -94,7 +95,7 @@ public class VoteService {
                         throw new Exception("User has already voted this answer");
                 }
 
-                answer.setLikeCount(answer.getLikeCount()+1);
+                answer.setLikeCount(answer.getLikeCount() + 1);
 
                 Vote vote = new Vote();
                 vote.setAnswer(answer);
@@ -117,7 +118,7 @@ public class VoteService {
                         throw new Exception("User has already voted this answer");
                 }
 
-                answer.setDislikeCount(answer.getDislikeCount()+1);
+                answer.setDislikeCount(answer.getDislikeCount() + 1);
 
                 Vote vote = new Vote();
                 vote.setAnswer(answer);

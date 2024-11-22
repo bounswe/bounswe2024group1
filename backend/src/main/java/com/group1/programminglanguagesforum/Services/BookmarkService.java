@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -34,7 +35,19 @@ public class BookmarkService {
                 .upvoteCount(questionEntity.getUpvoteCount())
                 .downvoteCount(questionEntity.getDownvoteCount())
                 .build();
-
-
     }
+
+    public BookmarkQuestionResponseDto removeBookmark(Long questionId) throws UnauthorizedAccessException {
+        User user = userContextService.getCurrentUser();
+        Question question = questionService.findById(questionId).orElseThrow();
+        Bookmark bookmark = bookmarkRepository.findByUserAndQuestion(user, question).orElseThrow(NoSuchElementException::new);
+        bookmarkRepository.delete(bookmark);
+        return BookmarkQuestionResponseDto.builder()
+                .id(bookmark.getQuestion().getId())
+                .title(bookmark.getQuestion().getTitle())
+                .upvoteCount(bookmark.getQuestion().getUpvoteCount())
+                .downvoteCount(bookmark.getQuestion().getDownvoteCount())
+                .build();
+    }
+
 }

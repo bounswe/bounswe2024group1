@@ -7,6 +7,7 @@ import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import com.group1.programminglanguagesforum.Services.CustomUserDetailsService;
 import com.group1.programminglanguagesforum.Services.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -91,7 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(objectMapper.writeValueAsString(genericApiResponse));
             return;
         }
-        catch (Exception e){
+        catch (JwtException | UsernameNotFoundException e) {
             GenericApiResponse<Void> genericApiResponse = GenericApiResponse.<Void>builder()
                     .status(HttpServletResponse.SC_UNAUTHORIZED)
                     .message("Invalid token")

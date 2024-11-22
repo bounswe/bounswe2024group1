@@ -15,7 +15,7 @@ import {
   Icon,
 } from "@/components/ui";
 import { X } from "lucide-react-native";
-import { BEGINNER, INTERMEDIATE, ADVANCED, ExperienceLevel, TagSummary } from "@/services/api/programmingForumSchemas";
+import { EASY, MEDIUM, HARD, DifficultyLevel, TagSummary } from "@/services/api/programmingForumSchemas";
 
 export default function NewQuestionPage() {
   const { tagId } = useLocalSearchParams<{ tagId: string }>();
@@ -28,8 +28,8 @@ export default function NewQuestionPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<TagSummary[]>([]);
 
-  const [difficulty, setDifficulty] = useState<ExperienceLevel>(BEGINNER);
-  const difficultyOptions = [BEGINNER, INTERMEDIATE, ADVANCED];
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>(EASY);
+  const difficultyOptions = [EASY, MEDIUM, HARD];
 
   const token = useAuthStore((state) => state.token);
 
@@ -216,7 +216,7 @@ export default function NewQuestionPage() {
               }}
             >
               <Button
-                onPress={() => setDifficulty(option as ExperienceLevel)}
+                onPress={() => setDifficulty(option as DifficultyLevel)}
                 variant={difficulty === option ? "solid" : "outline"}
                 style={{
                   flexDirection: "row",
