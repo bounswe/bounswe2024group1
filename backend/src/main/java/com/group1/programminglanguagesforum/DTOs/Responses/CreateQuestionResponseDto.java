@@ -3,7 +3,7 @@ import lombok.*;
 
 import java.util.List;
 
-import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
+import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 
 @Builder
 @Getter
@@ -15,7 +15,7 @@ public class CreateQuestionResponseDto {
     private Long id;
     private String title;
     private String content;
-    private ExperienceLevel difficulty;
+    private DifficultyLevel difficulty;
     private AuthorDto author;
     private String createdAt;
     private String updatedAt;
