@@ -1,22 +1,11 @@
-import { Input, InputField, InputSlot } from "@/components/ui/input";
-import { FullscreenLoading } from "@/components/FullscreenLoading";
 import ErrorAlert from "@/components/ErrorAlert";
+import { FullscreenLoading } from "@/components/FullscreenLoading";
+import { Button, HStack, Text, View, VStack } from "@/components/ui";
+import { Input, InputField } from "@/components/ui/input";
 import { useCreateQuestion } from "@/services/api/programmingForumComponents";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import useAuthStore from "@/services/auth";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  Button,
-  ButtonGroup,
-  ButtonText,
-  HStack,
-  Icon,
-  Image,
-  ScrollView,
-  Text,
-  View,
-  VStack,
-} from "@/components/ui";
 
 export default function NewQuestionPage() {
   const { tagId } = useLocalSearchParams<{ tagId: string }>();
@@ -50,11 +39,17 @@ export default function NewQuestionPage() {
       console.log("Title:", title);
       console.log("Content:", content);
       console.log("Tag ID:", tagId);
-      
+
       await createQuestion({
-        body: { title, content, tags: [tagId] },
+        body: {
+          title,
+          content,
+          tagIds: [Number(tagId)],
+          difficultyLevel: "EASY",
+        },
       });
       alert("Question created successfully!");
+
       router.push(`/tags/${tagId}`);
     } catch (e) {
       console.error("Failed to create question:", e);
@@ -68,10 +63,12 @@ export default function NewQuestionPage() {
   return (
     <View style={{ padding: 32, flex: 1, marginVertical: 32 }}>
       <VStack style={{ gap: 16, flex: 1 }}>
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Create New Question</Text>
-        
+        <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+          Create New Question
+        </Text>
+
         {error && <ErrorAlert error={error} />}
-        
+
         {/* Title Input */}
         <VStack style={{ gap: 8 }}>
           <Text style={{ fontSize: 16 }}>Title</Text>
