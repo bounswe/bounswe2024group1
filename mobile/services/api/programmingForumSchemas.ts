@@ -72,13 +72,14 @@ export type UserSummary = {
 export type NewQuestion = {
   title: string;
   content: string;
+  difficulty: ExperienceLevel;
   tagIds: number[];
 };
 
 export type UpdateQuestion = {
   title?: string;
   content?: string;
-  tags?: string[];
+  tags?: number[];
 };
 
 /**
@@ -168,7 +169,7 @@ export type AnswerDetails = {
  * @example {"id":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
  */
 export type TagDetails = {
-  id?: string;
+  id?: number;
   name?: string;
   description?: string;
   questionCount?: number;

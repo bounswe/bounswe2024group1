@@ -1,5 +1,4 @@
 import { Input, InputField } from "@/components/ui/input";
-import { Select, SelectItem, SelectTrigger, SelectContent, SelectItemText } from "@/components/ui/select";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import ErrorAlert from "@/components/ErrorAlert";
 import { useCreateQuestion, useSearchTags } from "@/services/api/programmingForumComponents";
@@ -16,7 +15,7 @@ import {
   Icon,
 } from "@/components/ui";
 import { X } from "lucide-react-native";
-import { TagSummary } from "@/services/api/programmingForumSchemas";
+import { ExperienceLevel, TagSummary } from "@/services/api/programmingForumSchemas";
 
 export default function NewQuestionPage() {
   const { tagId } = useLocalSearchParams<{ tagId: string }>();
@@ -29,8 +28,8 @@ export default function NewQuestionPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<TagSummary[]>([]);
 
-  const [difficulty, setDifficulty] = useState("Beginner");
-  const difficultyOptions = ["Beginner", "Intermediate", "Expert"];
+  const [difficulty, setDifficulty] = useState<ExperienceLevel>("BEGINNER");
+  const difficultyOptions = ["BEGINNER", "INTERMEDIATE", "ADVANCED"];
 
   const token = useAuthStore((state) => state.token);
 
@@ -78,10 +77,11 @@ export default function NewQuestionPage() {
       console.log("Creating question...");
       console.log("Title:", title);
       console.log("Content:", content);
+      console.log("Difficulty:", difficulty);
       console.log("Selected Tags:", selectedTags.map((tag) => tag.name));
 
       await createQuestion({
-        body: { title, content, tagIds: selectedTags.map((tag) => tag.id).filter((id): id is number => id !== undefined) },
+        body: { title, content, difficulty, tagIds: selectedTags.map((tag) => tag.id).filter((id): id is number => id !== undefined) },
       });
       alert("Question created successfully!");
       router.push(`/tags/${tagId}`);
@@ -138,9 +138,6 @@ export default function NewQuestionPage() {
             {contentLength} characters
           </Text>
         </VStack>
-
-        {/* Difficulty Selector */}
-        {}
         
         {searchError && <ErrorAlert error={searchError} />}
 
@@ -176,20 +173,20 @@ export default function NewQuestionPage() {
                 marginBottom: 8,
               }}
             >
-              <Text style={{ marginRight: 8 }}>{tag.name}</Text>
               <Button
                 onPress={() => handleRemoveTag(tag)}
-                variant="link"
+                variant="solid"
                 style={{ padding: 0 }}
               >
-                <Icon as={X} size="md" />
+                <ButtonText style={{ marginRight: 8 }}>{tag.name}</ButtonText>
+                <Icon as={X} size="sm" />
               </Button>
             </HStack>
           ))}
         </View>
 
         {/* Tag List */}
-        {tags.length > 0 && (
+        { (
           <View style={{ marginVertical: 8 }}>
             <Text style={{ fontSize: 16 }}>Matching Tags</Text>
             <VStack style={{ gap: 8 }}>
@@ -199,17 +196,44 @@ export default function NewQuestionPage() {
                   onPress={() => handleTagSelection(tag)}
                   variant={selectedTags.includes(tag) ? "solid" : "outline"}
                 >
-                  <Text>{tag.name}</Text>
+                  <ButtonText>{tag.name}</ButtonText>
                 </Button>
               ))}
             </VStack>
           </View>
         )}
 
+        {/* Difficulty Selector */}
+        <VStack style={{ gap: 8 }}>
+          <Text style={{ fontSize: 16 }}>Difficulty</Text>
+          {difficultyOptions.map((option) => (
+            <HStack
+              key={option}
+              style={{
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 8,
+              }}
+            >
+              <Button
+                onPress={() => setDifficulty(option as ExperienceLevel)}
+                variant={difficulty === option ? "solid" : "outline"}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingHorizontal: 16,
+                }}
+              >
+                <ButtonText style={{ fontSize: 14 }}>{option}</ButtonText>
+              </Button>
+            </HStack>
+          ))}
+        </VStack>
+
         {/* Submit Button */}
         <HStack style={{ justifyContent: "flex-end" }}>
           <Button onPress={handleSubmit} variant="solid">
-            <Text>Submit</Text>
+            <ButtonText>Submit</ButtonText>
           </Button>
         </HStack>
       </VStack>
