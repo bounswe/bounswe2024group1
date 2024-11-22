@@ -87,4 +87,7 @@ public class UserService {
         return userRepository.searchUsers(query, pageable);
     }
 
+    public List<User> getFollowing(User user) {
+        return user.getFollowing().stream().toList();
+    }
 }

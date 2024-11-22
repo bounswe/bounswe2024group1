@@ -256,4 +256,33 @@ public class UserController extends BaseController {
                                         HttpStatus.NOT_FOUND);
                 }
         }
+
+        @GetMapping(value = EndpointConstants.UserEndpoints.USER_FOLLOWING)
+        public ResponseEntity<GenericApiResponse<List<UserSummaryDto>>> getFollowing(
+                        @PathVariable(name = "id") Long id) {
+                try {
+                        User user = userService.getUserById(id)
+                                        .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+                        List<UserSummaryDto> following = userService.getFollowing(user).stream()
+                                        .map(u -> modelMapper.map(u, UserSummaryDto.class))
+                                        .toList();
+
+                        return buildResponse(
+                                        ApiResponseBuilder.buildSuccessResponse(
+                                                        following.getClass(),
+                                                        "Following users retrieved successfully",
+                                                        HttpStatus.OK.value(),
+                                                        following),
+                                        HttpStatus.OK);
+                } catch (UserNotFoundException e) {
+                        return buildResponse(
+                                        ApiResponseBuilder.buildErrorResponse(
+                                                        List.class,
+                                                        e.getMessage(),
+                                                        HttpStatus.NOT_FOUND.value(),
+                                                        ErrorResponse.builder().errorMessage(e.getMessage()).build()),
+                                        HttpStatus.NOT_FOUND);
+                }
+        }
 }

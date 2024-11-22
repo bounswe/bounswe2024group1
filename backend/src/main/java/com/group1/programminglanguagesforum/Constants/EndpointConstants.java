@@ -22,6 +22,7 @@ public class EndpointConstants {
         public static final String USER_FOLLOW = BASE_PATH + "/{id}/follow";
         public static final String USER_UNFOLLOW = BASE_PATH + "/{id}/unfollow";
         public static final String USER_FOLLOWERS = BASE_PATH + "/{id}/followers";
+        public static final String USER_FOLLOWING = BASE_PATH + "/{id}/following";
     }
 
     public static class QuestionEndpoints {
