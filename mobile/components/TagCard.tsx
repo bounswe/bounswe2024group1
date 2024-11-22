@@ -25,7 +25,7 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
         <View className="flex flex-col gap-3 text-xs text-gray-700">
           <View className="flex flex-row items-center gap-1">
             <Users size={16} color={"#000"} />
-            <Text>{tag.followersCount} followers</Text>
+            <Text>{tag.followerCount} followers</Text>
           </View>
           <View className="flex flex-row items-center gap-1">
             <Hash size={16} color={"#000"} />
@@ -45,7 +45,7 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
             </View>
           )}
           <Link
-            href={`/tags/${tag.id}`}
+            href={`/tags/${tag.tagId}`}
             className="flex-row items-center text-sm font-medium text-gray-800 hover:underline"
           >
             <Text>View tag</Text>
