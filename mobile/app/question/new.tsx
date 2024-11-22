@@ -13,6 +13,8 @@ import {
   View,
   VStack,
   Icon,
+  Textarea,
+  TextareaInput,
 } from "@/components/ui";
 import { X } from "lucide-react-native";
 import { EASY, MEDIUM, HARD, DifficultyLevel, TagSummary } from "@/services/api/programmingForumSchemas";
@@ -95,7 +97,7 @@ export default function NewQuestionPage() {
   }
 
   return (
-    <View style={{ padding: 32, flex: 1, marginVertical: 32 }}>
+    <View style={{ padding: 32, flex: 1, marginVertical: 16 }}>
       <VStack style={{ gap: 16, flex: 1 }}>
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>Create New Question</Text>
         
@@ -118,23 +120,18 @@ export default function NewQuestionPage() {
         {/* Content Input */}
         <VStack style={{ gap: 8, flex: 1 }}>
           <Text style={{ fontSize: 16 }}>Content</Text>
-          <Input>
-            <InputField
+          <Textarea>
+            <TextareaInput
               placeholder="Describe your question"
               value={content}
               onChangeText={setContent}
-              variant="outline"
               size="md"
-              multiline
-              numberOfLines={6}
               style={{
                 textAlignVertical: "top",
-                paddingTop: 8,
-                flex: 1,
               }}
             />
-          </Input>
-          <Text style={{ fontSize: 12, color: '#888' }}>
+          </Textarea>
+          <Text style={{ fontSize: 12, color: "#888" }}>
             {contentLength} characters
           </Text>
         </VStack>
