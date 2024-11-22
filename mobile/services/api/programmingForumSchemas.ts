@@ -3,7 +3,10 @@
  *
  * @version 1.0.0
  */
-export type ExperienceLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+export type ExperienceLevel = "Beginner" | "Intermediate" | "Advanced";
+export const BEGINNER: ExperienceLevel = "Beginner";
+export const INTERMEDIATE: ExperienceLevel = "Intermediate";
+export const ADVANCED: ExperienceLevel = "Advanced";
 
 export type UserRegistration = {
   username: string;
