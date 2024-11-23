@@ -1,9 +1,11 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
+import { CreateAnswerForm } from "@/components/CreateAnswerForm";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -13,6 +15,7 @@ import {
   useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
+import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -64,6 +67,20 @@ export default function QuestionPage() {
       });
     },
   });
+  const { data: exercismData } = useExercismSearch(
+    {
+      params: {
+        text: data?.content,
+        difficulty:
+          (data as unknown as { difficultyLevel: string })?.difficultyLevel ??
+          "easy",
+        track: convertTagToTrack(data?.tags[0].name ?? ""),
+      },
+    },
+    {
+      enabled: !!data?.content,
+    },
+  );
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -187,7 +204,11 @@ export default function QuestionPage() {
         <div className="mb-4 grid grid-cols-2 gap-2 py-2">
           <span className="flex items-center gap-4 font-semibold">
             <Flag className="h-6 w-6" />
-            {question.tags.map((s) => s.name).join(", ")}
+            {question.tags.map((s) => (
+              <Link to={`/tag/${s.id}`} key={s.name}>
+                <Badge>{s.name}</Badge>
+              </Link>
+            ))}
           </span>
           <span className="flex items-center gap-4 font-semibold">
             Asked: {new Date(question.createdAt).toLocaleDateString()}
@@ -202,6 +223,9 @@ export default function QuestionPage() {
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>
         {questionId && <Answers questionId={Number(questionId)} />}
+
+        {/* Answer Create Form */}
+        {token && <CreateAnswerForm questionId={Number(questionId)} />}
       </div>
 
       {/* Vertical Divider */}
@@ -213,33 +237,17 @@ export default function QuestionPage() {
         <h2 className="mb-4 text-lg font-semibold text-gray-800">
           Related Exercises
         </h2>
-
-        {/* Exercise Card 1 */}
-        <ExerciseCard
-          id={1}
-          title="Exercise 1: Array Manipulation"
-          description="Manipulate arrays to solve common problems."
-          difficulty="Easy"
-          tags={["array-manipulation", "basic"]}
-        />
-
-        {/* Exercise Card 2 */}
-        <ExerciseCard
-          id={2}
-          title="Exercise 2: Binary Search Trees"
-          description="Implement and manipulate binary search trees."
-          difficulty="Medium"
-          tags={["binary-search-tree", "data-structures"]}
-        />
-
-        {/* Exercise Card 3 */}
-        <ExerciseCard
-          id={3}
-          title="Exercise 3: Dynamic Programming Basics"
-          description="Learn the fundamentals of dynamic programming."
-          difficulty="Hard"
-          tags={["dynamic-programming", "algorithms"]}
-        />
+        {exercismData?.results.map((exercise) => (
+          <ExerciseCard
+            key={exercise.slug}
+            id={Number(exercise.slug)}
+            title={exercise.blurb}
+            description={exercise.blurb}
+            difficulty={exercise.difficulty}
+            link={exercise.self_link}
+            tags={[]}
+          />
+        ))}
       </div>
     </div>
   );
