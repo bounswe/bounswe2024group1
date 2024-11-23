@@ -75,14 +75,26 @@ public class QuestionService {
 
     }
 
-    public GetQuestionDetailsResponseDto getQuestion(Long id) throws UnauthorizedAccessException {
+    public GetQuestionDetailsResponseDto getQuestion(Long id) throws NoSuchElementException {
         Optional<Question> questionOptional = questionRepository.findById(id);
         if (questionOptional.isEmpty()) {
-            throw new UnauthorizedAccessException("Question not found");
+            throw new NoSuchElementException("Question not found");
         }
         Question question = questionOptional.get();
-        User currentUser = userContextService.getCurrentUser();
-        boolean selfQuestion = currentUser.getId().equals(question.getAskedBy().getId());
+        boolean selfQuestion;
+        try {
+            User currentUser = userContextService.getCurrentUser();
+            selfQuestion = currentUser.getId().equals(question.getAskedBy().getId());
+        } catch (UnauthorizedAccessException e) {
+            selfQuestion = false;
+        }
+
+        boolean isBookmarked;
+        try {
+            isBookmarked = isBookmarked(id);
+        } catch (UnauthorizedAccessException e) {
+            isBookmarked = false;
+        }
 
         return GetQuestionDetailsResponseDto.builder()
                 .id(question.getId())
@@ -106,7 +118,7 @@ public class QuestionService {
                         .name(tag.getTagName())
                         .build()).toList())
                 .answerCount((long) question.getAnswers().size())
-                .bookmarked(isBookmarked(id))
+                .bookmarked(isBookmarked)
                 .build();
 
     }

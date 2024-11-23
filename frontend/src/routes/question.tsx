@@ -1,5 +1,6 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
+import { CreateAnswerForm } from "@/components/CreateAnswerForm";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
@@ -217,6 +218,9 @@ export default function QuestionPage() {
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>
         {questionId && <Answers questionId={Number(questionId)} />}
+
+        {/* Answer Create Form */}
+        {token && <CreateAnswerForm questionId={Number(questionId)} />}
       </div>
 
       {/* Vertical Divider */}
