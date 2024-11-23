@@ -83,7 +83,7 @@ public class UserService {
     }
 
     public Page<User> searchUsers(String query, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize);
         return userRepository.searchUsers(query, pageable);
     }
 
