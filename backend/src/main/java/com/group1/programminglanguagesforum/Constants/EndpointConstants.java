@@ -60,5 +60,6 @@ public class EndpointConstants {
     public static class SearchEndpoints {
         public static final String BASE_PATH = "/search";
         public static final String SEARCH_USERS = BASE_PATH + "/users";
+        public static final String SEARCH_QUESTIONS = BASE_PATH + "/questions";
     }
 }
