@@ -193,6 +193,7 @@ public class QuestionService {
                 return QuestionSummaryDto.builder()
                                 .id(question.getId())
                                 .title(question.getTitle())
+                                .content(question.getQuestionBody())
                                 .difficulty(question.getDifficulty())
                                 .upvoteCount(question.getUpvoteCount())
                                 .downvoteCount(question.getDownvoteCount())

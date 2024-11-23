@@ -15,6 +15,7 @@ import java.util.List;
 public class QuestionSummaryDto {
     private Long id;
     private String title;
+    private String content;
     private DifficultyLevel difficulty;
     private Long upvoteCount;
     private Long downvoteCount;
