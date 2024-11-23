@@ -35,12 +35,12 @@ public class VoteService {
         Question question = questionRepository.findById(questionId).orElseThrow();
         Optional<Vote> existingVote = voteRepository.findByUserAndQuestionAndIsUpvote(user, question, true);
         Optional<Vote> existingDownvote = voteRepository.findByUserAndQuestionAndIsUpvote(user, question, false);
-        existingDownvote.ifPresent(voteRepository::delete);
         if (existingVote.isPresent()) {
             voteRepository.delete(existingVote.get());
             question.setLikeCount(question.getUpvoteCount());
             throw new QuestionAlreadyVotedException("Question already upvoted");
         }
+        existingDownvote.ifPresent(voteRepository::delete);
         question.setLikeCount(question.getLikeCount() + 1);
         vote.setQuestion(question);
         vote.setUser(user);
@@ -59,12 +59,12 @@ public class VoteService {
         Question question = questionRepository.findById(questionId).orElseThrow();
         Optional<Vote> existingVote = voteRepository.findByUserAndQuestionAndIsUpvote(user, question, false);
         Optional<Vote> existingUpvote = voteRepository.findByUserAndQuestionAndIsUpvote(user, question, true);
-        existingUpvote.ifPresent(voteRepository::delete);
         if (existingVote.isPresent()) {
             voteRepository.delete(existingVote.get());
             question.setLikeCount(question.getUpvoteCount());
             throw new QuestionAlreadyVotedException("Question already downvoted");
         }
+        existingUpvote.ifPresent(voteRepository::delete);
         vote.setQuestion(question);
         vote.setUser(user);
         vote.setUpvote(false);
@@ -108,10 +108,14 @@ public class VoteService {
     public AnswerVoteResponseDTO upvoteAnswer(Long answerId) throws Exception {
         User user = userContextService.getCurrentUser();
         Answer answer = answerRepository.findById(answerId).orElseThrow();
+        Optional<Vote> existingVote = voteRepository.findByUserAndAnswerAndIsUpvote(user, answer, true);
+        Optional<Vote> existingDownvote = voteRepository.findByUserAndAnswerAndIsUpvote(user, answer, false);
 
-        if (voteRepository.findByUserAndAnswer(user, answer).isPresent()) {
-            throw new Exception("User has already voted this answer");
+
+        if (existingVote.isPresent()) {
+            throw new Exception("User has already upvoted this answer");
         }
+        existingDownvote.ifPresent(voteRepository::delete);
 
         answer.setLikeCount(answer.getLikeCount() + 1);
 
@@ -131,10 +135,13 @@ public class VoteService {
     public AnswerVoteResponseDTO downvoteAnswer(Long answerId) throws Exception {
         User user = userContextService.getCurrentUser();
         Answer answer = answerRepository.findById(answerId).orElseThrow();
+        Optional<Vote> existingVote = voteRepository.findByUserAndAnswerAndIsUpvote(user, answer, false);
+        Optional<Vote> existingUpvote = voteRepository.findByUserAndAnswerAndIsUpvote(user, answer, true);
 
-        if (voteRepository.findByUserAndAnswer(user, answer).isPresent()) {
-            throw new Exception("User has already voted this answer");
+        if (existingVote.isPresent()) {
+            throw new Exception("User has already downvoted this answer");
         }
+        existingUpvote.ifPresent(voteRepository::delete);
 
         answer.setDislikeCount(answer.getDislikeCount() + 1);
 
