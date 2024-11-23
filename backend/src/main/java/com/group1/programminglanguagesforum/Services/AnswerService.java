@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Services;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateAnswerRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.AuthorDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.CreateAnswerResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetAnswersResponseDto;
 import com.group1.programminglanguagesforum.Entities.Answer;
 import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
@@ -11,7 +12,6 @@ import com.group1.programminglanguagesforum.Repositories.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +68,31 @@ public class AnswerService {
                 )
                 .createdAt(answer.getCreatedAt())
                 .updatedAt(answer.getUpdatedAt())
+                .build();
+    }
+
+    public GetAnswersResponseDto getAnswersForQuestion(Long questionId) throws UnauthorizedAccessException {
+        Question question = questionService.findById(questionId).orElseThrow();
+        User currentUser = userContextService.getCurrentUser();
+        return GetAnswersResponseDto.builder()
+                .items(question.getAnswers().stream().map(answer -> GetAnswersResponseDto.AnswerResponseDto.builder()
+                        .id(answer.getId())
+                        .content(answer.getAnswerBody())
+                        .author(
+                                AuthorDto.builder()
+                                        .id(answer.getAnsweredBy().getId())
+                                        .username(answer.getAnsweredBy().getUsername())
+                                        .reputationPoints(answer.getAnsweredBy().getReputationPoints())
+                                        .name(answer.getAnsweredBy().getFirstName() + " " + answer.getAnsweredBy().getLastName())
+                                        .build()
+                        )
+                        .createdAt(answer.getCreatedAt())
+                        .updatedAt(answer.getUpdatedAt())
+                        .upvoteCount(answer.getUpvoteCount())
+                        .downvoteCount(answer.getDownvoteCount())
+                        .selfAnswer(currentUser!=null && currentUser.getId().equals(answer.getAnsweredBy().getId()))
+                        .build()).toList())
+                .totalItems(question.getAnswers().size())
                 .build();
     }
 }

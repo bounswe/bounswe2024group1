@@ -2,6 +2,7 @@ package com.group1.programminglanguagesforum.Services;
 
 import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.*;
+import com.group1.programminglanguagesforum.Exceptions.QuestionAlreadyVotedException;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.AnswerRepository;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
@@ -59,7 +60,7 @@ class VoteServiceTest {
     }
 
     @Test
-    void testUpvoteQuestion() throws UnauthorizedAccessException {
+    void testUpvoteQuestion() throws UnauthorizedAccessException, QuestionAlreadyVotedException {
         // Arrange
         when(userContextService.getCurrentUser()).thenReturn(mockUser);
         when(questionRepository.findById(1L)).thenReturn(Optional.of(mockQuestion));
@@ -85,7 +86,7 @@ class VoteServiceTest {
     }
 
     @Test
-    void testDownvoteQuestion() throws UnauthorizedAccessException {
+    void testDownvoteQuestion() throws UnauthorizedAccessException, QuestionAlreadyVotedException {
         // Arrange
         when(userContextService.getCurrentUser()).thenReturn(mockUser);
         when(questionRepository.findById(1L)).thenReturn(Optional.of(mockQuestion));

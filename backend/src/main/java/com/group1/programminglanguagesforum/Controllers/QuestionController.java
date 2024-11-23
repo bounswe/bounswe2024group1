@@ -55,15 +55,13 @@ public class QuestionController extends BaseController {
                     questionService.getQuestion(id));
             return buildResponse(response, org.springframework.http.HttpStatus.OK);
 
-        } catch (UnauthorizedAccessException e) {
+        } catch (NoSuchElementException e) {
             ErrorResponse errorResponse = ErrorResponse.builder()
                     .errorMessage(e.getMessage())
                     .stackTrace(Arrays.toString(e.getStackTrace()))
                     .build();
-            GenericApiResponse<GetQuestionDetailsResponseDto> response = ApiResponseBuilder
-                    .buildErrorResponse(GetQuestionDetailsResponseDto.class, e.getMessage(), 401, errorResponse);
-            return buildResponse(response, org.springframework.http.HttpStatus.UNAUTHORIZED);
-
+            GenericApiResponse<GetQuestionDetailsResponseDto> response = ApiResponseBuilder.buildErrorResponse(GetQuestionDetailsResponseDto.class, e.getMessage(), 404, errorResponse);
+            return buildResponse(response, org.springframework.http.HttpStatus.NOT_FOUND);
         }
     }
 

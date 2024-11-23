@@ -80,40 +80,51 @@ public class QuestionService {
 
         }
 
-        public GetQuestionDetailsResponseDto getQuestion(Long id) throws UnauthorizedAccessException {
-                Optional<Question> questionOptional = questionRepository.findById(id);
-                if (questionOptional.isEmpty()) {
-                        throw new UnauthorizedAccessException("Question not found");
-                }
-                Question question = questionOptional.get();
-                User currentUser = userContextService.getCurrentUser();
-                boolean selfQuestion = currentUser.getId().equals(question.getAskedBy().getId());
+    public GetQuestionDetailsResponseDto getQuestion(Long id) throws NoSuchElementException {
+        Optional<Question> questionOptional = questionRepository.findById(id);
+        if (questionOptional.isEmpty()) {
+            throw new NoSuchElementException("Question not found");
+        }
+        Question question = questionOptional.get();
+        boolean selfQuestion;
+        try {
+            User currentUser = userContextService.getCurrentUser();
+            selfQuestion = currentUser.getId().equals(question.getAskedBy().getId());
+        } catch (UnauthorizedAccessException e) {
+            selfQuestion = false;
+        }
 
-                return GetQuestionDetailsResponseDto.builder()
-                                .id(question.getId())
-                                .title(question.getTitle())
-                                .content(question.getQuestionBody())
-                                .likeCount(question.getUpvoteCount())
-                                .dislikeCount(question.getDownvoteCount())
-                                .commentCount(question.getCommentCount())
-                                .selfQuestion(selfQuestion)
-                                .createdAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getCreatedAt()))
-                                .updatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getUpdatedAt()))
-                                .author(AuthorDto.builder()
-                                                .id(question.getAskedBy().getId())
-                                                .username(question.getAskedBy().getUsername())
-                                                .reputationPoints(question.getAskedBy().getReputationPoints())
-                                                .name(question.getAskedBy().getFirstName() + " "
-                                                                + question.getAskedBy().getLastName())
-                                                .build())
-                                .rating(0L)
-                                .tags(question.getTags().stream().map(tag -> TagDto.builder()
-                                                .id(tag.getId())
-                                                .name(tag.getTagName())
-                                                .build()).toList())
-                                .answerCount((long) question.getAnswers().size())
-                                .bookmarked(isBookmarked(id))
-                                .build();
+        boolean isBookmarked;
+        try {
+            isBookmarked = isBookmarked(id);
+        } catch (UnauthorizedAccessException e) {
+            isBookmarked = false;
+        }
+
+        return GetQuestionDetailsResponseDto.builder()
+                .id(question.getId())
+                .title(question.getTitle())
+                .content(question.getQuestionBody())
+                .likeCount(question.getUpvoteCount())
+                .dislikeCount(question.getDownvoteCount())
+                .commentCount(question.getCommentCount())
+                .selfQuestion(selfQuestion)
+                .createdAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getCreatedAt()))
+                .updatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getUpdatedAt()))
+                .author(AuthorDto.builder()
+                        .id(question.getAskedBy().getId())
+                        .username(question.getAskedBy().getUsername())
+                        .reputationPoints(question.getAskedBy().getReputationPoints())
+                        .name(question.getAskedBy().getFirstName() + " " + question.getAskedBy().getLastName())
+                        .build())
+                .rating(0L)
+                .tags(question.getTags().stream().map(tag -> TagDto.builder()
+                        .id(tag.getId())
+                        .name(tag.getTagName())
+                        .build()).toList())
+                .answerCount((long) question.getAnswers().size())
+                .bookmarked(isBookmarked)
+                .build();
 
         }
 
