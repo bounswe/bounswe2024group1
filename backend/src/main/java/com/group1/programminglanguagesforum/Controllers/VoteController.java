@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Controllers;
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
+import com.group1.programminglanguagesforum.Exceptions.QuestionAlreadyVotedException;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.VoteService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
@@ -59,6 +60,19 @@ public class VoteController extends BaseController {
             );
             return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
         }
+        catch (QuestionAlreadyVotedException e){
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionUpvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
     }
 
     @PostMapping (EndpointConstants.QuestionEndpoints.QUESTION_DOWNVOTE)
@@ -96,6 +110,19 @@ public class VoteController extends BaseController {
                     UserProfileResponseDto.class,
                     e.getMessage(),
                     HttpStatus.NOT_FOUND.value(),
+                    errorResponse
+            );
+            return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
+        }
+        catch (QuestionAlreadyVotedException e){
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .stackTrace(Arrays.toString(e.getStackTrace()))
+                    .build();
+            GenericApiResponse<QuestionDownvoteResponseDto> response = ApiResponseBuilder.buildErrorResponse(
+                    UserProfileResponseDto.class,
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST.value(),
                     errorResponse
             );
             return buildResponse(response, HttpStatus.valueOf(response.getStatus()));
