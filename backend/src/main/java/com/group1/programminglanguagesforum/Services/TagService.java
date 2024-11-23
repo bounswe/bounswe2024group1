@@ -3,8 +3,11 @@ package com.group1.programminglanguagesforum.Services;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.*;
+import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
+import com.group1.programminglanguagesforum.Repositories.UserRepository;
+import com.group1.programminglanguagesforum.Services.UserContextService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,6 +24,8 @@ public class TagService {
     private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
+    private final UserContextService userContextService;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -102,5 +107,24 @@ public class TagService {
                 .description(tag.getTagDescription())
                 .tagType(getTagType(tag).toString())
                 .build());
+    }
+
+    public GetTagDetailsResponseDto followTag(Long tagId) throws UnauthorizedAccessException {
+        User currentUser = userContextService.getCurrentUser();
+        Tag tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found"));
+
+        currentUser.getFollowedTags().add(tag);
+        userRepository.save(currentUser);
+
+        return GetTagDetailsResponseDto.builder()
+                .tagId(tag.getId())
+                .name(tag.getTagName())
+                .description(tag.getTagDescription())
+                .tagType(getTagType(tag).toString())
+                .following(true)
+                .followerCount((long) tag.getFollowers().size())
+                .questionCount((long) questionRepository.findQuestionsByTagId(tagId).size())
+                .build();
     }
 }
