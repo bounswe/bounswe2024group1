@@ -6,6 +6,9 @@ import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessExcepti
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,23 +24,26 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-    public User updateUser(User user, UserProfileUpdateRequestDto userProfileUpdateRequestDto) throws UserNotFoundException {
+
+    public User updateUser(User user, UserProfileUpdateRequestDto userProfileUpdateRequestDto)
+            throws UserNotFoundException {
         Optional<User> userOptional = userRepository.findById(user.getId());
         if (userOptional.isEmpty()) {
-           throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("User not found");
         }
         user.setBio(userProfileUpdateRequestDto.getBio());
         user.setCountry(userProfileUpdateRequestDto.getCountry());
         user.setExperienceLevel(userProfileUpdateRequestDto.getExperienceLevel());
         return userRepository.save(user);
     }
+
     @Transactional
     public User followUser(User user, Long id) throws UserNotFoundException {
         Optional<User> userToFollowOptional = userRepository.findById(id);
         if (userToFollowOptional.isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
-        if(user.getId().equals(id)) {
+        if (user.getId().equals(id)) {
             throw new UserNotFoundException("You can't follow yourself");
         }
         User userToFollow = userToFollowOptional.get();
@@ -48,6 +54,7 @@ public class UserService {
         userToFollow.setFollowersCount(userToFollow.getFollowersCount() + 1);
         return userRepository.save(userToFollow);
     }
+
     @Transactional
     public User unfollowUser(User user, Long id) throws UserNotFoundException {
         Optional<User> userToUnfollowOptional = userRepository.findById(id);
@@ -73,6 +80,11 @@ public class UserService {
 
     public List<User> getFollowers(User user) {
         return user.getFollowers().stream().toList();
+    }
+
+    public Page<User> searchUsers(String query, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return userRepository.searchUsers(query, pageable);
     }
 
 }
