@@ -13,6 +13,7 @@ import {
   useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
+import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -64,6 +65,20 @@ export default function QuestionPage() {
       });
     },
   });
+  const { data: exercismData } = useExercismSearch(
+    {
+      params: {
+        text: data?.content,
+        difficulty:
+          (data as unknown as { difficultyLevel: string })?.difficultyLevel ??
+          "easy",
+        track: convertTagToTrack(data?.tags[0].name ?? ""),
+      },
+    },
+    {
+      enabled: !!data?.content,
+    },
+  );
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -213,33 +228,17 @@ export default function QuestionPage() {
         <h2 className="mb-4 text-lg font-semibold text-gray-800">
           Related Exercises
         </h2>
-
-        {/* Exercise Card 1 */}
-        <ExerciseCard
-          id={1}
-          title="Exercise 1: Array Manipulation"
-          description="Manipulate arrays to solve common problems."
-          difficulty="Easy"
-          tags={["array-manipulation", "basic"]}
-        />
-
-        {/* Exercise Card 2 */}
-        <ExerciseCard
-          id={2}
-          title="Exercise 2: Binary Search Trees"
-          description="Implement and manipulate binary search trees."
-          difficulty="Medium"
-          tags={["binary-search-tree", "data-structures"]}
-        />
-
-        {/* Exercise Card 3 */}
-        <ExerciseCard
-          id={3}
-          title="Exercise 3: Dynamic Programming Basics"
-          description="Learn the fundamentals of dynamic programming."
-          difficulty="Hard"
-          tags={["dynamic-programming", "algorithms"]}
-        />
+        {exercismData?.results.map((exercise) => (
+          <ExerciseCard
+            key={exercise.slug}
+            id={Number(exercise.slug)}
+            title={exercise.blurb}
+            description={exercise.blurb}
+            difficulty={exercise.difficulty}
+            link={exercise.self_link}
+            tags={[]}
+          />
+        ))}
       </div>
     </div>
   );

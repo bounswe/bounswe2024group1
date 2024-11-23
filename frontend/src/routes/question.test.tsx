@@ -58,6 +58,14 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   })),
 }));
 
+vi.mock("@/services/exercism", () => ({
+  useExercismSearch: vi.fn(() => ({
+    data: null,
+    isLoading: true,
+  })),
+  convertTagToTrack: vi.fn(),
+}));
+
 // Mock the auth store
 vi.mock("@/services/auth", () => ({
   __esModule: true,
