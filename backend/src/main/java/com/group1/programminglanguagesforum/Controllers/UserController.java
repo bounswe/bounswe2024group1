@@ -15,12 +15,15 @@ import com.group1.programminglanguagesforum.Services.UserService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -254,6 +257,46 @@ public class UserController extends BaseController {
                                                         HttpStatus.NOT_FOUND.value(),
                                                         ErrorResponse.builder().errorMessage(e.getMessage()).build()),
                                         HttpStatus.NOT_FOUND);
+                }
+        }
+
+        @GetMapping(value = EndpointConstants.SearchEndpoints.SEARCH_USERS)
+        public ResponseEntity<GenericApiResponse<Map<String, Object>>> searchUsers(
+                        @RequestParam("q") String query,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "20") int pageSize) {
+                try {
+                        Page<User> userPage = userService.searchUsers(query, page, pageSize);
+                        List<UserSummaryDto> userSummaries = userPage.getContent().stream()
+                                        .map(user -> modelMapper.map(user, UserSummaryDto.class))
+                                        .toList();
+
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("items", userSummaries);
+                        response.put("totalItems", userPage.getTotalElements());
+                        response.put("currentPage", userPage.getNumber());
+                        response.put("totalPages", userPage.getTotalPages());
+
+                        return buildResponse(
+                                        ApiResponseBuilder.buildSuccessResponse(
+                                                        Map.class,
+                                                        "Users retrieved successfully",
+                                                        HttpStatus.OK.value(),
+                                                        response),
+                                        HttpStatus.OK);
+                } catch (Exception e) {
+                        ErrorResponse errorResponse = ErrorResponse.builder()
+                                        .errorMessage("Error searching users: " + e.getMessage())
+                                        .stackTrace(Arrays.toString(e.getStackTrace()))
+                                        .build();
+
+                        return buildResponse(
+                                        ApiResponseBuilder.buildErrorResponse(
+                                                        Map.class,
+                                                        "Error searching users",
+                                                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                                        errorResponse),
+                                        HttpStatus.INTERNAL_SERVER_ERROR);
                 }
         }
 }
