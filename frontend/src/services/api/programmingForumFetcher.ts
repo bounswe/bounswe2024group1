@@ -10,7 +10,7 @@ import {
 
 const baseUrl = "/api/v1";
 
-const USE_TEMPORARY_MOCKS = true;
+const USE_TEMPORARY_MOCKS = false;
 
 export type ErrorWrapper<TError> =
   | TError

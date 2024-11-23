@@ -27,8 +27,8 @@ const mockQuestionData = vi.hoisted(
         reputationPoints: 100,
         profilePicture: "https://example.com/profile.jpg",
       },
-      rating: 10,
-      answerCount: 5,
+      likeCount: 10,
+      commentCount: 5,
       tags: [
         { id: "1", name: "javascript" },
         { id: "2", name: "react" },
@@ -47,12 +47,23 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useVoteQuestion: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
-  useRateQuestion: vi.fn(() => ({
+  useUpvoteQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useDownvoteQuestion: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
   useRateAnswer: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
+}));
+
+vi.mock("@/services/exercism", () => ({
+  useExercismSearch: vi.fn(() => ({
+    data: null,
+    isLoading: true,
+  })),
+  convertTagToTrack: vi.fn(),
 }));
 
 // Mock the auth store
@@ -100,12 +111,12 @@ describe("QuestionPage", () => {
 
     // Check if rating is rendered
     expect(
-      screen.getByText(mockQuestionData.rating.toString()),
+      screen.getByText(mockQuestionData.likeCount.toString()),
     ).toBeInTheDocument();
 
     // Check if answer count is rendered
     expect(
-      screen.getByText(mockQuestionData.answerCount.toString()),
+      screen.getByText(mockQuestionData.commentCount.toString()),
     ).toBeInTheDocument();
 
     // Check if tags are rendered

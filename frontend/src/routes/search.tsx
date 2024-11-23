@@ -1,7 +1,7 @@
 import ErrorAlert from "@/components/ErrorAlert";
 import { TagCard } from "@/components/TagCard";
 import { useSearchTags } from "@/services/api/programmingForumComponents";
-import { TagSummary } from "@/services/api/programmingForumSchemas";
+import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { useSearchParams } from "react-router-dom";
 import { FullscreenLoading } from "../components/FullscreenLoading";
 
@@ -23,7 +23,7 @@ export const Search = () => {
   if (error) {
     return <ErrorAlert error={error} />;
   }
-  const tags = (searchResult?.data as { items?: TagSummary[] }).items || [];
+  const tags = (searchResult?.data as { items?: TagDetails[] }).items || [];
 
   return (
     <div className="container flex flex-col gap-2 py-8">
@@ -33,7 +33,7 @@ export const Search = () => {
       {!tags.length && <p>Try searching for "python", or "javascript"</p>}
       <div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {tags.map((tag) => (
-          <TagCard key={tag.id} tag={tag} />
+          <TagCard key={tag.tagId} tag={tag} />
         ))}
       </div>
     </div>

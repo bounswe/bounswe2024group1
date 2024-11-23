@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, API_BASE + "/**").authenticated()// Permit signin without authentication// All POSTs need authentication
                                 .requestMatchers(HttpMethod.PUT, API_BASE + "/**").authenticated()   // All PUTs need authentication
                                 .requestMatchers(HttpMethod.DELETE, API_BASE + "/**").authenticated()// All DELETEs need authentication
+                                .requestMatchers(HttpMethod.GET,API_BASE + EndpointConstants.QuestionEndpoints.QUESTION_ID).authenticated()
                                 .requestMatchers(HttpMethod.GET, "/**").permitAll()  // General GET requests, allow everything else
                                 .anyRequest().authenticated()
                 )

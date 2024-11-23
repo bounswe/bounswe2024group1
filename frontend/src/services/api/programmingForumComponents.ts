@@ -266,7 +266,7 @@ export const fetchGetUserProfile = (
     GetUserProfilePathParams
   >({ url: "/users/{userId}", method: "get", ...variables, signal });
 
-export const useGetUserProfile = <TData = GetUserProfileResponse>(
+export const useGetUserProfile = <TData = GetUserProfileResponse,>(
   variables: GetUserProfileVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -392,7 +392,7 @@ export const fetchGetMe = (variables: GetMeVariables, signal?: AbortSignal) =>
     signal,
   });
 
-export const useGetMe = <TData = GetMeResponse>(
+export const useGetMe = <TData = GetMeResponse,>(
   variables: GetMeVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<GetMeResponse, GetMeError, TData>,
@@ -559,7 +559,7 @@ export const fetchGetUserFollowers = (
     GetUserFollowersPathParams
   >({ url: "/users/{userId}/followers", method: "get", ...variables, signal });
 
-export const useGetUserFollowers = <TData = GetUserFollowersResponse>(
+export const useGetUserFollowers = <TData = GetUserFollowersResponse,>(
   variables: GetUserFollowersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -626,7 +626,7 @@ export const fetchGetUserFollowing = (
     GetUserFollowingPathParams
   >({ url: "/users/{userId}/following", method: "get", ...variables, signal });
 
-export const useGetUserFollowing = <TData = GetUserFollowingResponse>(
+export const useGetUserFollowing = <TData = GetUserFollowingResponse,>(
   variables: GetUserFollowingVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -754,7 +754,7 @@ export const fetchGetQuestionDetails = (
     GetQuestionDetailsPathParams
   >({ url: "/questions/{questionId}", method: "get", ...variables, signal });
 
-export const useGetQuestionDetails = <TData = GetQuestionDetailsResponse>(
+export const useGetQuestionDetails = <TData = GetQuestionDetailsResponse,>(
   variables: GetQuestionDetailsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -916,11 +916,11 @@ export const useDeleteQuestion = (
   });
 };
 
-export type RateQuestionPathParams = {
+export type UpvoteQuestionPathParams = {
   questionId: number;
 };
 
-export type RateQuestionError = Fetcher.ErrorWrapper<
+export type UpvoteQuestionError = Fetcher.ErrorWrapper<
   | {
       status: 400;
       payload: Responses.BadRequestResponse;
@@ -935,43 +935,34 @@ export type RateQuestionError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type RateQuestionRequestBody = {
-  /**
-   * @minimum -1
-   * @maximum 1
-   */
-  rating: number;
-};
-
-export type RateQuestionVariables = {
-  body: RateQuestionRequestBody;
-  pathParams: RateQuestionPathParams;
+export type UpvoteQuestionVariables = {
+  pathParams: UpvoteQuestionPathParams;
 } & ProgrammingForumContext["fetcherOptions"];
 
-export const fetchRateQuestion = (
-  variables: RateQuestionVariables,
+export const fetchUpvoteQuestion = (
+  variables: UpvoteQuestionVariables,
   signal?: AbortSignal,
 ) =>
   programmingForumFetch<
     undefined,
-    RateQuestionError,
-    RateQuestionRequestBody,
+    UpvoteQuestionError,
+    undefined,
     {},
     {},
-    RateQuestionPathParams
+    UpvoteQuestionPathParams
   >({
-    url: "/questions/{questionId}/rate",
+    url: "/questions/{questionId}/upvote",
     method: "post",
     ...variables,
     signal,
   });
 
-export const useRateQuestion = (
+export const useUpvoteQuestion = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       undefined,
-      RateQuestionError,
-      RateQuestionVariables
+      UpvoteQuestionError,
+      UpvoteQuestionVariables
     >,
     "mutationFn"
   >,
@@ -979,11 +970,74 @@ export const useRateQuestion = (
   const { fetcherOptions } = useProgrammingForumContext();
   return reactQuery.useMutation<
     undefined,
-    RateQuestionError,
-    RateQuestionVariables
+    UpvoteQuestionError,
+    UpvoteQuestionVariables
   >({
-    mutationFn: (variables: RateQuestionVariables) =>
-      fetchRateQuestion({ ...fetcherOptions, ...variables }),
+    mutationFn: (variables: UpvoteQuestionVariables) =>
+      fetchUpvoteQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type DownvoteQuestionPathParams = {
+  questionId: number;
+};
+
+export type DownvoteQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type DownvoteQuestionVariables = {
+  pathParams: DownvoteQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchDownvoteQuestion = (
+  variables: DownvoteQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    undefined,
+    DownvoteQuestionError,
+    undefined,
+    {},
+    {},
+    DownvoteQuestionPathParams
+  >({
+    url: "/questions/{questionId}/downvote",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useDownvoteQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      DownvoteQuestionError,
+      DownvoteQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    undefined,
+    DownvoteQuestionError,
+    DownvoteQuestionVariables
+  >({
+    mutationFn: (variables: DownvoteQuestionVariables) =>
+      fetchDownvoteQuestion({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
@@ -1153,7 +1207,7 @@ export const fetchGetQuestionAnswers = (
     signal,
   });
 
-export const useGetQuestionAnswers = <TData = GetQuestionAnswersResponse>(
+export const useGetQuestionAnswers = <TData = GetQuestionAnswersResponse,>(
   variables: GetQuestionAnswersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1457,6 +1511,67 @@ export const useRateAnswer = (
   });
 };
 
+export type CreateTagError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+>;
+
+export type CreateTagResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.TagDetails;
+};
+
+export type CreateTagVariables = {
+  body: Schemas.NewTag;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchCreateTag = (
+  variables: CreateTagVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    CreateTagResponse,
+    CreateTagError,
+    Schemas.NewTag,
+    {},
+    {},
+    {}
+  >({ url: "/tags", method: "post", ...variables, signal });
+
+export const useCreateTag = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      CreateTagResponse,
+      CreateTagError,
+      CreateTagVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    CreateTagResponse,
+    CreateTagError,
+    CreateTagVariables
+  >({
+    mutationFn: (variables: CreateTagVariables) =>
+      fetchCreateTag({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
 export type GetTagDetailsPathParams = {
   tagId: string;
 };
@@ -1494,7 +1609,7 @@ export const fetchGetTagDetails = (
     GetTagDetailsPathParams
   >({ url: "/tags/{tagId}", method: "get", ...variables, signal });
 
-export const useGetTagDetails = <TData = GetTagDetailsResponse>(
+export const useGetTagDetails = <TData = GetTagDetailsResponse,>(
   variables: GetTagDetailsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1634,6 +1749,10 @@ export type SearchQuestionsQueryParams = {
    */
   tags?: string;
   /**
+   * Filter by difficulty level
+   */
+  difficulty?: Schemas.DifficultyLevel;
+  /**
    * Page number
    *
    * @default 1
@@ -1687,7 +1806,7 @@ export const fetchSearchQuestions = (
     {}
   >({ url: "/search/questions", method: "get", ...variables, signal });
 
-export const useSearchQuestions = <TData = SearchQuestionsResponse>(
+export const useSearchQuestions = <TData = SearchQuestionsResponse,>(
   variables: SearchQuestionsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1776,7 +1895,7 @@ export const fetchSearchUsers = (
     {}
   >({ url: "/search/users", method: "get", ...variables, signal });
 
-export const useSearchUsers = <TData = SearchUsersResponse>(
+export const useSearchUsers = <TData = SearchUsersResponse,>(
   variables: SearchUsersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<SearchUsersResponse, SearchUsersError, TData>,
@@ -1832,7 +1951,7 @@ export type SearchTagsResponse = {
   status: 200 | 201;
   data:
     | {
-        items?: Schemas.TagSummary[];
+        items?: Schemas.TagDetails[];
         totalItems?: number;
         currentPage?: number;
         totalPages?: number;
@@ -1857,7 +1976,7 @@ export const fetchSearchTags = (
     {}
   >({ url: "/search/tags", method: "get", ...variables, signal });
 
-export const useSearchTags = <TData = SearchTagsResponse>(
+export const useSearchTags = <TData = SearchTagsResponse,>(
   variables: SearchTagsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<SearchTagsResponse, SearchTagsError, TData>,
@@ -1938,7 +2057,7 @@ export const fetchGetUserFeed = (
     {}
   >({ url: "/feed", method: "get", ...variables, signal });
 
-export const useGetUserFeed = <TData = GetUserFeedResponse>(
+export const useGetUserFeed = <TData = GetUserFeedResponse,>(
   variables: GetUserFeedVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<GetUserFeedResponse, GetUserFeedError, TData>,

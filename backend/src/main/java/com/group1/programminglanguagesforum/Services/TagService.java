@@ -7,12 +7,13 @@ import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,4 +94,13 @@ public class TagService {
 
     }
 
+    public Page<GetTagDetailsResponseDto> searchTags(String q, Pageable pageable) {
+        Page<Tag> tags = tagRepository.findTagsByTagNameContainingIgnoreCase(q, pageable);
+        return tags.map(tag -> GetTagDetailsResponseDto.builder()
+                .tagId(tag.getId())
+                .name(tag.getTagName())
+                .description(tag.getTagDescription())
+                .tagType(getTagType(tag).toString())
+                .build());
+    }
 }

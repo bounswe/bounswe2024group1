@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Services;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetQuestionWithTagDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetTagDetailsResponseDto;
+import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.Tag;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
@@ -91,8 +92,8 @@ class TagServiceTest {
 
         Tag mockTag = new Tag(1L, null, "Tag1", "Description1");
         List<Question> mockQuestions = Arrays.asList(
-                new Question(1L, "Question1", "Body1", 0L, 0L, null, null, null, null, null),
-                new Question(2L, "Question2", "Body2", 0L, 0L, null, null, null, null, null));
+                new Question(1L, "Question1", "Body1", DifficultyLevel.EASY, 0L, 0L, null, null, null, null, null,null),
+                new Question(2L, "Question2", "Body2", DifficultyLevel.MEDIUM, 0L, 0L, null, null, null, null, null,null));
 
         when(tagRepository.findById(tagId)).thenReturn(Optional.of(mockTag));
         when(questionRepository.findQuestionsByTagId(tagId)).thenReturn(mockQuestions);

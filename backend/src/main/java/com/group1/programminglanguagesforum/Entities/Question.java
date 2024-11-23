@@ -24,6 +24,8 @@ public class Question {
     @Column(name = "QUESTION_BODY", columnDefinition = "BLOB")
     private String questionBody;
     @Builder.Default
+    private DifficultyLevel difficulty = DifficultyLevel.EASY;
+    @Builder.Default
     private Long likeCount = 0L;
     @Builder.Default
     private Long commentCount = 0L;
@@ -38,7 +40,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User askedBy;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany( fetch = FetchType.EAGER)
     @JoinTable(name = "question_tags", // Name of the join table
             joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @Builder.Default
@@ -46,6 +48,10 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Vote> votes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Answer> answers = new ArrayList<>(); // Mapping to Answer
 
     public Long getUpvoteCount() {
         return votes.stream().filter(Vote::isUpvote).count();

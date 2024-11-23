@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import {
   useDeleteQuestion as useDeleteQuestionById,
+  useDownvoteQuestion,
   useGetQuestionDetails,
-  useRateQuestion as useVoteQuestion,
+  useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
+import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -39,11 +41,9 @@ export default function QuestionPage() {
 
   const [optimisticVotes, setOptimisticVotes] = useState<number | null>(null);
 
-  const { mutateAsync: voteQuestion } = useVoteQuestion({
-    onMutate: async (vote) => {
-      setOptimisticVotes(
-        (prev) => (prev ?? data?.rating ?? 0) + vote.body.rating,
-      );
+  const { mutateAsync: upvoteQuestion } = useUpvoteQuestion({
+    onMutate: async () => {
+      setOptimisticVotes((prev) => (prev ?? data?.likeCount ?? 0) + 1);
     },
     onSuccess: () => {
       refetch().then(() => {
@@ -54,6 +54,31 @@ export default function QuestionPage() {
       setOptimisticVotes(null);
     },
   });
+
+  const { mutateAsync: downvoteQuestion } = useDownvoteQuestion({
+    onMutate: async () => {
+      setOptimisticVotes((prev) => (prev ?? data?.likeCount ?? 0) - 1);
+    },
+    onSuccess: () => {
+      refetch().then(() => {
+        setOptimisticVotes(null);
+      });
+    },
+  });
+  const { data: exercismData } = useExercismSearch(
+    {
+      params: {
+        text: data?.content,
+        difficulty:
+          (data as unknown as { difficultyLevel: string })?.difficultyLevel ??
+          "easy",
+        track: convertTagToTrack(data?.tags[0].name ?? ""),
+      },
+    },
+    {
+      enabled: !!data?.content,
+    },
+  );
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -137,12 +162,12 @@ export default function QuestionPage() {
           <div className="flex items-center gap-2">
             <ThumbsUp className="h-4 w-4" />
             <span className="font-bold">
-              {optimisticVotes ?? question.rating}
+              {optimisticVotes ?? question.likeCount}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            <span className="font-bold">{question.answerCount}</span>
+            <span className="font-bold">{question.commentCount}</span>
           </div>
           {!!token && (
             <div className="flex gap-2">
@@ -150,9 +175,8 @@ export default function QuestionPage() {
                 size="sm"
                 disabled={question.selfRating === 1}
                 onClick={() =>
-                  voteQuestion({
+                  upvoteQuestion({
                     pathParams: { questionId: question.id },
-                    body: { rating: 1 },
                   })
                 }
               >
@@ -163,9 +187,8 @@ export default function QuestionPage() {
                 variant="outline"
                 disabled={question.selfRating === -1}
                 onClick={() =>
-                  voteQuestion({
+                  downvoteQuestion({
                     pathParams: { questionId: question.id },
-                    body: { rating: -1 },
                   })
                 }
               >
@@ -205,33 +228,17 @@ export default function QuestionPage() {
         <h2 className="mb-4 text-lg font-semibold text-gray-800">
           Related Exercises
         </h2>
-
-        {/* Exercise Card 1 */}
-        <ExerciseCard
-          id={1}
-          title="Exercise 1: Array Manipulation"
-          description="Manipulate arrays to solve common problems."
-          difficulty="Easy"
-          tags={["array-manipulation", "basic"]}
-        />
-
-        {/* Exercise Card 2 */}
-        <ExerciseCard
-          id={2}
-          title="Exercise 2: Binary Search Trees"
-          description="Implement and manipulate binary search trees."
-          difficulty="Medium"
-          tags={["binary-search-tree", "data-structures"]}
-        />
-
-        {/* Exercise Card 3 */}
-        <ExerciseCard
-          id={3}
-          title="Exercise 3: Dynamic Programming Basics"
-          description="Learn the fundamentals of dynamic programming."
-          difficulty="Hard"
-          tags={["dynamic-programming", "algorithms"]}
-        />
+        {exercismData?.results.map((exercise) => (
+          <ExerciseCard
+            key={exercise.slug}
+            id={Number(exercise.slug)}
+            title={exercise.blurb}
+            description={exercise.blurb}
+            difficulty={exercise.difficulty}
+            link={exercise.self_link}
+            tags={[]}
+          />
+        ))}
       </div>
     </div>
   );

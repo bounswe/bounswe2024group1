@@ -10,12 +10,12 @@ import TagPage from "./tag";
 const mockTagData = vi.hoisted(
   () =>
     ({
-      id: "1",
+      tagId: "1",
       name: "javascript",
       description:
         "A popular programming language primarily used for web development.",
       questionCount: 50,
-      followersCount: 1000,
+      followerCount: 1000,
       //createdAt: "2023-01-01T00:00:00Z",
     }) satisfies TagDetails,
 );
@@ -75,7 +75,7 @@ describe("TagPage", () => {
 
     // Check if followers count is rendered
     expect(
-      screen.getByText(`${mockTagData.followersCount}`, {
+      screen.getByText(`${mockTagData.followerCount}`, {
         exact: false,
       }),
     ).toBeInTheDocument();
