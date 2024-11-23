@@ -67,7 +67,7 @@ class TagServiceTest {
                 .build();
 
         // Mock the Tag returned by the repository save method
-        Tag savedTag = new Tag(1L, null, "New Tag", "Tag description", null);
+        Tag savedTag = new Tag(1L, null, "New Tag", "Tag description");
 
         // Mock tagRepository behavior
         when(tagRepository.save(any(Tag.class))).thenReturn(savedTag);
@@ -90,12 +90,10 @@ class TagServiceTest {
     void testGetTagDetails_Success() {
         Long tagId = 1L;
 
-        Tag mockTag = new Tag(1L, null, "Tag1", "Description1", null);
+        Tag mockTag = new Tag(1L, null, "Tag1", "Description1");
         List<Question> mockQuestions = Arrays.asList(
-                new Question(1L, "Question1", "Body1", DifficultyLevel.EASY, 0L, 0L, null, null, null, null, null,
-                        null),
-                new Question(2L, "Question2", "Body2", DifficultyLevel.MEDIUM, 0L, 0L, null, null, null, null, null,
-                        null));
+                new Question(1L, "Question1", "Body1", DifficultyLevel.EASY, 0L, 0L, null, null, null, null, null,null),
+                new Question(2L, "Question2", "Body2", DifficultyLevel.MEDIUM, 0L, 0L, null, null, null, null, null,null));
 
         when(tagRepository.findById(tagId)).thenReturn(Optional.of(mockTag));
         when(questionRepository.findQuestionsByTagId(tagId)).thenReturn(mockQuestions);

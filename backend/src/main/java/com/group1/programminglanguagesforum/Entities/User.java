@@ -32,14 +32,18 @@ public class User implements UserDetails {
     private String bio = "";
     @Builder.Default
     @Column(name = "experience_level", nullable = false)
-    private ExperienceLevel experienceLevel = ExperienceLevel.BEGINNER;
+    private ExperienceLevel experienceLevel= ExperienceLevel.BEGINNER;
     private String password;
     private String country;
     @Builder.Default
     private Long answerCount = 0L;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_FOLLOWERS", joinColumns = @JoinColumn(name = "followed_id"), inverseJoinColumns = @JoinColumn(name = "follower_id"))
+    @JoinTable(
+            name = "USER_FOLLOWERS",
+            joinColumns = @JoinColumn(name = "followed_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
     @Builder.Default
     private Set<User> followers = new HashSet<>();
     @ManyToMany(mappedBy = "followers", fetch = FetchType.EAGER)
@@ -57,16 +61,12 @@ public class User implements UserDetails {
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
     @OneToMany(mappedBy = "answeredBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Answer> answers = new HashSet<>(); // Set to hold all answers given by the user
+    private Set<Answer> answers = new HashSet<>();  // Set to hold all answers given by the user
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_followed_tags", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @Builder.Default
-    private Set<Tag> followedTags = new HashSet<>();
 
     @Override
     public int hashCode() {
-        return Objects.hash(id); // Use only the ID for hashCode
+        return Objects.hash(id);  // Use only the ID for hashCode
     }
 
     @Override
@@ -78,8 +78,9 @@ public class User implements UserDetails {
             return false;
         }
         User other = (User) obj;
-        return Objects.equals(id, other.id); // Compare only IDs for equality
+        return Objects.equals(id, other.id);  // Compare only IDs for equality
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -2,8 +2,6 @@ package com.group1.programminglanguagesforum.Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,14 +18,11 @@ public class Tag {
     private String wikidataId;
     private String tagName;
     private String tagDescription;
-
-    @ManyToMany(mappedBy = "followedTags")
-    private Set<User> followers = new HashSet<>();
-
     public Tag(String wikidataId, String tagName, String tagDescription) {
         this.wikidataId = wikidataId;
         this.tagName = tagName;
         this.tagDescription = tagDescription;
     }
+
 
 }

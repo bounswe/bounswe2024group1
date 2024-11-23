@@ -50,7 +50,6 @@ public class EndpointConstants {
         public static final String BASE_PATH = "/tags";
         public static final String TAG_ID = BASE_PATH + "/{id}";
         public static final String SEARCH = "/search" + BASE_PATH;
-        public static final String TAG_FOLLOW = TAG_ID + "/follow";
     }
 
     public static class BookmarkEndpoints {
