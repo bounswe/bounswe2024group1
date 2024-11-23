@@ -1,11 +1,11 @@
+import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { useExecuteCode } from "@/services/api/programmingForumComponents";
 import { CodeExecution } from "@/services/api/programmingForumSchemas";
 import React from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { toast } from "@/components/ui/use-toast";
-import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 
 interface CodeSnippetProps {
   code: string;
@@ -14,7 +14,7 @@ interface CodeSnippetProps {
 
 const languageUserFriendlyName = {
   python3: "Python",
-  "python3-exec": "Python",
+  python: "Python",
   c: "C",
   csharp: "C#",
   cpp: "C++",
@@ -26,7 +26,8 @@ const languageUserFriendlyName = {
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
   const executeCode = useExecuteCode();
 
-  const handleExecute = () => {
+  const handleExecute = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const execution: CodeExecution = {
       code,
       language: language as CodeExecution["language"],
@@ -38,7 +39,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
     <div className="not-prose relative flex flex-col gap-2 overflow-hidden rounded-xl border border-gray-400 bg-gray-100 p-4">
       <h4 className="text-sm font-bold">
         {languageUserFriendlyName[
-          language as keyof typeof languageUserFriendlyName
+          language.replace("-exec", "") as keyof typeof languageUserFriendlyName
         ] ?? "Unknown"}{" "}
         Code Snippet
       </h4>

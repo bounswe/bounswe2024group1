@@ -28,6 +28,7 @@ export default function TagPage() {
   );
 
   const token = useAuthStore((s) => s.token);
+  const experienceLevel = useAuthStore((s) => s.selfProfile?.experienceLevel);
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -94,7 +95,10 @@ export default function TagPage() {
             <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
           <TabsContent value="top-rated" className="flex flex-col gap-4">
-            <HighlightedQuestionsBox questions={questions || []} />
+            {!experienceLevel ||
+              (experienceLevel === "BEGINNER" && (
+                <HighlightedQuestionsBox questions={questions || []} />
+              ))}
             <div className="grid grid-cols-3 gap-4">
               {questions &&
                 questions.map((question) => (
@@ -110,7 +114,10 @@ export default function TagPage() {
             </div>
           </TabsContent>
           <TabsContent value="recent" className="flex flex-col gap-4">
-            <HighlightedQuestionsBox questions={questions || []} />
+            {!experienceLevel ||
+              (experienceLevel === "BEGINNER" && (
+                <HighlightedQuestionsBox questions={questions || []} />
+              ))}
             <div className="grid grid-cols-3 gap-4">
               {questions &&
                 questions.map((question) => (
