@@ -9,15 +9,15 @@ interface ExerciseCardProps {
   description: string;
   difficulty: string;
   tags: string[];
-  
+  link: string;
 }
 
 export const ExerciseCard: React.FC<ExerciseCardProps> = ({
-  id,
   title,
   description,
   difficulty,
   tags,
+  link,
 }) => {
   return (
     <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
@@ -37,7 +37,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded"
+                className="rounded bg-gray-200 px-2 py-1 text-xs text-gray-700"
               >
                 {tag}
               </span>
@@ -46,7 +46,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </div>
         <div className="flex justify-end">
           <Link
-            to={`/exercise/${id}`}
+            to={"https://exercism.org/" + link}
+            target="_blank"
             className="flex items-center text-sm font-medium text-gray-600 hover:underline"
           >
             Go to exercise

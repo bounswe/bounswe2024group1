@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.PUT, API_BASE + "/**").authenticated()   // All PUTs need authentication
                                 .requestMatchers(HttpMethod.DELETE, API_BASE + "/**").authenticated()// All DELETEs need authentication
                                 .requestMatchers(HttpMethod.GET, "/**").permitAll()  // General GET requests, allow everything else
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .anonymous(anonymous -> anonymous.disable())
                 .sessionManagement(

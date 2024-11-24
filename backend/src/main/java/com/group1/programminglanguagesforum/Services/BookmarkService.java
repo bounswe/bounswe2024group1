@@ -49,4 +49,5 @@ public class BookmarkService {
                 .downvoteCount(bookmark.getQuestion().getDownvoteCount())
                 .build();
     }
+
 }

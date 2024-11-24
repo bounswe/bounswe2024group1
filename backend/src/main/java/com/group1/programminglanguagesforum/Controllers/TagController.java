@@ -5,9 +5,14 @@ import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetTagDetailsResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.TagSearchResponseDto;
 import com.group1.programminglanguagesforum.Services.TagService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +25,31 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/v1")
 public class TagController extends BaseController {
     private final TagService tagService;
+    @GetMapping(value = EndpointConstants.TagEndpoints.SEARCH)
+    public ResponseEntity<GenericApiResponse<TagSearchResponseDto>> tagSearch(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,  // Page index starts at 0
+            @RequestParam(defaultValue = "20") int pageSize) {
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("tagName").ascending());
+        Page<GetTagDetailsResponseDto> tagsPage = tagService.searchTags(q, pageable);
+
+        TagSearchResponseDto responseData = TagSearchResponseDto.builder()
+                .items(tagsPage.getContent())
+                .totalItems(tagsPage.getTotalElements())
+                .currentPage(tagsPage.getNumber())
+                .totalPages(tagsPage.getTotalPages())
+                .build();
+
+        GenericApiResponse<TagSearchResponseDto> response = GenericApiResponse.<TagSearchResponseDto>builder()
+                .status(200)
+                .message("Tags retrieved successfully")
+                .data(responseData)
+                .build();
+
+        return buildResponse(response, HttpStatus.OK);
+    }
+
     @GetMapping(value = EndpointConstants.TagEndpoints.TAG_ID)
     public ResponseEntity<GenericApiResponse<GetTagDetailsResponseDto>> getTagDetails(@PathVariable(value = "id") Long tagId) {
         try {

@@ -11,7 +11,7 @@ import {
   Text,
 } from "@/components/ui";
 import { useSearchTags } from "@/services/api/programmingForumComponents";
-import { TagSummary } from "@/services/api/programmingForumSchemas";
+import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { router, useLocalSearchParams } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useState } from "react";
@@ -39,10 +39,10 @@ export default function SearchScreen() {
   if (error) {
     return <ErrorAlert error={error} />;
   }
-  const tags = (searchResult?.data as { items?: TagSummary[] })?.items || [];
+  const tags = (searchResult?.data as { items?: TagDetails[] })?.items || [];
 
   return (
-    <View className="flex flex-col gap-4 py-8">
+    <View className="flex flex-col gap-4 py-8 my-16">
       <HStack space="md" className="px-4">
         <Input className="flex-1 mb-4">
           <InputField
@@ -76,7 +76,7 @@ export default function SearchScreen() {
         )}
         <View className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {tags.map((tag) => (
-            <TagCard key={tag.id} tag={tag} />
+            <TagCard key={tag.tagId} tag={tag} />
           ))}
         </View>
       </ScrollView>
