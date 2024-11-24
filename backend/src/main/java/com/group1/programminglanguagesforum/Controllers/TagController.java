@@ -5,9 +5,16 @@ import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetTagDetailsResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.TagDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.TagSearchResponseDto;
+import com.group1.programminglanguagesforum.Entities.User;
+import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
+import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.TagService;
+import com.group1.programminglanguagesforum.Services.UserContextService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
+
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,11 +27,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class TagController extends BaseController {
+    
     private final TagService tagService;
+    private final UserContextService userContextService;
+
     @GetMapping(value = EndpointConstants.TagEndpoints.SEARCH)
     public ResponseEntity<GenericApiResponse<TagSearchResponseDto>> tagSearch(
             @RequestParam String q,
@@ -107,4 +118,37 @@ public class TagController extends BaseController {
         }
 
     }
+
+    @PostMapping(value = EndpointConstants.TagEndpoints.TAG_FOLLOW)
+    public ResponseEntity<GenericApiResponse<TagDto>> postMethodName(@PathVariable(value = "id") Long tagId) {
+        try {
+            User user = userContextService.getCurrentUser();
+            TagDto tagDto = tagService.followTag(user, tagId);
+            GenericApiResponse<TagDto> response = ApiResponseBuilder.buildSuccessResponse(TagDto.class, "Tag followed successfully", 200, tagDto);
+            return buildResponse(response, HttpStatus.OK);
+            
+        } catch (UnauthorizedAccessException e) {
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
+        } catch (NoSuchElementException e) {
+            return ExceptionResponseHandler.NoSuchElementException(e);
+        } catch (EntityExistsException e) {
+            return ExceptionResponseHandler.EntityExistsException(e);
+        }
+    }
+
+    @DeleteMapping(value = EndpointConstants.TagEndpoints.TAG_FOLLOW)
+    public ResponseEntity<GenericApiResponse<TagDto>> deleteMethodName(@PathVariable(value = "id") Long tagId) {
+        try {
+            User user = userContextService.getCurrentUser();
+            TagDto tagDto = tagService.unfollowTag(user, tagId);
+            GenericApiResponse<TagDto> response = ApiResponseBuilder.buildSuccessResponse(TagDto.class, "Tag unfollowed successfully", 200, tagDto);
+            return buildResponse(response, HttpStatus.OK);
+            
+        } catch (UnauthorizedAccessException e) {
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
+        } catch (NoSuchElementException e) {
+            return ExceptionResponseHandler.NoSuchElementException(e);
+        }
+    }
+    
 }

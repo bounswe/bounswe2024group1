@@ -5,6 +5,9 @@ import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.*;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
+import com.group1.programminglanguagesforum.Repositories.UserRepository;
+
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,6 +24,7 @@ public class TagService {
     private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -103,4 +107,49 @@ public class TagService {
                 .tagType(getTagType(tag).toString())
                 .build());
     }
+
+    public TagDto followTag(User user, Long tagId) {
+        
+        Optional<Tag> tag = tagRepository.findById(tagId);
+        if (tag.isEmpty()) {
+            throw new NoSuchElementException("Tag not found");
+        }
+        
+        Tag tagEntity = tag.get();
+
+        if (user.getFollowedTags().stream().anyMatch(t -> t.getId().equals(tagId))) {
+            throw new EntityExistsException("User already follows this tag");
+        }
+        
+        user.getFollowedTags().add(tagEntity);
+        userRepository.save(user);
+
+        return TagDto.builder()
+                .id(tagEntity.getId())
+                .name(tagEntity.getTagName())
+                .build();
+    }
+
+    public TagDto unfollowTag(User user, Long tagId) {
+        
+        Optional<Tag> tag = tagRepository.findById(tagId);
+        if (tag.isEmpty()) {
+            throw new NoSuchElementException("Tag not found");
+        }
+        
+        Tag tagEntity = tag.get();
+        
+        if (!user.getFollowedTags().stream().anyMatch(t -> t.getId().equals(tagId))) {
+            throw new NoSuchElementException("User does not follow this tag");
+        }
+        
+        user.getFollowedTags().removeIf(t -> t.getId().equals(tagId));
+        userRepository.save(user);
+        
+        return TagDto.builder()
+                .id(tagEntity.getId())
+                .name(tagEntity.getTagName())
+                .build();
+    }
+
 }
