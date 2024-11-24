@@ -18,6 +18,7 @@ public class GetQuestionDetailsResponseDto {
     private Long dislikeCount;
     private Long commentCount;
     private Boolean selfQuestion;
+    private Boolean selfVoted;
     private String createdAt;
     @Builder.Default
     private List<TagDto> tags= new ArrayList<>();

@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface VoteRepository extends JpaRepository<Vote,Long> {
     Optional<Vote> findByUserAndQuestionAndIsUpvote(User user, Question question, boolean isUpvote);
     Optional<Vote> findByUserAndAnswer(User user, Answer answer);
-
+    Optional<Vote> findByUserAndQuestion(User user, Question question);
     Optional<Vote> findByUserAndAnswerAndIsUpvote(User user, Answer answer, boolean b);
 }

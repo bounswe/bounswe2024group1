@@ -14,6 +14,8 @@ import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.BookmarkRepository;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
+import com.group1.programminglanguagesforum.Repositories.VoteRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ public class QuestionService {
         private final UserContextService userContextService;
         private final TagService tagService;
         private final BookmarkRepository bookmarkRepository;
+        private final VoteRepository voteRepository;
 
         public Optional<Question> findById(Long id) {
                 return questionRepository.findById(id);
@@ -81,25 +84,22 @@ public class QuestionService {
         }
 
     public GetQuestionDetailsResponseDto getQuestion(Long id) throws NoSuchElementException {
+        User currentUser;
+        try {
+            currentUser = userContextService.getCurrentUser();
+        } catch (UnauthorizedAccessException e) {
+            currentUser = null;
+        }
+
         Optional<Question> questionOptional = questionRepository.findById(id);
         if (questionOptional.isEmpty()) {
             throw new NoSuchElementException("Question not found");
         }
-        Question question = questionOptional.get();
-        boolean selfQuestion;
-        try {
-            User currentUser = userContextService.getCurrentUser();
-            selfQuestion = currentUser.getId().equals(question.getAskedBy().getId());
-        } catch (UnauthorizedAccessException e) {
-            selfQuestion = false;
-        }
 
-        boolean isBookmarked;
-        try {
-            isBookmarked = isBookmarked(id);
-        } catch (UnauthorizedAccessException e) {
-            isBookmarked = false;
-        }
+        Question question = questionOptional.get();
+        boolean selfQuestion = (currentUser != null && currentUser.getId().equals(question.getAskedBy().getId()));
+        boolean isBookmarked = (currentUser != null && bookmarkRepository.existsByUserAndQuestion(currentUser, question));
+        boolean selfVoted = (currentUser != null && voteRepository.findByUserAndQuestion(currentUser, question).isPresent());
 
         return GetQuestionDetailsResponseDto.builder()
                 .id(question.getId())
@@ -109,6 +109,7 @@ public class QuestionService {
                 .dislikeCount(question.getDownvoteCount())
                 .commentCount(question.getCommentCount())
                 .selfQuestion(selfQuestion)
+                .selfVoted(selfVoted)
                 .createdAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getCreatedAt()))
                 .updatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(question.getUpdatedAt()))
                 .author(AuthorDto.builder()
@@ -126,12 +127,6 @@ public class QuestionService {
                 .bookmarked(isBookmarked)
                 .build();
 
-        }
-
-        private boolean isBookmarked(Long questionId) throws UnauthorizedAccessException {
-                User user = userContextService.getCurrentUser();
-                Question question = findById(questionId).orElseThrow();
-                return bookmarkRepository.existsByUserAndQuestion(user, question);
         }
 
         public String deleteQuestion(Long id) {
