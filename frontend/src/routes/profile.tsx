@@ -188,9 +188,9 @@ export default function Profile() {
                   key={question.id}
                   id={question.id}
                   title={question.title}
-                  content={question.content}
-                  votes={question.rating}
-                  answerCount={question.answerCount}
+                  content={question.questionBody ?? ""}
+                  votes={question.likeCount}
+                  answerCount={question.commentCount}
                   author={question.author}
                 />
               ))}
