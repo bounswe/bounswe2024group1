@@ -71,9 +71,10 @@ public class AnswerService {
                 .build();
     }
 
-    public GetAnswersResponseDto getAnswersForQuestion(Long questionId) throws UnauthorizedAccessException {
+    public GetAnswersResponseDto getAnswersForQuestion(Long questionId) {
         Question question = questionService.findById(questionId).orElseThrow();
-        User currentUser = userContextService.getCurrentUser();
+        final User currentUser = getCurrentUserOrNull();
+
         return GetAnswersResponseDto.builder()
                 .items(question.getAnswers().stream().map(answer -> GetAnswersResponseDto.AnswerResponseDto.builder()
                         .id(answer.getId())
@@ -90,9 +91,17 @@ public class AnswerService {
                         .updatedAt(answer.getUpdatedAt())
                         .upvoteCount(answer.getUpvoteCount())
                         .downvoteCount(answer.getDownvoteCount())
-                        .selfAnswer(currentUser!=null && currentUser.getId().equals(answer.getAnsweredBy().getId()))
+                        .selfAnswer(currentUser != null && currentUser.getId().equals(answer.getAnsweredBy().getId()))
                         .build()).toList())
                 .totalItems(question.getAnswers().size())
                 .build();
+    }
+
+    private User getCurrentUserOrNull() {
+        try {
+            return userContextService.getCurrentUser();
+        } catch (UnauthorizedAccessException e) {
+            return null;
+        }
     }
 }
