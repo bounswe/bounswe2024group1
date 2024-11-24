@@ -9,6 +9,9 @@ import { Search } from "./search";
 import Signup from "./signup";
 import TagPage from "./tag";
 import Profile from "./profile";
+import TagsPage from "@/components/Tags";
+import CreateTagPage from "@/components/CreateTagPage"; // Import the new CreateTagPage
+
 
 export const routes: RouteObject[] = [
   {
@@ -45,6 +48,14 @@ export const routes: RouteObject[] = [
   {
     path: "tag/:tagId",
     Component: TagPage,
+  },
+  {
+    path: "/tags", 
+    Component: TagsPage,
+  },
+  {
+    path: "/tags/new", 
+    Component: CreateTagPage,
   },
 ];
 

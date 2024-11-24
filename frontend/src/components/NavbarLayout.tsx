@@ -30,7 +30,7 @@ import { SearchBar } from "./SearchBar";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
-const links = [{ name: "Home", path: "/" }] as const;
+const links = [{ name: "Home", path: "/" }, { name: "Tags", path: "/tags" } ] as const;
 
 export const NavbarLayout = () => {
   const navigation = useNavigation();
