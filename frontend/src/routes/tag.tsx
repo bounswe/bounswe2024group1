@@ -83,7 +83,7 @@ export default function TagPage() {
               size="icon"
               className="rounded-full bg-red-500 text-white"
             >
-              <Link to={`/questions/new?tagId=${tag.id}`}>
+              <Link to={`/questions/new?tagId=${tag.tagId}`}>
                 <Plus />
               </Link>
             </Button>

@@ -1,15 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { useMemo } from "react";
 // import { flag } from "country-emoji";
-import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
-import useAuthStore from "@/services/auth";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
-
+import useAuthStore from "@/services/auth";
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Tag = ({
-  tag: { id, name, photo, description},
+  tag: { tagId, name, photo, description },
 }: {
   tag: TagDetails;
 }) => {
@@ -19,7 +18,12 @@ export const Tag = ({
     <div className="flex flex-col self-stretch justify-self-stretch">
       <div className="-mb-16 w-[70%] self-center">
         <AspectRatio ratio={16 / 9}>
-          <img src={photo} alt={`The logo image of ${Tag.name}`} title={`alt:The logo image of ${Tag.name}`} className="h-full w-full rounded-2xl object-cover" />
+          <img
+            src={photo}
+            alt={`The logo image of ${Tag.name}`}
+            title={`alt:The logo image of ${Tag.name}`}
+            className="h-full w-full rounded-2xl object-cover"
+          />
         </AspectRatio>
       </div>
 
@@ -33,12 +37,14 @@ export const Tag = ({
           <p className="text-sm text-gray-700">{description}</p>
           <div className="flex items-center justify-between">
             {!!token && (
-              <Link to={`/questions/new?tagId=` + encodeURIComponent(id || "")}>
+              <Link
+                to={`/questions/new?tagId=` + encodeURIComponent(tagId || "")}
+              >
                 <Plus className="h-4 w-4" />
               </Link>
             )}
             <Link
-              to={`/tag/${id}`}
+              to={`/tag/${tagId}`}
               className="text-sm font-medium text-blue-500 hover:underline"
             >
               See all questions →
