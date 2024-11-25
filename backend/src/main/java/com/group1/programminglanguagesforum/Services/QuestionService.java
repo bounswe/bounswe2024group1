@@ -64,7 +64,7 @@ public class QuestionService {
                                 .name(tag.getTagName())
                                 .build()).toList();
 
-                createAndStoreEmbedding(question.getId(), question.getTitle(), question.getQuestionBody());
+                // createAndStoreEmbedding(question.getId(), question.getTitle(), question.getQuestionBody(), tagIds);
 
                 return CreateQuestionResponseDto.builder()
                                 .id(question.getId())
@@ -194,6 +194,28 @@ public class QuestionService {
                         DifficultyLevel difficulty,
                         int page,
                         int pageSize) {
+                /* 
+                User currentUser = userContextService.getCurrentUser();
+                long userID = currentUser.getId();
+                
+                
+                MongoCollection<Document> collection = database.getCollection("embedded_movies");
+        
+                // define $vectorSearch query options 
+                float[] queryVector = embeddingService.getVectorEmbedding(query);
+                String indexName = "vector_index";
+                FieldSearchPath fieldSearchPath = fieldPath("plot_embedding");
+                int numCandidates = 200;
+                int limit = 10;
+                Bson criteria = Filters.or(
+                                Filters.lte("year", 2015),
+                                Filters.and(
+                                        Filters.lte("year", 2015),
+                                        Filters.eq("genres", "Action")));
+                VectorSearchOptions options = VectorSearchOptions
+                                .approximateVectorSearchOptions(numCandidates)
+                                .filter(criteria);
+                */
 
                 List<Long> tagIds = null;
                 if (tagIdsStr != null && !tagIdsStr.isEmpty()) {
@@ -232,12 +254,12 @@ public class QuestionService {
                                 .build();
         }
 
-        public void createAndStoreEmbedding(Long id, String title, String questionBody) {
+        public void createAndStoreEmbedding(Long id, String title, String questionBody, List<Long> tagIds) {
                 String text = title + " " + questionBody;
                 float[] embedding = embeddingService.getVectorEmbedding(text);
                 QuestionEmbedding questionEmbedding = new QuestionEmbedding();
                 questionEmbedding.setId(id);
-                questionEmbedding.setText(text);
+                questionEmbedding.setTagIds(tagIds);
                 questionEmbedding.setEmbedding(embedding);
                 embeddingRepository.save(questionEmbedding);
         }

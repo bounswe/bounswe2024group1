@@ -13,15 +13,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Getter
 @Setter
 @Document
 public class QuestionEmbedding {
     @Id
     private Long id;
-    @Field("text")
-    private String text;
+    @Field("tagIds")
+    private List<Long> tagIds;
     @Field("embedding")
     private float[] embedding;
 }
