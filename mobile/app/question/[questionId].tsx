@@ -22,12 +22,13 @@ import {
   useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 export default function QuestionPage() {
   const { questionId } = useLocalSearchParams();
+  const router = useRouter();
 
   const toast = useToast();
   const {
@@ -230,6 +231,15 @@ export default function QuestionPage() {
       </View>
 
       <Text className="text-2xl font-bold">Answers</Text>
+
+      <Button
+        onPress={() => {
+          router.push(`/question/${question.id}/answer`);
+        }}
+      >
+        <ButtonText>Write a new answer</ButtonText>
+      </Button>
+
       {questionId && <Answers questionId={Number(questionId)} />}
     </ScrollView>
   );
