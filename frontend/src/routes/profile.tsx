@@ -49,7 +49,7 @@ export default function Profile() {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: Bearer ${useAuthStore.getState().token},
+          Authorization: `Bearer ${useAuthStore.getState().token}`,
         },
       });
     } catch (err) {
@@ -101,7 +101,7 @@ export default function Profile() {
         <div className="flex items-center justify-between space-x-8 py-4">
           <Avatar className="h-24 w-24">
             <AvatarImage
-              alt={Profile picture of ${profile.username}}
+              alt={`Profile picture of ${profile.username}`}
               src={preview || profile.profilePicture || "https://placehold.co/640x640"}
             />
           </Avatar>
