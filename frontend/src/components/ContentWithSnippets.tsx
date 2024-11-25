@@ -55,9 +55,5 @@ export const ContentWithSnippets: React.FC<ContentWithSnippetsProps> = ({
     });
   }, [content]);
 
-  return (
-    <div className="prose max-w-full whitespace-pre-wrap">
-      {renderedContent}
-    </div>
-  );
+  return <div className="prose max-w-full">{renderedContent}</div>;
 };
