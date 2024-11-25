@@ -1,5 +1,5 @@
 import * as reactQuery from "@tanstack/react-query";
-const SERVER_URL = "http://64.226.72.194:8000";
+const SERVER_URL = "https://exercism.mmtf.workers.dev";
 
 interface SearchResult {
   slug: string;

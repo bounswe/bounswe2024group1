@@ -1,9 +1,11 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
+import { CreateAnswerForm } from "@/components/CreateAnswerForm";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -202,7 +204,11 @@ export default function QuestionPage() {
         <div className="mb-4 grid grid-cols-2 gap-2 py-2">
           <span className="flex items-center gap-4 font-semibold">
             <Flag className="h-6 w-6" />
-            {question.tags.map((s) => s.name).join(", ")}
+            {question.tags.map((s) => (
+              <Link to={`/tag/${s.id}`} key={s.name}>
+                <Badge>{s.name}</Badge>
+              </Link>
+            ))}
           </span>
           <span className="flex items-center gap-4 font-semibold">
             Asked: {new Date(question.createdAt).toLocaleDateString()}
@@ -217,6 +223,9 @@ export default function QuestionPage() {
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>
         {questionId && <Answers questionId={Number(questionId)} />}
+
+        {/* Answer Create Form */}
+        {token && <CreateAnswerForm questionId={Number(questionId)} />}
       </div>
 
       {/* Vertical Divider */}

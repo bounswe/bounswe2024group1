@@ -56,6 +56,9 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useRateAnswer: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
+  useCreateAnswer: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
 }));
 
 vi.mock("@/services/exercism", () => ({
