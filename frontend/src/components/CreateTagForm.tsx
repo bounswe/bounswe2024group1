@@ -33,7 +33,6 @@ export function CreateTagForm({ onCreateSuccess }: CreateTagFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
-
       <Input
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -51,7 +50,10 @@ export function CreateTagForm({ onCreateSuccess }: CreateTagFormProps) {
       />
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={isPending || !name.trim() || !description.trim()}>
+        <Button
+          type="submit"
+          disabled={isPending || !name.trim() || !description.trim()}
+        >
           {isPending ? "Creating..." : "Create Tag"}
         </Button>
       </div>

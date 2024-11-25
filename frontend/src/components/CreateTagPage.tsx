@@ -3,7 +3,7 @@ import { CreateTagForm } from "@/components/CreateTagForm"; // Import the Create
 export default function CreateTagPage() {
   return (
     <div className="container py-8">
-      <h1 className="text-2xl font-bold mb-4">Create a New Tag</h1>
+      <h1 className="mb-4 text-2xl font-bold">Create a New Tag</h1>
 
       <CreateTagForm
         onCreateSuccess={() => {
