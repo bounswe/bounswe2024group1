@@ -1,4 +1,4 @@
-import Plus from "@/assets/Icon/General/Plus.svg?react";
+
 import { AnswerCard } from "@/components/AnswerCard";
 import ErrorAlert from "@/components/ErrorAlert";
 import FollowButton from "@/components/FollowButton";
@@ -14,9 +14,8 @@ import {
   useUpdateUserProfile,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
-import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function Profile() {
   const { userId = "" } = useParams<{ userId: string }>();
