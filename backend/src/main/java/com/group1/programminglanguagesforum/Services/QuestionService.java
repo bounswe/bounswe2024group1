@@ -194,35 +194,44 @@ public class QuestionService {
                         DifficultyLevel difficulty,
                         int page,
                         int pageSize) {
+                
                 /* 
-                User currentUser = userContextService.getCurrentUser();
-                long userID = currentUser.getId();
-                
-                
-                MongoCollection<Document> collection = database.getCollection("embedded_movies");
-        
-                // define $vectorSearch query options 
-                float[] queryVector = embeddingService.getVectorEmbedding(query);
-                String indexName = "vector_index";
-                FieldSearchPath fieldSearchPath = fieldPath("plot_embedding");
-                int numCandidates = 200;
-                int limit = 10;
-                Bson criteria = Filters.or(
-                                Filters.lte("year", 2015),
-                                Filters.and(
-                                        Filters.lte("year", 2015),
-                                        Filters.eq("genres", "Action")));
-                VectorSearchOptions options = VectorSearchOptions
-                                .approximateVectorSearchOptions(numCandidates)
-                                .filter(criteria);
-                */
-
                 List<Long> tagIds = null;
                 if (tagIdsStr != null && !tagIdsStr.isEmpty()) {
                         tagIds = Arrays.stream(tagIdsStr.split(","))
                                         .map(Long::parseLong)
                                         .collect(Collectors.toList());
                 }
+
+                User currentUser = userContextService.getCurrentUser();
+                long userID = currentUser.getId();
+                
+                
+                MongoCollection<Document> collection = database.getCollection("vector_store");
+        
+                // define $vectorSearch query options 
+                float[] queryVector = embeddingService.getVectorEmbedding(query);
+                String indexName = "vector_index";
+                FieldSearchPath fieldSearchPath = fieldPath("embedding");
+                int numCandidates = 200;
+                int limit = 10;
+                Bson criteria = Filters.all("tagIds", tagIds);
+                VectorSearchOptions options = VectorSearchOptions
+                                .approximateVectorSearchOptions(numCandidates)
+                                .filter(criteria);
+
+                // define pipeline 
+                List<Bson> pipeline = asList(
+                        vectorSearch(
+                        fieldSearchPath,
+                        queryVector,
+                        indexName,
+                        numCandidates,
+                        limit,
+                        options),
+                        project(
+                        fields(include("_id"), include("tagIds"), metaVectorSearchScore("embeddings"))));
+                */
 
                 PageRequest pageable = PageRequest.of(page - 1, pageSize);
                 return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
