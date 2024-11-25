@@ -10,6 +10,16 @@ import {
   Input,
   InputField,
   ScrollView,
+  Select,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicator,
+  SelectDragIndicatorWrapper,
+  SelectIcon,
+  SelectInput,
+  SelectItem,
+  SelectPortal,
+  SelectTrigger,
   Text,
   Textarea,
   TextareaInput,
@@ -21,7 +31,7 @@ import {
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { Link } from "expo-router";
-import { Plus } from "lucide-react-native";
+import { ChevronDownIcon, Plus } from "lucide-react-native";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
@@ -38,6 +48,8 @@ export function UserProfile({ userId }: { userId: string }) {
 
   const [country, setCountry] = useState("");
   const [bio, setBio] = useState("");
+  const [experienceLevel, setExperienceLevel] =
+    useState<ExperienceLevel>("BEGINNER");
 
   useEffect(() => {
     if (!me) {
@@ -72,6 +84,7 @@ export function UserProfile({ userId }: { userId: string }) {
     if (data?.data) {
       setCountry(data.data.country || "");
       setBio(data.data.bio || "");
+      setExperienceLevel(data.data.experienceLevel || "BEGINNER");
     }
   }, [data?.data]);
 
@@ -146,6 +159,26 @@ export function UserProfile({ userId }: { userId: string }) {
                   placeholder="Bio"
                 />
               </Textarea>
+              <Select
+                selectedValue={experienceLevel}
+                onValueChange={setExperienceLevel}
+              >
+                <SelectTrigger variant="outline" size="md">
+                  <SelectInput placeholder="Experience Level" />
+                  <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                </SelectTrigger>
+                <SelectPortal>
+                  <SelectBackdrop />
+                  <SelectContent>
+                    <SelectDragIndicatorWrapper>
+                      <SelectDragIndicator />
+                    </SelectDragIndicatorWrapper>
+                    <SelectItem label="Beginner" value="BEGINNER" />
+                    <SelectItem label="Intermediate" value="INTERMEDIATE" />
+                    <SelectItem label="Advanced" value="ADVANCED" />
+                  </SelectContent>
+                </SelectPortal>
+              </Select>
             </>
           ) : (
             <>
@@ -154,6 +187,9 @@ export function UserProfile({ userId }: { userId: string }) {
                 className={!profile.bio ? "text-gray-500" : "text-gray-800"}
               >
                 {profile.bio ?? "Empty bio."}
+              </Text>
+              <Text>
+                Experience: {profile.experienceLevel?.toString() || "Unknown"}
               </Text>
             </>
           )}
@@ -171,8 +207,10 @@ export function UserProfile({ userId }: { userId: string }) {
                       ...profile,
                       country,
                       bio,
+                      experienceLevel,
                     },
                   });
+                  console.log(profile);
                 }}
               >
                 <ButtonText>{isPending ? "Saving..." : "Save"}</ButtonText>
@@ -186,7 +224,7 @@ export function UserProfile({ userId }: { userId: string }) {
             data?.data && <FollowButton profile={data?.data} />
           )}
         </VStack>
-
+        {/*
         <HStack space="md">
           <Button
             variant={activeTab === "questions" ? "solid" : "outline"}
@@ -200,7 +238,7 @@ export function UserProfile({ userId }: { userId: string }) {
           >
             <ButtonText>Answers</ButtonText>
           </Button>
-        </HStack>
+        </HStack> */}
 
         {activeTab === "questions" ? (
           <VStack space="md">

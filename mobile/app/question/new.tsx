@@ -1,23 +1,33 @@
-import { Input, InputField } from "@/components/ui/input";
-import { FullscreenLoading } from "@/components/FullscreenLoading";
 import ErrorAlert from "@/components/ErrorAlert";
-import { useCreateQuestion, useSearchTags } from "@/services/api/programmingForumComponents";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import useAuthStore from "@/services/auth";
-import { useState } from "react";
+import { FullscreenLoading } from "@/components/FullscreenLoading";
 import {
   Button,
   ButtonText,
   HStack,
-  Text,
-  View,
-  VStack,
   Icon,
+  ScrollView,
+  Text,
   Textarea,
   TextareaInput,
+  View,
+  VStack,
 } from "@/components/ui";
+import { Input, InputField } from "@/components/ui/input";
+import {
+  useCreateQuestion,
+  useSearchTags,
+} from "@/services/api/programmingForumComponents";
+import {
+  DifficultyLevel,
+  EASY,
+  HARD,
+  MEDIUM,
+  TagSummary,
+} from "@/services/api/programmingForumSchemas";
+import useAuthStore from "@/services/auth";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { X } from "lucide-react-native";
-import { EASY, MEDIUM, HARD, DifficultyLevel, TagSummary } from "@/services/api/programmingForumSchemas";
+import { useState } from "react";
 
 export default function NewQuestionPage() {
   const { tagId } = useLocalSearchParams<{ tagId: string }>();
@@ -46,7 +56,11 @@ export default function NewQuestionPage() {
     );
   }
 
-  const { data: searchResult, isLoading, error: searchError } = useSearchTags(
+  const {
+    data: searchResult,
+    isLoading,
+    error: searchError,
+  } = useSearchTags(
     {
       queryParams: { q: searchQuery },
     },
@@ -80,10 +94,20 @@ export default function NewQuestionPage() {
       console.log("Title:", title);
       console.log("Content:", content);
       console.log("Difficulty:", difficulty);
-      console.log("Selected Tags:", selectedTags.map((tag) => tag.name));
+      console.log(
+        "Selected Tags:",
+        selectedTags.map((tag) => tag.name)
+      );
 
       await createQuestion({
-        body: { title, content, difficulty, tagIds: selectedTags.map((tag) => tag.id).filter((id): id is number => id !== undefined) },
+        body: {
+          title,
+          content,
+          difficulty,
+          tagIds: selectedTags
+            .map((tag) => tag.id)
+            .filter((id): id is number => id !== undefined),
+        },
       });
       alert("Question created successfully!");
       router.push(`/tags/${tagId}`);
@@ -97,12 +121,14 @@ export default function NewQuestionPage() {
   }
 
   return (
-    <View style={{ padding: 32, flex: 1, marginVertical: 16 }}>
+    <ScrollView style={{ padding: 32, flex: 1, marginVertical: 16 }}>
       <VStack style={{ gap: 16, flex: 1 }}>
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Create New Question</Text>
-        
+        <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+          Create New Question
+        </Text>
+
         {error && <ErrorAlert error={error} />}
-        
+
         {/* Title Input */}
         <VStack style={{ gap: 8 }}>
           <Text style={{ fontSize: 16 }}>Title</Text>
@@ -135,7 +161,7 @@ export default function NewQuestionPage() {
             {contentLength} characters
           </Text>
         </VStack>
-        
+
         {searchError && <ErrorAlert error={searchError} />}
 
         {/* Tag Search Input */}
@@ -154,11 +180,11 @@ export default function NewQuestionPage() {
 
         {/* Display selected tags */}
         <Text style={{ fontSize: 16 }}>
-          {selectedTags.length > 0
-            ? `Selected tags:`
-            : "No tags selected"}
+          {selectedTags.length > 0 ? `Selected tags:` : "No tags selected"}
         </Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 8 }}>
+        <View
+          style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 8 }}
+        >
           {selectedTags.map((tag) => (
             <HStack
               key={tag.name}
@@ -183,7 +209,7 @@ export default function NewQuestionPage() {
         </View>
 
         {/* Tag List */}
-        { (
+        {
           <View style={{ marginVertical: 8 }}>
             <Text style={{ fontSize: 16 }}>Matching Tags</Text>
             <VStack style={{ gap: 8 }}>
@@ -198,7 +224,7 @@ export default function NewQuestionPage() {
               ))}
             </VStack>
           </View>
-        )}
+        }
 
         {/* Difficulty Selector */}
         <VStack style={{ gap: 8 }}>
@@ -234,6 +260,6 @@ export default function NewQuestionPage() {
           </Button>
         </HStack>
       </VStack>
-    </View>
+    </ScrollView>
   );
 }
