@@ -16,7 +16,7 @@ import {
 import { queryKeyFn } from "@/services/api/programmingForumContext";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +77,7 @@ export default function QuestionCreationPage() {
           path: "/users/me",
           operationId: "getMe",
           variables: {},
-        }) as any,
+        }) as unknown as InvalidateQueryFilters,
       );
 
       navigate(`/question/${result.data.id}`);
