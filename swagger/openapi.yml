@@ -686,12 +686,12 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /answers/{answerId}/rate:
+  /answers/{answerId}/downvote:
     post:
       tags:
         - answers
-      summary: Rate an answer
-      operationId: rateAnswer
+      summary: Downvote an answer
+      operationId: downvoteAnswer
       security:
         - bearerAuth: []
       parameters:
@@ -700,22 +700,34 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - rating
-              properties:
-                rating:
-                  type: integer
-                  minimum: -1
-                  maximum: 1
       responses:
         "200":
-          description: Answer successfully rated
+          description: Answer successfully upvoted
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+
+  /answers/{answerId}/upvote:
+    post:
+      tags:
+        - answers
+      summary: Upvote an answer
+      operationId: upvoteAnswer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: answerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Answer successfully upvoted
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -1295,6 +1307,7 @@ components:
         - updatedAt
         - tags
         - likeCount
+        - dislikeCount
         - commentCount
       properties:
         id:
@@ -1317,13 +1330,15 @@ components:
             $ref: "#/components/schemas/TagSummary"
         likeCount:
           type: integer
+        dislikeCount:
+          type: integer
         commentCount:
           type: integer
         viewCount:
           type: integer
         bookmarked:
           type: boolean
-        selfRating:
+        selfVoted:
           type: integer
           minimum: -1
           maximum: 1
@@ -1339,10 +1354,11 @@ components:
           tags:
             - $ref: "#/components/schemas/TagSummary/examples/0"
           likeCount: 10
+          dislikeCount: 2
           commentCount: 2
           viewCount: 100
           bookmarked: false
-          selfRating: 0
+          selfVoted: 0
 
     QuestionSummary:
       type: object
@@ -1378,10 +1394,6 @@ components:
           type: integer
         viewCount:
           type: integer
-        selfRating:
-          type: integer
-          minimum: -1
-          maximum: 1
 
       examples:
         - id: 1
@@ -1392,10 +1404,10 @@ components:
           createdAt: "2024-01-01T00:00:00Z"
           tags:
             - $ref: "#/components/schemas/TagSummary/examples/0"
-          rating: 10
+          likeCount: 10
+          dislikeCount: 2
           answerCount: 2
           viewCount: 100
-          selfRating: 0
 
     NewAnswer:
       type: object
@@ -1436,10 +1448,14 @@ components:
           format: date-time
         rating:
           type: integer
-        selfRating:
+        selfVoted:
           type: integer
           minimum: -1
           maximum: 1
+        upvoteCount:
+          type: integer
+        downvoteCount:
+          type: integer
         question:
           $ref: "#/components/schemas/QuestionSummary"
       examples:
@@ -1463,7 +1479,7 @@ components:
           createdAt: "2024-01-01T00:00:00Z"
           updatedAt: "2024-01-01T00:00:00Z"
           rating: 10
-          selfRating: 0
+          selfVoted: 0
           question:
             $ref: "#/components/schemas/QuestionSummary/examples/0"
 
@@ -1473,7 +1489,9 @@ components:
         - tagId
         - name
         - type
+        - logoImage
         - description
+        - officialWebsite
       properties:
         tagId:
           type: string
@@ -1489,9 +1507,6 @@ components:
           type: integer
         following:
           type: boolean
-        photo:
-          type: string
-          format: url
         highlightedQuestions:
           type: array
           items:

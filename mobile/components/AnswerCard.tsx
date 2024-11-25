@@ -1,6 +1,6 @@
 import { Image, Text } from "@/components/ui";
 import { Card } from "@/components/ui/card";
-import { Link } from "expo-router";
+import { Href, Link } from "expo-router";
 import { ArrowRight, CornerDownRight, Star } from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
@@ -52,7 +52,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
             />
           </Link>
           <Link
-            href={`/question/${id}?answerId=${id}`}
+            href={`/question/${id}?answerId=${id}` as unknown as Href}
             className="flex items-center text-sm font-medium text-gray-800 hover:underline"
           >
             Go to answer

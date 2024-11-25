@@ -1,15 +1,15 @@
-import { useNavigate, useSearchParams } from "expo-router";
-import { Search } from "lucide-react";
+import { useNavigation } from "expo-router";
+import { Search } from "lucide-react-native";
 import { useId, useState } from "react";
+import { Icon, View } from "./ui";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Input, InputField } from "./ui/input";
 
 export const SearchBar = () => {
   const id = useId();
-  const [params] = useSearchParams();
-  const [search, setSearch] = useState(params.get("q") || "");
+  const [search, setSearch] = useState("");
 
-  const navigate = useNavigate();
+  const navigation = useNavigation();
 
   return (
     <View className="flex items-center gap-4">
@@ -20,20 +20,22 @@ export const SearchBar = () => {
           params.append("type", "tags"); // TODO: Add select parameter
           params.append("q", search);
 
-          navigate("/search?" + params.toString());
+          // @ts-ignore
+          navigation.navigate("/search?" + params.toString());
         }}
         className="flex gap-4"
       >
-        <Input
-          onChange={(e) => setSearch(e.target.value)}
-          value={search}
-          placeholder="Search for..."
-          type="text"
-          id={id}
-          name="search"
-        />
-        <Button type="submit" className="gap-2">
-          <Search size={16} />
+        <Input>
+          <InputField
+            onChangeText={(text) => setSearch(text)}
+            value={search}
+            placeholder="Search for..."
+            type="text"
+            id={id}
+          />
+        </Input>
+        <Button className="gap-2">
+          <Icon as={Search} size={16} />
           Search
         </Button>
       </form>

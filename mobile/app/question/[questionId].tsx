@@ -135,9 +135,34 @@ export default function QuestionPage() {
           </Button>
           {selfProfile?.id === question.author.id && (
             <Button
-              onPress={() =>
-                deleteQuestion({ pathParams: { questionId: question.id } })
-              }
+              onPress={() => {
+                deleteQuestion({
+                  pathParams: { questionId: question.id },
+                }).then(() => {
+                  toast.show({
+                    id: "question-deleted",
+                    placement: "top",
+                    duration: 3000,
+                    render: ({ id }) => {
+                      const uniqueToastId = "toast-" + id;
+                      return (
+                        <Toast
+                          nativeID={uniqueToastId}
+                          action="success"
+                          variant="solid"
+                        >
+                          <ToastTitle>Question deleted</ToastTitle>
+                          <ToastDescription>
+                            The question has been deleted
+                          </ToastDescription>
+                        </Toast>
+                      );
+                    },
+                  });
+
+                  router.navigate("/");
+                });
+              }}
               size="xs"
               aria-label="Delete question"
               variant="outline"
@@ -188,8 +213,8 @@ export default function QuestionPage() {
           <HStack space="md">
             <Button
               size="sm"
-              variant={question.selfRating === 1 ? "solid" : "outline"}
-              disabled={question.selfRating === 1}
+              variant={question.selfVoted === 1 ? "solid" : "outline"}
+              disabled={question.selfVoted === 1}
               onPress={() =>
                 upvoteQuestion({
                   pathParams: { questionId: question.id },
@@ -200,8 +225,8 @@ export default function QuestionPage() {
             </Button>
             <Button
               size="sm"
-              variant={question.selfRating === -1 ? "solid" : "outline"}
-              disabled={question.selfRating === -1}
+              variant={question.selfVoted === -1 ? "solid" : "outline"}
+              disabled={question.selfVoted === -1}
               onPress={() =>
                 downvoteQuestion({
                   pathParams: { questionId: question.id },

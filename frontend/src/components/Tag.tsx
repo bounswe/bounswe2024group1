@@ -8,7 +8,7 @@ import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const Tag = ({
-  tag: { tagId, name, photo, description },
+  tag: { tagId, name, logoImage, description },
 }: {
   tag: TagDetails;
 }) => {
@@ -19,9 +19,9 @@ export const Tag = ({
       <div className="-mb-16 w-[70%] self-center">
         <AspectRatio ratio={16 / 9}>
           <img
-            src={photo}
-            alt={`The logo image of ${Tag.name}`}
-            title={`alt:The logo image of ${Tag.name}`}
+            src={logoImage}
+            alt={`The logo image of ${name}`}
+            title={`alt:The logo image of ${name}`}
             className="h-full w-full rounded-2xl object-cover"
           />
         </AspectRatio>

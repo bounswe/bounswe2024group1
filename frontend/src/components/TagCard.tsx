@@ -31,10 +31,10 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          {tag.photo && (
+          {tag.logoImage && (
             <div className="h-10 w-10">
               <img
-                src={tag.photo}
+                src={tag.logoImage}
                 alt={`The logo image of ${tag.name}`}
                 title={`alt:The logo image of ${tag.name}`}
                 className="rounded-full object-cover"

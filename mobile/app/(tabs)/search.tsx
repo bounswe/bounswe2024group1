@@ -59,7 +59,7 @@ export default function SearchScreen() {
             router.setParams({ q: searchQuery });
           }}
         >
-          <ButtonIcon as={Search} size="sm" />
+          <ButtonIcon as={Search} size="sm" className="text-muted-foreground" />
           <ButtonText>Search</ButtonText>
         </Button>
       </HStack>

@@ -28,15 +28,23 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <ThumbsUp className="h-4 w-4" />
-              <span className="font-bold">{answer.rating}</span>
+              <span className="font-bold">
+                {Number(answer.upvoteCount) - Number(answer.downvoteCount)}
+              </span>
             </div>
             {token && (
               <div className="flex gap-2">
-                <Button aria-label="Upvote" size="sm" onClick={onUpvote}>
+                <Button
+                  aria-label="Upvote"
+                  disabled={answer.selfVoted === 1}
+                  size="sm"
+                  onClick={onUpvote}
+                >
                   <ThumbsUp className="h-4 w-4" />
                 </Button>
                 <Button
                   aria-label="Downvote"
+                  disabled={answer.selfVoted === -1}
                   size="sm"
                   variant="outline"
                   onClick={onDownvote}

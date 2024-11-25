@@ -1,12 +1,26 @@
+import { useCreateTag } from "@/services/api/programmingForumComponents"; // Import the API hook
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CreateTagPage from "./CreateTagPage"; // Adjust path to the component
-import { useCreateTag } from "@/services/api/programmingForumComponents"; // Import the API hook
 
 // Mock the API hook used in CreateTagForm
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useCreateTag: vi.fn(),
 }));
+
+vi.mock("react-router-dom", () => ({
+  useNavigate: vi.fn(),
+}));
+
+vi.mock("@tanstack/react-query", async (importOriginal) => {
+  const all = await importOriginal<typeof import("@tanstack/react-query")>();
+  return {
+    ...all,
+    useQueryClient: vi.fn(() => ({
+      invalidateQueries: vi.fn(),
+    })),
+  };
+});
 
 describe("CreateTagPage", () => {
   const mockCreateTag = vi.fn();

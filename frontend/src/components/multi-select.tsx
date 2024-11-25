@@ -205,7 +205,7 @@ export const MultiSelect = React.forwardRef<
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Command>
-            <CommandInput placeholder="Search..." />
+            <CommandInput className="my-1" placeholder="Search..." />
 
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>

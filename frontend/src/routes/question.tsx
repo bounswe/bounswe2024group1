@@ -16,7 +16,7 @@ import {
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
-import { Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react";
+import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -164,7 +164,7 @@ export default function QuestionPage() {
           <div className="flex items-center gap-2">
             <ThumbsUp className="h-4 w-4" />
             <span className="font-bold">
-              {optimisticVotes ?? question.likeCount}
+              {optimisticVotes ?? question.likeCount - question.dislikeCount!}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -174,27 +174,29 @@ export default function QuestionPage() {
           {!!token && (
             <div className="flex gap-2">
               <Button
+                aria-label="Upvote"
                 size="sm"
-                disabled={question.selfRating === 1}
+                disabled={question.selfVoted === 1}
                 onClick={() =>
                   upvoteQuestion({
                     pathParams: { questionId: question.id },
                   })
                 }
               >
-                Upvote
+                <ThumbsUp className="h-4 w-4" />
               </Button>
               <Button
+                aria-label="Downvote"
                 size="sm"
                 variant="outline"
-                disabled={question.selfRating === -1}
+                disabled={question.selfVoted === -1}
                 onClick={() =>
                   downvoteQuestion({
                     pathParams: { questionId: question.id },
                   })
                 }
               >
-                Downvote
+                <ThumbsDown className="h-4 w-4" />
               </Button>
             </div>
           )}

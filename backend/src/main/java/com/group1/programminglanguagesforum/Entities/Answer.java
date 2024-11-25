@@ -51,6 +51,9 @@ public class Answer {
         return votes.stream().filter(vote -> !vote.isUpvote()).count();
     }
 
+    public Integer getRating() {
+        return (int)(this.getUpvoteCount() - this.getDownvoteCount());
+    }
 
     @PrePersist
     public void prePersist() {

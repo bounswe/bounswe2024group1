@@ -15,7 +15,7 @@ import {
 } from "@/components/ui";
 import { useGetTagDetails } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
-import { Href, Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useState } from "react";
 
@@ -60,7 +60,7 @@ export default function TagPage() {
   const questions = tag?.relatedQuestions || [];
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingVertical: 16 }}>
+    <ScrollView contentContainerStyle={{ paddingVertical: 32, flexGrow: 1 }}>
       <View style={{ paddingHorizontal: 16, gap: 16 }}>
         <HStack
           style={{ alignItems: "center", justifyContent: "space-between" }}
@@ -68,7 +68,7 @@ export default function TagPage() {
           <Text className="text-2xl font-bold">{tag.name}</Text>
         </HStack>
         <Image
-          source={{ uri: tag?.photo || "https://placehold.co/400x300" }}
+          source={{ uri: tag?.logoImage || "https://placehold.co/400x300" }}
           alt={tag.name}
           style={{
             height: 192,

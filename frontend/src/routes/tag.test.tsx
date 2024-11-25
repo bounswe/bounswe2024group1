@@ -16,6 +16,8 @@ const mockTagData = vi.hoisted(
         "A popular programming language primarily used for web development.",
       questionCount: 50,
       followerCount: 1000,
+      logoImage: "https://example.com/logo.jpg",
+      officialWebsite: "https://example.com",
       //createdAt: "2023-01-01T00:00:00Z",
     }) satisfies TagDetails,
 );

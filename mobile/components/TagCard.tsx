@@ -33,11 +33,11 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
           </View>
         </View>
         <View className="flex items-center justify-between">
-          {tag.photo && (
+          {tag.logoImage && (
             <View className="rounded-full">
               <View className="h-10 w-10 overflow-hidden rounded-full">
                 <Image
-                  source={{ uri: tag.photo }}
+                  source={{ uri: tag.logoImage }}
                   alt={tag.name}
                   resizeMode="contain"
                 />
@@ -49,7 +49,7 @@ export const TagCard: React.FC<TagCardProps> = ({ tag }) => {
             className="flex-row items-center text-sm font-medium text-gray-800 hover:underline"
           >
             <Text>View tag</Text>
-            <Icon as={ArrowRight} size="sm" className="ml-1" />
+            <Icon as={ArrowRight} size="sm" className="ml-4" />
           </Link>
         </View>
       </View>

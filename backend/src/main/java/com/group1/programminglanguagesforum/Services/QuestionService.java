@@ -99,7 +99,7 @@ public class QuestionService {
         Question question = questionOptional.get();
         boolean selfQuestion = (currentUser != null && currentUser.getId().equals(question.getAskedBy().getId()));
         boolean isBookmarked = (currentUser != null && bookmarkRepository.existsByUserAndQuestion(currentUser, question));
-        boolean selfVoted = (currentUser != null && voteRepository.findByUserAndQuestion(currentUser, question).isPresent());
+        Integer selfVoted = (currentUser != null && voteRepository.findByUserAndQuestion(currentUser, question).isPresent() ? voteRepository.findByUserAndQuestion(currentUser, question).get().isUpvote()? 1 : -1 : 0);
 
         return GetQuestionDetailsResponseDto.builder()
                 .id(question.getId())

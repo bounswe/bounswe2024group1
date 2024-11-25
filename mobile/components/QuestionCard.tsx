@@ -1,4 +1,4 @@
-import { Image, Text } from "@/components/ui";
+import { Icon, Image, Text } from "@/components/ui";
 import { Card } from "@/components/ui/card";
 import { Link } from "expo-router";
 import { ArrowRight, MessageSquare, Star } from "lucide-react-native";
@@ -79,12 +79,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           )}
           <Link
             href={`/question/${id}`}
-            className={`flex items-center text-sm font-medium ${
+            className={`flex items-center text-sm space-x-2 font-medium ${
               highlighted ? "text-blue-600" : "text-gray-800"
             }`}
           >
             <Text>Go to question</Text>
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <Icon as={ArrowRight} className="h-4 w-4 text-gray-800" />
           </Link>
         </View>
       </View>

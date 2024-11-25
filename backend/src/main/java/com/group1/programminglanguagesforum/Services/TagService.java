@@ -109,18 +109,18 @@ public class TagService {
     }
 
     public TagDto followTag(User user, Long tagId) {
-        
+
         Optional<Tag> tag = tagRepository.findById(tagId);
         if (tag.isEmpty()) {
             throw new NoSuchElementException("Tag not found");
         }
-        
+
         Tag tagEntity = tag.get();
 
         if (user.getFollowedTags().stream().anyMatch(t -> t.getId().equals(tagId))) {
             throw new EntityExistsException("User already follows this tag");
         }
-        
+
         user.getFollowedTags().add(tagEntity);
         userRepository.save(user);
 
@@ -131,21 +131,21 @@ public class TagService {
     }
 
     public TagDto unfollowTag(User user, Long tagId) {
-        
+
         Optional<Tag> tag = tagRepository.findById(tagId);
         if (tag.isEmpty()) {
             throw new NoSuchElementException("Tag not found");
         }
-        
+
         Tag tagEntity = tag.get();
-        
+
         if (!user.getFollowedTags().stream().anyMatch(t -> t.getId().equals(tagId))) {
             throw new NoSuchElementException("User does not follow this tag");
         }
-        
+
         user.getFollowedTags().removeIf(t -> t.getId().equals(tagId));
         userRepository.save(user);
-        
+
         return TagDto.builder()
                 .id(tagEntity.getId())
                 .name(tagEntity.getTagName())

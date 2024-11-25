@@ -1,6 +1,7 @@
 import {
+  useDownvoteAnswer,
   useGetQuestionAnswers,
-  useRateAnswer,
+  useUpvoteAnswer,
 } from "@/services/api/programmingForumComponents";
 import { AnswerDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
@@ -27,10 +28,11 @@ export function Answers({ questionId }: AnswersProps) {
     },
     {
       enabled: !!questionId,
-    },
+    }
   );
 
-  const { mutateAsync: rateAnswer } = useRateAnswer();
+  const { mutateAsync: upvoteAnswer } = useUpvoteAnswer();
+  const { mutateAsync: downvoteAnswer } = useDownvoteAnswer();
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -45,10 +47,15 @@ export function Answers({ questionId }: AnswersProps) {
   const handleVote = async (answerId: number, rating: number) => {
     if (!token) return;
 
-    await rateAnswer({
-      pathParams: { answerId },
-      body: { rating },
-    });
+    if (rating === 1) {
+      await upvoteAnswer({
+        pathParams: { answerId },
+      });
+    } else {
+      await downvoteAnswer({
+        pathParams: { answerId },
+      });
+    }
     refetch();
   };
 

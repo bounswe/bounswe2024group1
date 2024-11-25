@@ -35,6 +35,7 @@ const mockQuestionData = vi.hoisted(
       ],
       createdAt: "2023-01-01T00:00:00Z",
       updatedAt: "2023-01-01T00:00:00Z",
+      dislikeCount: 0,
     }) satisfies QuestionDetails,
 );
 // Mock the API hook
@@ -53,7 +54,10 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useDownvoteQuestion: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
-  useRateAnswer: vi.fn(() => ({
+  useUpvoteAnswer: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useDownvoteAnswer: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
   useCreateAnswer: vi.fn(() => ({
@@ -73,6 +77,10 @@ vi.mock("@/services/exercism", () => ({
 vi.mock("@/services/auth", () => ({
   __esModule: true,
   default: vi.fn(),
+}));
+
+vi.mock("@tanstack/react-query", () => ({
+  useQueryClient: vi.fn(),
 }));
 
 describe("QuestionPage", () => {

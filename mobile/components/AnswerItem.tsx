@@ -1,4 +1,4 @@
-import { HStack, Image, Text } from "@/components/ui";
+import { HStack, Icon, Image, Text } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AnswerDetails } from "@/services/api/programmingForumSchemas";
@@ -30,20 +30,35 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
           <HStack space="md" className="flex items-center gap-4">
             <HStack space="md" className="flex items-center gap-2">
               <ThumbsUp color="black" className="h-4 w-4" />
-              <Text className="font-bold">{answer.rating}</Text>
+              <Text className="font-bold">
+                {Number(answer.upvoteCount ?? "0") -
+                  Number(answer.downvoteCount ?? "0")}
+              </Text>
             </HStack>
             {token && (
               <HStack space="md" className="flex gap-2">
-                <Button aria-label="Upvote" size="sm" onPress={onUpvote}>
-                  <ThumbsUp color="white" className="h-4 w-4" />
+                <Button
+                  className={answer.selfVoted === 1 ? "opacity-50" : ""}
+                  disabled={answer.selfVoted === 1}
+                  aria-label="Upvote"
+                  size="sm"
+                  onPress={onUpvote}
+                >
+                  <Icon as={ThumbsUp} size="sm" className="text-white" />
                 </Button>
                 <Button
+                  className={answer.selfVoted === -1 ? "opacity-50" : ""}
                   aria-label="Downvote"
+                  disabled={answer.selfVoted === -1}
                   size="sm"
                   variant="outline"
                   onPress={onDownvote}
                 >
-                  <ThumbsDown color="black" className="h-4 w-4" />
+                  <Icon
+                    as={ThumbsDown}
+                    size="sm"
+                    className="text-primary-500"
+                  />
                 </Button>
               </HStack>
             )}
@@ -69,7 +84,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
             </Text>
           </View>
         </HStack>
-        </View>
+      </View>
     </Card>
   );
 };

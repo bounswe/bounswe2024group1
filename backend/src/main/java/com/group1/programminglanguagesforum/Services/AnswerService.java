@@ -95,7 +95,7 @@ public class AnswerService {
                         .upvoteCount(answer.getUpvoteCount())
                         .downvoteCount(answer.getDownvoteCount())
                         .selfAnswer(currentUser != null && currentUser.getId().equals(answer.getAnsweredBy().getId()))
-                        .selfVoted(currentUser != null && voteRepository.findByUserAndAnswer(currentUser, answer).isPresent())
+                        .selfVoted(currentUser != null && voteRepository.findByUserAndAnswer(currentUser, answer).isPresent() ? voteRepository.findByUserAndAnswer(currentUser, answer).get().isUpvote()? 1 : -1 : 0)
                         .build()).toList())
                 .totalItems(question.getAnswers().size())
                 .build();

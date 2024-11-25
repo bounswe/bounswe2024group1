@@ -29,6 +29,7 @@ import {
   useGetUserProfile,
   useUpdateUserProfile,
 } from "@/services/api/programmingForumComponents";
+import { ExperienceLevel } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { Link } from "expo-router";
 import { ChevronDownIcon, Plus } from "lucide-react-native";
@@ -161,7 +162,9 @@ export function UserProfile({ userId }: { userId: string }) {
               </Textarea>
               <Select
                 selectedValue={experienceLevel}
-                onValueChange={setExperienceLevel}
+                onValueChange={(value) =>
+                  setExperienceLevel(value as ExperienceLevel)
+                }
               >
                 <SelectTrigger variant="outline" size="md">
                   <SelectInput placeholder="Experience Level" />

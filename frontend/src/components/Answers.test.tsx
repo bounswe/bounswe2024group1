@@ -1,10 +1,13 @@
 import {
+  DownvoteAnswerError,
+  DownvoteAnswerVariables,
   GetQuestionAnswersError,
   GetQuestionAnswersResponse,
-  RateAnswerError,
-  RateAnswerVariables,
+  UpvoteAnswerError,
+  UpvoteAnswerVariables,
+  useDownvoteAnswer,
   useGetQuestionAnswers,
-  useRateAnswer,
+  useUpvoteAnswer,
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
@@ -16,7 +19,8 @@ import { Answers } from "./Answers";
 // Mock the API hooks
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetQuestionAnswers: vi.fn(),
-  useRateAnswer: vi.fn(),
+  useUpvoteAnswer: vi.fn(),
+  useDownvoteAnswer: vi.fn(),
 }));
 
 // Mock the auth store
@@ -31,14 +35,16 @@ const mockAnswers = [
     content: "This is answer 1",
     author: { username: "user1", name: "User One" },
     createdAt: "2023-01-01T00:00:00Z",
-    rating: 5,
+    upvoteCount: 5,
+    downvoteCount: 0,
   },
   {
     id: 2,
     content: "This is answer 2",
     author: { username: "user2", name: "User Two" },
     createdAt: "2023-01-02T00:00:00Z",
-    rating: 3,
+    upvoteCount: 3,
+    downvoteCount: 0,
   },
 ];
 
@@ -53,12 +59,20 @@ describe("Answers", () => {
       GetQuestionAnswersResponse,
       GetQuestionAnswersError
     >);
-    vi.mocked(useRateAnswer).mockReturnValue({
+    vi.mocked(useUpvoteAnswer).mockReturnValue({
       mutateAsync: vi.fn(),
     } as unknown as UseMutationResult<
       undefined,
-      RateAnswerError,
-      RateAnswerVariables
+      UpvoteAnswerError,
+      UpvoteAnswerVariables
+    >);
+
+    vi.mocked(useDownvoteAnswer).mockReturnValue({
+      mutateAsync: vi.fn(),
+    } as unknown as UseMutationResult<
+      undefined,
+      DownvoteAnswerError,
+      DownvoteAnswerVariables
     >);
     vi.mocked(useAuthStore).mockReturnValue({ token: null });
   });
@@ -73,7 +87,11 @@ describe("Answers", () => {
     mockAnswers.forEach((answer) => {
       expect(screen.getByText(answer.content)).toBeInTheDocument();
       expect(screen.getByText(answer.author.name)).toBeInTheDocument();
-      expect(screen.getByText(answer.rating.toString())).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          (answer.upvoteCount - answer.downvoteCount).toString(),
+        ),
+      ).toBeInTheDocument();
     });
   });
 
@@ -101,15 +119,15 @@ describe("Answers", () => {
     );
   });
 
-  it("calls rateAnswer when authorized user votes", async () => {
+  it("calls upvoteAnswer when authorized user votes", async () => {
     vi.mocked(useAuthStore).mockReturnValue({ token: "mock-token" });
-    const mockRateAnswer = vi.fn();
-    vi.mocked(useRateAnswer).mockReturnValue({
-      mutateAsync: mockRateAnswer,
+    const mockUpvoteAnswer = vi.fn();
+    vi.mocked(useUpvoteAnswer).mockReturnValue({
+      mutateAsync: mockUpvoteAnswer,
     } as unknown as UseMutationResult<
       undefined,
-      RateAnswerError,
-      RateAnswerVariables
+      UpvoteAnswerError,
+      UpvoteAnswerVariables
     >);
 
     renderWithRouter(<Answers questionId={1} />);
@@ -118,9 +136,8 @@ describe("Answers", () => {
     fireEvent.click(upvoteButton);
 
     await waitFor(() => {
-      expect(mockRateAnswer).toHaveBeenCalledWith({
+      expect(mockUpvoteAnswer).toHaveBeenCalledWith({
         pathParams: { answerId: mockAnswers[0].id },
-        body: { rating: 1 },
       });
     });
   });

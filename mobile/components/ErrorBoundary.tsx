@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from "react";
+import { Text, View } from "./ui";
 
 interface ErrorBoundaryProps {
   children?: ReactNode;

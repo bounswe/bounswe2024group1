@@ -19,9 +19,6 @@ import {
 } from "@/services/api/programmingForumComponents";
 import {
   DifficultyLevel,
-  EASY,
-  HARD,
-  MEDIUM,
   TagSummary,
 } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
@@ -40,8 +37,8 @@ export default function NewQuestionPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<TagSummary[]>([]);
 
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>(EASY);
-  const difficultyOptions = [EASY, MEDIUM, HARD];
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>("EASY");
+  const difficultyOptions = ["EASY", "MEDIUM", "HARD"];
 
   const token = useAuthStore((state) => state.token);
 
@@ -99,18 +96,18 @@ export default function NewQuestionPage() {
         selectedTags.map((tag) => tag.name)
       );
 
-      await createQuestion({
+      const data = await createQuestion({
         body: {
           title,
           content,
-          difficulty,
+          difficultyLevel: difficulty,
           tagIds: selectedTags
-            .map((tag) => tag.id)
+            .map((tag) => Number(tag.id))
             .filter((id): id is number => id !== undefined),
         },
       });
       alert("Question created successfully!");
-      router.push(`/tags/${tagId}`);
+      router.replace(`/question/${data.data.id}`);
     } catch (e) {
       console.error("Failed to create question:", e);
     }

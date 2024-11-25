@@ -26,7 +26,7 @@ public class GetAnswersResponseDto {
         private Long upvoteCount;
         private Long downvoteCount;
         private boolean selfAnswer;
-        private boolean selfVoted;
+        private Integer selfVoted;
     }
 
 }

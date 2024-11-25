@@ -83,7 +83,7 @@ export default function Signup() {
   }): Promise<void> => {
     try {
       await fetchSignUp({
-        body: data,
+        body: { ...data, experienceLevel: "BEGINNER" },
       });
       if (redirectTo) nvg.navigate(redirectTo as never);
     } catch (e) {

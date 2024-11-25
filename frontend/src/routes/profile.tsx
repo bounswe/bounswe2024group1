@@ -83,10 +83,10 @@ export default function Profile() {
             />
           </Avatar>
           <div className="flex space-x-4 text-center">
-            <div>
+            {/* <div>
               <div className="font-bold">{profile.questionCount}</div>
               <div className="text-sm text-gray-700">Questions</div>
-            </div>
+            </div> */}
             <div>
               <div className="font-bold">{profile.answerCount}</div>
               <div className="text-sm text-gray-700">Answers</div>

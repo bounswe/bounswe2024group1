@@ -2,7 +2,14 @@
 
 // import { useMemo } from "react";
 // import { flag } from "country-emoji";
-import { Plus } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  LinkIcon,
+  Plus,
+  SquareStack,
+  Tag,
+} from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
 import ErrorAlert from "@/components/ErrorAlert";
@@ -60,18 +67,79 @@ export default function TagPage() {
           <h1>{tag.name}</h1>
         </div>
       </div>
-      <img
-        src={tag?.photo || "https://placehold.co/400x300"}
-        alt={`The logo image of ${tag.name}`}
-        title={`alt:The logo image of ${tag.name}`}
-        className="h-48 w-full rounded-3xl object-contain lg:h-96"
-      />
+      {tag.logoImage && (
+        <img
+          src={tag?.logoImage || "https://placehold.co/400x300"}
+          alt={`The logo image of ${tag.name}`}
+          title={`alt:The logo image of ${tag.name}`}
+          className="h-48 w-full rounded-3xl object-contain lg:h-96"
+        />
+      )}
       <div className="mb-4 flex items-center justify-between px-1">
         <span className="flex-1">{tag.description}</span>
         <div className="flex items-center gap-1">
           <div className="font-bold">{tag.followerCount}</div>
           <div className="text-sm text-gray-500">Followers</div>
         </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {tag.fileExtension && (
+          <div
+            className="flex items-center gap-2"
+            aria-label={`File extension for ${tag.name} is ${tag.fileExtension}`}
+          >
+            <FileText className="h-5 w-5" />
+
+            <span className="text-sm text-gray-500">{tag.fileExtension}</span>
+          </div>
+        )}
+        {tag.inceptionYear && (
+          <div
+            className="flex items-center gap-2"
+            aria-label={`Inception year for ${tag.name} is ${tag.inceptionYear}`}
+          >
+            <Calendar className="h-5 w-5" />
+            <span className="text-sm text-gray-500">
+              Created in {new Date(tag.inceptionYear).toLocaleDateString()}
+            </span>
+          </div>
+        )}
+        {tag.officialWebsite && (
+          <div
+            className="flex items-center gap-2"
+            aria-label={`Official website for ${tag.name} is ${tag.officialWebsite}`}
+          >
+            <Link
+              to={tag.officialWebsite}
+              className="flex items-center gap-2 text-sm font-semibold text-gray-500"
+              target="_blank"
+            >
+              <LinkIcon className="h-5 w-5" /> Official Website
+            </Link>
+          </div>
+        )}
+        {tag.stackExchangeTag && (
+          <div
+            className="flex items-center gap-2"
+            aria-label={`Stack Exchange tag for ${tag.name} is ${tag.stackExchangeTag}`}
+          >
+            <SquareStack className="h-5 w-5" />
+
+            <Link
+              to={tag.stackExchangeTag}
+              className="flex items-center gap-2 text-sm font-semibold text-gray-500"
+              target="_blank"
+            >
+              Stack Exchange
+            </Link>
+          </div>
+        )}
+        {tag.tagType && (
+          <div className="flex items-center gap-2">
+            <Tag className="h-5 w-5" />
+            <span className="text-sm text-gray-500">{tag.tagType}</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">

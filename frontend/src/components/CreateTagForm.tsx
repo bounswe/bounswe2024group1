@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useCreateTag } from "@/services/api/programmingForumComponents";
+import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { useState } from "react";
 
 interface CreateTagFormProps {
-  onCreateSuccess?: () => void; // Optional callback for successful tag creation
+  onCreateSuccess?: (tag: TagDetails) => void; // Optional callback for successful tag creation
 }
 
 export function CreateTagForm({ onCreateSuccess }: CreateTagFormProps) {
@@ -19,12 +20,12 @@ export function CreateTagForm({ onCreateSuccess }: CreateTagFormProps) {
     if (!name.trim() || !description.trim()) return;
 
     try {
-      await createTag({
+      const tag = await createTag({
         body: { name, description },
       });
       setName("");
       setDescription("");
-      if (onCreateSuccess) onCreateSuccess();
+      if (onCreateSuccess) onCreateSuccess(tag.data);
       // Optionally refresh the tag list or show a success message
     } catch (error) {
       console.error("Failed to create tag:", error);

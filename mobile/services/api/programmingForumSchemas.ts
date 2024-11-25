@@ -82,25 +82,22 @@ export type UserSummary = {
 };
 
 export type DifficultyLevel = "EASY" | "MEDIUM" | "HARD";
-export const EASY: DifficultyLevel = "EASY";
-export const MEDIUM: DifficultyLevel = "MEDIUM";
-export const HARD: DifficultyLevel = "HARD";
 
 export type NewQuestion = {
   title: string;
   content: string;
   tagIds?: number[];
-  difficulty: DifficultyLevel;
+  difficultyLevel: DifficultyLevel;
 };
 
 export type UpdateQuestion = {
   title?: string;
   content?: string;
-  tags?: number[];
+  tags?: string[];
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"commentCount":2,"viewCount":100,"bookmarked":false,"selfRating":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"dislikeCount":2,"commentCount":2,"viewCount":100,"bookmarked":false,"selfVoted":0}
  */
 export type QuestionDetails = {
   id: number;
@@ -117,6 +114,7 @@ export type QuestionDetails = {
   updatedAt: string;
   tags: TagSummary[];
   likeCount: number;
+  dislikeCount: number;
   commentCount: number;
   viewCount?: number;
   bookmarked?: boolean;
@@ -124,11 +122,11 @@ export type QuestionDetails = {
    * @minimum -1
    * @maximum 1
    */
-  selfRating?: number;
+  selfVoted?: number;
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"selfRating":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"dislikeCount":2,"answerCount":2,"viewCount":100}
  */
 export type QuestionSummary = {
   id: number;
@@ -144,11 +142,6 @@ export type QuestionSummary = {
   likeCount: number;
   commentCount: number;
   viewCount?: number;
-  /**
-   * @minimum -1
-   * @maximum 1
-   */
-  selfRating?: number;
 };
 
 export type NewAnswer = {
@@ -160,7 +153,7 @@ export type UpdateAnswer = {
 };
 
 /**
- * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfRating":0,"question":{"$ref":"#/components/schemas/QuestionSummary/examples/0"}}
+ * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfVoted":0,"question":{"$ref":"#/components/schemas/QuestionSummary/examples/0"}}
  */
 export type AnswerDetails = {
   id: number;
@@ -179,35 +172,33 @@ export type AnswerDetails = {
    * @minimum -1
    * @maximum 1
    */
-  selfRating?: number;
+  selfVoted?: number;
+  upvoteCount?: number;
+  downvoteCount?: number;
   question: QuestionSummary;
 };
 
 /**
- * @example {"tagId":1,"name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
- * @example {"tagId":2,"name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
- * @example {"tagId":3,"name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
- * @example {"tagId":4,"name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
+ * @example {"tagId":"python","name":"Python","description":"Python is a programming language.","questionCount":100,"followersCount":1000,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png","authors":["Guido van Rossum"],"inceptionYear":"1991","fileExtension":".py","officialWebsite":"https://www.python.org","stackExchangeTag":"python"}
+ * @example {"tagId":"java","name":"Java","type":"PROGRAMMING_LANGUAGE","description":"Java is a class-based, object-oriented programming language.","questionCount":200,"followersCount":800,"following":true,"photo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/182px-Java_programming_language_logo.svg.png","authors":["James Gosling"],"inceptionYear":"1995","fileExtension":".java","officialWebsite":"https://www.java.com","stackExchangeTag":"java"}
+ * @example {"tagId":"react","name":"React","type":"SOFTWARE_LIBRARY","description":"React is a JavaScript library for building user interfaces.","questionCount":150,"followersCount":600,"following":false,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png","officialWebsite":"https://reactjs.org","stackExchangeTag":"reactjs"}
+ * @example {"tagId":"oop","name":"Object-Oriented Programming","type":"PROGRAMMING_PARADIGM","description":"OOP is a programming paradigm based on objects containing data and code.","questionCount":80,"followersCount":400,"following":true,"photo":"https://example.com/oop-icon.png","stackExchangeTag":"oop"}
  */
 export type TagDetails = {
-  tagId: number;
+  tagId: string;
   name: string;
   tagType?: TagType;
   description: string;
   questionCount?: number;
   followerCount?: number;
   following?: boolean;
-  /**
-   * @format url
-   */
-  photo?: string;
   highlightedQuestions?: QuestionSummary[];
   /**
    * For Programming Language tags
    *
    * @format url
    */
-  logoImage?: string;
+  logoImage: string;
   /**
    * For Programming Language tags
    */
@@ -225,7 +216,7 @@ export type TagDetails = {
    *
    * @format url
    */
-  officialWebsite?: string;
+  officialWebsite: string;
   /**
    * Available for Programming Language, Programming Paradigm and Computer Science Term tags
    */
@@ -234,10 +225,10 @@ export type TagDetails = {
 };
 
 /**
- * @example {"id":1,"name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
+ * @example {"tagId":"python","name":"Python","questionCount":100,"photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"}
  */
 export type TagSummary = {
-  id?: number;
+  id?: string;
   name?: string;
   questionCount?: number;
   /**

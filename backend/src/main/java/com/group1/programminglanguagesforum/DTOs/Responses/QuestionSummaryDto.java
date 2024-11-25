@@ -1,10 +1,7 @@
 package com.group1.programminglanguagesforum.DTOs.Responses;
 
 import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 

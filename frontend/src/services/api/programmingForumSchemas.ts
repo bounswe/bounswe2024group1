@@ -97,7 +97,7 @@ export type UpdateQuestion = {
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"commentCount":2,"viewCount":100,"bookmarked":false,"selfRating":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"dislikeCount":2,"commentCount":2,"viewCount":100,"bookmarked":false,"selfVoted":0}
  */
 export type QuestionDetails = {
   id: number;
@@ -114,6 +114,7 @@ export type QuestionDetails = {
   updatedAt: string;
   tags: TagSummary[];
   likeCount: number;
+  dislikeCount: number;
   commentCount: number;
   viewCount?: number;
   bookmarked?: boolean;
@@ -121,11 +122,11 @@ export type QuestionDetails = {
    * @minimum -1
    * @maximum 1
    */
-  selfRating?: number;
+  selfVoted?: number;
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"rating":10,"answerCount":2,"viewCount":100,"selfRating":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"dislikeCount":2,"answerCount":2,"viewCount":100}
  */
 export type QuestionSummary = {
   id: number;
@@ -141,11 +142,6 @@ export type QuestionSummary = {
   likeCount: number;
   commentCount: number;
   viewCount?: number;
-  /**
-   * @minimum -1
-   * @maximum 1
-   */
-  selfRating?: number;
 };
 
 export type NewAnswer = {
@@ -157,7 +153,7 @@ export type UpdateAnswer = {
 };
 
 /**
- * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfRating":0,"question":{"$ref":"#/components/schemas/QuestionSummary/examples/0"}}
+ * @example {"id":1,"content":"To sort an array in Python, you have several options depending on your specific needs. The most common and straightforward method is to use the built-in `sort()` method for lists or the `sorted()` function for any iterable.\n1. Using the `sort()` method: The `sort()` method modifies the original list in-place, which means it doesn't create a new list but changes the order of elements in the existing list.\n```python3-exec\nmy_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nmy_list.sort()\nprint(my_list)\n```","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","rating":10,"selfVoted":0,"question":{"$ref":"#/components/schemas/QuestionSummary/examples/0"}}
  */
 export type AnswerDetails = {
   id: number;
@@ -176,7 +172,9 @@ export type AnswerDetails = {
    * @minimum -1
    * @maximum 1
    */
-  selfRating?: number;
+  selfVoted?: number;
+  upvoteCount?: number;
+  downvoteCount?: number;
   question: QuestionSummary;
 };
 
@@ -194,17 +192,13 @@ export type TagDetails = {
   questionCount?: number;
   followerCount?: number;
   following?: boolean;
-  /**
-   * @format url
-   */
-  photo?: string;
   highlightedQuestions?: QuestionSummary[];
   /**
    * For Programming Language tags
    *
    * @format url
    */
-  logoImage?: string;
+  logoImage: string;
   /**
    * For Programming Language tags
    */
@@ -222,7 +216,7 @@ export type TagDetails = {
    *
    * @format url
    */
-  officialWebsite?: string;
+  officialWebsite: string;
   /**
    * Available for Programming Language, Programming Paradigm and Computer Science Term tags
    */

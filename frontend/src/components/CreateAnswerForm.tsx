@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateAnswer } from "@/services/api/programmingForumComponents";
+import { queryKeyFn } from "@/services/api/programmingForumContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ContentWithSnippets } from "./ContentWithSnippets";
 
@@ -13,6 +15,7 @@ export function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const { mutateAsync: createAnswer, isPending } = useCreateAnswer();
+  const client = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +27,13 @@ export function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
         body: { content },
       });
       setContent("");
+      client.invalidateQueries({
+        queryKey: queryKeyFn({
+          path: "/questions/{questionId}",
+          operationId: "getQuestionDetails",
+          variables: { pathParams: { questionId } },
+        }),
+      });
       // Optionally refresh the answers list or show success message
     } catch (error) {
       console.error("Failed to create answer:", error);

@@ -7,6 +7,15 @@ import { CreateAnswerForm } from "./CreateAnswerForm";
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useCreateAnswer: vi.fn(),
 }));
+vi.mock("@tanstack/react-query", async (importOriginal) => {
+  const all = await importOriginal<typeof import("@tanstack/react-query")>();
+  return {
+    ...all,
+    useQueryClient: vi.fn(() => ({
+      invalidateQueries: vi.fn(),
+    })),
+  };
+});
 
 describe("CreateAnswerForm", () => {
   const mockCreateAnswer = vi.fn();
