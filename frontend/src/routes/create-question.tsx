@@ -1,3 +1,4 @@
+import { MultiSelect } from "@/components/multi-select";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,15 +9,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MultiSelect } from "@/components/multi-select";
 import {
   useCreateQuestion,
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
+import { queryKeyFn } from "@/services/api/programmingForumContext";
+import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 // Schema validation for the form
@@ -27,9 +30,9 @@ const newQuestionSchema = z.object({
     .min(1, "Content is required")
     .max(100000, "Max 100,000 characters"),
   tags: z
-    .array(z.object({ id: z.string(), name: z.string() }))
+    .array(z.object({ tagId: z.number(), name: z.string() }))
     .min(1, "At least one tag is required"),
-  difficulty: z.enum(["Easy", "Medium", "Hard"], {
+  difficultyLevel: z.enum(["EASY", "MEDIUM", "HARD"], {
     errorMap: () => ({ message: "Select a difficulty level" }),
   }),
 });
@@ -43,7 +46,7 @@ export default function QuestionCreationPage() {
       title: "",
       content: "",
       tags: [],
-      difficulty: "Easy",
+      difficultyLevel: "EASY",
     },
   });
 
@@ -51,26 +54,33 @@ export default function QuestionCreationPage() {
   const queryClient = useQueryClient();
 
   const [availableTags, setAvailableTags] = useState<
-    { id: string; name: string }[]
+    { tagId: string; name: string }[]
   >([]);
 
   const { data: tagSearchData } = useSearchTags(
-    { queryParams: { q: "", pageSize: 1000 } }, 
-    { enabled: true }
+    { queryParams: { q: "", pageSize: 1000 } },
+    { enabled: true },
   );
 
   useEffect(() => {
-    if (tagSearchData?.data?.items) {
-      setAvailableTags(tagSearchData.data.items);
+    if (tagSearchData?.data) {
+      setAvailableTags((tagSearchData.data as { items: TagDetails[] }).items);
     }
   }, [tagSearchData]);
 
-  const { mutateAsync } = useCreateQuestion({
-    onSuccess: (data) => {
-      const newQuestion = data.data;
+  const navigate = useNavigate();
 
-      queryClient.invalidateQueries(["getUserProfile"]);
-      queryClient.invalidateQueries(["getTagDetails"]);
+  const { mutateAsync } = useCreateQuestion({
+    onSuccess: (result) => {
+      queryClient.invalidateQueries(
+        queryKeyFn({
+          path: "/users/me",
+          operationId: "getMe",
+          variables: {},
+        }) as any,
+      );
+
+      navigate(`/question/${result.data.id}`);
     },
   });
 
@@ -80,9 +90,12 @@ export default function QuestionCreationPage() {
       <Form {...form}>
         <form
           onSubmit={handleSubmit(async (values) => {
-            const tagIds = values.tags.map((tag) => tag.id);
+            const tagIds = values.tags.map((tag) => tag.tagId);
             await mutateAsync({
-              body: { ...values, tagIds: tagIds.map(Number) },
+              body: {
+                ...values,
+                tagIds: tagIds.map(Number),
+              },
             });
           })}
           className="flex flex-col gap-6"
@@ -127,18 +140,21 @@ export default function QuestionCreationPage() {
                 <FormControl>
                   <MultiSelect
                     options={availableTags.map((tag) => ({
-                      value: tag.id,
+                      value: tag.tagId,
                       label: tag.name,
                     }))}
-                    value={field.value.map((tag) => tag.id)} // Bind selected values correctly
+                    value={field.value.map((tag) => String(tag.tagId))} // Bind selected values correctly
                     onValueChange={(selectedIds) => {
                       // Map selected IDs back to tag objects
                       const selectedTags = selectedIds
                         .map((id) =>
-                          availableTags.find((tag) => tag.id === id)
+                          availableTags.find(
+                            (tag) => Number(tag.tagId) === Number(id),
+                          ),
                         )
-                        .filter(Boolean); 
-                      field.onChange(selectedTags); 
+                        .filter(Boolean);
+                      console.log(selectedTags);
+                      field.onChange(selectedTags);
                     }}
                     placeholder="Select Tags"
                   />
@@ -151,18 +167,18 @@ export default function QuestionCreationPage() {
           {/* Difficulty */}
           <FormField
             control={control}
-            name="difficulty"
+            name="difficultyLevel"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <select
-                    className="border border-gray-300 rounded px-4 py-2"
+                    className="rounded border border-gray-300 px-4 py-2"
                     value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
                   >
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
+                    <option value="EASY">Easy</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HARD">Hard</option>
                   </select>
                 </FormControl>
                 <FormMessage />
