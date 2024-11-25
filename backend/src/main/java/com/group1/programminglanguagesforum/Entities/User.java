@@ -57,6 +57,16 @@ public class User implements UserDetails {
     private int followingCount = 0;
     @Builder.Default
     private Long reputationPoints = 0L;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "USER_TAGS",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @Builder.Default
+    private Set<Tag> followedTags = new HashSet<>();
+
     @OneToMany(mappedBy = "askedBy", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();

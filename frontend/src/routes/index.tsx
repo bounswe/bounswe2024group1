@@ -1,14 +1,17 @@
+import CreateTagPage from "@/components/CreateTagPage"; // Import the new CreateTagPage
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { NavbarLayout } from "@/components/NavbarLayout";
+import TagsPage from "@/components/Tags";
 import { signout } from "@/services/auth";
 import { RouteObject, createBrowserRouter, redirect } from "react-router-dom";
+import QuestionCreationPage from "./create-question";
 import { IndexRoute } from "./home";
 import Login from "./login";
+import Profile from "./profile";
 import QuestionRoute from "./question";
 import { Search } from "./search";
 import Signup from "./signup";
 import TagPage from "./tag";
-import Profile from "./profile";
 
 export const routes: RouteObject[] = [
   {
@@ -45,6 +48,18 @@ export const routes: RouteObject[] = [
   {
     path: "tag/:tagId",
     Component: TagPage,
+  },
+  {
+    path: "/questions/new",
+    Component: QuestionCreationPage, // Ensure this route is defined
+  },
+  {
+    path: "/tags",
+    Component: TagsPage,
+  },
+  {
+    path: "/tags/new",
+    Component: CreateTagPage,
   },
 ];
 

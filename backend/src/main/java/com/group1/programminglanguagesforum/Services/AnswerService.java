@@ -9,6 +9,8 @@ import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.AnswerRepository;
+import com.group1.programminglanguagesforum.Repositories.VoteRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class AnswerService {
     private final AnswerRepository answerRepository;
     private final UserContextService userContextService;
     private final QuestionService questionService;
+    private final VoteRepository voteRepository;
 
     public CreateAnswerResponseDto createAnswer(Long questionId, CreateAnswerRequestDto createAnswerRequestDto) throws UnauthorizedAccessException {
         User currentUser = userContextService.getCurrentUser();
@@ -92,6 +95,7 @@ public class AnswerService {
                         .upvoteCount(answer.getUpvoteCount())
                         .downvoteCount(answer.getDownvoteCount())
                         .selfAnswer(currentUser != null && currentUser.getId().equals(answer.getAnsweredBy().getId()))
+                        .selfVoted(currentUser != null && voteRepository.findByUserAndAnswer(currentUser, answer).isPresent())
                         .build()).toList())
                 .totalItems(question.getAnswers().size())
                 .build();
