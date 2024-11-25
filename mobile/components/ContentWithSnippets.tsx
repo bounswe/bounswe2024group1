@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { CodeSnippet } from "./CodeSnippet";
 import { Text } from "./ui";
+
 interface ContentWithSnippetsProps {
   content: string;
 }
@@ -51,12 +52,14 @@ export const ContentWithSnippets: React.FC<ContentWithSnippetsProps> = ({
           <CodeSnippet key={index} code={part.code} language={part.language} />
         );
       }
-      return (
-        <Text className="font-mono" key={index}>
-          {part.code}
-        </Text>
-      );
-      return <Text key={index}>{part.content}</Text>;
+      if (part.type === "text") {
+        return (
+          <Text key={index} className="font-mono">
+            {part.content}
+          </Text>
+        );
+      }
+      return null;
     });
   }, [content]);
 
