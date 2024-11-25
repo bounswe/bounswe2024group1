@@ -11,9 +11,11 @@ import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.Tag;
 import com.group1.programminglanguagesforum.Entities.User;
+import com.group1.programminglanguagesforum.Entities.QuestionEmbedding;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.BookmarkRepository;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
+import com.group1.programminglanguagesforum.Repositories.EmbeddingRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -31,6 +33,8 @@ public class QuestionService {
         private final UserContextService userContextService;
         private final TagService tagService;
         private final BookmarkRepository bookmarkRepository;
+        private final EmbeddingRepository embeddingRepository;
+        private final EmbeddingService embeddingService;
 
         public Optional<Question> findById(Long id) {
                 return questionRepository.findById(id);
@@ -59,6 +63,8 @@ public class QuestionService {
                                 .id(tag.getId())
                                 .name(tag.getTagName())
                                 .build()).toList();
+
+                createAndStoreEmbedding(question.getId(), question.getTitle(), question.getQuestionBody());
 
                 return CreateQuestionResponseDto.builder()
                                 .id(question.getId())
@@ -224,5 +230,15 @@ public class QuestionService {
                                                                 .build())
                                                 .collect(Collectors.toList()))
                                 .build();
+        }
+
+        public void createAndStoreEmbedding(Long id, String title, String questionBody) {
+                String text = title + " " + questionBody;
+                float[] embedding = embeddingService.getVectorEmbedding(text);
+                QuestionEmbedding questionEmbedding = new QuestionEmbedding();
+                questionEmbedding.setId(id);
+                questionEmbedding.setText(text);
+                questionEmbedding.setEmbedding(embedding);
+                embeddingRepository.save(questionEmbedding);
         }
 }
