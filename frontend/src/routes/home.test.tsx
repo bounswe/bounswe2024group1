@@ -34,6 +34,8 @@ test("home route renders", async () => {
   });
 });
 
+// comment out if necessary
+
 // test("log in button goes to /login", async () => {
 //   // Arrange
 //   const router = createMemoryRouter(routeConfig, {
