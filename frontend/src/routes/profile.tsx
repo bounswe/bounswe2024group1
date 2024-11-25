@@ -16,7 +16,6 @@ import {
 import useAuthStore from "@/services/auth";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
 import { Textarea } from "@/components/ui/textarea";
 
 export default function Profile() {
@@ -24,17 +23,39 @@ export default function Profile() {
   const { selfProfile, fetchProfile } = useAuthStore();
   const me = userId === "me" || userId === selfProfile?.id?.toString();
   const [editing, setEditing] = useState(false);
-
-  const countryRef = useRef<HTMLInputElement>(null);
-  const bioRef = useRef<HTMLTextAreaElement>(null);
-
+  const [bio, setBio] = useState("");
+  const [country, setCountry] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("BEGINNER");
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("questions");
 
-  useEffect(() => {
-    if (!me) {
-      setEditing(false);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfilePicture(file);
+      setPreview(URL.createObjectURL(file));
     }
-  }, [me]);
+  };
+
+  const handleProfilePictureUpload = async () => {
+    if (!profilePicture) return;
+
+    const formData = new FormData();
+    formData.append("profilePicture", profilePicture);
+
+    try {
+      await fetch("/api/v1/users/me/upload-profile-picture", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: Bearer ${useAuthStore.getState().token},
+        },
+      });
+    } catch (err) {
+      console.error("Failed to upload profile picture:", err);
+    }
+  };
 
   const { isLoading, data, error, refetch } = useGetUserProfile(
     {
@@ -44,8 +65,9 @@ export default function Profile() {
     },
     {
       enabled: me || !isNaN(Number(userId)),
-    },
+    }
   );
+
   const { mutateAsync, isPending } = useUpdateUserProfile({
     onSuccess: () => {
       fetchProfile();
@@ -69,17 +91,18 @@ export default function Profile() {
   }
 
   const profile = data!.data;
+
   return (
-    <div key="1" className="container bg-white py-16">
+    <div className="container bg-white py-16">
       <div className="flex flex-col gap-4 px-4 py-2">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="">{me ? "My profile" : "Profile"}</h1>
+          <h1>{me ? "My profile" : "Profile"}</h1>
         </div>
         <div className="flex items-center justify-between space-x-8 py-4">
           <Avatar className="h-24 w-24">
             <AvatarImage
-              alt={`Profile picture of ${profile.username}`}
-              src="https://placehold.co/640x640"
+              alt={Profile picture of ${profile.username}}
+              src={preview || profile.profilePicture || "https://placehold.co/640x640"}
             />
           </Avatar>
           <div className="flex space-x-4 text-center">
@@ -102,33 +125,38 @@ export default function Profile() {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             {editing ? (
-              <Input
-                defaultValue={profile.country}
-                ref={countryRef}
-                placeholder="Country"
-                className="mt-2"
-              />
+              <>
+                <Input
+                  defaultValue={profile.bio}
+                  maxLength={200}
+                  onChange={(e) => setBio(e.target.value)}
+                  className="mt-2"
+                />
+                <Input
+                  defaultValue={profile.country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="mt-2"
+                />
+                <select
+                  defaultValue={profile.experienceLevel}
+                  onChange={(e) => setExperienceLevel(e.target.value)}
+                  className="mt-2"
+                >
+                  <option value="BEGINNER">Beginner</option>
+                  <option value="INTERMEDIATE">Intermediate</option>
+                  <option value="ADVANCED">Advanced</option>
+                </select>
+                <input type="file" accept="image/*" onChange={handleFileChange} className="mt-2" />
+              </>
             ) : (
-              <h2 className="">{profile.username}</h2>
-            )}
-            {editing ? (
-              <Textarea
-                defaultValue={profile.bio}
-                ref={bioRef}
-                placeholder="Bio"
-                className="mt-2"
-              />
-            ) : (
-              <p
-                className={cn(
-                  "text-sm",
-                  !profile.bio ? "text-gray-500" : "text-gray-800",
-                )}
-              >
-                {profile.bio ?? "Empty bio."}
-              </p>
+              <>
+                <h2>{profile.username}</h2>
+                <p className={cn("text-sm", !profile.bio ? "text-gray-500" : "text-gray-800")}>
+                  {profile.bio || "Empty bio."}
+                </p>
+              </>
             )}
           </div>
           {me ? (
@@ -137,15 +165,10 @@ export default function Profile() {
                 disabled={isPending}
                 onClick={() => {
                   mutateAsync({
-                    pathParams: {
-                      userId: profile.id ?? 0, //CHECK!!
-                    },
-                    body: {
-                      ...profile,
-                      country: countryRef.current?.value ?? "",
-                      bio: bioRef.current?.value ?? "",
-                    },
+                    pathParams: { userId: profile.id ?? 0 },
+                    body: { bio, country, experienceLevel },
                   });
+                  handleProfilePictureUpload();
                 }}
               >
                 {isPending ? "Saving..." : "Save"}
@@ -166,52 +189,17 @@ export default function Profile() {
             <TabsTrigger value="questions">Questions</TabsTrigger>
             <TabsTrigger value="answers">Answers</TabsTrigger>
           </TabsList>
-
           <TabsContent value="questions">
-            <div className="flex items-center gap-4 py-4">
-              <h3>Questions</h3>
-              {me && (
-                <Button
-                  asChild
-                  size="icon"
-                  className="rounded-full bg-red-500 text-white"
-                >
-                  <Link to="/questions/new">
-                    <Plus />
-                  </Link>
-                </Button>
-              )}
-            </div>
             <div className="grid grid-cols-3 gap-4">
-              {profile?.questions?.map((question) => (
-                <QuestionCard
-                  key={question.id}
-                  id={question.id}
-                  title={question.title}
-                  content={question.questionBody ?? ""}
-                  votes={question.likeCount}
-                  answerCount={question.commentCount}
-                  author={question.author}
-                />
+              {profile.questions?.map((question) => (
+                <QuestionCard key={question.id} {...question} />
               ))}
             </div>
           </TabsContent>
-
           <TabsContent value="answers">
-            <div className="flex items-center gap-4 py-4">
-              <h3>Answers</h3>
-            </div>
             <div className="grid grid-cols-3 gap-4">
-              {profile?.answers?.map((answer) => (
-                <AnswerCard
-                  key={answer.id}
-                  id={answer.id}
-                  content={answer.content}
-                  title={answer.question!.title!}
-                  questionId={answer.question!.id}
-                  votes={answer.rating}
-                  author={answer.author}
-                />
+              {profile.answers?.map((answer) => (
+                <AnswerCard key={answer.id} {...answer} />
               ))}
             </div>
           </TabsContent>
