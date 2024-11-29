@@ -498,7 +498,12 @@ export const fetchUnfollowUser = (
     {},
     {},
     UnfollowUserPathParams
-  >({ url: "/users/{userId}/follow", method: "delete", ...variables, signal });
+  >({
+    url: "/users/{userId}/unfollow",
+    method: "delete",
+    ...variables,
+    signal,
+  });
 
 export const useUnfollowUser = (
   options?: Omit<

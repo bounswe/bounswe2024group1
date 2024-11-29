@@ -38,7 +38,7 @@ export const Tag = ({
           <div className="flex items-center justify-between">
             {!!token && (
               <Link
-                to={`/questions/new?tagId=` + encodeURIComponent(tagId || "")}
+                to={`/questions/new?tagIds=` + encodeURIComponent(tagId || "")}
               >
                 <Plus className="h-4 w-4" />
               </Link>

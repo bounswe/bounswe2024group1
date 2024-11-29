@@ -14,12 +14,16 @@ import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
 import ErrorAlert from "@/components/ErrorAlert";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { useGetTagDetails } from "@/services/api/programmingForumComponents";
+import {
+  useGetTagDetails,
+  useSearchQuestions,
+} from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { QuestionDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 
 export default function TagPage() {
@@ -37,6 +41,26 @@ export default function TagPage() {
   const token = useAuthStore((s) => s.token);
   const experienceLevel = useAuthStore((s) => s.selfProfile?.experienceLevel);
 
+  const tag = data?.data;
+
+  const { data: questionSearch, isLoading: isQuestionSearchLoading } =
+    useSearchQuestions(
+      {
+        queryParams: {
+          tags: tag?.tagId,
+          q: "",
+          pageSize: 1000,
+        },
+      },
+      {
+        enabled: !!tag,
+      },
+    );
+
+  const questions =
+    (questionSearch?.data as unknown as { items: QuestionDetails[] })?.items ||
+    [];
+
   if (isLoading) {
     return <FullscreenLoading overlay />;
   }
@@ -45,7 +69,6 @@ export default function TagPage() {
     return <ErrorAlert error={error} />;
   }
 
-  const tag = data?.data;
   if (!tag) {
     return (
       <ErrorAlert
@@ -58,8 +81,7 @@ export default function TagPage() {
   }
 
   // TODO: fix this when backend catches up
-  const questions = tag?.relatedQuestions || [];
-
+  const relatedQuestions = tag?.relatedQuestions || [];
   return (
     <div className="container flex flex-col gap-4 self-stretch justify-self-stretch py-16">
       <div className="flex items-center justify-between">
@@ -151,7 +173,7 @@ export default function TagPage() {
               size="icon"
               className="rounded-full bg-red-500 text-white"
             >
-              <Link to={`/questions/new?tagId=${tag.tagId}`}>
+              <Link to={`/questions/new?tagIds=${tag.tagId}`}>
                 <Plus />
               </Link>
             </Button>
@@ -165,18 +187,18 @@ export default function TagPage() {
           <TabsContent value="top-rated" className="flex flex-col gap-4">
             {!experienceLevel ||
               (experienceLevel === "BEGINNER" && (
-                <HighlightedQuestionsBox questions={questions || []} />
+                <HighlightedQuestionsBox questions={relatedQuestions} />
               ))}
             <div className="grid grid-cols-3 gap-4">
               {questions &&
                 questions.map((question) => (
                   <QuestionCard
+                    key={question.id}
                     id={question.id}
                     title={question.title}
-                    content={question.questionBody!}
-                    votes={question.likeCount}
-                    answerCount={question.commentCount}
-                    author={question.author}
+                    content={question.content ?? ""}
+                    votes={question.likeCount ?? 0}
+                    answerCount={question.commentCount ?? 0}
                   />
                 ))}
             </div>
@@ -184,18 +206,27 @@ export default function TagPage() {
           <TabsContent value="recent" className="flex flex-col gap-4">
             {!experienceLevel ||
               (experienceLevel === "BEGINNER" && (
-                <HighlightedQuestionsBox questions={questions || []} />
+                <HighlightedQuestionsBox questions={relatedQuestions} />
               ))}
+
             <div className="grid grid-cols-3 gap-4">
+              {isQuestionSearchLoading && <FullscreenLoading />}
               {questions &&
                 questions.map((question) => (
                   <QuestionCard
                     id={question.id}
                     title={question.title}
-                    content={question.questionBody!}
-                    votes={question.likeCount}
-                    answerCount={question.commentCount}
-                    author={question.author}
+                    content={question.content ?? ""}
+                    votes={
+                      ((question as unknown as { upvoteCount: number })
+                        .upvoteCount ?? 0) -
+                      ((question as unknown as { downvoteCount: number })
+                        .downvoteCount ?? 0)
+                    }
+                    answerCount={
+                      (question as unknown as { answerCount: number })
+                        .answerCount ?? 0
+                    }
                   />
                 ))}
             </div>

@@ -259,6 +259,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
+  /users/{userId}/unfollow:
     delete:
       tags:
         - users

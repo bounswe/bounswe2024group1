@@ -1,18 +1,20 @@
-import { TagCard } from "@/components/TagCard";
-import { QuestionCard } from "@/components/QuestionCard";
-import { ExerciseCard } from "@/components/ExerciseCard"; // Import ExerciseCard component
-import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
-import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import {
-  useSearchTags,
-  useSearchQuestions,
-} from "@/services/api/programmingForumComponents";
 import ErrorAlert from "@/components/ErrorAlert";
+import { ExerciseCard } from "@/components/ExerciseCard"; // Import ExerciseCard component
+import { FullscreenLoading } from "@/components/FullscreenLoading";
+import { QuestionCard } from "@/components/QuestionCard";
+import { TagCard } from "@/components/TagCard";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  useSearchQuestions,
+  useSearchTags,
+} from "@/services/api/programmingForumComponents";
+import {
+  QuestionDetails,
+  TagDetails,
+} from "@/services/api/programmingForumSchemas";
+import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
+import { AlertCircle } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import { QuestionDetails } from "@/services/api/programmingForumSchemas";
-import { TagDetails } from "@/services/api/programmingForumSchemas"; // Assuming this is the correct type for tags
 
 export const Feed = () => {
   const [params] = useSearchParams();
@@ -118,12 +120,19 @@ export const Feed = () => {
             {questions.map((question) => (
               <div key={question.id} className="min-w-[300px]">
                 <QuestionCard
-                  key={question.id}
                   id={question.id}
                   title={question.title}
                   content={question.content ?? ""}
-                  votes={question.likeCount ?? 0}
-                  answerCount={question.commentCount ?? 0}
+                  votes={
+                    ((question as unknown as { upvoteCount: number })
+                      .upvoteCount ?? 0) -
+                    ((question as unknown as { downvoteCount: number })
+                      .downvoteCount ?? 0)
+                  }
+                  answerCount={
+                    (question as unknown as { answerCount: number })
+                      .answerCount ?? 0
+                  }
                 />
               </div>
             ))}

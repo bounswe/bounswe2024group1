@@ -1,28 +1,49 @@
 //import { CreateTagForm } from "@/components/CreateTagForm";
+import Plus from "@/assets/Icon/General/Plus.svg?react";
+import ErrorAlert from "@/components/ErrorAlert";
 import { TagCard } from "@/components/TagCard";
+import { Button } from "@/components/ui/button"; // Assuming Button is a component
 import { useSearchTags } from "@/services/api/programmingForumComponents"; // Import your API hook
 import { TagDetails } from "@/services/api/programmingForumSchemas"; // Assuming this is the correct type for tags
-import { FullscreenLoading } from "../components/FullscreenLoading";
-import { useSearchParams, Link } from "react-router-dom";
-import ErrorAlert from "@/components/ErrorAlert";
-import { Button } from "@/components/ui/button"; // Assuming Button is a component
-import Plus from "@/assets/Icon/General/Plus.svg?react";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import InfiniteScroll from "./InfiniteScroll";
 
 export default function TagsPage() {
-  // Using the `useSearchTags` hook to fetch the default 20 tags
   const [params] = useSearchParams();
+  const [pageSize, setPageSize] = useState(20);
+  const [previousData, setPreviousData] = useState<{
+    items: TagDetails[];
+    totalItems: number;
+  }>({ items: [], totalItems: 0 });
+
   const {
     data: searchResult,
     isLoading,
     error,
-  } = useSearchTags({
-    queryParams: { q: params.get("q") ?? "" }, // No query parameter needed to fetch the default 20 tags
-  });
+  } = useSearchTags(
+    {
+      queryParams: { q: params.get("q") ?? "", pageSize },
+    },
+    {},
+  );
 
-  // If the API is still loading, show the loading component
-  if (isLoading) {
-    return <FullscreenLoading overlay />;
-  }
+  useEffect(() => {
+    if (searchResult?.data && !isLoading) {
+      setPreviousData(searchResult.data as typeof previousData);
+    }
+  }, [searchResult, isLoading]);
+
+  const searchResultData =
+    (searchResult?.data as {
+      items?: TagDetails[];
+      totalItems?: number;
+    }) || previousData;
+
+  const next = () => {
+    setPageSize(pageSize + 20);
+  };
 
   // If there is an error during the fetch, display the error alert
   if (error) {
@@ -30,7 +51,7 @@ export default function TagsPage() {
   }
 
   // Extracting tags from the API response
-  const tags = (searchResult?.data as { items?: TagDetails[] }).items || [];
+  const tags = searchResultData.items || [];
 
   return (
     <div className="container py-8">
@@ -53,9 +74,25 @@ export default function TagsPage() {
       {/* Section for displaying all tags */}
       <div>
         <div className="grid grid-cols-3 gap-4">
-          {tags.map((tag) => (
-            <TagCard key={tag.tagId} tag={tag} />
-          ))}
+          <InfiniteScroll
+            next={next}
+            hasMore={
+              searchResultData.totalItems
+                ? searchResultData.totalItems > pageSize
+                : false
+            }
+            isLoading={isLoading}
+          >
+            {tags?.map((tag) => <TagCard key={tag.tagId} tag={tag} />)}
+          </InfiniteScroll>
+          {isLoading && (
+            <div className="col-span-3 flex w-full items-center justify-center">
+              <Loader2
+                aria-label="Loading"
+                className="h-16 w-16 animate-spin text-primary"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

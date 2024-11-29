@@ -156,7 +156,14 @@ export default function Profile() {
               </Button>
             )
           ) : (
-            data?.data && <FollowButton profile={data?.data} />
+            data?.data && (
+              <FollowButton
+                profile={{
+                  id: parseInt(userId),
+                  selfFollowing: profile.selfFollowing,
+                }}
+              />
+            )
           )}
         </div>
       </div>

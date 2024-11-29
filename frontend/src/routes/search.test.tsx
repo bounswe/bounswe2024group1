@@ -62,7 +62,7 @@ describe("Search component", () => {
     vi.mocked(useSearchTags).mockReturnValue({
       isLoading: false,
       error: null,
-      data: { data: { items: mockTags } },
+      data: { data: { items: mockTags, totalItems: mockTags.length } },
     } as QueryObserverSuccessResult<unknown, SearchTagsError>);
 
     render(

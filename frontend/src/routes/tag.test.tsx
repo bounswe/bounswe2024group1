@@ -39,6 +39,11 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
     isLoading: false,
     error: null,
   })),
+  useSearchQuestions: vi.fn(() => ({
+    data: [],
+    isLoading: false,
+    error: null,
+  })),
 }));
 
 // Mock the auth store

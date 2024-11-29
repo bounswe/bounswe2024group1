@@ -12,6 +12,26 @@ declare module "vitest" {
   interface AsymmetricMatchersContaining extends AxeMatchers {}
 }
 
+// test file
+const observeFn = vi.fn();
+const unobserveFn = vi.fn();
+class MockObserver {
+  constructor() {
+    // fn(entries, this);
+  }
+
+  disconnect() {}
+  observe() {
+    observeFn();
+  }
+  unobserve() {
+    unobserveFn();
+  }
+}
+
+// @ts-expect-error IntersectionObserver is not defined in the global scope
+global.IntersectionObserver = MockObserver;
+
 vi.mock("zustand/middleware", () => ({
   persist: (a: unknown) => a,
   createJSONStorage: () => null,

@@ -44,7 +44,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
         Code Snippet
       </h4>
       <SyntaxHighlighter
-        language={language}
+        language={language.replace("-exec", "")}
         style={docco}
         PreTag={({ children, ...rest }) => {
           return (
