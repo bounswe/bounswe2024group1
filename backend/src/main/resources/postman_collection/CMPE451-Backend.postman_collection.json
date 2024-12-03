@@ -1,0 +1,1824 @@
+{
+	"info": {
+		"_postman_id": "dbb79c9f-3e17-4172-b96f-48512d173acf",
+		"name": "CMPE451-Backend",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) in \"Tests\" to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31847349",
+		"_collection_link": "https://planetary-robot-935641.postman.co/workspace/c9e3d626-82c4-4d1d-8405-c17d63ab67f3/collection/31847349-dbb79c9f-3e17-4172-b96f-48512d173acf?action=share&source=collection_link&creator=31847349"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "/api/v1/users/signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"protocolVersion": "http1"
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"enes@example.com\",\r\n    \"username\": \"enes\",\r\n    \"country\": \"USA\",\r\n    \"bio\": \"I love cooking\",\r\n    \"password\": \"atakan\",\r\n    \"firstName\": \"atakan\",\r\n    \"lastName\": \"atli\",\r\n    \"experienceLevel\":\"Beginner\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/signup-atakan",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"protocolVersion": "http1"
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"enes@example.com\",\r\n    \"username\": \"enes\",\r\n    \"country\": \"USA\",\r\n    \"bio\": \"I love cooking\",\r\n    \"password\": \"atakan\",\r\n    \"firstName\": \"atakan\",\r\n    \"lastName\": \"atli\",\r\n    \"experienceLevel\":\"Beginner\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n    \"usernameOrEmail\": \"test\",\n  \n    \"password\": \"testpw.\"\n   \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username@hotmail.com",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/login Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n    \"usernameOrEmail\": \"test\",\n  \n    \"password\": \"testpw.\"\n   \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username@hotmail.com",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Info From JWT",
+			"item": [
+				{
+					"name": "/api/v1/users/me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/users/me",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "api/v1/users/8/unfollow",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbmVzIiwiaWF0IjoxNzE1MzI4MjU3LCJleHAiOjE3MTUzMjk2OTd9.Yk5XUVwxMEqSz7r3PlXuRxx6oJuyoJfnwIRx-V68kcg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"followingUserId\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/8/unfollow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"8",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/8/follow",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/2/follow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"2",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/6/following",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/users/6/following",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"6",
+								"following"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/7/followers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/users/7/followers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"7",
+								"followers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/3",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbmVzIiwiaWF0IjoxNzI5NDE3ODAyLCJleHAiOjE3Mjk0MTc5MjJ9.rVMYoHqz3gUXcOvVjmXoTxOe5EogDe4eDe46RtSXLmc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bio\":\"sa\",\r\n    \"country\": \"EN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/{userId}",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "/api/v1/users/{userId}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNzE1OTExNDE3LCJleHAiOjE3MTU5MTI4NTd9.BGS7XejCgaeSa_p2Wf-1LI2WUTMn9WVxLzd8vn3Sa2w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 2,\r\n  \"username\": \"test\",\r\n  \"firstName\": \"Takoyaki\",\r\n  \"lastName\": \"Lover\",\r\n  \"bio\": \"I love takoyaki!\",\r\n  \"gender\": \"unknown\",\r\n  \"profilePicture\": \"https://images.unsplash.com/photo-1633790450512-98e68a55ef15?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=brunno-tozzo-GAIC2WHxm5A-unsplash.jpg&w=640\",\r\n  \"diets\": [\r\n    \"keto\"\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bookmark",
+			"item": [
+				{
+					"name": "Bookmark a question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MzA1NjIzNjgsImV4cCI6MTczMDU2OTU2OH0.1UlN8b-yP0JeHQPU1pG6vBdlskauoqywKDC5bFxWg-o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/11/bookmarks",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"11",
+								"bookmarks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vote",
+			"item": [
+				{
+					"name": "Question Upvote POST",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1/upvote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1",
+								"upvote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Upvote",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1/deleteUpvote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1",
+								"deleteUpvote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Question Downvote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1/downvote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1",
+								"downvote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upvote Answer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/answers/1/upvote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"1",
+								"upvote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Downvote Answer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/answers/1/downvote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"1",
+								"downvote"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tag",
+			"item": [
+				{
+					"name": "Create new tag",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MzA1Nzc1NjIsImV4cCI6MTczMDU4NDc2Mn0.zS23mye82z_b_NMWPCQLRkXXw4rxlaosFhOvl5HbTq0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"new title\",\r\n    \"description\" : \"description of title\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/tags",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "follow tag",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MzA1Nzc1NjIsImV4cCI6MTczMDU4NDc2Mn0.zS23mye82z_b_NMWPCQLRkXXw4rxlaosFhOvl5HbTq0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/tags/1/follow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tags",
+								"1",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get /tags/{tagId}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/tags/347",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tags",
+								"347"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Tag",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/search/tags?q=java&page=0&pageSize=8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"search",
+								"tags"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "java"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Question",
+			"item": [
+				{
+					"name": "Create Question",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Java Serializer\",\r\n  \"content\": \"What is this explain me please ? \",\r\n  \"tagIds\": [\r\n    107,\r\n    63,\r\n    339\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/questions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Question Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1"
+							]
+						},
+						"description": "Retrieving a question linked with author and tags. Also similar questions appears in response."
+					},
+					"response": [
+						{
+							"name": "{{host}}/api/v1/questions/1",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/questions/1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"questions",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Nov 2024 08:34:16 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Question created successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Java Serializer\",\n        \"content\": \"What is this explain me please ? \",\n        \"likeCount\": 1,\n        \"dislikeCount\": 0,\n        \"commentCount\": 0,\n        \"selfQuestion\": true,\n        \"createdAt\": \"2024-11-23 11:32:29\",\n        \"tags\": [\n            {\n                \"id\": 63,\n                \"name\": \"Modula-3\"\n            },\n            {\n                \"id\": 107,\n                \"name\": \"Simul\"\n            },\n            {\n                \"id\": 339,\n                \"name\": \"Open MPI\"\n            }\n        ],\n        \"updatedAt\": \"2024-11-23 11:32:29\",\n        \"author\": {\n            \"id\": 1,\n            \"username\": \"enes\",\n            \"reputationPoints\": 0,\n            \"profilePicture\": null,\n            \"name\": \"atakan atli\"\n        },\n        \"rating\": 0,\n        \"answerCount\": 0,\n        \"bookmarked\": false\n    },\n    \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete a Question",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Question",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Java Serializer 2\",\r\n  \"content\": \"What is this explain me please ?  222\",\r\n  \"tagIds\": [\r\n    108,\r\n    66,\r\n    311\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Answer",
+			"item": [
+				{
+					"name": "Create Answer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\":\" Serialization is the conversion of the state of an object into a byte stream; deserialization does the opposite. Stated differently, serialization is the conversion of a Java object into a static stream (sequence) of bytes, which we can then save to a database or transfer over a network   \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1/answers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1",
+								"answers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Answer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/answers/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an Answer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\":\" UPDATED4 Serialization is the conversion of the state of an object into a byte stream; deserialization does the opposite. Stated differently, serialization is the conversion of a Java object into a static stream (sequence) of bytes, which we can then save to a database or transfer over a network   \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/answers/4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get answers for a question",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/questions/1/answers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"1",
+								"answers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Execute-Code",
+			"item": [
+				{
+					"name": "create-submission",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "35e73d1355msh7eea11025c31207p1d0295jsn248174274d82",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Judge0-Key",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-rapidapi-host",
+								"value": "judge0-ce.p.rapidapi.com",
+								"type": "text"
+							},
+							{
+								"key": "x-rapidapi-key",
+								"value": "35e73d1355msh7eea11025c31207p1d0295jsn248174274d82",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"source_code\": \"print(input())\",\r\n  \"language_id\": 71,\r\n  \"stdin\": \"hello world\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true",
+							"protocol": "https",
+							"host": [
+								"judge0-ce",
+								"p",
+								"rapidapi",
+								"com"
+							],
+							"path": [
+								"submissions"
+							],
+							"query": [
+								{
+									"key": "base64_encoded",
+									"value": "false"
+								},
+								{
+									"key": "wait",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-submission",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "d69a2637-53c6-4197-9476-4bc1222a6d61",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Judge0-Key",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rapidapi-key",
+								"value": "35e73d1355msh7eea11025c31207p1d0295jsn248174274d82",
+								"type": "text"
+							},
+							{
+								"key": "x-rapidapi-host",
+								"value": "judge0-ce.p.rapidapi.com",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"source_code\": \"#include <stdio.h>\\n\\nint main(void) {\\n  char name[10];\\n  scanf(\\\"%s\\\", name);\\n  printf(\\\"hello, %s\\n\\\", name);\\n  return 0;\\n}\",\r\n  \"language_id\": 4,\r\n  \"stdin\": \"world\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://judge0-ce.p.rapidapi.com/submissions/b6cb3d35-6e2e-4f11-b801-63f6f705dc42?base64_encoded=true",
+							"protocol": "https",
+							"host": [
+								"judge0-ce",
+								"p",
+								"rapidapi",
+								"com"
+							],
+							"path": [
+								"submissions",
+								"b6cb3d35-6e2e-4f11-b801-63f6f705dc42"
+							],
+							"query": [
+								{
+									"key": "base64_encoded",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "execute-code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MzAwNDE4NTAsImV4cCI6MTczMDA0MTk3MH0.JFAIWTfAtVTDmlpOze6A9kBB9VIKmcbbaBvq5axa9oE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"print(input())\",\r\n  \"language\": \"python\",\r\n  \"input\": \"hello world\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/execute-code",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"execute-code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Archive",
+			"item": [
+				{
+					"name": "Dish",
+					"item": [
+						{
+							"name": "/api/v1/dishes/{dishId}",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Feed",
+					"item": [
+						{
+							"name": "{{host}}/api/v1/feed?type=following",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/feed?type=explore",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"feed"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "explore"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Recipes",
+					"item": [
+						{
+							"name": "/api/v1/recipes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MTU4NzgzOTEsImV4cCI6MTcxNTg3OTgzMX0.ke8L1eYDBVJTezdT4YhJhO2g1dH2Hsdf9P-M36qWF7g",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"enes 2\",\r\n    \"description\": \"A delicious takoyaki recipe that I learned from my grandmother.\",\r\n    \"instructions\": \"Start by marinating the chicken in a mixture of yogurt and spices. Heat oil in a pan, add onions, and fry until golden. Add the marinated chicken and cook until it's done. Pour in tomato puree and cream, simmer until the sauce thickens.\",\r\n    \"prepTime\": 30,\r\n    \"cookTime\": 45,\r\n    \"servingSize\": 4,\r\n    \"dishId\": \"Q1018138\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Chicken breast\",\r\n            \"amount\": \"1.5kg\"\r\n        },\r\n        {\r\n            \"name\": \"Yogurt\",\r\n            \"amount\": \"100g\"\r\n           \r\n        },\r\n        {\r\n            \"name\": \"Onion\"\r\n        },\r\n        {\r\n            \"name\": \"Tomato puree\"\r\n        },\r\n        {\r\n            \"name\": \"Cream\"\r\n        },\r\n        {\r\n            \"name\": \"Garlic paste\"\r\n        },\r\n        {\r\n            \"name\": \"Ginger paste\"\r\n        },\r\n        {\r\n            \"name\": \"Garam masala\"\r\n        },\r\n        {\r\n            \"name\": \"Turmeric\"\r\n        },\r\n        {\r\n            \"name\": \"Cumin\"\r\n        },\r\n        {\r\n            \"name\": \"Coriander\"\r\n        }\r\n    ],\r\n    \"allergens\": [\r\n        \"seafood\"\r\n    ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/v1/recipes",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "api/v1/recipes/{recipeId}/comments",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/recipes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/recipes?sort=topRated",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "topRated"
+										},
+										{
+											"key": "dishId",
+											"value": "Q1018138",
+											"disabled": true
+										},
+										{
+											"key": "cuisineId",
+											"value": "Q42029",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/recipes/9",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MTU3ODcwOTksImV4cCI6MTcxNTc4ODUzOX0.9KGyqlfiQls1zwdffv08QfKt-fdkhxGur2HvbBbPA5g",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/8",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/recipes/8",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MTU2MDM4NTQsImV4cCI6MTcxNTYwNTI5NH0.ENRB09fzyf5eg87e8PB1hpPdT8m5Nih-A66ZdYWL9T0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/3",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "/api/v1/search/dishes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/search/dishes?foodType=salad",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"search",
+										"dishes"
+									],
+									"query": [
+										{
+											"key": "foodType",
+											"value": "salad"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/search/users?q=ene",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/search/users?q=ene",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"search",
+										"users"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "ene"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Wikidata Search",
+					"item": [
+						{
+							"name": "/api/v1/search/dishes",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{host}}/api/v1/search/dishes?q=soup",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"search",
+										"dishes"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "soup"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cuisine",
+					"item": [
+						{
+							"name": "/api/v1/cuisines/Q11002",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/v1/cuisines/Q1572982?includeDishes=true",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"cuisines",
+										"Q1572982"
+									],
+									"query": [
+										{
+											"key": "includeDishes",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rate",
+					"item": [
+						{
+							"name": "/recipes/{recipeId}/rating",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbmVzIiwiaWF0IjoxNzE1NjAwMDQ4LCJleHAiOjE3MTU2MDE0ODh9.XWujFQ-Bad3mVuZGRI8mtrpv_a6JIH2ocswz5ApRcVw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"rating\": 4\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/2/rating",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"2",
+										"rating"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Comment",
+					"item": [
+						{
+							"name": "api/v1/recipes/1/comments",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MTU4NzgzOTEsImV4cCI6MTcxNTg3OTgzMX0.ke8L1eYDBVJTezdT4YhJhO2g1dH2Hsdf9P-M36qWF7g",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comment\": \"Lezzetli, begendim 444444 !!!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/1/comments",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"1",
+										"comments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "api/v1/recipes/1/comments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/1/comments",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"1",
+										"comments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/recipes/{recipeId}/comments/{commentId}/upvote",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MTU5MDA0MzIsImV4cCI6MTcxNTkwMTg3Mn0.W-Cg6zljr7vbi1PIvj6hrIcBktcgIlKgH1KKLidpfbc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/2/comments/1/upvote",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"2",
+										"comments",
+										"1",
+										"upvote"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/recipes/{recipeId}/comments/{commentId}/upvote",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGFrYW4iLCJpYXQiOjE3MTU5MDE4OTUsImV4cCI6MTcxNTkwMzMzNX0.Cz-O_LgQ7NqdVugRuBidFvK7SfsVEgvWDx13EvXEpUw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/recipes/2/comments/1/upvote",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"recipes",
+										"2",
+										"comments",
+										"1",
+										"upvote"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbmVzIiwiaWF0IjoxNzMyNTQ3Nzk5LCJleHAiOjE3MzI2MzQxOTl9.guBk6WrtTULiUE-E652L5gulyIM49uhEeVUj30OV8ME",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
