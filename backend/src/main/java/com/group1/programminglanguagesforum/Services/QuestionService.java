@@ -38,6 +38,11 @@ public class QuestionService {
         public Optional<Question> findById(Long id) {
                 return questionRepository.findById(id);
         }
+        public List<QuestionSummaryDto> findByAuthorId(Long authorId) {
+               return   questionRepository.findByAuthorId(authorId).stream()
+                                .map(this::mapToQuestionSummary)
+                                .collect(Collectors.toList());
+        }
 
         public CreateQuestionResponseDto createQuestion(CreateQuestionRequestDto dto)
                         throws UnauthorizedAccessException {
