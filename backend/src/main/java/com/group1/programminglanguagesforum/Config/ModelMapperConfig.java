@@ -30,6 +30,13 @@ public class ModelMapperConfig {
                 skip(destination.getFollowing());
             }
         });
+        modelMapper.addMappings(new PropertyMap<User, SelfProfileResponseDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getQuestions());
+                skip(destination.getAnswers());
+            }
+        });
         modelMapper.addMappings(new PropertyMap <UserProfileResponseDto,User>() {
             @Override
             protected void configure() {

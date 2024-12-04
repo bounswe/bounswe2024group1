@@ -3,6 +3,7 @@ package com.group1.programminglanguagesforum.Services;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateAnswerRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.AuthorDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.CreateAnswerResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetAnswerDtoForProfile;
 import com.group1.programminglanguagesforum.DTOs.Responses.GetAnswersResponseDto;
 import com.group1.programminglanguagesforum.Entities.Answer;
 import com.group1.programminglanguagesforum.Entities.Question;
@@ -22,6 +23,13 @@ public class AnswerService {
     private final UserContextService userContextService;
     private final QuestionService questionService;
     private final VoteRepository voteRepository;
+
+
+    public java.util.List<GetAnswerDtoForProfile>  findByAnsweredBy(Long userId) {
+        return answerRepository.findByAnsweredBy(userId).stream()
+                .map(this::mapAnswerToProfileDto)
+                .toList();
+    }
 
     public CreateAnswerResponseDto createAnswer(Long questionId, CreateAnswerRequestDto createAnswerRequestDto) throws UnauthorizedAccessException {
         User currentUser = userContextService.getCurrentUser();
@@ -98,6 +106,32 @@ public class AnswerService {
                         .selfVoted(currentUser != null && voteRepository.findByUserAndAnswer(currentUser, answer).isPresent() ? voteRepository.findByUserAndAnswer(currentUser, answer).get().isUpvote()? 1 : -1 : 0)
                         .build()).toList())
                 .totalItems(question.getAnswers().size())
+                .build();
+    }
+
+    public GetAnswerDtoForProfile mapAnswerToProfileDto(Answer answer){
+        final User currentUser = getCurrentUserOrNull();
+        return GetAnswerDtoForProfile.builder()
+                .id(answer.getId())
+                .content(answer.getAnswerBody())
+                .author(
+                        AuthorDto.builder()
+                                .id(answer.getAnsweredBy().getId())
+                                .username(answer.getAnsweredBy().getUsername())
+                                .reputationPoints(answer.getAnsweredBy().getReputationPoints())
+                                .name(answer.getAnsweredBy().getFirstName() + " " + answer.getAnsweredBy().getLastName())
+                                .build()
+                )
+                .createdAt(answer.getCreatedAt())
+                .updatedAt(answer.getUpdatedAt())
+                .upvoteCount(answer.getUpvoteCount())
+                .downvoteCount(answer.getDownvoteCount())
+                .selfAnswer(currentUser != null && currentUser.getId().equals(answer.getAnsweredBy().getId()))
+                .selfVoted(currentUser != null && voteRepository.findByUserAndAnswer(currentUser, answer).isPresent() ? voteRepository.findByUserAndAnswer(currentUser, answer).get().isUpvote()? 1 : -1 : 0)
+                .question(GetAnswerDtoForProfile.QuesitonInfoForAnswer.builder()
+                        .id(answer.getQuestion().getId())
+                        .title(answer.getQuestion().getTitle())
+                        .build())
                 .build();
     }
 

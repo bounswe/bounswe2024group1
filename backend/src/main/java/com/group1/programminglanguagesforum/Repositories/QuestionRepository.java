@@ -28,4 +28,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             @Param("tagIds") List<Long> tagIds,
             @Param("difficulty") DifficultyLevel difficulty,
             Pageable pageable);
+    @Query("SELECT q FROM Question q WHERE q.askedBy.id = :author")
+    List<Question> findByAuthorId(@Param("author") Long authorId);
 }

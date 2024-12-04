@@ -2,14 +2,12 @@ package com.group1.programminglanguagesforum.Controllers;
 
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Requests.UserProfileUpdateRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
-import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
-import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.UserProfileResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.UserSummaryDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
+import com.group1.programminglanguagesforum.Services.AnswerService;
+import com.group1.programminglanguagesforum.Services.QuestionService;
 import com.group1.programminglanguagesforum.Services.UserContextService;
 import com.group1.programminglanguagesforum.Services.UserService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
@@ -33,6 +31,8 @@ public class UserController extends BaseController {
         private final UserContextService userContextService;
         private final UserService userService;
         private final ModelMapper modelMapper;
+        private final QuestionService questionService;
+        private final AnswerService answerService;
 
         @GetMapping(value = EndpointConstants.UserEndpoints.USER_ME)
         public ResponseEntity<GenericApiResponse<SelfProfileResponseDto>> getUser() {
@@ -41,6 +41,16 @@ public class UserController extends BaseController {
                         User user = userContextService.getCurrentUser();
                         SelfProfileResponseDto selfProfileResponseDto = modelMapper.map(user,
                                         SelfProfileResponseDto.class);
+                        List<QuestionSummaryDto> questions = questionService.findByAuthorId(user.getId());
+                        List<GetAnswerDtoForProfile> answers = answerService.findByAnsweredBy(user.getId());
+                        selfProfileResponseDto.setQuestionCount((long) questions.size());
+                        selfProfileResponseDto.setQuestions(
+                                questions);
+                        selfProfileResponseDto.setAnswerCount((long) answers.size());
+                        selfProfileResponseDto.setAnswers(
+                                answers);
+
+
                         GenericApiResponse<SelfProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                                         selfProfileResponseDto.getClass(),
                                         "User retrieved successfully",
