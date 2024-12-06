@@ -1,15 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { QuestionSummary } from "@/services/api/programmingForumSchemas";
 
-import { ArrowRight, MessageSquare, Star } from "lucide-react";
+import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
+function capitalizeString(difficulty: string): React.ReactNode {
+  return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+}
 export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
   id,
   title,
   questionBody,
   likeCount,
+  difficulty,
   commentCount,
   author,
 }) => {
@@ -31,6 +35,12 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
             <MessageSquare className="h-4 w-4" />
             <span>{commentCount} answers</span>
           </div>
+          {difficulty && (
+            <div className="flex items-center gap-1">
+              <StarsIcon className="h-4 w-4" />
+              <span>{capitalizeString(difficulty)}</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center justify-between">
           {author && (

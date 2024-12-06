@@ -23,7 +23,7 @@ import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { QuestionDetails } from "@/services/api/programmingForumSchemas";
+import { QuestionSummary } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 
 export default function TagPage() {
@@ -58,7 +58,7 @@ export default function TagPage() {
     );
 
   const questions =
-    (questionSearch?.data as unknown as { items: QuestionDetails[] })?.items ||
+    (questionSearch?.data as unknown as { items: QuestionSummary[] })?.items ||
     [];
 
   if (isLoading) {
@@ -80,6 +80,8 @@ export default function TagPage() {
     );
   }
 
+  const shouldShowHighlightedQuestions =
+    !experienceLevel || experienceLevel === "BEGINNER";
   // TODO: fix this when backend catches up
   const relatedQuestions = tag?.relatedQuestions || [];
   return (
@@ -185,10 +187,9 @@ export default function TagPage() {
             <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
           <TabsContent value="top-rated" className="flex flex-col gap-4">
-            {!experienceLevel ||
-              (experienceLevel === "BEGINNER" && (
-                <HighlightedQuestionsBox questions={relatedQuestions} />
-              ))}
+            {shouldShowHighlightedQuestions && (
+              <HighlightedQuestionsBox questions={relatedQuestions} />
+            )}
             <div className="grid grid-cols-3 gap-4">
               {questions &&
                 questions.map((question) => (
@@ -205,10 +206,9 @@ export default function TagPage() {
             </div>
           </TabsContent>
           <TabsContent value="recent" className="flex flex-col gap-4">
-            {!experienceLevel ||
-              (experienceLevel === "BEGINNER" && (
-                <HighlightedQuestionsBox questions={relatedQuestions} />
-              ))}
+            {shouldShowHighlightedQuestions && (
+              <HighlightedQuestionsBox questions={relatedQuestions} />
+            )}
 
             <div className="grid grid-cols-3 gap-4">
               {isQuestionSearchLoading && <FullscreenLoading />}

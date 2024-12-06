@@ -131,7 +131,7 @@ export type QuestionDetails = {
 export type QuestionSummary = {
   id: number;
   title: string;
-  questionBody?: string;
+  content?: string;
   author?: UserSummary;
   /**
    * @format date-time
