@@ -101,6 +101,16 @@ public class TagService {
                 .build();
 
     }
+    public List<SelfProfileResponseDto.FollowedTags> getFollowedTags(Long userId) {
+        return tagRepository.findTagByFollowers(userId).stream()
+                .map(tag -> SelfProfileResponseDto.FollowedTags.builder()
+                        .id(tag.getId())
+                        .name(tag.getTagName())
+                        .tagType(getTagType(tag))
+                        .description(tag.getTagDescription())
+                        .build())
+                .toList();
+    }
 
     public Page<GetTagDetailsResponseDto> searchTags(String q, Pageable pageable) {
         Page<Tag> tags = tagRepository.findTagsByTagNameContainingIgnoreCase(q, pageable);

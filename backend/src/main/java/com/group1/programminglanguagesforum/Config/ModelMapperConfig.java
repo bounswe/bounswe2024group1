@@ -46,6 +46,13 @@ public class ModelMapperConfig {
 
             }
         });
+        modelMapper.addMappings(new PropertyMap <User,UserProfileResponseDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getFollowedTags());
+
+            }
+        });
         modelMapper.addMappings(new PropertyMap<Question, GetQuestionWithTagDto>() {
             @Override
             protected void configure() {
