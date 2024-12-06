@@ -27,7 +27,7 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
   ({ id, title, content, votes, answerCount, author, difficulty }, ref) => {
     return (
       <Card
-        className="flex border-none bg-neutral-150 px-6 py-8 shadow-sm"
+        className="flex flex-1 border-none bg-neutral-150 px-6 py-8 shadow-sm"
         ref={ref}
       >
         <div className="flex flex-col gap-6">
