@@ -87,7 +87,7 @@ export type NewQuestion = {
   title: string;
   content: string;
   tagIds?: number[];
-  difficultyLevel: DifficultyLevel;
+  difficulty: DifficultyLevel;
 };
 
 export type UpdateQuestion = {
