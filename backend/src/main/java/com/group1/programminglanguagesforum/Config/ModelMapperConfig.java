@@ -46,12 +46,19 @@ public class ModelMapperConfig {
 
             }
         });
+        modelMapper.addMappings(new PropertyMap<Question, GetQuestionWithTagDto>() {
+            @Override
+            protected void configure() {
+                map(source.getQuestionBody(), destination.getContent());
+            }
+        });
         modelMapper.addMappings(new PropertyMap< GetQuestionWithTagDto,Question>() {
             @Override
             protected void configure() {
                 skip(destination.getTags());
                 skip(destination.getVotes());
                 skip(destination.getAskedBy());
+                map(source.getContent(), destination.getQuestionBody());
             }
         });
         modelMapper.addMappings(new PropertyMap<ProgrammingLanguagesTag, GetProgrammingLanguageTagResponseDto>() {

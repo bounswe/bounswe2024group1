@@ -113,7 +113,7 @@ export default function TagPage() {
               key={question.id}
               id={String(question.id)}
               title={question.title}
-              content={question.questionBody}
+              content={question.content}
               votes={question.likeCount}
               answerCount={question.commentCount}
               author={question.author}
@@ -129,7 +129,7 @@ export default function TagPage() {
                     key={question.id}
                     id={String(question.id)}
                     title={question.title}
-                    content={question.questionBody}
+                    content={question.content}
                     votes={question.likeCount}
                     answerCount={question.commentCount}
                     author={question.author}
@@ -144,7 +144,7 @@ export default function TagPage() {
                     key={question.id}
                     id={String(question.id)}
                     title={question.title}
-                    content={question.questionBody}
+                    content={question.content}
                     votes={question.likeCount}
                     answerCount={question.commentCount}
                     author={question.author}
