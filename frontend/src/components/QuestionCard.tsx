@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
+import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 
-import { ArrowRight, MessageSquare, Star } from "lucide-react";
+import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -10,6 +11,7 @@ interface QuestionCardProps {
   content: string;
   votes: number;
   answerCount: number;
+  difficulty?: DifficultyLevel;
   author?: {
     id: number;
     name: string;
@@ -17,8 +19,12 @@ interface QuestionCardProps {
   };
 }
 
+const capitalizeString = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
 export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
-  ({ id, title, content, votes, answerCount, author }, ref) => {
+  ({ id, title, content, votes, answerCount, author, difficulty }, ref) => {
     return (
       <Card
         className="flex border-none bg-neutral-150 px-6 py-8 shadow-sm"
@@ -40,6 +46,12 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
               <MessageSquare className="h-4 w-4" />
               <span>{answerCount} answers</span>
             </div>
+            {difficulty && (
+              <div className="flex items-center gap-1">
+                <StarsIcon className="h-4 w-4" />
+                <span>{capitalizeString(difficulty)}</span>
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between">
             {author && (

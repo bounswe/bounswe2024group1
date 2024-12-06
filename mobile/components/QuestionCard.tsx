@@ -1,7 +1,13 @@
 import { Icon, Image, Text } from "@/components/ui";
 import { Card } from "@/components/ui/card";
+import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 import { Link } from "expo-router";
-import { ArrowRight, MessageSquare, Star } from "lucide-react-native";
+import {
+  ArrowRight,
+  MessageSquare,
+  Star,
+  StarsIcon,
+} from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
 
@@ -11,6 +17,7 @@ interface QuestionCardProps {
   content?: string;
   votes: number;
   answerCount: number;
+  difficulty?: DifficultyLevel;
   author?: {
     id: number;
     name: string;
@@ -18,6 +25,9 @@ interface QuestionCardProps {
   };
   highlighted?: boolean;
 }
+const capitalizeString = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({
   id,
@@ -25,6 +35,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   content,
   votes,
   answerCount,
+  difficulty,
   author,
   highlighted = false,
 }) => {
@@ -66,6 +77,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             />
             <Text>{answerCount} answers</Text>
           </View>
+          {difficulty && (
+            <View className="flex items-center gap-1">
+              <StarsIcon className="h-4 w-4" />
+              <Text>{capitalizeString(difficulty)}</Text>
+            </View>
+          )}
         </View>
         <View className="flex items-center justify-between">
           {author && (
