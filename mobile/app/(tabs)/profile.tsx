@@ -6,6 +6,7 @@ import {
   Button,
   ButtonText,
   HStack,
+  Icon,
   Image,
   Input,
   InputField,
@@ -25,14 +26,16 @@ import {
   TextareaInput,
   VStack,
 } from "@/components/ui";
+import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from "@/components/ui/menu";
+
 import {
   useGetUserProfile,
   useUpdateUserProfile,
 } from "@/services/api/programmingForumComponents";
 import { ExperienceLevel } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
-import { Link } from "expo-router";
-import { ChevronDownIcon, Plus } from "lucide-react-native";
+import { Link, router } from "expo-router";
+import { ChevronDownIcon, Plus, Bookmark, MenuIcon, LogOutIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
@@ -103,10 +106,38 @@ export function UserProfile({ userId }: { userId: string }) {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, paddingVertical: 16 }}>
-      <VStack space="md" className="px-4">
-        <Text className="text-2xl font-bold">
-          {me ? "My profile" : "Profile"}
-        </Text>
+      <VStack space="md" className="px-8">
+        <HStack className="items-center justify-between py-12">
+          <Text className="text-2xl font-bold">
+          {me ? "My Profile" : "Profile"}
+          </Text>
+
+          <Menu
+            trigger={({ ...triggerProps }) => {
+              return (
+                <Button {...triggerProps} variant="link">
+                  <Icon as={MenuIcon} size="xl" color="black" />
+                </Button>
+              
+              )
+            }}  
+          >
+            <MenuItem textValue="bookmark" onPress={() => router.push(`/users/bookmark`)}>
+              <Icon as={Bookmark} size="md" color="black" />
+              <MenuItemLabel style={{ marginLeft: 8 }}>Bookmarks</MenuItemLabel>
+            </MenuItem>
+
+            <MenuSeparator></MenuSeparator>
+
+            <MenuItem textValue="logout" onPress={() => router.push(`/logout`)}>
+              <Icon as={LogOutIcon} size="md" color="black" />
+              <MenuItemLabel style={{ marginLeft: 8 }}>Logout</MenuItemLabel>
+            </MenuItem>
+            
+          </Menu>
+            
+        </HStack>
+
 
         <HStack space="lg" className="items-center justify-between py-4">
           <Image
