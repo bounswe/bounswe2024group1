@@ -2,6 +2,9 @@ package com.group1.programminglanguagesforum.DTOs.Responses;
 import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,4 +23,7 @@ public class UserProfileResponseDto {
     private boolean selfFollowing;
     private int reputationPoints;
     private ExperienceLevel experienceLevel;
+    @Builder.Default
+    private List<SelfProfileResponseDto.FollowedTags> followedTags = new ArrayList<>();
+
 }
