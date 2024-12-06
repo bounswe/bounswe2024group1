@@ -110,6 +110,7 @@ public class QuestionService {
                 .id(question.getId())
                 .title(question.getTitle())
                 .content(question.getQuestionBody())
+                .difficulty(question.getDifficulty())
                 .likeCount(question.getUpvoteCount())
                 .dislikeCount(question.getDownvoteCount())
                 .commentCount(question.getCommentCount())
