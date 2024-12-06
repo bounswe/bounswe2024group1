@@ -1,5 +1,9 @@
+import { DifficultyFilter } from "@/components/DifficultyFilter";
 import { useSearchQuestions } from "@/services/api/programmingForumComponents";
-import { QuestionSummary } from "@/services/api/programmingForumSchemas";
+import {
+  DifficultyLevel,
+  QuestionSummary,
+} from "@/services/api/programmingForumSchemas";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -10,6 +14,7 @@ import { QuestionCard } from "./QuestionCard";
 export const SearchQuestionsList = () => {
   const [params] = useSearchParams();
   const [pageSize, setPageSize] = useState(20);
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>();
   const [previousData, setPreviousData] = useState<{
     items: QuestionSummary[];
     totalItems: number;
@@ -26,6 +31,7 @@ export const SearchQuestionsList = () => {
     queryParams: {
       q: params.get("q") ?? "",
       pageSize,
+      ...(difficulty && { difficulty }),
     },
   });
 
@@ -49,11 +55,14 @@ export const SearchQuestionsList = () => {
 
   return (
     <div className="container flex flex-col gap-2 py-8">
-      <h1 className="text-2xl font-bold ">
-        {questions.length
-          ? `Found ${searchResultData.totalItems} results`
-          : "No questions found"}
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold ">
+          {questions.length
+            ? `Found ${searchResultData.totalItems} results`
+            : "No questions found"}
+        </h1>
+        <DifficultyFilter value={difficulty} onChange={setDifficulty} />
+      </div>
       {!questions.length && (
         <p>Try searching for specific topics or keywords.</p>
       )}
