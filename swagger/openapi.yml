@@ -1376,7 +1376,7 @@ components:
           type: integer
         title:
           type: string
-        questionBody:
+        content:
           type: string
         author:
           $ref: "#/components/schemas/UserSummary"
