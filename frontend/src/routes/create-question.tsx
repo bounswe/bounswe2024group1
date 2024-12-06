@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 // Schema validation for the form
@@ -32,7 +32,7 @@ const newQuestionSchema = z.object({
   tags: z
     .array(z.object({ tagId: z.number(), name: z.string() }))
     .min(1, "At least one tag is required"),
-  difficultyLevel: z.enum(["EASY", "MEDIUM", "HARD"], {
+  difficulty: z.enum(["EASY", "MEDIUM", "HARD"], {
     errorMap: () => ({ message: "Select a difficulty level" }),
   }),
 });
@@ -40,15 +40,22 @@ const newQuestionSchema = z.object({
 type NewQuestion = z.infer<typeof newQuestionSchema>;
 
 export default function QuestionCreationPage() {
+  const [params] = useSearchParams();
+
+  const tagIds = params.get("tagIds");
   const form = useForm<NewQuestion>({
     resolver: zodResolver(newQuestionSchema),
     defaultValues: {
       title: "",
       content: "",
-      tags: [],
-      difficultyLevel: "EASY",
+      tags: tagIds
+        ? tagIds.split(",").map((id) => ({ tagId: Number(id) }))
+        : [],
+      difficulty: "EASY",
     },
   });
+  console.log("tagIds", tagIds);
+  console.log("form.getValues(tags)", form.getValues("tags"));
 
   const { handleSubmit, control } = form;
   const queryClient = useQueryClient();
@@ -64,7 +71,26 @@ export default function QuestionCreationPage() {
 
   useEffect(() => {
     if (tagSearchData?.data) {
-      setAvailableTags((tagSearchData.data as { items: TagDetails[] }).items);
+      const availableTags = (tagSearchData.data as { items: TagDetails[] })
+        .items;
+      setAvailableTags(availableTags);
+
+      if (tagIds && form.getValues("tags").some((tag) => !tag.name)) {
+        const currentVals = form.getValues("tags");
+        console.log("currentVals", currentVals);
+        form.setValue(
+          "tags",
+          currentVals
+            .map((tag) => ({
+              ...tag,
+              name:
+                availableTags.find((t) => Number(t.tagId) === Number(tag.tagId))
+                  ?.name || "",
+            }))
+            .filter((tag) => tag.name),
+        );
+        console.log("form.getValues(tags)", form.getValues("tags"));
+      }
     }
   }, [tagSearchData]);
 
@@ -139,10 +165,20 @@ export default function QuestionCreationPage() {
               <FormItem>
                 <FormControl>
                   <MultiSelect
-                    options={availableTags.map((tag) => ({
-                      value: tag.tagId,
-                      label: tag.name,
-                    }))}
+                    options={availableTags
+                      .map((tag) => ({
+                        value: String(tag.tagId),
+                        label: tag.name || "Loading...",
+                      }))
+                      .concat(
+                        field.value
+                          .filter((tag) => !tag.name)
+                          .map((tag) => ({
+                            value: String(tag.tagId),
+                            label: tag.name || "Loading...",
+                          })),
+                      )}
+                    defaultValue={field.value.map((tag) => String(tag.tagId))}
                     value={field.value.map((tag) => String(tag.tagId))} // Bind selected values correctly
                     onValueChange={(selectedIds) => {
                       // Map selected IDs back to tag objects
@@ -167,7 +203,7 @@ export default function QuestionCreationPage() {
           {/* Difficulty */}
           <FormField
             control={control}
-            name="difficultyLevel"
+            name="difficulty"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

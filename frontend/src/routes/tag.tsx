@@ -19,12 +19,17 @@ import {
   useSearchQuestions,
 } from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
+import { DifficultyFilter } from "@/components/DifficultyFilter";
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { QuestionDetails } from "@/services/api/programmingForumSchemas";
+import {
+  DifficultyLevel,
+  QuestionDetails,
+} from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
+import { useState } from "react";
 
 export default function TagPage() {
   const { tagId } = useParams();
@@ -43,6 +48,8 @@ export default function TagPage() {
 
   const tag = data?.data;
 
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>();
+
   const { data: questionSearch, isLoading: isQuestionSearchLoading } =
     useSearchQuestions(
       {
@@ -50,6 +57,7 @@ export default function TagPage() {
           tags: tag?.tagId,
           q: "",
           pageSize: 1000,
+          ...(difficulty && { difficulty }),
         },
       },
       {
@@ -165,19 +173,22 @@ export default function TagPage() {
       </div>
 
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
-        <div className="flex items-center gap-4">
-          <h3>Questions</h3>
-          {!!token && (
-            <Button
-              asChild
-              size="icon"
-              className="rounded-full bg-red-500 text-white"
-            >
-              <Link to={`/questions/new?tagIds=${tag.tagId}`}>
-                <Plus />
-              </Link>
-            </Button>
-          )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h3>Questions</h3>
+            {!!token && (
+              <Button
+                asChild
+                size="icon"
+                className="rounded-full bg-red-500 text-white"
+              >
+                <Link to={`/questions/new?tagIds=${tag.tagId}`}>
+                  <Plus />
+                </Link>
+              </Button>
+            )}
+          </div>
+          <DifficultyFilter value={difficulty} onChange={setDifficulty} />
         </div>
         <Tabs defaultValue="recent">
           <TabsList>
@@ -214,6 +225,7 @@ export default function TagPage() {
               {questions &&
                 questions.map((question) => (
                   <QuestionCard
+                    key={question.id}
                     id={question.id}
                     title={question.title}
                     content={question.content ?? ""}
