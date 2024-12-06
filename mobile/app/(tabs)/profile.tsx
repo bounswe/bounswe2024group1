@@ -122,7 +122,7 @@ export function UserProfile({ userId }: { userId: string }) {
               )
             }}  
           >
-            <MenuItem textValue="bookmark" onPress={() => router.push(`/users/bookmark`)}>
+            <MenuItem textValue="bookmark" onPress={() => router.push(`/bookmarks`)}>
               <Icon as={Bookmark} size="md" color="black" />
               <MenuItemLabel style={{ marginLeft: 8 }}>Bookmarks</MenuItemLabel>
             </MenuItem>
