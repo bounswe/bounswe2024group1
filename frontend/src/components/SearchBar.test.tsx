@@ -39,7 +39,7 @@ describe("SearchBar", () => {
   it("shows tooltip on focus after first load", () => {
     localStorage.setItem("searchTooltipShown", "true");
     renderSearchBar();
-    const input = screen.getByPlaceholderText(/Search for/i);
+    const input = screen.getByPlaceholderText(/search tags/i);
 
     // Initially tooltip should be hidden
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
@@ -63,7 +63,7 @@ describe("SearchBar", () => {
 
   it("focuses search input when '/' is pressed", () => {
     renderSearchBar();
-    const input = screen.getByPlaceholderText(/Search for/i);
+    const input = screen.getByPlaceholderText(/search tags/i);
 
     act(() => {
       fireEvent.keyDown(document, { key: "/" });
@@ -73,7 +73,7 @@ describe("SearchBar", () => {
 
   it("focuses search input when Cmd+K is pressed", () => {
     renderSearchBar();
-    const input = screen.getByPlaceholderText(/Search for/i);
+    const input = screen.getByPlaceholderText(/search tags/i);
 
     act(() => {
       fireEvent.keyDown(document, { key: "k", metaKey: true });
@@ -83,7 +83,7 @@ describe("SearchBar", () => {
 
   it("doesn't trigger shortcuts when typing in input", () => {
     renderSearchBar();
-    const input = screen.getByPlaceholderText(/Search for/i);
+    const input = screen.getByPlaceholderText(/search tags/i);
 
     act(() => {
       input.focus();
@@ -92,5 +92,32 @@ describe("SearchBar", () => {
       fireEvent.keyDown(input, { key: "/" });
     });
     expect(document.activeElement).toBe(input);
+  });
+  it("switches search type when dropdown option is clicked", async () => {
+    renderSearchBar();
+
+    // Click the dropdown trigger button
+    const triggerButton = screen.getByRole("button", { name: /tags/i });
+    fireEvent.pointerDown(
+      triggerButton,
+      new PointerEvent("pointerdown", {
+        ctrlKey: false,
+        button: 0,
+      }),
+    );
+
+    const questionsOption = screen.queryByTestId("search-type-questions");
+    expect(questionsOption).toBeInTheDocument();
+
+    if (questionsOption) {
+      fireEvent.click(questionsOption);
+    }
+
+    // After clicking, verify the input's placeholder has changed
+    const input = screen.getByRole("textbox", { name: /search/i });
+    expect(input).toHaveAttribute(
+      "placeholder",
+      expect.stringMatching(/questions/i),
+    );
   });
 });
