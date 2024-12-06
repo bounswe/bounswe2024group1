@@ -9,7 +9,7 @@ import {
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
 import {
-  QuestionDetails,
+  QuestionSummary,
   TagDetails,
 } from "@/services/api/programmingForumSchemas";
 import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
@@ -70,7 +70,7 @@ export const Feed = () => {
   // Extract data
   const tags = (tagSearchResult?.data as { items?: TagDetails[] }).items || [];
   const questions =
-    (questionSearchResult?.data as { items?: QuestionDetails[] }).items || [];
+    (questionSearchResult?.data as { items?: QuestionSummary[] }).items || [];
   const exercises = exercismData?.results || [];
 
   return (

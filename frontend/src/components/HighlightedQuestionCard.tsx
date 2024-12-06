@@ -11,7 +11,7 @@ function capitalizeString(difficulty: string): React.ReactNode {
 export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
   id,
   title,
-  questionBody,
+  content,
   likeCount,
   difficulty,
   commentCount,
@@ -24,7 +24,7 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
           {title}
         </h3>
         <p className="line-clamp-3 text-sm font-light text-gray-800">
-          {questionBody}
+          {content}
         </p>
         <div className="flex flex-col gap-3 text-xs text-gray-700">
           <div className="flex items-center gap-1">
