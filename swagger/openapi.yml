@@ -1367,7 +1367,7 @@ components:
         - id
         - title
         - likeCount
-        - difficultyLevel
+        - difficulty
         - createdAt
         - commentCount
         - tags
@@ -1383,7 +1383,7 @@ components:
         createdAt:
           type: string
           format: date-time
-        difficultyLevel:
+        difficulty:
           $ref: '#/components/schemas/DifficultyLevel'
         tags:
           type: array

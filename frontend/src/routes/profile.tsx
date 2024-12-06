@@ -189,9 +189,11 @@ export default function Profile() {
                 </Button>
               )}
             </div>
+
             <div className="grid grid-cols-3 gap-4">
               {profile?.questions?.map((question) => (
                 <QuestionCard
+                  difficulty={question.difficulty}
                   key={question.id}
                   id={question.id}
                   title={question.title}

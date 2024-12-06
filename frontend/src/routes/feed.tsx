@@ -121,6 +121,7 @@ export const Feed = () => {
               <div key={question.id} className="min-w-[300px]">
                 <QuestionCard
                   id={question.id}
+                  difficulty={question.difficulty}
                   title={question.title}
                   content={question.content ?? ""}
                   votes={

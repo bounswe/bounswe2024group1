@@ -204,6 +204,7 @@ export default function TagPage() {
               {questions &&
                 questions.map((question) => (
                   <QuestionCard
+                    difficulty={question.difficulty}
                     key={question.id}
                     id={question.id}
                     title={question.title}
@@ -227,6 +228,7 @@ export default function TagPage() {
                   <QuestionCard
                     key={question.id}
                     id={question.id}
+                    difficulty={question.difficulty}
                     title={question.title}
                     content={question.content ?? ""}
                     votes={

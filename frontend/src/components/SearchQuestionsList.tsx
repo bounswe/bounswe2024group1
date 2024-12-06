@@ -71,6 +71,7 @@ export const SearchQuestionsList = () => {
           >
             {questions.map((question) => (
               <QuestionCard
+                difficulty={question.difficulty}
                 key={question.id}
                 id={question.id}
                 title={question.title}

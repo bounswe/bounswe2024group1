@@ -137,7 +137,7 @@ export type QuestionSummary = {
    * @format date-time
    */
   createdAt: string;
-  difficultyLevel: DifficultyLevel;
+  difficulty: DifficultyLevel;
   tags: TagSummary[];
   likeCount: number;
   commentCount: number;
