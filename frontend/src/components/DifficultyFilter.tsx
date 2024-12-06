@@ -2,6 +2,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -25,6 +26,7 @@ export function DifficultyFilter({ value, onChange }: DifficultyFilterProps) {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="all">Filter by difficulty</SelectItem>
+        <SelectSeparator />
         <SelectItem value="EASY">Easy</SelectItem>
         <SelectItem value="MEDIUM">Medium</SelectItem>
         <SelectItem value="HARD">Hard</SelectItem>
