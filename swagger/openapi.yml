@@ -1272,7 +1272,7 @@ components:
         - title
         - content
         - tags
-        - difficultyLevel
+        - difficulty
       properties:
         title:
           type: string
@@ -1282,7 +1282,7 @@ components:
           type: array
           items:
             type: number
-        difficultyLevel:
+        difficulty:
           $ref: '#/components/schemas/DifficultyLevel'
 
     UpdateQuestion:
