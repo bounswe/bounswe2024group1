@@ -3,8 +3,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateAnswer } from "@/services/api/programmingForumComponents";
 import { queryKeyFn } from "@/services/api/programmingForumContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { Info, Pen } from "lucide-react";
 import { useState } from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { ContentWithSnippets } from "./ContentWithSnippets";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface CreateAnswerFormProps {
   questionId: number;
@@ -42,7 +45,53 @@ export function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
-      <h2 className="text-xl font-bold">Your Answer</h2>
+      <div className="flex items-center gap-2">
+        <Pen className="h-4 w-4" />
+        <h2 className="p-0 text-xl font-bold">Write an Answer</h2>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Info about Answer Format"
+            >
+              <Info className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="prose">
+              <h4 className="font-medium">Writing Answers</h4>
+              <p className="text-sm text-muted-foreground">
+                We use Markdown for formatting answers. You can use standard
+                Markdown syntax for headers, lists, links, etc. For a basic
+                reference, you can check{" "}
+                <a href="https://commonmark.org/help/" target="_blank">
+                  CommonMark
+                </a>
+                .
+              </p>
+
+              <h4 className="font-medium">Code Execution</h4>
+              <p className="text-sm text-muted-foreground">
+                To create executable code blocks, use triple backticks with
+                language-exec:
+              </p>
+              <SyntaxHighlighter
+                language="javascript"
+                className="not-prose mt-1"
+                children={`\`\`\`javascript-exec\nconsole.log("Hello, world!, This is executable!");\n\`\`\``}
+              />
+
+              <h4 className="font-medium">Linking</h4>
+              <p className="text-sm text-muted-foreground">
+                Link to tags using: <code>[tag name](#tag-123)</code>
+                <br />
+                Link to questions using: <code>[question title](#q-456)</code>
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
 
       <div className="flex gap-2">
         <Button

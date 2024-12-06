@@ -12,7 +12,7 @@ import java.util.List;
 public class GetQuestionWithTagDto {
     private Long id;
     private String title;
-    private String questionBody;
+    private String content;
     @Builder.Default
     private Long likeCount = 0L;
     @Builder.Default

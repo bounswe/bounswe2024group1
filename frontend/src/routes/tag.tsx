@@ -19,12 +19,17 @@ import {
   useSearchQuestions,
 } from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
+import { DifficultyFilter } from "@/components/DifficultyFilter";
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { QuestionDetails } from "@/services/api/programmingForumSchemas";
+import {
+  DifficultyLevel,
+  QuestionSummary,
+} from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
+import { useState } from "react";
 
 export default function TagPage() {
   const { tagId } = useParams();
@@ -43,6 +48,8 @@ export default function TagPage() {
 
   const tag = data?.data;
 
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>();
+
   const { data: questionSearch, isLoading: isQuestionSearchLoading } =
     useSearchQuestions(
       {
@@ -50,6 +57,7 @@ export default function TagPage() {
           tags: tag?.tagId,
           q: "",
           pageSize: 1000,
+          ...(difficulty && { difficulty }),
         },
       },
       {
@@ -58,7 +66,7 @@ export default function TagPage() {
     );
 
   const questions =
-    (questionSearch?.data as unknown as { items: QuestionDetails[] })?.items ||
+    (questionSearch?.data as unknown as { items: QuestionSummary[] })?.items ||
     [];
 
   if (isLoading) {
@@ -80,6 +88,8 @@ export default function TagPage() {
     );
   }
 
+  const shouldShowHighlightedQuestions =
+    !experienceLevel || experienceLevel === "BEGINNER";
   // TODO: fix this when backend catches up
   const relatedQuestions = tag?.relatedQuestions || [];
   return (
@@ -165,19 +175,22 @@ export default function TagPage() {
       </div>
 
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
-        <div className="flex items-center gap-4">
-          <h3>Questions</h3>
-          {!!token && (
-            <Button
-              asChild
-              size="icon"
-              className="rounded-full bg-red-500 text-white"
-            >
-              <Link to={`/questions/new?tagIds=${tag.tagId}`}>
-                <Plus />
-              </Link>
-            </Button>
-          )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h3>Questions</h3>
+            {!!token && (
+              <Button
+                asChild
+                size="icon"
+                className="rounded-full bg-red-500 text-white"
+              >
+                <Link to={`/questions/new?tagIds=${tag.tagId}`}>
+                  <Plus />
+                </Link>
+              </Button>
+            )}
+          </div>
+          <DifficultyFilter value={difficulty} onChange={setDifficulty} />
         </div>
         <Tabs defaultValue="recent">
           <TabsList>
@@ -185,14 +198,14 @@ export default function TagPage() {
             <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
           <TabsContent value="top-rated" className="flex flex-col gap-4">
-            {!experienceLevel ||
-              (experienceLevel === "BEGINNER" && (
-                <HighlightedQuestionsBox questions={relatedQuestions} />
-              ))}
+            {shouldShowHighlightedQuestions && (
+              <HighlightedQuestionsBox questions={relatedQuestions} />
+            )}
             <div className="grid grid-cols-3 gap-4">
               {questions &&
                 questions.map((question) => (
                   <QuestionCard
+                    difficulty={question.difficulty}
                     key={question.id}
                     id={question.id}
                     title={question.title}
@@ -204,17 +217,18 @@ export default function TagPage() {
             </div>
           </TabsContent>
           <TabsContent value="recent" className="flex flex-col gap-4">
-            {!experienceLevel ||
-              (experienceLevel === "BEGINNER" && (
-                <HighlightedQuestionsBox questions={relatedQuestions} />
-              ))}
+            {shouldShowHighlightedQuestions && (
+              <HighlightedQuestionsBox questions={relatedQuestions} />
+            )}
 
             <div className="grid grid-cols-3 gap-4">
               {isQuestionSearchLoading && <FullscreenLoading />}
               {questions &&
                 questions.map((question) => (
                   <QuestionCard
+                    key={question.id}
                     id={question.id}
+                    difficulty={question.difficulty}
                     title={question.title}
                     content={question.content ?? ""}
                     votes={

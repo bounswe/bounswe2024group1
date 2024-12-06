@@ -70,6 +70,7 @@ public class TagService {
         List<GetQuestionWithTagDto> relatedQuestions = questions.stream()
                 .map(question -> modelMapper.map(question, GetQuestionWithTagDto.class))
                 .toList();
+        Long questionCount = (long) questions.size();
 
         if (tagType == TagType.PROGRAMMING_LANGUAGE) {
             ProgrammingLanguagesTag languageTag = (ProgrammingLanguagesTag) tagEntity;
@@ -77,6 +78,7 @@ public class TagService {
                     GetProgrammingLanguageTagResponseDto.class);
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
+            responseDto.setQuestionCount(questionCount);
             return responseDto;
         } else if (tagType == TagType.PROGRAMMING_PARADIGM) {
             ProgrammingParadigmTag paradigmTag = (ProgrammingParadigmTag) tagEntity;
@@ -84,6 +86,7 @@ public class TagService {
                     GetProgrammingParadigmResponseDto.class);
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
+            responseDto.setQuestionCount(questionCount);
             return responseDto;
         }
 
@@ -93,6 +96,7 @@ public class TagService {
                 .description(tagEntity.getTagDescription())
                 .tagType(getTagType(tagEntity).toString())
                 .relatedQuestions(relatedQuestions)
+                .questionCount(questionCount)
 
                 .build();
 
@@ -102,6 +106,7 @@ public class TagService {
         Page<Tag> tags = tagRepository.findTagsByTagNameContainingIgnoreCase(q, pageable);
         return tags.map(tag -> GetTagDetailsResponseDto.builder()
                 .tagId(tag.getId())
+                .questionCount((long) questionRepository.findQuestionsByTagId(tag.getId()).size())
                 .name(tag.getTagName())
                 .description(tag.getTagDescription())
                 .tagType(getTagType(tag).toString())

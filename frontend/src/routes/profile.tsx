@@ -189,13 +189,15 @@ export default function Profile() {
                 </Button>
               )}
             </div>
+
             <div className="grid grid-cols-3 gap-4">
               {profile?.questions?.map((question) => (
                 <QuestionCard
+                  difficulty={question.difficulty}
                   key={question.id}
                   id={question.id}
                   title={question.title}
-                  content={question.questionBody ?? ""}
+                  content={question.content ?? ""}
                   votes={question.likeCount}
                   answerCount={question.commentCount}
                   author={question.author}

@@ -29,6 +29,23 @@ class MockObserver {
   }
 }
 
+// https://github.com/radix-ui/primitives/issues/420#issuecomment-771615182
+// @ts-expect-error PointerEvent is not defined in the global scope
+window.PointerEvent = class PointerEvent extends Event {
+  button: number = 0;
+  ctrlKey: boolean = false;
+
+  constructor(type: string, props: { button?: number; ctrlKey?: boolean }) {
+    super(type, props as EventInit);
+    if (props.button != null) {
+      this.button = props.button;
+    }
+    if (props.ctrlKey != null) {
+      this.ctrlKey = props.ctrlKey;
+    }
+  }
+};
+
 // @ts-expect-error IntersectionObserver is not defined in the global scope
 global.IntersectionObserver = MockObserver;
 

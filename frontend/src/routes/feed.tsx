@@ -9,7 +9,7 @@ import {
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
 import {
-  QuestionDetails,
+  QuestionSummary,
   TagDetails,
 } from "@/services/api/programmingForumSchemas";
 import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
@@ -70,7 +70,7 @@ export const Feed = () => {
   // Extract data
   const tags = (tagSearchResult?.data as { items?: TagDetails[] }).items || [];
   const questions =
-    (questionSearchResult?.data as { items?: QuestionDetails[] }).items || [];
+    (questionSearchResult?.data as { items?: QuestionSummary[] }).items || [];
   const exercises = exercismData?.results || [];
 
   return (
@@ -94,7 +94,7 @@ export const Feed = () => {
         ) : (
           <div className="mt-4 flex gap-4 overflow-x-auto">
             {tags.map((tag) => (
-              <div key={tag.tagId} className="min-w-[300px]">
+              <div key={tag.tagId} className="flex min-w-[300px]">
                 <TagCard tag={tag} />
               </div>
             ))}
@@ -118,9 +118,10 @@ export const Feed = () => {
         ) : (
           <div className="mt-4 grid grid-cols-3 gap-4 overflow-x-auto">
             {questions.map((question) => (
-              <div key={question.id} className="min-w-[300px]">
+              <div key={question.id} className="flex min-w-[300px]">
                 <QuestionCard
                   id={question.id}
+                  difficulty={question.difficulty}
                   title={question.title}
                   content={question.content ?? ""}
                   votes={
@@ -156,7 +157,7 @@ export const Feed = () => {
         ) : (
           <div className="mt-4 flex gap-4 overflow-x-auto">
             {exercises.map((exercise) => (
-              <div key={exercise.slug} className="min-w-[300px]">
+              <div key={exercise.slug} className="flex min-w-[300px]">
                 <ExerciseCard
                   key={exercise.slug}
                   id={Number(exercise.slug)}

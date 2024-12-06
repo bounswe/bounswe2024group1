@@ -100,7 +100,7 @@ export default function NewQuestionPage() {
         body: {
           title,
           content,
-          difficultyLevel: difficulty,
+          difficulty,
           tagIds: selectedTags
             .map((tag) => Number(tag.id))
             .filter((id): id is number => id !== undefined),

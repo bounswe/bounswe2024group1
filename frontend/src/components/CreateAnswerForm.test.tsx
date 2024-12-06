@@ -31,7 +31,7 @@ describe("CreateAnswerForm", () => {
   it("renders form elements correctly", () => {
     render(<CreateAnswerForm questionId={1} />);
 
-    expect(screen.getByText("Your Answer")).toBeInTheDocument();
+    expect(screen.getByText("Write an Answer")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Write" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Preview" })).toBeInTheDocument();
     expect(
@@ -126,5 +126,31 @@ describe("CreateAnswerForm", () => {
     await waitFor(() => {
       expect(textarea).toHaveValue("");
     });
+  });
+
+  it("renders popover content when info button is clicked", async () => {
+    render(<CreateAnswerForm questionId={1} />);
+
+    // Find and click the info button
+    const infoButton = screen.getByRole("button", { name: /info/i });
+    fireEvent.click(infoButton);
+
+    // Check that popover content is displayed
+    expect(screen.getByText("Writing Answers")).toBeInTheDocument();
+    expect(
+      screen.getByText(/We use Markdown for formatting answers/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Code Execution")).toBeInTheDocument();
+    expect(
+      screen.getByText(/To create executable code blocks/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Linking")).toBeInTheDocument();
+    expect(screen.getByText(/Link to tags using:/i)).toBeInTheDocument();
+
+    // Verify the CommonMark link is present
+    expect(screen.getByRole("link", { name: "CommonMark" })).toHaveAttribute(
+      "href",
+      "https://commonmark.org/help/",
+    );
   });
 });

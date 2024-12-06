@@ -1272,7 +1272,7 @@ components:
         - title
         - content
         - tags
-        - difficultyLevel
+        - difficulty
       properties:
         title:
           type: string
@@ -1282,7 +1282,7 @@ components:
           type: array
           items:
             type: number
-        difficultyLevel:
+        difficulty:
           $ref: '#/components/schemas/DifficultyLevel'
 
     UpdateQuestion:
@@ -1367,7 +1367,7 @@ components:
         - id
         - title
         - likeCount
-        - difficultyLevel
+        - difficulty
         - createdAt
         - commentCount
         - tags
@@ -1376,14 +1376,14 @@ components:
           type: integer
         title:
           type: string
-        questionBody:
+        content:
           type: string
         author:
           $ref: "#/components/schemas/UserSummary"
         createdAt:
           type: string
           format: date-time
-        difficultyLevel:
+        difficulty:
           $ref: '#/components/schemas/DifficultyLevel'
         tags:
           type: array
