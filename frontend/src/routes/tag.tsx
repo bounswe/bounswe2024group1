@@ -99,12 +99,13 @@ export default function TagPage() {
         <div className="flex items-center gap-2 ">
           <h1>{tag.name}</h1>
         </div>
+        {!!token && (
           <TagFollowButton
             tag={{
               tagId: tagId!,
               following: tag.following,
             }}
-          />
+          />)}
       </div>
       {tag.logoImage && (
         <img
