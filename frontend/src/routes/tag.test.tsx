@@ -104,20 +104,20 @@ describe("TagPage", () => {
     ).not.toBeInTheDocument();
   });
 
-  // it("renders 'Follow' button for authenticated users", () => {
-  //   vi.mocked(useAuthStore).mockReturnValue({
-  //     selfProfile: { id: 1, username: "testuser", profilePicture: "test.jpg" },
-  //     token: "mock-token",
-  //   });
+  it("renders 'Follow' button for authenticated users", () => {
+    vi.mocked(useAuthStore).mockReturnValue({
+      selfProfile: { id: 1, username: "testuser", profilePicture: "test.jpg" },
+      token: "mock-token",
+    });
 
-  //   render(
-  //     <MemoryRouter initialEntries={["/tag/javascript"]}>
-  //       <Routes>
-  //         <Route path="/tag/:tagName" element={<TagPage />} />
-  //       </Routes>
-  //     </MemoryRouter>,
-  //   );
+     render(
+       <MemoryRouter initialEntries={["/tag/javascript"]}>
+         <Routes>
+           <Route path="/tag/:tagName" element={<TagPage />} />
+         </Routes>
+       </MemoryRouter>,
+     );
 
-  //   expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
-  // });
+     expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
+   });
 });
