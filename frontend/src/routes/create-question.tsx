@@ -61,7 +61,6 @@ export default function QuestionCreationPage() {
   console.log("tagIds", tagIds);
   console.log("form.getValues(tags)", form.getValues("tags"));
 
-  const [content, setContent] = useState("");
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const { handleSubmit, control } = form;
