@@ -33,7 +33,7 @@ public class GetQuestionDetailsResponseDto {
     @Builder.Default
     private boolean bookmarked = false;
     @Builder.Default
-    private DifficultyLevel lastRatedDifficulty =null;
+    private DifficultyLevel  selfDifficultyVote =null;
     private Long easyCount;
     private Long mediumCount;
     private Long hardCount;
