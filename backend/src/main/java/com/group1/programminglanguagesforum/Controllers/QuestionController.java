@@ -131,7 +131,7 @@ public class QuestionController extends BaseController {
                 HttpStatus.OK);
     }
 
-    @PostMapping(value = EndpointConstants.QuestionEndpoints.QUESTION_RATE)
+    @PostMapping(value = EndpointConstants.QuestionEndpoints.QUESTION_DIFFICULTY_VOTE)
     public ResponseEntity<GenericApiResponse<QuestionRateResponseDto>> rateQuestion(
             @PathVariable(value = "id") Long id,
             @RequestBody DifficultyLevelRequestDto dto) {
