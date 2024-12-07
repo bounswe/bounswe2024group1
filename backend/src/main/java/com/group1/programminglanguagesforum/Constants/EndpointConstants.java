@@ -56,6 +56,7 @@ public class EndpointConstants {
     public static class BookmarkEndpoints {
         public static final String BASE_PATH = "/questions/{questionId}/bookmarks";
         public static final String BOOKMARK_DELETE = BASE_PATH;
+        public static final String BOOKMARK_GET = "/questions/bookmarked";
     }
 
     public static class SearchEndpoints {
