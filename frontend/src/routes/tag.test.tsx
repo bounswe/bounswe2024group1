@@ -1,5 +1,5 @@
 //tag page integration test
-import { useFollowTag, useGetTagDetails } from "@/services/api/programmingForumComponents";
+import { useGetTagDetails } from "@/services/api/programmingForumComponents";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { render, screen } from "@testing-library/react";
