@@ -1,8 +1,8 @@
 //tag page integration test
-import { useFollowTag, useUnfollowTag, useGetTagDetails } from "@/services/api/programmingForumComponents";
+import { useGetTagDetails } from "@/services/api/programmingForumComponents";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import TagPage from "./tag";
