@@ -1118,6 +1118,10 @@ export type BookmarkQuestionPathParams = {
 
 export type BookmarkQuestionError = Fetcher.ErrorWrapper<
   | {
+        status: 400;
+        payload: Responses.BadRequestResponse;
+      }
+  | {
       status: 401;
       payload: Responses.UnauthorizedResponse;
     }
@@ -1143,7 +1147,7 @@ export const fetchBookmarkQuestion = (
     {},
     BookmarkQuestionPathParams
   >({
-    url: "/questions/{questionId}/bookmark",
+    url: "/questions/{questionId}/bookmarks",
     method: "post",
     ...variables,
     signal,
@@ -1202,7 +1206,7 @@ export const fetchRemoveQuestionBookmark = (
     {},
     RemoveQuestionBookmarkPathParams
   >({
-    url: "/questions/{questionId}/bookmark",
+    url: "/questions/{questionId}/bookmarks",
     method: "delete",
     ...variables,
     signal,

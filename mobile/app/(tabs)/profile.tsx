@@ -105,9 +105,9 @@ export function UserProfile({ userId }: { userId: string }) {
   const profile = data!.data;
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingVertical: 16 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 8 }}>
       <VStack space="md" className="px-8">
-        <HStack className="items-center justify-between py-12">
+        <HStack className="items-center justify-between" style={{marginTop: 36}}>
           <Text className="text-2xl font-bold">
           {me ? "My Profile" : "Profile"}
           </Text>
