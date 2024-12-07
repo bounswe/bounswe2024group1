@@ -28,7 +28,7 @@ import {
 import useAuthStore from "@/services/auth";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { ArrowLeftIcon, BookmarkIcon, Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 export default function QuestionPage() {
   const { questionId } = useLocalSearchParams();
@@ -55,7 +55,11 @@ export default function QuestionPage() {
   const { selfProfile, token } = useAuthStore();
 
   const [optimisticVotes, setOptimisticVotes] = useState<number | null>(null);
-  const [optimisticBookmarked, setOptimisticBookmarked] = useState<boolean>(question.bookmarked ? true : false);
+  const [optimisticBookmarked, setOptimisticBookmarked] = useState<boolean>(question.bookmarked ?? false);
+
+  useEffect(() => {
+    setOptimisticBookmarked(question.bookmarked ?? false);
+  }, [question.bookmarked]);
 
   const { mutateAsync: upvoteQuestion } = useUpvoteQuestion({
     onMutate: async () => {
