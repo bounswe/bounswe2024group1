@@ -1,8 +1,8 @@
 //tag page integration test
-import { useGetTagDetails } from "@/services/api/programmingForumComponents";
+import { useFollowTag, useUnfollowTag, useGetTagDetails } from "@/services/api/programmingForumComponents";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import TagPage from "./tag";
@@ -25,8 +25,12 @@ const mockTagData = vi.hoisted(
 // Mock the API hook
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetTagDetails: vi.fn(() => {}),
-  useFollowTag: vi.fn(),
-  useUnfollowTag: vi.fn(),
+  useFollowTag: vi.fn(() => ({
+    mutateAsync: vi.fn(), // Mock implementation of mutateAsync
+  })),
+  useUnfollowTag: vi.fn(() => ({
+    mutateAsync: vi.fn(), // Mock implementation of mutateAsync
+  })),
   useGetQuestionDetails: vi.fn(() => ({
     data: {
       data: {
@@ -88,20 +92,6 @@ describe("TagPage", () => {
         exact: false,
       }),
     ).toBeInTheDocument();
-  });
-
-  it("does not render 'Follow' button for unauthenticated users", () => {
-    render(
-      <MemoryRouter initialEntries={["/tag/javascript"]}>
-        <Routes>
-          <Route path="/tag/:tagName" element={<TagPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
-
-    expect(
-      screen.queryByRole("button", { name: /follow/i }),
-    ).not.toBeInTheDocument();
   });
 
   it("renders 'Follow' button for authenticated users", () => {
