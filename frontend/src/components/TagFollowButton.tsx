@@ -47,7 +47,7 @@ export default function TagFollowButton({
     },
   });
 
-  const following = optimisticFollowing ?? data?.tag?.following;
+  const following = optimisticFollowing ?? data?.data?.following;
 
   return (
     <Button
