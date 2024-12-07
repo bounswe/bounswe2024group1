@@ -11,7 +11,7 @@ public class GeneralConstants {
                         (SAMPLE(?officialWebSite) AS ?officialWebSiteS)\s
                         (SAMPLE(?stackExchangeTag) AS ?stackExchangeTagS)
                     WHERE {
-                        ?library wdt:P31 wd:Q188860.  
+                        ?library wdt:P31 wd:Q188860.
                         
                         FILTER (
                             EXISTS { ?library wdt:P154 ?logoImage }

@@ -2,16 +2,14 @@ package com.group1.programminglanguagesforum.Controllers;
 
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateQuestionRequestDto;
+import com.group1.programminglanguagesforum.DTOs.Requests.DifficultyLevelRequestDto;
 import com.group1.programminglanguagesforum.DTOs.Requests.UpdateQuestionRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.CreateQuestionResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
-import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
+import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
-import com.group1.programminglanguagesforum.DTOs.Responses.GetQuestionDetailsResponseDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
 import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
+import com.group1.programminglanguagesforum.Services.QuestionDifficultyRateService;
 import com.group1.programminglanguagesforum.Services.QuestionService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +30,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class QuestionController extends BaseController {
     private final QuestionService questionService;
+    private final QuestionDifficultyRateService questionDifficultyRateService;
 
     @PostMapping(value = EndpointConstants.QuestionEndpoints.BASE_PATH)
     public ResponseEntity<GenericApiResponse<CreateQuestionResponseDto>> createQuestion(
@@ -130,6 +129,23 @@ public class QuestionController extends BaseController {
                         HttpStatus.OK.value(),
                         response),
                 HttpStatus.OK);
+    }
+
+    @PostMapping(value = EndpointConstants.QuestionEndpoints.QUESTION_RATE)
+    public ResponseEntity<GenericApiResponse<QuestionRateResponseDto>> rateQuestion(
+            @PathVariable(value = "id") Long id,
+            @RequestBody DifficultyLevelRequestDto dto) {
+        try {
+            GenericApiResponse<QuestionRateResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
+                    QuestionRateResponseDto.class, "Question rated successfully", 200,
+                    questionDifficultyRateService.rateQuestion(id, dto.getDifficulty()));
+            return buildResponse(response, org.springframework.http.HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return ExceptionResponseHandler.NoSuchElementException(e);
+        }
+        catch (UnauthorizedAccessException e) {
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
+        }
     }
 
 }

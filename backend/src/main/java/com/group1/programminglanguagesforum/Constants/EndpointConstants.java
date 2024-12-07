@@ -33,6 +33,7 @@ public class EndpointConstants {
         public static final String QUESTION_DELETE_UPVOTE = QUESTION_ID + "/deleteUpvote";
         public static final String QUESTION_DELETE_DOWNVOTE = QUESTION_ID + "/deleteDownvote";
         public static final String QUESTION_ANSWERS = BASE_PATH + "/{questionId}/answers";
+        public static final String QUESTION_RATE = QUESTION_ID + "/rate";
     }
 
     public static class AnswerEndpoints {
