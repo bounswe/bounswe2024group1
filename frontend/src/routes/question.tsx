@@ -19,6 +19,7 @@ import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 
 export default function QuestionPage() {
   const { questionId } = useParams();
@@ -218,9 +219,7 @@ export default function QuestionPage() {
         </div>
 
         {/* Question Content */}
-        <div className="mb-6 rounded-lg bg-neutral-150 p-4">
-          <span className="whitespace-pre-wrap">{question.content}</span>
-        </div>
+        <ContentWithSnippets content={question.content} />
 
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>
