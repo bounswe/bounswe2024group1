@@ -1,5 +1,5 @@
 //tag page integration test
-import { useGetTagDetails } from "@/services/api/programmingForumComponents";
+import { useFollowTag, useGetTagDetails } from "@/services/api/programmingForumComponents";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { render, screen } from "@testing-library/react";
@@ -25,6 +25,8 @@ const mockTagData = vi.hoisted(
 // Mock the API hook
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetTagDetails: vi.fn(() => {}),
+  useFollowTag: vi.fn(),
+  useUnfollowTag: vi.fn(),
   useGetQuestionDetails: vi.fn(() => ({
     data: {
       data: {
