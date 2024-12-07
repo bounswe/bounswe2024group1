@@ -33,6 +33,7 @@ public class EndpointConstants {
         public static final String QUESTION_DELETE_UPVOTE = QUESTION_ID + "/deleteUpvote";
         public static final String QUESTION_DELETE_DOWNVOTE = QUESTION_ID + "/deleteDownvote";
         public static final String QUESTION_ANSWERS = BASE_PATH + "/{questionId}/answers";
+        public static final String QUESTION_DIFFICULTY_VOTE = QUESTION_ID + "/vote-difficulty";
     }
 
     public static class AnswerEndpoints {
@@ -56,6 +57,7 @@ public class EndpointConstants {
     public static class BookmarkEndpoints {
         public static final String BASE_PATH = "/questions/{questionId}/bookmarks";
         public static final String BOOKMARK_DELETE = BASE_PATH;
+        public static final String BOOKMARK_GET = "/questions/bookmarked";
     }
 
     public static class SearchEndpoints {

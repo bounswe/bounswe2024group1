@@ -94,6 +94,54 @@ public class ModelMapperConfig {
             }
         });
 
+        modelMapper.addMappings(new PropertyMap<User, AuthorDto>() {
+            @Override
+            protected void configure() {
+                map(source.getId(), destination.getId());
+                map(source.getUsername(), destination.getUsername());
+                map(source.getReputationPoints(), destination.getReputationPoints());
+        
+                using(context -> {
+                    User user = (User) context.getSource();
+                    String firstName = user.getFirstName() != null ? user.getFirstName() : "";
+                    String lastName = user.getLastName() != null ? user.getLastName() : "";
+                    return (firstName + " " + lastName).trim();
+                }).map(source, destination.getName());
+        
+                map().setProfilePicture(null); // Set a default value for profile picture
+            }
+        });
+        
+
+        modelMapper.addMappings(new PropertyMap<Question, QuestionSummaryDto>() {
+            @Override
+            protected void configure() {
+                map(source.getId(), destination.getId());
+                map(source.getTitle(), destination.getTitle());
+                map(source.getQuestionBody(), destination.getContent());
+                map(source.getDifficulty(), destination.getDifficulty());
+                map(source.getUpvoteCount(), destination.getUpvoteCount());
+                map(source.getDownvoteCount(), destination.getDownvoteCount());
+                map(source.getCommentCount(), destination.getAnswerCount());
+                using(context -> modelMapper.map(context.getSource(), AuthorDto.class))
+                    .map(source.getAskedBy(), destination.getAuthor());
+                map(source.getTags(), destination.getTags());
+
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<Question, BookmarkQuestionResponseDto>() {
+            @Override
+            protected void configure() {
+                map(source.getId(), destination.getId());
+                map(source.getTitle(), destination.getTitle());
+                map(source.getUpvoteCount(), destination.getUpvoteCount());
+                map(source.getDownvoteCount(), destination.getDownvoteCount());
+            }
+        });
+
+
+
         return modelMapper;
     }
 }

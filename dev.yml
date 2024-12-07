@@ -24,6 +24,8 @@ services:
     platform: linux/amd64
     volumes:
       - ./backend:/app
+    ports:
+      - "8080:8080"
     environment:
       DB_HOST: db
       DB_NAME: cuisines-test

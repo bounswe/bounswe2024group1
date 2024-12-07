@@ -32,5 +32,10 @@ public class GetQuestionDetailsResponseDto {
     private Long answerCount = 0L;
     @Builder.Default
     private boolean bookmarked = false;
+    @Builder.Default
+    private DifficultyLevel  selfDifficultyVote =null;
+    private Long easyCount;
+    private Long mediumCount;
+    private Long hardCount;
 
 }
