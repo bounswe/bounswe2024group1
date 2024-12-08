@@ -34,13 +34,11 @@ public class UserService {
     public Long calculateReputation(User user) {
         List<Question> questions = questionRepository.findByAuthorId(user.getId());
         long questionCount = questions.size();
-        Long questionUpvoteCount = questions.stream().map(Question::getUpvoteCount).reduce(0L, Long::sum);
-        Long questionDownvoteCount = questions.stream().map(Question::getDownvoteCount).reduce(0L, Long::sum);
+        Long questionVoteDifference = questions.stream().map(Question::getVoteDifference).reduce(0L, Long::sum);
         List< Answer> answers= answerRepository.findByAnsweredBy(user.getId());
         long answerCount =  answers.size();
-        Long answerUpvoteCount = answers.stream().map(Answer::getUpvoteCount).reduce(0L, Long::sum);
-        Long answerDownvoteCount = answers.stream().map(Answer::getDownvoteCount).reduce(0L, Long::sum);
-        return (questionCount * 10 + answerCount * 15 + questionUpvoteCount * 25 + answerUpvoteCount * 30) - (questionDownvoteCount*10 + answerDownvoteCount*15);
+        Long answerVoteDifference = answers.stream().map(Answer::getVoteDifference).reduce(0L, Long::sum);
+        return (questionCount * 10 + answerCount * 15 + questionVoteDifference * 25 + answerVoteDifference * 30);
 
     }
 
