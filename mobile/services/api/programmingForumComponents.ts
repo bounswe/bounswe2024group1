@@ -1047,17 +1047,92 @@ export const useDownvoteQuestion = (
   });
 };
 
+export type RateQuestionPathParams = {
+  /**
+   * @format int64
+   */
+  id: number;
+};
 
-export type GetBookmarkedQuestionsError = Fetcher.ErrorWrapper<
+export type RateQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
   | {
       status: 401;
       payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
     }
   | {
       status: 404;
       payload: Responses.NotFoundResponse;
     }
 >;
+
+export type RateQuestionResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.QuestionRateResponseDto;
+};
+
+export type RateQuestionVariables = {
+  body?: Schemas.DifficultyLevelRequestDto;
+  pathParams: RateQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchRateQuestion = (
+  variables: RateQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    RateQuestionResponse,
+    RateQuestionError,
+    Schemas.DifficultyLevelRequestDto,
+    {},
+    {},
+    RateQuestionPathParams
+  >({
+    url: "/api/v1/questions/{id}/vote-difficulty",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useRateQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      RateQuestionResponse,
+      RateQuestionError,
+      RateQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    RateQuestionResponse,
+    RateQuestionError,
+    RateQuestionVariables
+  >({
+    mutationFn: (variables: RateQuestionVariables) =>
+      fetchRateQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetBookmarkedQuestionsError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Responses.UnauthorizedResponse;
+}>;
 
 export type GetBookmarkedQuestionsResponse = {
   /**
@@ -1068,9 +1143,10 @@ export type GetBookmarkedQuestionsResponse = {
    */
   status: 200 | 201;
   data: Record<string, any> | Schemas.QuestionSummary[];
-}
+};
 
-export type GetBookmarkedQuestionsVariables = ProgrammingForumContext["fetcherOptions"];
+export type GetBookmarkedQuestionsVariables =
+  ProgrammingForumContext["fetcherOptions"];
 
 export const fetchGetBookmarkedQuestions = (
   variables: GetBookmarkedQuestionsVariables,
@@ -1085,7 +1161,9 @@ export const fetchGetBookmarkedQuestions = (
     {}
   >({ url: "/questions/bookmarked", method: "get", ...variables, signal });
 
-export const useGetBookmarkedQuestions = <TData = GetBookmarkedQuestionsResponse,>(
+export const useGetBookmarkedQuestions = <
+  TData = GetBookmarkedQuestionsResponse,
+>(
   variables: GetBookmarkedQuestionsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1103,14 +1181,17 @@ export const useGetBookmarkedQuestions = <TData = GetBookmarkedQuestionsResponse
     GetBookmarkedQuestionsError,
     TData
   >({
-    queryKey: queryKeyFn({ path: "/questions/bookmarked", operationId: "getBookmarkedQuestions", variables }),
+    queryKey: queryKeyFn({
+      path: "/questions/bookmarked",
+      operationId: "getBookmarkedQuestions",
+      variables,
+    }),
     queryFn: ({ signal }) =>
       fetchGetBookmarkedQuestions({ ...fetcherOptions, ...variables }, signal),
     ...options,
     ...queryOptions,
   });
-}
-  
+};
 
 export type BookmarkQuestionPathParams = {
   questionId: number;
@@ -1118,9 +1199,9 @@ export type BookmarkQuestionPathParams = {
 
 export type BookmarkQuestionError = Fetcher.ErrorWrapper<
   | {
-        status: 400;
-        payload: Responses.BadRequestResponse;
-      }
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
   | {
       status: 401;
       payload: Responses.UnauthorizedResponse;
@@ -2304,6 +2385,11 @@ export type QueryOperation =
       variables: GetQuestionDetailsVariables;
     }
   | {
+      path: "/questions/bookmarked";
+      operationId: "getBookmarkedQuestions";
+      variables: GetBookmarkedQuestionsVariables;
+    }
+  | {
       path: "/questions/{questionId}/answers";
       operationId: "getQuestionAnswers";
       variables: GetQuestionAnswersVariables;
@@ -2332,9 +2418,4 @@ export type QueryOperation =
       path: "/feed";
       operationId: "getUserFeed";
       variables: GetUserFeedVariables;
-    }
-  | {
-      path: "/questions/bookmarked";
-      operationId: "getBookmarkedQuestions";
-      variables: GetBookmarkedQuestionsVariables;
     };

@@ -530,11 +530,49 @@ paths:
         "200":
           description: "OK"
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: "#/components/schemas/QuestionRateResponseDto"
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionRateResponseDto"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
-  /questions/{questionId}/bookmark:
+  /questions/bookmarked:
+    get:
+      tags:
+        - questions
+      summary: Get bookmarked questions
+      operationId: getBookmarkedQuestions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Bookmarked questions retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/QuestionSummary"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
+  /questions/{questionId}/bookmarks:
     post:
       tags:
         - questions
@@ -578,31 +616,6 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
-
-  /questions/bookmarked:
-    get:
-      tags:
-        - questions
-      summary: Get bookmarked questions
-      operationId: getBookmarkedQuestions
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Bookmarked questions retrieved successfully
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/SuccessResponseObject"
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/QuestionSummary"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
 
   /questions/{questionId}/answers:
     get:
