@@ -551,6 +551,8 @@ paths:
       responses:
         "200":
           description: Question successfully bookmarked
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
         "404":
