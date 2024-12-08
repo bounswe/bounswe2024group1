@@ -1047,11 +1047,161 @@ export const useDownvoteQuestion = (
   });
 };
 
+export type RateQuestionPathParams = {
+  /**
+   * @format int64
+   */
+  id: number;
+};
+
+export type RateQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
+  | {
+      status: 401;
+      payload: Responses.UnauthorizedResponse;
+    }
+  | {
+      status: 403;
+      payload: Responses.ForbiddenResponse;
+    }
+  | {
+      status: 404;
+      payload: Responses.NotFoundResponse;
+    }
+>;
+
+export type RateQuestionResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Schemas.QuestionRateResponseDto;
+};
+
+export type RateQuestionVariables = {
+  body?: Schemas.DifficultyLevelRequestDto;
+  pathParams: RateQuestionPathParams;
+} & ProgrammingForumContext["fetcherOptions"];
+
+export const fetchRateQuestion = (
+  variables: RateQuestionVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    RateQuestionResponse,
+    RateQuestionError,
+    Schemas.DifficultyLevelRequestDto,
+    {},
+    {},
+    RateQuestionPathParams
+  >({
+    url: "/api/v1/questions/{id}/vote-difficulty",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useRateQuestion = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      RateQuestionResponse,
+      RateQuestionError,
+      RateQuestionVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useProgrammingForumContext();
+  return reactQuery.useMutation<
+    RateQuestionResponse,
+    RateQuestionError,
+    RateQuestionVariables
+  >({
+    mutationFn: (variables: RateQuestionVariables) =>
+      fetchRateQuestion({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetBookmarkedQuestionsError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Responses.UnauthorizedResponse;
+}>;
+
+export type GetBookmarkedQuestionsResponse = {
+  /**
+   * Internal status code of the response. An HTTP 200 response with an internal 500 status code is an error response. Prioritize the inner status over the HTTP status.
+   *
+   * @example 200
+   * @example 201
+   */
+  status: 200 | 201;
+  data: Record<string, any> | Schemas.QuestionSummary[];
+};
+
+export type GetBookmarkedQuestionsVariables =
+  ProgrammingForumContext["fetcherOptions"];
+
+export const fetchGetBookmarkedQuestions = (
+  variables: GetBookmarkedQuestionsVariables,
+  signal?: AbortSignal,
+) =>
+  programmingForumFetch<
+    GetBookmarkedQuestionsResponse,
+    GetBookmarkedQuestionsError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/questions/bookmarked", method: "get", ...variables, signal });
+
+export const useGetBookmarkedQuestions = <
+  TData = GetBookmarkedQuestionsResponse,
+>(
+  variables: GetBookmarkedQuestionsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetBookmarkedQuestionsResponse,
+      GetBookmarkedQuestionsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useProgrammingForumContext(options);
+  return reactQuery.useQuery<
+    GetBookmarkedQuestionsResponse,
+    GetBookmarkedQuestionsError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: "/questions/bookmarked",
+      operationId: "getBookmarkedQuestions",
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetBookmarkedQuestions({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type BookmarkQuestionPathParams = {
   questionId: number;
 };
 
 export type BookmarkQuestionError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Responses.BadRequestResponse;
+    }
   | {
       status: 401;
       payload: Responses.UnauthorizedResponse;
@@ -1078,7 +1228,7 @@ export const fetchBookmarkQuestion = (
     {},
     BookmarkQuestionPathParams
   >({
-    url: "/questions/{questionId}/bookmark",
+    url: "/questions/{questionId}/bookmarks",
     method: "post",
     ...variables,
     signal,
@@ -1137,7 +1287,7 @@ export const fetchRemoveQuestionBookmark = (
     {},
     RemoveQuestionBookmarkPathParams
   >({
-    url: "/questions/{questionId}/bookmark",
+    url: "/questions/{questionId}/bookmarks",
     method: "delete",
     ...variables,
     signal,
@@ -2233,6 +2383,11 @@ export type QueryOperation =
       path: "/questions/{questionId}";
       operationId: "getQuestionDetails";
       variables: GetQuestionDetailsVariables;
+    }
+  | {
+      path: "/questions/bookmarked";
+      operationId: "getBookmarkedQuestions";
+      variables: GetBookmarkedQuestionsVariables;
     }
   | {
       path: "/questions/{questionId}/answers";
