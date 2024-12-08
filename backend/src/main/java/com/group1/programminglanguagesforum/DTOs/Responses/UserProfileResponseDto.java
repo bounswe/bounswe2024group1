@@ -21,7 +21,7 @@ public class UserProfileResponseDto {
     private int followersCount;
     private int followingCount;
     private boolean selfFollowing;
-    private int reputationPoints;
+    private Long reputationPoints;
     private ExperienceLevel experienceLevel;
     @Builder.Default
     private List<SelfProfileResponseDto.FollowedTags> followedTags = new ArrayList<>();

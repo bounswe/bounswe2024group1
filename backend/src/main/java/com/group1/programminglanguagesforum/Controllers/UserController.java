@@ -44,6 +44,7 @@ public class UserController extends BaseController {
                         selfProfileResponseDto.setFollowedTags(
                                 tagService.getFollowedTags(user.getId())
                         );
+                        selfProfileResponseDto.setReputationPoints(userService.calculateReputation(user));
                         selfProfileResponseDto.setQuestionCount((long) questions.size());
                         selfProfileResponseDto.setQuestions(
                                 questions);
@@ -81,6 +82,7 @@ public class UserController extends BaseController {
                 if (user.isPresent()) {
                         UserProfileResponseDto userProfileResponseDto = modelMapper.map(user.get(),
                                         UserProfileResponseDto.class);
+                        userProfileResponseDto.setReputationPoints(userService.calculateReputation(user.get()));
                         userProfileResponseDto.setSelfFollowing(userService.selfFollowing(user.get()));
                         userProfileResponseDto.setFollowedTags(
                                 tagService.getFollowedTags(user.get().getId())

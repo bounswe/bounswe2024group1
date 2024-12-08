@@ -21,7 +21,7 @@ public class SelfProfileResponseDto {
     private Long answerCount;
     private int followersCount;
     private int followingCount;
-    private int reputationPoints;
+    private Long reputationPoints;
     private Long questionCount;
     private ExperienceLevel experienceLevel;
     private List<QuestionSummaryDto> questions;

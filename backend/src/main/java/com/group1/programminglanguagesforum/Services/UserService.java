@@ -1,9 +1,13 @@
 package com.group1.programminglanguagesforum.Services;
 
 import com.group1.programminglanguagesforum.DTOs.Requests.UserProfileUpdateRequestDto;
+import com.group1.programminglanguagesforum.Entities.Answer;
+import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
+import com.group1.programminglanguagesforum.Repositories.AnswerRepository;
+import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,9 +24,24 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserContextService userContextService;
+    private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
 
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Long calculateReputation(User user) {
+        List<Question> questions = questionRepository.findByAuthorId(user.getId());
+        long questionCount = questions.size();
+        Long questionUpvoteCount = questions.stream().map(Question::getUpvoteCount).reduce(0L, Long::sum);
+        Long questionDownvoteCount = questions.stream().map(Question::getDownvoteCount).reduce(0L, Long::sum);
+        List< Answer> answers= answerRepository.findByAnsweredBy(user.getId());
+        long answerCount =  answers.size();
+        Long answerUpvoteCount = answers.stream().map(Answer::getUpvoteCount).reduce(0L, Long::sum);
+        Long answerDownvoteCount = answers.stream().map(Answer::getDownvoteCount).reduce(0L, Long::sum);
+        return (questionCount * 10 + answerCount * 15 + questionUpvoteCount * 25 + answerUpvoteCount * 30) - (questionDownvoteCount*10 + answerDownvoteCount*15);
+
     }
 
     public User updateUser(User user, UserProfileUpdateRequestDto userProfileUpdateRequestDto)
