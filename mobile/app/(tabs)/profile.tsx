@@ -106,8 +106,8 @@ export function UserProfile({ userId }: { userId: string }) {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 8 }}>
-      <VStack space="md" className="px-8">
-        <HStack className="items-center justify-between" style={{marginTop: 36}}>
+      <VStack space="md" className="px-6">
+        <HStack className="items-center justify-between mt-9">
           <Text className="text-2xl font-bold">
           {me ? "My Profile" : "Profile"}
           </Text>
@@ -124,14 +124,14 @@ export function UserProfile({ userId }: { userId: string }) {
           >
             <MenuItem textValue="bookmark" onPress={() => router.push(`/bookmarks`)}>
               <Icon as={Bookmark} size="md" color="black" />
-              <MenuItemLabel style={{ marginLeft: 8 }}>Bookmarks</MenuItemLabel>
+              <MenuItemLabel className="ml-2">Bookmarks</MenuItemLabel>
             </MenuItem>
 
             <MenuSeparator></MenuSeparator>
 
             <MenuItem textValue="logout" onPress={() => router.push(`/logout`)}>
               <Icon as={LogOutIcon} size="md" color="black" />
-              <MenuItemLabel style={{ marginLeft: 8 }}>Logout</MenuItemLabel>
+              <MenuItemLabel className="ml-2">Logout</MenuItemLabel>
             </MenuItem>
             
           </Menu>

@@ -145,21 +145,26 @@ export default function QuestionPage() {
   }
 
   return (
-    <VStack style={{ flex: 1, padding: 8, marginVertical: 32 }}>
+    <VStack className="flex-1 px-2 my-8">
       <HStack className="flex items-center justify-between">
-        <Button onPress={() => router.back()} style={{ alignSelf: "flex-start", marginTop: 16 }} variant={"outline"} size="sm">
+        <Button
+          onPress={() => router.back()}
+          className="self-start mt-4 ml-2"
+          variant={"outline"}
+          size="sm"
+        >
           <Icon as={ArrowLeftIcon} />
         </Button>
-        <Button 
+        <Button
           onPress={handleBookmark}
           disabled={isPendingBookmark || isPendingRemoveBookmark}
           size="sm" 
           variant={optimisticBookmarked ? "solid" : "outline"}
-          style={{ alignSelf: "flex-end", marginTop: 16 }}
+          className="self-end mt-5 mr-6"
         >
           <Icon as={BookmarkIcon} />
         </Button>
-      </HStack>  
+      </HStack>
       <ScrollView contentContainerClassName="container flex gap-4 py-8 px-6">
         <HStack className="flex flex-row items-center justify-between">
           <Text className="text-2xl font-bold">{question.title}</Text>
