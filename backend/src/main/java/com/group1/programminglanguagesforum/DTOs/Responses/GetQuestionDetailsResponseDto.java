@@ -1,5 +1,6 @@
 package com.group1.programminglanguagesforum.DTOs.Responses;
 
+import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class GetQuestionDetailsResponseDto {
     private Long dislikeCount;
     private Long commentCount;
     private Boolean selfQuestion;
+    private DifficultyLevel difficulty;
     private Integer selfVoted;
     private String createdAt;
     @Builder.Default
@@ -30,5 +32,10 @@ public class GetQuestionDetailsResponseDto {
     private Long answerCount = 0L;
     @Builder.Default
     private boolean bookmarked = false;
+    @Builder.Default
+    private DifficultyLevel  selfDifficultyVote =null;
+    private Long easyCount;
+    private Long mediumCount;
+    private Long hardCount;
 
 }

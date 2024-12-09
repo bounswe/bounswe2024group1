@@ -1,6 +1,8 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import { CreateAnswerForm } from "@/components/CreateAnswerForm";
+import { DifficultyBar } from "@/components/DifficultyBar";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
@@ -74,7 +76,7 @@ export default function QuestionPage() {
         difficulty:
           (data as unknown as { difficultyLevel: string })?.difficultyLevel ??
           "easy",
-        track: convertTagToTrack(data?.tags[0].name ?? ""),
+        track: convertTagToTrack(data?.tags?.[0]?.name ?? ""),
       },
     },
     {
@@ -218,9 +220,15 @@ export default function QuestionPage() {
         </div>
 
         {/* Question Content */}
-        <div className="mb-6 rounded-lg bg-neutral-150 p-4">
-          <span className="whitespace-pre-wrap">{question.content}</span>
-        </div>
+        <ContentWithSnippets content={question.content} />
+
+        {/* Difficulty Bar */}
+        <DifficultyBar
+          easyCount={question.easyCount}
+          mediumCount={question.mediumCount}
+          hardCount={question.hardCount}
+          questionId={question.id}
+        />
 
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>

@@ -507,8 +507,72 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+  /questions/{id}/vote-difficulty:
+    post:
+      tags:
+        - questions
+      summary: "Rate a question's level of difficulty."
+      operationId: "rateQuestion"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DifficultyLevelRequestDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionRateResponseDto"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
-  /questions/{questionId}/bookmark:
+  /questions/bookmarked:
+    get:
+      tags:
+        - questions
+      summary: Get bookmarked questions
+      operationId: getBookmarkedQuestions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Bookmarked questions retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/QuestionSummary"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
+  /questions/{questionId}/bookmarks:
     post:
       tags:
         - questions
@@ -525,6 +589,8 @@ paths:
       responses:
         "200":
           description: Question successfully bookmarked
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
         "404":
@@ -1094,6 +1160,34 @@ components:
       bearerFormat: JWT
 
   schemas:
+
+    DifficultyLevelRequestDto:
+      type: "object"
+      properties:
+        difficulty:
+          type: "string"
+          enum:
+            - "EASY"
+            - "MEDIUM"
+            - "HARD"
+    QuestionRateResponseDto:
+      type: "object"
+      properties:
+        questionId:
+          type: "integer"
+          format: "int64"
+        easyCount:
+          type: "integer"
+          format: "int64"
+        mediumCount:
+          type: "integer"
+          format: "int64"
+        hardCount:
+          type: "integer"
+          format: "int64"
+        totalCount:
+          type: "integer"
+          format: "int64"
     ExperienceLevel:
       type: string
       enum:
@@ -1112,13 +1206,13 @@ components:
           type: string
 
     TagType:
-        type: string
-        enum:
-          - PROGRAMMING_LANGUAGE
-          - PROGRAMMING_PARADIGM
-          - COMPUTER_SCIENCE_TERM
-          - SOFTWARE_LIBRARY
-          - USER_DEFINED
+      type: string
+      enum:
+        - PROGRAMMING_LANGUAGE
+        - PROGRAMMING_PARADIGM
+        - COMPUTER_SCIENCE_TERM
+        - SOFTWARE_LIBRARY
+        - USER_DEFINED
 
     UserRegistration:
       type: object
@@ -1203,6 +1297,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/QuestionSummary"
+        followedTags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagSummary"
       examples:
         - id: 1
           username: "john_doe"
@@ -1310,6 +1408,15 @@ components:
         - likeCount
         - dislikeCount
         - commentCount
+        - selfQuestion
+        - difficulty
+        - selfVoted
+        - createdAt
+        - bookmarked
+        - selfDifficultyVote
+        - easyCount
+        - mediumCount
+        - hardCount
       properties:
         id:
           type: integer
@@ -1343,6 +1450,15 @@ components:
           type: integer
           minimum: -1
           maximum: 1
+        selfDifficultyVote:
+          $ref: "#/components/schemas/DifficultyLevel"
+        easyCount:
+          type: integer
+        mediumCount:
+          type: integer
+        hardCount:
+          type: integer
+
 
       examples:
         - id: 1
@@ -1360,6 +1476,11 @@ components:
           viewCount: 100
           bookmarked: false
           selfVoted: 0
+          selfDifficultyVote: false
+          easyCount: 10
+          mediumCount: 10
+          hardCount: 10
+          difficulty: "EASY"
 
     QuestionSummary:
       type: object
@@ -1592,6 +1713,8 @@ components:
           type: string
         name:
           type: string
+        tagType:
+          $ref: '#/components/schemas/TagType'
         questionCount:
           type: integer
         photo:

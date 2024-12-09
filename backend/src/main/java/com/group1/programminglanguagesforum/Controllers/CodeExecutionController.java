@@ -27,6 +27,10 @@ public class CodeExecutionController extends BaseController {
     ) {
         try {
             CodeExecutionResponseDTO responseDTO = codeExecutionService.executeCode(requestDto.getCode(), requestDto.getLanguage(), requestDto.getInput());
+            int status = responseDTO.getStatus().equals("Accepted") ? HttpStatus.OK.value() : HttpStatus.INTERNAL_SERVER_ERROR.value();
+            if (status == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                throw new Exception(responseDTO.getStatus());
+            }
             GenericApiResponse<CodeExecutionResponseDTO> response =
                     ApiResponseBuilder.buildSuccessResponse(
                             responseDTO.getClass(),

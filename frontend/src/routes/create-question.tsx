@@ -13,6 +13,7 @@ import {
   useCreateQuestion,
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
+import { Info } from "lucide-react";
 import { queryKeyFn } from "@/services/api/programmingForumContext";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +22,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 
 // Schema validation for the form
 const newQuestionSchema = z.object({
@@ -56,6 +60,8 @@ export default function QuestionCreationPage() {
   });
   console.log("tagIds", tagIds);
   console.log("form.getValues(tags)", form.getValues("tags"));
+
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const { handleSubmit, control } = form;
   const queryClient = useQueryClient();
@@ -112,7 +118,54 @@ export default function QuestionCreationPage() {
 
   return (
     <div className="container flex flex-col gap-4 py-16">
+      <div className="flex items-center gap-2">
       <h1>Create a new question</h1>
+      <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Info about Answer Format"
+            >
+              <Info className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="prose">
+              <h4 className="font-medium">Writing Questions</h4>
+              <p className="text-sm text-muted-foreground">
+                We use Markdown for formatting questions. You can use standard
+                Markdown syntax for headers, lists, links, etc. For a basic
+                reference, you can check{" "}
+                <a href="https://commonmark.org/help/" target="_blank">
+                  CommonMark
+                </a>
+                .
+              </p>
+
+              <h4 className="font-medium">Code Execution</h4>
+              <p className="text-sm text-muted-foreground">
+                To create executable code blocks, use triple backticks with
+                language-exec:
+              </p>
+              <SyntaxHighlighter
+                language="javascript"
+                className="not-prose mt-1"
+                children={`\`\`\`javascript-exec\nconsole.log("Hello, world!, This is executable!");\n\`\`\``}
+              />
+
+              <h4 className="font-medium">Linking</h4>
+              <p className="text-sm text-muted-foreground">
+                Link to tags using: <code>[tag name](#tag-123)</code>
+                <br />
+                Link to questions using: <code>[question title](#q-456)</code>
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
+
       <Form {...form}>
         <form
           onSubmit={handleSubmit(async (values) => {
@@ -141,16 +194,39 @@ export default function QuestionCreationPage() {
           />
 
           {/* Content */}
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={isPreviewMode ? "outline" : "default"}
+              onClick={() => setIsPreviewMode(false)}
+            >
+              Write
+            </Button>
+            <Button
+              type="button"
+              variant={isPreviewMode ? "default" : "outline"}
+              onClick={() => setIsPreviewMode(true)}
+            >
+              Preview
+            </Button>
+          </div>
+
           <FormField
             control={control}
             name="content"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea
+                {isPreviewMode ? (
+                  <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
+                    <ContentWithSnippets content={field.value} />
+                  </div>
+                ) : (
+                  <Textarea 
                     placeholder="Describe your question..."
                     {...field}
                   />
+                )}
                 </FormControl>
                 <FormMessage />
               </FormItem>

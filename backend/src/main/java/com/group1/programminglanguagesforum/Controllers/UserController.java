@@ -6,10 +6,7 @@ import com.group1.programminglanguagesforum.DTOs.Responses.*;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
-import com.group1.programminglanguagesforum.Services.AnswerService;
-import com.group1.programminglanguagesforum.Services.QuestionService;
-import com.group1.programminglanguagesforum.Services.UserContextService;
-import com.group1.programminglanguagesforum.Services.UserService;
+import com.group1.programminglanguagesforum.Services.*;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,6 +30,7 @@ public class UserController extends BaseController {
         private final ModelMapper modelMapper;
         private final QuestionService questionService;
         private final AnswerService answerService;
+        private final TagService tagService;
 
         @GetMapping(value = EndpointConstants.UserEndpoints.USER_ME)
         public ResponseEntity<GenericApiResponse<SelfProfileResponseDto>> getUser() {
@@ -43,6 +41,10 @@ public class UserController extends BaseController {
                                         SelfProfileResponseDto.class);
                         List<QuestionSummaryDto> questions = questionService.findByAuthorId(user.getId());
                         List<GetAnswerDtoForProfile> answers = answerService.findByAnsweredBy(user.getId());
+                        selfProfileResponseDto.setFollowedTags(
+                                tagService.getFollowedTags(user.getId())
+                        );
+                        selfProfileResponseDto.setReputationPoints(userService.calculateReputation(user));
                         selfProfileResponseDto.setQuestionCount((long) questions.size());
                         selfProfileResponseDto.setQuestions(
                                 questions);
@@ -80,7 +82,12 @@ public class UserController extends BaseController {
                 if (user.isPresent()) {
                         UserProfileResponseDto userProfileResponseDto = modelMapper.map(user.get(),
                                         UserProfileResponseDto.class);
+                        userProfileResponseDto.setReputationPoints(userService.calculateReputation(user.get()));
                         userProfileResponseDto.setSelfFollowing(userService.selfFollowing(user.get()));
+                        userProfileResponseDto.setFollowedTags(
+                                tagService.getFollowedTags(user.get().getId())
+                        );
+
 
                         GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                                         userProfileResponseDto.getClass(),

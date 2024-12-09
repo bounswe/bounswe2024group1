@@ -1,9 +1,13 @@
 package com.group1.programminglanguagesforum.Services;
 
 import com.group1.programminglanguagesforum.DTOs.Requests.UserProfileUpdateRequestDto;
+import com.group1.programminglanguagesforum.Entities.Answer;
+import com.group1.programminglanguagesforum.Entities.Question;
 import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.UserNotFoundException;
+import com.group1.programminglanguagesforum.Repositories.AnswerRepository;
+import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,9 +24,22 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserContextService userContextService;
+    private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
 
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Long calculateReputation(User user) {
+        List<Question> questions = questionRepository.findByAuthorId(user.getId());
+        long questionCount = questions.size();
+        Long questionVoteDifference = questions.stream().map(Question::getVoteDifference).reduce(0L, Long::sum);
+        List< Answer> answers= answerRepository.findByAnsweredBy(user.getId());
+        long answerCount =  answers.size();
+        Long answerVoteDifference = answers.stream().map(Answer::getVoteDifference).reduce(0L, Long::sum);
+        return (questionCount * 10 + answerCount * 15 + questionVoteDifference * 25 + answerVoteDifference * 30);
+
     }
 
     public User updateUser(User user, UserProfileUpdateRequestDto userProfileUpdateRequestDto)
