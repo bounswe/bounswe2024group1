@@ -20,6 +20,7 @@ import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ContentWithSnippets } from "@/components/ContentWithSnippets";
+import { DifficultyBar } from "@/components/DifficultyBar";
 
 export default function QuestionPage() {
   const { questionId } = useParams();
@@ -220,6 +221,14 @@ export default function QuestionPage() {
 
         {/* Question Content */}
         <ContentWithSnippets content={question.content} />
+
+        {/* Difficulty Bar */}
+        <DifficultyBar
+          easyCount={question.easyCount}
+          mediumCount={question.mediumCount}
+          hardCount={question.hardCount}
+          questionId={question.id}
+        />
 
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>

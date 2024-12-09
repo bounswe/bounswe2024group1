@@ -507,7 +507,7 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
-  /api/v1/questions/{id}/vote-difficulty:
+  /questions/{id}/vote-difficulty:
     post:
       tags:
         - questions
