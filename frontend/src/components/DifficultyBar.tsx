@@ -78,7 +78,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
       <TooltipProvider>
         {/* Voting Form */}
         <div className="flex flex-col items-center mb-4">
-          <h4 className="text-lg font-semibold mb-2">Vote for Difficulty Level:</h4>
+          <h2 className="text-lg font-semibold mb-2">Vote for Difficulty Level:</h4>
           <div className="flex flex-row gap-2">
             <Button
               variant="outline"
