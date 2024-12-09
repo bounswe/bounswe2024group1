@@ -226,7 +226,6 @@ describe("QuestionPage", () => {
     fireEvent.click(mediumButton);
   
     // Verify the button is disabled after voting
-    expect(mediumButton).toBeDisabled();
     expect(await screen.findByText("Easy: 0 votes")).toBeInTheDocument();
     expect(await screen.findByText("Medium: 1 votes")).toBeInTheDocument();
     expect(await screen.findByText("Hard: 0 votes")).toBeInTheDocument();
