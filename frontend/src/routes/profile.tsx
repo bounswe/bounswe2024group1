@@ -17,6 +17,7 @@ import useAuthStore from "@/services/auth";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function Profile() {
@@ -83,10 +84,10 @@ export default function Profile() {
             />
           </Avatar>
           <div className="flex space-x-4 text-center">
-            {/* <div>
+            <div>
               <div className="font-bold">{profile.questionCount}</div>
               <div className="text-sm text-gray-700">Questions</div>
-            </div> */}
+            </div>
             <div>
               <div className="font-bold">{profile.answerCount}</div>
               <div className="text-sm text-gray-700">Answers</div>
@@ -165,6 +166,24 @@ export default function Profile() {
               />
             )
           )}
+        </div>
+        <div className="flex flex-col">
+          <div className="flex flex-wrap gap-2">
+            <span className="flex items-center gap-2">
+              <span>Followed tags: </span>
+              {profile.followedTags
+                ?.map((s) => (
+                  <Link to={`/tag/${s.id}`} key={s.name}>
+                    <Badge>{s.name}</Badge>
+                  </Link>
+                ))
+                .slice(0, 3)}{" "}
+              {profile.followedTags?.length &&
+                profile.followedTags?.length > 3 && (
+                  <span>+ {profile.followedTags?.length - 3} more</span>
+                )}
+            </span>
+          </div>
         </div>
       </div>
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">

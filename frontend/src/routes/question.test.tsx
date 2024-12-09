@@ -36,6 +36,12 @@ const mockQuestionData = vi.hoisted(
       createdAt: "2023-01-01T00:00:00Z",
       updatedAt: "2023-01-01T00:00:00Z",
       dislikeCount: 0,
+      bookmarked: false,
+      selfVoted: 1,
+      selfDifficultyVote: "EASY",
+      easyCount: 0,
+      hardCount: 0,
+      mediumCount: 0,
     }) satisfies QuestionDetails,
 );
 // Mock the API hook

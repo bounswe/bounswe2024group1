@@ -86,6 +86,7 @@ export type UserProfile = {
   answerCount?: number;
   answers?: AnswerDetails[];
   questions?: QuestionSummary[];
+  followedTags?: TagSummary[];
 };
 
 export type UserProfileUpdate = {
@@ -150,7 +151,7 @@ export type QuestionDetails = {
    * @maximum 1
    */
   selfVoted: number;
-  selfDifficultyVote: boolean;
+  selfDifficultyVote: DifficultyLevel;
   easyCount: number;
   mediumCount: number;
   hardCount: number;
@@ -261,6 +262,7 @@ export type TagDetails = {
 export type TagSummary = {
   id?: string;
   name?: string;
+  tagType?: TagType;
   questionCount?: number;
   /**
    * @format url
