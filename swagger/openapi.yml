@@ -1297,6 +1297,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/QuestionSummary"
+        followedTags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagSummary"
       examples:
         - id: 1
           username: "john_doe"
@@ -1447,7 +1451,7 @@ components:
           minimum: -1
           maximum: 1
         selfDifficultyVote:
-          type: boolean
+          $ref: "#/components/schemas/DifficultyLevel"
         easyCount:
           type: integer
         mediumCount:
@@ -1709,6 +1713,8 @@ components:
           type: string
         name:
           type: string
+        tagType:
+          $ref: '#/components/schemas/TagType'
         questionCount:
           type: integer
         photo:
