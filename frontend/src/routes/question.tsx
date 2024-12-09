@@ -2,6 +2,7 @@ import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
 import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import { CreateAnswerForm } from "@/components/CreateAnswerForm";
+import { DifficultyBar } from "@/components/DifficultyBar";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
@@ -20,8 +21,6 @@ import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ContentWithSnippets } from "@/components/ContentWithSnippets";
-import { DifficultyBar } from "@/components/DifficultyBar";
 
 export default function QuestionPage() {
   const { questionId } = useParams();
