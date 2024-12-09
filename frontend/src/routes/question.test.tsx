@@ -73,6 +73,16 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useCreateAnswer: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
+  useRateQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn().mockResolvedValue({
+      data: {
+        easyCount: 0,
+        mediumCount: 1,
+        hardCount: 0,
+        totalCount: 1,
+      },
+    }),
+  })),
 }));
 
 vi.mock("@/services/exercism", () => ({
@@ -91,21 +101,6 @@ vi.mock("@/services/auth", () => ({
 
 vi.mock("@tanstack/react-query", () => ({
   useQueryClient: vi.fn(),
-}));
-
-vi.mock("@/services/api/programmingForumComponents", () => ({
-  useGetQuestionDetails: vi.fn(() => {}),
-  useRateQuestion: vi.fn(() => ({
-    mutateAsync: vi.fn().mockResolvedValue({
-      data: {
-        easyCount: 0,
-        mediumCount: 1,
-        hardCount: 0,
-        totalCount: 1,
-      },
-    }),
-  })),
-  useGetQuestionAnswers: vi.fn(() => ({ data: null, isLoading: true })),
 }));
 
 describe("QuestionPage", () => {
@@ -232,6 +227,9 @@ describe("QuestionPage", () => {
   
     // Verify the button is disabled after voting
     expect(mediumButton).toBeDisabled();
+    expect(await screen.findByText("Easy: 0 votes")).toBeInTheDocument();
+    expect(await screen.findByText("Medium: 1 votes")).toBeInTheDocument();
+    expect(await screen.findByText("Hard: 0 votes")).toBeInTheDocument();
 
   });
   

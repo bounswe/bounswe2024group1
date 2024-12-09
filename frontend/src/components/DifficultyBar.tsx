@@ -67,7 +67,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
       { level: "Medium", count: localCounts.medium },
       { level: "Hard", count: localCounts.hard },
     ];
-    const highest = counts.reduce((prev, current) =>
+    const highest = counts.reduce((prev, current) => //any equality -> pick higher difficulty level
       prev.count > current.count ? prev : current
     );
     return highest.level;
@@ -109,6 +109,11 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
           <h4 className="mb-2 text-lg font-semibold">
             The community finds this question <strong>{getHighestVotedDifficulty()}</strong> difficulty.
           </h4>
+          <div className="text-sm text-gray-600 mb-2">
+            <span>Easy: {localCounts.easy} votes</span>,{" "}
+            <span>Medium: {localCounts.medium} votes</span>,{" "}
+            <span>Hard: {localCounts.hard} votes</span>
+          </div>
           <div className="relative flex w-full h-6 rounded border border-gray-300 overflow-hidden">
             {/* Easy Section */}
             <Tooltip>
