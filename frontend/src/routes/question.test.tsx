@@ -2,7 +2,7 @@ import { useGetQuestionDetails } from "@/services/api/programmingForumComponents
 import { QuestionDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { testAccessibility } from "@/utils/test-accessibility";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent} from "@testing-library/react";
 import {
   createMemoryRouter,
   MemoryRouter,
@@ -13,6 +13,10 @@ import {
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { routeConfig } from ".";
 import QuestionPage from "./question";
+import { DifficultyBar } from "@/components/DifficultyBar";
+
+
+
 
 const mockQuestionData = vi.hoisted(
   () =>
@@ -39,9 +43,9 @@ const mockQuestionData = vi.hoisted(
       bookmarked: false,
       selfVoted: 1,
       selfDifficultyVote: "EASY",
-      easyCount: 0,
-      hardCount: 0,
-      mediumCount: 0,
+      easyCount: 5,
+      mediumCount: 3,
+      hardCount: 2,
     }) satisfies QuestionDetails,
 );
 // Mock the API hook
@@ -68,6 +72,16 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   })),
   useCreateAnswer: vi.fn(() => ({
     mutateAsync: vi.fn(),
+  })),
+  useRateQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn().mockResolvedValue({
+      data: {
+        easyCount: 0,
+        mediumCount: 1,
+        hardCount: 0,
+        totalCount: 1,
+      },
+    }),
   })),
 }));
 
@@ -181,4 +195,42 @@ describe("QuestionPage", () => {
 
     expect(screen.getByRole("button", { name: /delete/i })).toBeInTheDocument();
   });
+
+  it("updates difficulty counts when voting", async () => {
+    // Mock the auth store with a logged-in user
+    vi.mocked(useAuthStore).mockReturnValue({
+      selfProfile: { id: 2 },
+      token: "mock-token",
+    });
+  
+    render(
+      <MemoryRouter initialEntries={["/question/1"]}>
+        <Routes>
+          <Route
+            path="/question/:questionId"
+            element={
+              <DifficultyBar
+                questionId={1}
+                easyCount={5}
+                mediumCount={3}
+                hardCount={2}
+              />
+            }
+          />
+        </Routes>
+      </MemoryRouter>,
+    );
+  
+    // Simulate a vote on "Medium"
+    const mediumButton = screen.getByText("Medium");
+    fireEvent.click(mediumButton);
+  
+    // Verify the button is disabled after voting
+    expect(await screen.findByText("Easy: 0 votes")).toBeInTheDocument();
+    expect(await screen.findByText("Medium: 1 votes")).toBeInTheDocument();
+    expect(await screen.findByText("Hard: 0 votes")).toBeInTheDocument();
+
+  });
+  
+  
 });
