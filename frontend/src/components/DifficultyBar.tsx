@@ -47,9 +47,9 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
       const { easyCount, mediumCount, hardCount } = response.data;
 
       setLocalCounts({
-        easy: easyCount,
-        medium: mediumCount,
-        hard: hardCount,
+        easy: easyCount ?? 0,
+        medium: mediumCount ?? 0,
+        hard: hardCount ?? 0,
       });
 
       setVotedDifficulty(difficulty);
