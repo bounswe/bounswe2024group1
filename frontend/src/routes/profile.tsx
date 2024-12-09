@@ -167,24 +167,26 @@ export default function Profile() {
             )
           )}
         </div>
-        <div className="flex flex-col">
-          <div className="flex flex-wrap gap-2">
-            <span className="flex items-center gap-2">
-              <span>Followed tags: </span>
-              {profile.followedTags
-                ?.map((s) => (
-                  <Link to={`/tag/${s.id}`} key={s.name}>
-                    <Badge>{s.name}</Badge>
-                  </Link>
-                ))
-                .slice(0, 3)}{" "}
-              {profile.followedTags?.length &&
-                profile.followedTags?.length > 3 && (
-                  <span>+ {profile.followedTags?.length - 3} more</span>
-                )}
-            </span>
+        {profile.followedTags && (
+          <div className="flex flex-col">
+            <div className="flex flex-wrap gap-2">
+              <span className="flex items-center gap-2">
+                <span>Followed tags: </span>
+                {profile.followedTags
+                  ?.map((s) => (
+                    <Link to={`/tag/${s.id}`} key={s.name}>
+                      <Badge>{s.name}</Badge>
+                    </Link>
+                  ))
+                  .slice(0, 3)}
+                {profile.followedTags?.length &&
+                  profile.followedTags?.length > 3 && (
+                    <span>+ {profile.followedTags?.length - 3} more</span>
+                  )}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
         <Tabs value={activeTab} onValueChange={setActiveTab}>

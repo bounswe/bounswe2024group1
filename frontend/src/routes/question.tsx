@@ -1,5 +1,6 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import { CreateAnswerForm } from "@/components/CreateAnswerForm";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
@@ -19,7 +20,6 @@ import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 
 export default function QuestionPage() {
   const { questionId } = useParams();
@@ -75,7 +75,7 @@ export default function QuestionPage() {
         difficulty:
           (data as unknown as { difficultyLevel: string })?.difficultyLevel ??
           "easy",
-        track: convertTagToTrack(data?.tags[0].name ?? ""),
+        track: convertTagToTrack(data?.tags?.[0]?.name ?? ""),
       },
     },
     {
