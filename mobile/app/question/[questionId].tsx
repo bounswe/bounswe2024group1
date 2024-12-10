@@ -316,7 +316,7 @@ export default function QuestionPage() {
           </Text>
         </View>
 
-        <View className="rounded-lg bg-neutral-150 p-4">
+        <View className="rounded-lg #e5e5e5 p-4">
           <Text className="whitespace-pre-wrap">{question.content}</Text>
         </View>
 

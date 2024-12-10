@@ -42,7 +42,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   return (
     <Card
       className={`px-6 py-8 shadow-sm ${
-        highlighted ? "bg-blue-100 border-blue-500" : "bg-neutral-150"
+        highlighted ? "bg-blue-100 border-blue-500" : "#e5e5e5"
       }`}
     >
       <View className="flex flex-col gap-6">
@@ -96,7 +96,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           )}
           <Link
             href={`/question/${id}`}
-            className={`flex items-center text-sm space-x-2 font-medium ${
+            className={`flex items-center text-sm space-x-2 font-medium p-2 ${
               highlighted ? "text-blue-600" : "text-gray-800"
             }`}
           >

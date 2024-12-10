@@ -21,7 +21,7 @@ export function DifficultyFilter({ value, onChange }: DifficultyFilterProps) {
         onChange(val === "all" ? undefined : (val as DifficultyLevel))
       }
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px]" aria-label="Filter questions by difficulty">
         <SelectValue placeholder="Filter by difficulty" />
       </SelectTrigger>
       <SelectContent>
