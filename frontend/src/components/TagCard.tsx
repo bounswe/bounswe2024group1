@@ -12,13 +12,13 @@ export const TagCard = React.forwardRef<HTMLDivElement, TagCardProps>(
   ({ tag }, ref) => {
     return (
       <Card
-        className="flex-1 border-none bg-neutral-150 px-6 py-8 shadow-sm"
+        className="flex-1 border-none #e5e5e5 px-6 py-8 shadow-sm"
         ref={ref}
       >
         <div className="flex flex-col gap-6">
-          <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
+          <h1 className="line-clamp-2 text-xl font-semibold text-gray-800">
             {tag.name}
-          </h3>
+          </h1>
           <div className="flex items-start gap-2">
             <p className="line-clamp-3 text-sm font-light text-gray-800">
               {tag.description}

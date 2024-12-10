@@ -282,15 +282,19 @@ export default function QuestionCreationPage() {
             name="difficulty"
             render={({ field }) => (
               <FormItem>
+                <label htmlFor="difficulty-select" className="font-semibold mb-2 block">
+                  Difficulty Level
+                </label>
                 <FormControl>
                   <select
+                    id="difficulty-select"
                     className="rounded border border-gray-300 px-4 py-2"
                     value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
                   >
                     <option value="EASY">Easy</option>
                     <option value="MEDIUM">Medium</option>
-                    <option value="HARD">Hard</option>
+                    <option value="HARD">Hard</option>  
                   </select>
                 </FormControl>
                 <FormMessage />

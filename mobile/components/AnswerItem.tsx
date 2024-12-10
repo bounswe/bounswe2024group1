@@ -23,7 +23,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
   const { token } = useAuthStore();
 
   return (
-    <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
+    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
       <View className="flex flex-col gap-4">
         <ContentWithSnippets content={answer.content} />
         <HStack className="flex items-center justify-between">

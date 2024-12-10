@@ -21,7 +21,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
   const { token } = useAuthStore();
 
   return (
-    <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
+    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-4">
         <ContentWithSnippets content={answer.content} />
         <div className="flex items-center justify-between">
@@ -64,7 +64,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
                   answer.author?.profilePicture ||
                   "https://placehold.co/100x100"
                 }
-                alt={answer.author?.name}
+                alt={"Profile picture"}
                 className="h-8 w-8 rounded-full object-cover"
               />
               <span className="text-sm font-medium">{answer.author?.name}</span>
