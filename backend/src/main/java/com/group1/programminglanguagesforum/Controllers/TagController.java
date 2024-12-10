@@ -12,6 +12,7 @@ import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.TagService;
 import com.group1.programminglanguagesforum.Services.UserContextService;
+import com.group1.programminglanguagesforum.Services.UserService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
 
 import jakarta.persistence.EntityExistsException;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
 @RestController
@@ -35,6 +37,7 @@ public class TagController extends BaseController {
     
     private final TagService tagService;
     private final UserContextService userContextService;
+    private final UserService userService;
 
     @GetMapping(value = EndpointConstants.TagEndpoints.SEARCH)
     public ResponseEntity<GenericApiResponse<TagSearchResponseDto>> tagSearch(
@@ -94,6 +97,13 @@ public class TagController extends BaseController {
     @PostMapping(value = EndpointConstants.TagEndpoints.BASE_PATH)
     public ResponseEntity<GenericApiResponse<GetTagDetailsResponseDto>> createTag(@RequestBody CreateTagRequestDto dto){
         try{
+            User user = userContextService.getCurrentUser();
+            if(userService.calculateReputation(user) < 50){
+                return ExceptionResponseHandler.IllegalArgumentException(
+                        new IllegalArgumentException("User does not have enough reputation to create a tag which should be at least 50")
+                );
+            }
+
             GetTagDetailsResponseDto tagDetails = tagService.createTag(dto);
             GenericApiResponse<GetTagDetailsResponseDto> response = GenericApiResponse.<GetTagDetailsResponseDto>builder()
                     .status(201)
@@ -115,6 +125,8 @@ public class TagController extends BaseController {
                     .build();
             ApiResponseBuilder.buildErrorResponse(GetTagDetailsResponseDto.class, "Invalid tag type", 400, errorResponse);
             return buildResponse(response, HttpStatus.BAD_REQUEST);
+        } catch (UnauthorizedAccessException e) {
+            return ExceptionResponseHandler.UnauthorizedAccessException(e);
         }
 
     }
