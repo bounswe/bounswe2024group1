@@ -204,7 +204,7 @@ export default function Profile() {
                   size="icon"
                   className="rounded-full bg-red-500 text-white"
                 >
-                  <Link to="/questions/new">
+                  <Link to="/questions/new" aria-label="Create New Question">
                     <Plus />
                   </Link>
                 </Button>
