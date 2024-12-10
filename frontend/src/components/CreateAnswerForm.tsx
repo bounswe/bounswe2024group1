@@ -114,18 +114,7 @@ export function CreateAnswerForm({ questionId }: CreateAnswerFormProps) {
 
       {isPreviewMode ? (
         <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
-          <div>
-            {" "}
-            <ContentWithSnippets content={content} />
-          </div>
-          {/* Render ReactMarkdown for the rest of the content */}
-          <ReactMarkdown
-            components={{
-              a: CustomAnchor,
-            }}
-          >
-            {content}
-          </ReactMarkdown>
+          <ContentWithSnippets content={content} />
         </div>
       ) : (
         <Textarea

@@ -1,12 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-interface CustomAnchorProps {
+interface CustomAnchorProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode; // Make children optional
 }
 
-const CustomAnchor: React.FC<CustomAnchorProps> = ({ href, children }) => {
+const CustomAnchor: React.FC<CustomAnchorProps> = ({
+  href,
+  children,
+  ...rest
+}) => {
   const navigate = useNavigate();
 
   // Return a plain span if href is not provided
@@ -28,13 +33,19 @@ const CustomAnchor: React.FC<CustomAnchorProps> = ({ href, children }) => {
     }
   };
 
-  // Display tooltip as title directly on the anchor for now, without async fetching
   return (
     <a
       href={href}
       onClick={handleClick}
       className="text-blue-500 underline"
-      title={tagMatch ? `Tag: ${tagMatch[1]}` : questionMatch ? `Question: ${questionMatch[1]}` : "Loading..."}
+      title={
+        tagMatch
+          ? `Tag: ${tagMatch[1]}`
+          : questionMatch
+            ? `Question: ${questionMatch[1]}`
+            : "Loading..."
+      }
+      {...rest} // Spread additional props
     >
       {children}
     </a>
