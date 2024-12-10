@@ -1,7 +1,7 @@
 import { UserSummary } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { Link } from "expo-router";
-import FollowButton from "./FollowButton";
+import FollowUserButton from "./FollowUserButton";
 import { Text, View } from "./ui";
 
 interface ProfileProps {
@@ -18,7 +18,7 @@ export const Profile = ({ profile }: ProfileProps) => {
           {profile.username}
         </Text>
       </Link>
-      {profile.id !== selfProfile?.id && <FollowButton profile={profile} />}
+      {profile.id !== selfProfile?.id && <FollowUserButton profile={profile} />}
     </View>
   );
 };
