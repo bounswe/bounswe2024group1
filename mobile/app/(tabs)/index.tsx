@@ -1,6 +1,6 @@
 import { ScrollView, Text } from "react-native";
 
-import { Button, ButtonText, VStack } from "@/components/ui";
+import { Button, ButtonText, Divider, VStack } from "@/components/ui";
 import useAuthStore from "@/services/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -46,6 +46,7 @@ export default function HomeScreen() {
             <ButtonText>Logout</ButtonText>
           </Button>
         )}
+        <Divider className="my-8" />
         <Feed />
       </VStack>
     </ScrollView>
