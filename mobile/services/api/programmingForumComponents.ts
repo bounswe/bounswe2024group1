@@ -1787,7 +1787,7 @@ export const useCreateTag = (
 };
 
 export type GetTagDetailsPathParams = {
-  tagId: string;
+  tagId: number;
 };
 
 export type GetTagDetailsError = Fetcher.ErrorWrapper<{
@@ -1850,7 +1850,7 @@ export const useGetTagDetails = <TData = GetTagDetailsResponse,>(
 };
 
 export type FollowTagPathParams = {
-  tagId: string;
+  tagId: number;
 };
 
 export type FollowTagError = Fetcher.ErrorWrapper<
@@ -1900,7 +1900,7 @@ export const useFollowTag = (
 };
 
 export type UnfollowTagPathParams = {
-  tagId: string;
+  tagId: number;
 };
 
 export type UnfollowTagError = Fetcher.ErrorWrapper<
