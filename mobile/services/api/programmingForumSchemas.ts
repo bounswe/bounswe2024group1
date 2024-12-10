@@ -171,8 +171,9 @@ export type QuestionSummary = {
   createdAt: string;
   difficulty: DifficultyLevel;
   tags: TagSummary[];
-  likeCount: number;
-  commentCount: number;
+  upvoteCount: number;
+  downvoteCount: number;
+  answerCount: number;
   viewCount?: number;
 };
 

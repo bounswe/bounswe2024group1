@@ -12,6 +12,7 @@ interface QuestionListProps {
   pageSize?: number;
   difficultyFilter?: "EASY" | "MEDIUM" | "HARD";
   tagFilter?: string;
+  sortBy?: "RECENT" | "TOP_RATED";
 }
 
 export const QuestionList: React.FC<QuestionListProps> = ({
@@ -19,6 +20,7 @@ export const QuestionList: React.FC<QuestionListProps> = ({
   pageSize = 10,
   difficultyFilter,
   tagFilter = "",
+  sortBy = "RECENT",
 }) => {
   const [page, setPage] = useState(1);
 
@@ -68,19 +70,27 @@ export const QuestionList: React.FC<QuestionListProps> = ({
       {questionsError && <Text>Error: {questionsError.status}</Text>}
       {questions && (
         <View className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {questions.map((question) => (
-            <QuestionCard
-              key={question.id}
-              id={String(question.id)}
-              title={question.title}
-              content={question.content}
-              votes={question.likeCount}
-              answerCount={question.commentCount}
-              author={question.author}
-              difficulty={question.difficulty}
-              highlighted={question.difficulty === "EASY"}
-            />
-          ))}
+          {questions
+            .sort((a, b) => { 
+              if (sortBy === "RECENT") {
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+              } else {
+                return (b.upvoteCount - b.downvoteCount) - (a.upvoteCount - a.downvoteCount);
+              }
+            })
+            .map((question) => (
+              <QuestionCard
+                key={question.id}
+                id={String(question.id)}
+                title={question.title}
+                content={question.content}
+                votes={question.upvoteCount + question.downvoteCount}
+                answerCount={question.answerCount}
+                author={question.author}
+                difficulty={question.difficulty}
+                highlighted={question.difficulty === "EASY"}
+              />
+            ))}
         </View>
       )}
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
