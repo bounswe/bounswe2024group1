@@ -145,7 +145,7 @@ export default function QuestionPage() {
   }
 
   return (
-    <VStack className="flex-1 px-2 my-8">
+    <VStack className="flex-1 px-2 my-8 mt-8">
       <HStack className="flex items-center justify-between">
         <Button
           onPress={() => router.back()}
