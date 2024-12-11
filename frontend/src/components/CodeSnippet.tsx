@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useExecuteCode } from "@/services/api/programmingForumComponents";
 import { CodeExecution } from "@/services/api/programmingForumSchemas";
-import React from "react";
+import React, { useState } from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
@@ -25,14 +25,23 @@ const languageUserFriendlyName = {
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
   const executeCode = useExecuteCode();
+  const [executionTime, setExecutionTime] = useState<number | null>(null);
 
   const handleExecute = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setExecutionTime(null); // Reset the timer
     const execution: CodeExecution = {
       code,
       language: language as CodeExecution["language"],
     };
-    executeCode.mutate({ body: execution });
+    const startTime = performance.now(); // Record start time
+    try {
+      executeCode.mutate({ body: execution });
+      const endTime = performance.now(); // Record end time
+      setExecutionTime(endTime - startTime); // Calculate and set execution time
+    } catch (error) {
+      setExecutionTime(null); // Reset in case of error
+    }
   };
 
   return (
@@ -83,6 +92,10 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
         <div className="mt-2 rounded border border-green-300 bg-green-100 p-2">
           <h4 className="mb-4 text-sm font-bold">Output:</h4>
           <pre className="bg-green-50 p-1">{executeCode.data.data.output}</pre>
+          <br></br>
+          {executionTime !== null && (
+            <p className="mb-4 text-sm font-bold">Execution Time: {executionTime.toFixed(2)} seconds</p>
+          )}
         </div>
       )}
       {executeCode.isError && (
