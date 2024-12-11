@@ -51,3 +51,6 @@ jobs:
 
       - name: Push web image
         run: docker push registry.digitalocean.com/programming-languages-2/web:latest
+
+      - name: Create deployment again to ensure both images are up to date
+        run: doctl apps create-deployment 58cc1048-2af2-42f8-a71f-5d1085113742
