@@ -128,12 +128,12 @@ export default function TagPage() {
         )}
 
         {tag.author && (
-          <div
-            className="flex items-center gap-2"
-            aria-label={`Author of ${tag.name} is ${tag.author}`}
-          >
+          <div className="flex items-center gap-2">
             <BookOpenText className="h-5 w-5" />
             <span className="text-sm text-gray-500">Author: {tag.author}</span>
+            <span className="sr-only">
+              Author of {tag.name} is {tag.author}
+            </span>
           </div>
         )}
 
