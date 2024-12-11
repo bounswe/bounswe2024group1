@@ -27,7 +27,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
   const executeCode = useExecuteCode();
   const [executionTime, setExecutionTime] = useState<number | null>(null);
 
-  const handleExecute = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleExecute = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setExecutionTime(null); // Reset the timer
     const execution: CodeExecution = {
@@ -36,10 +36,10 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
     };
     const startTime = performance.now(); // Record start time
     try {
-      executeCode.mutate({ body: execution });
+      await executeCode.mutateAsync({ body: execution });
       const endTime = performance.now(); // Record end time
       setExecutionTime(endTime - startTime); // Calculate and set execution time
-    } catch (error) {
+    } catch {
       setExecutionTime(null); // Reset in case of error
     }
   };
@@ -94,7 +94,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
           <pre className="bg-green-50 p-1">{executeCode.data.data.output}</pre>
           <br></br>
           {executionTime !== null && (
-            <p className="mb-4 text-sm font-bold">Execution Time: {executionTime.toFixed(2)} seconds</p>
+            <p className="mb-4 text-sm font-bold">Execution Time: {(executionTime / 1000).toFixed(3)} seconds</p>
           )}
         </div>
       )}
