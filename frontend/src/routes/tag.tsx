@@ -9,6 +9,7 @@ import {
   Plus,
   SquareStack,
   Tag,
+  BookOpenText,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
@@ -125,6 +126,17 @@ export default function TagPage() {
             <span className="text-sm text-gray-500">{tag.fileExtension}</span>
           </div>
         )}
+
+        {tag.author && (
+          <div className="flex items-center gap-2">
+            <BookOpenText className="h-5 w-5" />
+            <span className="text-sm text-gray-500">Author: {tag.author}</span>
+            <span className="sr-only">
+              Author of {tag.name} is {tag.author}
+            </span>
+          </div>
+        )}
+
         {tag.inceptionYear && (
           <div
             className="flex items-center gap-2"
@@ -136,6 +148,7 @@ export default function TagPage() {
             </span>
           </div>
         )}
+
         {tag.officialWebsite && (
           <div
             className="flex items-center gap-2"
