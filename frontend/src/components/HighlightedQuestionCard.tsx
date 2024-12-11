@@ -54,7 +54,7 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
           )}
           <Link
             to={`/question/${id}`}
-            className="flex items-center text-sm font-medium text-gray-800 hover:underline"
+            className="flex items-center text-sm font-medium text-gray-800 hover:underline p-2"
           >
             Go to question
             <ArrowRight className="ml-1 h-4 w-4" />

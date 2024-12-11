@@ -151,7 +151,7 @@ export default function QuestionPage() {
               src={
                 question.author.profilePicture || "https://placehold.co/640x640"
               }
-              alt={question.author.name + " profile picture"}
+              alt={"Profile picture"}
               className="h-8 w-8 rounded-full object-cover"
             />
             <span className="font-semibold">{question.author.name}</span>

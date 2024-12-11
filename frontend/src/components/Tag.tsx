@@ -45,7 +45,7 @@ export const Tag = ({
             )}
             <Link
               to={`/tag/${tagId}`}
-              className="text-sm font-medium text-blue-500 hover:underline"
+              className="text-sm font-medium text-blue-700 hover:underline"
             >
               See all questions →
             </Link>

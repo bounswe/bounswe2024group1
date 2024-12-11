@@ -1,15 +1,8 @@
-import { Icon, Image, Text } from "@/components/ui";
-import { Card } from "@/components/ui/card";
+import { Card, HStack, Icon, Image, Text, View } from "@/components/ui";
 import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 import { Link } from "expo-router";
-import {
-  ArrowRight,
-  MessageSquare,
-  Star,
-  StarsIcon,
-} from "lucide-react-native";
+import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react-native";
 import React from "react";
-import { View } from "react-native";
 
 interface QuestionCardProps {
   id: string;
@@ -25,6 +18,7 @@ interface QuestionCardProps {
   };
   highlighted?: boolean;
 }
+
 const capitalizeString = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
@@ -41,15 +35,44 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 }) => {
   return (
     <Card
-      className={`px-6 py-8 shadow-sm ${
+      className={`rounded-lg border-none text-card-foreground flex flex-1 px-6 py-8 shadow-sm ${
         highlighted ? "bg-blue-100 border-blue-500" : "bg-neutral-150"
       }`}
     >
       <View className="flex flex-col gap-6">
-        {highlighted && (
-          <Text className="text-xs font-semibold text-blue-700">
-            Beginner Friendly
-          </Text>
+        {(highlighted || answerCount === 0) && (
+          <HStack className="gap-4">
+            {highlighted && (
+              <Text className="text-xs font-semibold text-blue-700 bg-blue-300 p-1 rounded-lg">
+                Beginner Friendly
+              </Text>
+            )}
+            
+            {/* Unanswered notification with background */}
+            {answerCount === 0 && (
+              <Text className="text-xs font-semibold text-red-600 bg-red-200 p-1 rounded-lg">
+                Unanswered
+              </Text>
+            )}
+          </HStack>
+          )
+        }
+
+        {author && (
+          <HStack className="flex items-center gap-2">
+            <Link href={`/users/${author.id}`} className="h-10 w-10">
+              <Image
+                source={{
+                  uri: author.profilePicture || "https://placeholder.com/100",
+                }}
+                alt={author.name || "Author"}
+                className="h-full w-full rounded-full object-cover"
+              />
+            </Link>
+            <Link href={`/users/${author.id}`} className="text-sm font-semibold">
+              {author?.name}
+            </Link>
+          </HStack>
         )}
 
         <Text
@@ -66,7 +89,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         >
           {content}
         </Text>
-        <View className="flex flex-col gap-3 text-xs text-gray-700">
+        <HStack className="flex flex-row gap-3 text-xs text-gray-700 justify-center items-center">
           <View className="flex items-center gap-1">
             <Star className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`} />
             <Text>{votes} votes</Text>
@@ -83,20 +106,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               <Text>{capitalizeString(difficulty)}</Text>
             </View>
           )}
-        </View>
+        </HStack>
+
         <View className="flex items-center justify-between">
-          {author && (
-            <Link href={`/users/${author.id}`} className="h-10 w-10">
-              <Image
-                source={{ uri: author.profilePicture }}
-                alt={author.name}
-                className="h-full w-full rounded-full object-cover"
-              />
-            </Link>
-          )}
           <Link
             href={`/question/${id}`}
-            className={`flex items-center text-sm space-x-2 font-medium ${
+            className={`flex items-center text-sm space-x-2 font-medium p-2 ${
               highlighted ? "text-blue-600" : "text-gray-800"
             }`}
           >

@@ -1487,10 +1487,11 @@ components:
       required:
         - id
         - title
-        - likeCount
+        - upvoteCount
+        - downvoteCount
         - difficulty
         - createdAt
-        - commentCount
+        - answerCount
         - tags
       properties:
         id:
@@ -1510,9 +1511,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
-        likeCount:
+        upvoteCount:
           type: integer
-        commentCount:
+        downvoteCount:
+          type: integer
+        answerCount:
           type: integer
         viewCount:
           type: integer

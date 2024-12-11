@@ -107,7 +107,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         {/* Difficulty Bar */}
         <div>
           <h2 className="mb-2 text-lg font-semibold">
-            The community finds this question <strong>{getHighestVotedDifficulty()}</strong> difficulty.
+            The community finds this question: <strong>{getHighestVotedDifficulty()}</strong> difficulty.
           </h2>
           <div className="text-sm text-gray-600 mb-2">
             <span>Easy: {localCounts.easy} votes</span>,{" "}
