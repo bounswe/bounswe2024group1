@@ -1,6 +1,7 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { Components } from "react-markdown";
 import { CodeSnippet } from "./CodeSnippet";
+import CustomAnchor from "./CustomAnchor";
 
 interface ContentWithSnippetsProps {
   content: string;
@@ -11,7 +12,11 @@ export const ContentWithSnippets: React.FC<ContentWithSnippetsProps> = ({
 }) => {
   const parseContent = (text: string) => {
     const codeBlockRegex = /```(\w+(?:-exec)?)\n([\s\S]*?)```/g;
-    const parts = [];
+    const parts: {
+      type: "text" | "code";
+      content: string;
+      language?: string;
+    }[] = [];
     let lastIndex = 0;
     let match;
 
@@ -27,18 +32,24 @@ export const ContentWithSnippets: React.FC<ContentWithSnippetsProps> = ({
       if (lang.endsWith("-exec")) {
         parts.push({
           type: "code",
+          content: code.trim(),
           language: lang.replace("-exec", ""),
-          code: code.trim(),
         });
       } else {
-        parts.push({ type: "text", content: match[0] });
+        parts.push({
+          type: "text",
+          content: match[0],
+        });
       }
 
       lastIndex = match.index + match[0].length;
     }
 
     if (lastIndex < text.length) {
-      parts.push({ type: "text", content: text.slice(lastIndex) });
+      parts.push({
+        type: "text",
+        content: text.slice(lastIndex),
+      });
     }
 
     return parts;
@@ -48,10 +59,25 @@ export const ContentWithSnippets: React.FC<ContentWithSnippetsProps> = ({
     return parseContent(content).map((part, index) => {
       if (part.type === "code" && part.language) {
         return (
-          <CodeSnippet key={index} code={part.code} language={part.language} />
+          <CodeSnippet
+            key={index}
+            code={part.content}
+            language={part.language}
+          />
         );
       }
-      return <ReactMarkdown key={index}>{part.content}</ReactMarkdown>;
+      return (
+        <ReactMarkdown
+          key={index}
+          components={
+            {
+              a: CustomAnchor,
+            } as Components
+          }
+        >
+          {part.content}
+        </ReactMarkdown>
+      );
     });
   }, [content]);
 

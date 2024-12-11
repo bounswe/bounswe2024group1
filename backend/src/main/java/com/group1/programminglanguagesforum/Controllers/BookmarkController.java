@@ -3,12 +3,13 @@ package com.group1.programminglanguagesforum.Controllers;
 import com.group1.programminglanguagesforum.Constants.EndpointConstants;
 import com.group1.programminglanguagesforum.DTOs.Responses.BookmarkQuestionResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
 import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
 import com.group1.programminglanguagesforum.Services.BookmarkService;
 import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
+
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -40,22 +40,12 @@ public class BookmarkController extends BaseController {
                     bookmarkQuestionResponseDto
             );
             return buildResponse(genericApiResponse, HttpStatus.OK);
-
-
         } catch (NoSuchElementException e) {
-            ErrorResponse errorResponse = ErrorResponse.builder()
-                    .errorMessage(e.getMessage())
-                    .stackTrace(Arrays.toString(e.getStackTrace()))
-                    .build();
-            GenericApiResponse<BookmarkQuestionResponseDto> genericApiResponse = ApiResponseBuilder.buildErrorResponse(
-                    BookmarkQuestionResponseDto.class,
-                    "An error occurred while bookmarking the question",
-                    HttpStatus.NOT_FOUND.value(),
-                    errorResponse
-            );
-            return buildResponse(genericApiResponse, HttpStatus.NOT_FOUND);
+            return ExceptionResponseHandler.NoSuchElementException(e);
         } catch (UnauthorizedAccessException e) {
             return ExceptionResponseHandler.UnauthorizedAccessException(e);
+        } catch (EntityExistsException e) {
+            return ExceptionResponseHandler.EntityExistsException(e);
         }
     }
 
@@ -70,19 +60,8 @@ public class BookmarkController extends BaseController {
                     bookmarkQuestionResponseDto
             );
             return buildResponse(genericApiResponse, HttpStatus.OK);
-        }
-        catch (NoSuchElementException e) {
-            ErrorResponse errorResponse = ErrorResponse.builder()
-                    .errorMessage(e.getMessage())
-                    .stackTrace(Arrays.toString(e.getStackTrace()))
-                    .build();
-            GenericApiResponse<BookmarkQuestionResponseDto> genericApiResponse = ApiResponseBuilder.buildErrorResponse(
-                    BookmarkQuestionResponseDto.class,
-                    "An error occurred while deleting the bookmark",
-                    HttpStatus.NOT_FOUND.value(),
-                    errorResponse
-            );
-            return buildResponse(genericApiResponse, HttpStatus.NOT_FOUND);
+        } catch (NoSuchElementException e) {
+            return ExceptionResponseHandler.NoSuchElementException(e);
         } catch (UnauthorizedAccessException e) {
             return ExceptionResponseHandler.UnauthorizedAccessException(e);
         }

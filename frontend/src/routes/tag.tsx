@@ -9,6 +9,7 @@ import {
   Plus,
   SquareStack,
   Tag,
+  BookOpenText,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
@@ -110,7 +111,7 @@ export default function TagPage() {
       {tag.logoImage && (
         <img
           src={tag?.logoImage || "https://placehold.co/400x300"}
-          alt={`The logo image of ${tag.name}`}
+          alt={`${tag.name} logo`}
           title={`alt:The logo image of ${tag.name}`}
           className="h-48 w-full rounded-3xl object-contain lg:h-96"
         />
@@ -133,6 +134,17 @@ export default function TagPage() {
             <span className="text-sm text-gray-500">{tag.fileExtension}</span>
           </div>
         )}
+
+        {tag.author && (
+          <div className="flex items-center gap-2">
+            <BookOpenText className="h-5 w-5" />
+            <span className="text-sm text-gray-500">Author: {tag.author}</span>
+            <span className="sr-only">
+              Author of {tag.name} is {tag.author}
+            </span>
+          </div>
+        )}
+
         {tag.inceptionYear && (
           <div
             className="flex items-center gap-2"
@@ -144,6 +156,7 @@ export default function TagPage() {
             </span>
           </div>
         )}
+
         {tag.officialWebsite && (
           <div
             className="flex items-center gap-2"
@@ -169,6 +182,7 @@ export default function TagPage() {
               to={tag.stackExchangeTag}
               className="flex items-center gap-2 text-sm font-semibold text-gray-500"
               target="_blank"
+              aria-label={`Visit Stack Exchange for ${tag.name}`}
             >
               Stack Exchange
             </Link>
@@ -185,15 +199,16 @@ export default function TagPage() {
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h3>Questions</h3>
+            <h1>Questions</h1>
             {!!token && (
               <Button
                 asChild
                 size="icon"
-                className="rounded-full bg-red-500 text-white"
+                className="rounded-full bg-red-700 text-white"
+                aria-label="Create a new question"
               >
                 <Link to={`/questions/new?tagIds=${tag.tagId}`}>
-                  <Plus />
+                  <Plus aria-hidden="true" />
                 </Link>
               </Button>
             )}

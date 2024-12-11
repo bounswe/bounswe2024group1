@@ -1,6 +1,8 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
 import { Answers } from "@/components/Answers";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import { CreateAnswerForm } from "@/components/CreateAnswerForm";
+import { DifficultyBar } from "@/components/DifficultyBar";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
@@ -19,7 +21,6 @@ import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 
 export default function QuestionPage() {
   const { questionId } = useParams();
@@ -75,7 +76,7 @@ export default function QuestionPage() {
         difficulty:
           (data as unknown as { difficultyLevel: string })?.difficultyLevel ??
           "easy",
-        track: convertTagToTrack(data?.tags[0].name ?? ""),
+        track: convertTagToTrack(data?.tags?.[0]?.name ?? ""),
       },
     },
     {
@@ -150,7 +151,7 @@ export default function QuestionPage() {
               src={
                 question.author.profilePicture || "https://placehold.co/640x640"
               }
-              alt={question.author.name + " profile picture"}
+              alt={"Profile picture"}
               className="h-8 w-8 rounded-full object-cover"
             />
             <span className="font-semibold">{question.author.name}</span>
@@ -220,6 +221,14 @@ export default function QuestionPage() {
 
         {/* Question Content */}
         <ContentWithSnippets content={question.content} />
+
+        {/* Difficulty Bar */}
+        <DifficultyBar
+          easyCount={question.easyCount}
+          mediumCount={question.mediumCount}
+          hardCount={question.hardCount}
+          questionId={question.id}
+        />
 
         {/* Answers Section */}
         <h1 className="mb-4 text-2xl font-bold">Answers</h1>

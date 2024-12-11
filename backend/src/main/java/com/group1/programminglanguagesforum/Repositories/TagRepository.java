@@ -14,6 +14,10 @@ import java.util.List;
 @Repository
 public interface TagRepository extends JpaRepository<Tag,Long> {
     List<Tag> findAllByIdIn(List<Long> ids);
+    @Query("SELECT t FROM Tag t " +
+            "JOIN Question q ON t MEMBER OF q.tags " +
+            "GROUP BY t.id " +
+            "ORDER BY COUNT(q.id) DESC")
 
     Page<Tag> findTagsByTagNameContainingIgnoreCase(String tagName, Pageable pageable);
     @Query("SELECT t FROM Tag t JOIN t.followers u WHERE u.id = :userId")

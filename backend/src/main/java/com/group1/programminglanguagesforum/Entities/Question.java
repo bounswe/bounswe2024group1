@@ -60,5 +60,8 @@ public class Question {
     public Long getDownvoteCount() {
         return votes.stream().filter(vote -> !vote.isUpvote()).count();
     }
+    public Long getVoteDifference() {
+        return Math.max(getUpvoteCount() - getDownvoteCount(), 0);
+    }
 
 }

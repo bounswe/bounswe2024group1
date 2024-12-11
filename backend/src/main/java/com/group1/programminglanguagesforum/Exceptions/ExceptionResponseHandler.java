@@ -120,7 +120,7 @@ public class ExceptionResponseHandler {
         GenericApiResponse<T> response = ApiResponseBuilder.buildErrorResponse(
                 UserProfileResponseDto.class,
                 e.getMessage(),
-                HttpStatus.CONFLICT.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 errorResponse
         );
 

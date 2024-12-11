@@ -28,6 +28,7 @@ public class ModelMapperConfig {
                 skip(destination.getPassword());
                 skip(destination.getFollowers());
                 skip(destination.getFollowing());
+
             }
         });
         modelMapper.addMappings(new PropertyMap<User, SelfProfileResponseDto>() {
@@ -35,6 +36,7 @@ public class ModelMapperConfig {
             protected void configure() {
                 skip(destination.getQuestions());
                 skip(destination.getAnswers());
+                map(source.getReputationPoints(), destination.getReputationPoints());
             }
         });
         modelMapper.addMappings(new PropertyMap <UserProfileResponseDto,User>() {
@@ -50,6 +52,7 @@ public class ModelMapperConfig {
             @Override
             protected void configure() {
                 skip(destination.getFollowedTags());
+                map(source.getReputationPoints(), destination.getReputationPoints());
 
             }
         });

@@ -5,7 +5,7 @@ import { useExecuteCode } from "@/services/api/programmingForumComponents";
 import { CodeExecution } from "@/services/api/programmingForumSchemas";
 import React from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 interface CodeSnippetProps {
   code: string;
@@ -37,15 +37,15 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
 
   return (
     <div className="not-prose relative flex flex-col gap-2 overflow-hidden rounded-xl border border-gray-400 bg-gray-100 p-4">
-      <h4 className="text-sm font-bold">
+      <h1 className="text-sm font-bold">
         {languageUserFriendlyName[
           language.replace("-exec", "") as keyof typeof languageUserFriendlyName
         ] ?? "Unknown"}{" "}
         Code Snippet
-      </h4>
+      </h1>
       <SyntaxHighlighter
         language={language.replace("-exec", "")}
-        style={docco}
+        style={a11yLight}
         PreTag={({ children, ...rest }) => {
           return (
             <div {...rest}>

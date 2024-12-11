@@ -3,6 +3,33 @@
  *
  * @version 1.0.0
  */
+export type DifficultyLevelRequestDto = {
+  difficulty?: "EASY" | "MEDIUM" | "HARD";
+};
+
+export type QuestionRateResponseDto = {
+  /**
+   * @format int64
+   */
+  questionId?: number;
+  /**
+   * @format int64
+   */
+  easyCount?: number;
+  /**
+   * @format int64
+   */
+  mediumCount?: number;
+  /**
+   * @format int64
+   */
+  hardCount?: number;
+  /**
+   * @format int64
+   */
+  totalCount?: number;
+};
+
 export type ExperienceLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
 export type NewTag = {
@@ -59,6 +86,7 @@ export type UserProfile = {
   answerCount?: number;
   answers?: AnswerDetails[];
   questions?: QuestionSummary[];
+  followedTags?: TagSummary[];
 };
 
 export type UserProfileUpdate = {
@@ -97,7 +125,7 @@ export type UpdateQuestion = {
 };
 
 /**
- * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"dislikeCount":2,"commentCount":2,"viewCount":100,"bookmarked":false,"selfVoted":0}
+ * @example {"id":1,"title":"What is the best way to learn programming?","content":"I want to learn programming, but I don't know where to start. What is the best way to learn programming?","author":{"$ref":"#/components/schemas/UserSummary/examples/0"},"createdAt":"2024-01-01T00:00:00Z","updatedAt":"2024-01-01T00:00:00Z","tags":[{"$ref":"#/components/schemas/TagSummary/examples/0"}],"likeCount":10,"dislikeCount":2,"commentCount":2,"viewCount":100,"bookmarked":false,"selfVoted":0,"selfDifficultyVote":false,"easyCount":10,"mediumCount":10,"hardCount":10,"difficulty":"EASY"}
  */
 export type QuestionDetails = {
   id: number;
@@ -117,12 +145,16 @@ export type QuestionDetails = {
   dislikeCount: number;
   commentCount: number;
   viewCount?: number;
-  bookmarked?: boolean;
+  bookmarked: boolean;
   /**
    * @minimum -1
    * @maximum 1
    */
-  selfVoted?: number;
+  selfVoted: number;
+  selfDifficultyVote: DifficultyLevel;
+  easyCount: number;
+  mediumCount: number;
+  hardCount: number;
 };
 
 /**
@@ -230,6 +262,7 @@ export type TagDetails = {
 export type TagSummary = {
   id?: string;
   name?: string;
+  tagType?: TagType;
   questionCount?: number;
   /**
    * @format url

@@ -79,7 +79,7 @@ export const Feed = () => {
       <section className="mb-12">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Tags</h2>
-          <a href="/tags" className="text-red-500 hover:underline">
+          <a href="/tags" className="text-red-700 hover:underline">
             See all →
           </a>
         </div>

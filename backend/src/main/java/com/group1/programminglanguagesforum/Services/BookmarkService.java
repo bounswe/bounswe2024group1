@@ -8,6 +8,7 @@ import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.BookmarkRepository;
 
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -30,7 +31,11 @@ public class BookmarkService {
         User user = userContextService.getCurrentUser();
         
         Optional<Question> question = questionService.findById(questionId);
-        Question questionEntity = question.orElseThrow();
+        Question questionEntity = question.orElseThrow(() -> new NoSuchElementException("Question not found"));
+
+        bookmarkRepository.findByUserAndQuestion(user, questionEntity).ifPresent(bookmark -> {
+            throw new EntityExistsException("Question already bookmarked");
+        });
         
         Bookmark bookmark = Bookmark.builder()
                 .user(user)
@@ -45,8 +50,8 @@ public class BookmarkService {
 
     public BookmarkQuestionResponseDto removeBookmark(Long questionId) throws UnauthorizedAccessException {
         User user = userContextService.getCurrentUser();
-        Question question = questionService.findById(questionId).orElseThrow();
-        Bookmark bookmark = bookmarkRepository.findByUserAndQuestion(user, question).orElseThrow(NoSuchElementException::new);
+        Question question = questionService.findById(questionId).orElseThrow(() -> new NoSuchElementException("Question not found"));
+        Bookmark bookmark = bookmarkRepository.findByUserAndQuestion(user, question).orElseThrow(() -> new NoSuchElementException("Bookmark not found"));
 
         bookmarkRepository.delete(bookmark);
 

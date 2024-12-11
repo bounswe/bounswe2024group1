@@ -20,10 +20,10 @@ jobs:
 
       # Build a Docker image of the application and tag the image with the $GITHUB_SHA.
       - name: Build backend image
-        run: docker build -t registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7) ./backend
+        run: docker build -t registry.digitalocean.com/programming-languages-2/backend:$(echo $GITHUB_SHA | head -c7) ./backend
 
       - name: Build web image
-        run: docker build -t registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7) ./frontend
+        run: docker build -t registry.digitalocean.com/programming-languages-2/web:$(echo $GITHUB_SHA | head -c7) ./frontend
 
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
@@ -31,23 +31,26 @@ jobs:
       # Push the Docker image to registry
 
       - name: Push backend image
-        run: docker push registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7)
+        run: docker push registry.digitalocean.com/programming-languages-2/backend:$(echo $GITHUB_SHA | head -c7)
 
       - name: Push web image
-        run: docker push registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7)
+        run: docker push registry.digitalocean.com/programming-languages-2/web:$(echo $GITHUB_SHA | head -c7)
 
       # tag as latest
 
       - name: Tag backend image
-        run: docker tag registry.digitalocean.com/programming-languages/backend:$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/programming-languages/backend:latest
+        run: docker tag registry.digitalocean.com/programming-languages-2/backend:$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/programming-languages-2/backend:latest
 
       - name: Tag web image
-        run: docker tag registry.digitalocean.com/programming-languages/web:$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/programming-languages/web:latest
+        run: docker tag registry.digitalocean.com/programming-languages-2/web:$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/programming-languages-2/web:latest
 
       # Push the Docker image to registry
 
       - name: Push backend image
-        run: docker push registry.digitalocean.com/programming-languages/backend:latest
+        run: docker push registry.digitalocean.com/programming-languages-2/backend:latest
 
       - name: Push web image
-        run: docker push registry.digitalocean.com/programming-languages/web:latest
+        run: docker push registry.digitalocean.com/programming-languages-2/web:latest
+
+      - name: Create deployment again to ensure both images are up to date
+        run: doctl apps create-deployment 58cc1048-2af2-42f8-a71f-5d1085113742

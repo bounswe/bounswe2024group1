@@ -51,6 +51,10 @@ public class Answer {
         return votes.stream().filter(vote -> !vote.isUpvote()).count();
     }
 
+    public Long getVoteDifference() {
+        return Math.max(this.getUpvoteCount() - this.getDownvoteCount(), 0);
+    }
+
     public Integer getRating() {
         return (int)(this.getUpvoteCount() - this.getDownvoteCount());
     }

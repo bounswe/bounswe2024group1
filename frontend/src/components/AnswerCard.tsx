@@ -24,7 +24,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
   author,
 }) => {
   return (
-    <Card className="border-none bg-neutral-150 px-6 py-8 shadow-sm">
+    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-6">
         <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
@@ -49,7 +49,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
           <Link to={`/users/${author.id}`} className="h-10 w-10">
             <img
               src={author.profilePicture}
-              alt={author.name}
+              alt={"Profile picture"}
               className="rounded-full object-cover"
             />
           </Link>

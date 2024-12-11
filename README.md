@@ -114,24 +114,24 @@ docker compose build
 
 ```bash
 # for prod
-docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages/web:latest
-docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages/backend:latest
+docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages-2/web:latest
+docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages-2/backend:latest
 
 # for staging
-docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages/web:staging
-docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages/backend:staging
+docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages-2/web:staging
+docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages-2/backend:staging
 ```
 
 3. Push images to the registry.
 
 ```bash
 # for prod
-docker push registry.digitalocean.com/programming-languages/web:latest
-docker push registry.digitalocean.com/programming-languages/backend:latest
+docker push registry.digitalocean.com/programming-languages-2/web:latest
+docker push registry.digitalocean.com/programming-languages-2/backend:latest
 
 # for staging
-docker push registry.digitalocean.com/programming-languages/web:staging
-docker push registry.digitalocean.com/programming-languages/backend:staging
+docker push registry.digitalocean.com/programming-languages-2/web:staging
+docker push registry.digitalocean.com/programming-languages-2/backend:staging
 ```
 
 This will trigger a deployment on the DigitalOcean backend.

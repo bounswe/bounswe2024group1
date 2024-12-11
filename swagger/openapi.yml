@@ -507,7 +507,7 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
-  /api/v1/questions/{id}/vote-difficulty:
+  /questions/{id}/vote-difficulty:
     post:
       tags:
         - questions
@@ -530,50 +530,20 @@ paths:
         "200":
           description: "OK"
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: "#/components/schemas/QuestionRateResponseDto"
-
-  /questions/{questionId}/bookmark:
-    post:
-      tags:
-        - questions
-      summary: Bookmark a question
-      operationId: bookmarkQuestion
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: questionId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Question successfully bookmarked
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponseObject"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/QuestionRateResponseDto"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-
-    delete:
-      tags:
-        - questions
-      summary: Remove bookmark from a question
-      operationId: removeQuestionBookmark
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: questionId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Bookmark successfully removed
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
@@ -601,6 +571,51 @@ paths:
                           $ref: "#/components/schemas/QuestionSummary"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
+
+  /questions/{questionId}/bookmarks:
+    post:
+      tags:
+        - questions
+      summary: Bookmark a question
+      operationId: bookmarkQuestion
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Question successfully bookmarked
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    delete:
+      tags:
+        - questions
+      summary: Remove bookmark from a question
+      operationId: removeQuestionBookmark
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Bookmark successfully removed
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /questions/{questionId}/answers:
     get:
@@ -1282,6 +1297,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/QuestionSummary"
+        followedTags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagSummary"
       examples:
         - id: 1
           username: "john_doe"
@@ -1432,7 +1451,7 @@ components:
           minimum: -1
           maximum: 1
         selfDifficultyVote:
-          type: boolean
+          $ref: "#/components/schemas/DifficultyLevel"
         easyCount:
           type: integer
         mediumCount:
@@ -1468,10 +1487,11 @@ components:
       required:
         - id
         - title
-        - likeCount
+        - upvoteCount
+        - downvoteCount
         - difficulty
         - createdAt
-        - commentCount
+        - answerCount
         - tags
       properties:
         id:
@@ -1491,9 +1511,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagSummary"
-        likeCount:
+        upvoteCount:
           type: integer
-        commentCount:
+        downvoteCount:
+          type: integer
+        answerCount:
           type: integer
         viewCount:
           type: integer
@@ -1694,6 +1716,8 @@ components:
           type: string
         name:
           type: string
+        tagType:
+          $ref: '#/components/schemas/TagType'
         questionCount:
           type: integer
         photo:
