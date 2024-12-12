@@ -25,7 +25,7 @@ const languageUserFriendlyName = {
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
   const executeCode = useExecuteCode();
-  const handleExecute = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleExecute = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const execution: CodeExecution = {
       code,
