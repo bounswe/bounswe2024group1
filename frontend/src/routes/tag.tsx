@@ -20,6 +20,7 @@ import {
   useSearchQuestions,
 } from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
+import TagFollowButton from "@/components/TagFollowButton";
 import { DifficultyFilter } from "@/components/DifficultyFilter";
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
@@ -99,6 +100,13 @@ export default function TagPage() {
         <div className="flex items-center gap-2 ">
           <h1>{tag.name}</h1>
         </div>
+        {!!token && (
+          <TagFollowButton
+            tag={{
+              tagId: tagId!,
+              following: tag.following,
+            }}
+          />)}
       </div>
       {tag.logoImage && (
         <img
