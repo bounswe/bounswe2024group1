@@ -31,7 +31,6 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
       code,
       language: language as CodeExecution["language"],
     };
-    const startTime = performance.now(); // Record start time
     executeCode.mutate({ body: execution });
   };
 
