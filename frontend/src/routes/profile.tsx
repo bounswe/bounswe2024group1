@@ -167,6 +167,15 @@ export default function Profile() {
             )
           )}
         </div>
+        {profile.reputationPoints && (
+          <div className="flex flex-col">
+            <div className="flex flex-wrap gap-2">
+              <span className="flex items-center gap-2">
+                <span><strong>Reputation Points:</strong> {profile.reputationPoints}</span>
+                </span>
+            </div>
+          </div>
+        )}
         {profile.followedTags && (
           <div className="flex flex-col">
             <div className="flex flex-wrap gap-2">
