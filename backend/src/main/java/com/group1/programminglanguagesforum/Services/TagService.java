@@ -38,7 +38,6 @@ public class TagService {
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-    private final QuestionService questionService;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -82,7 +81,7 @@ public class TagService {
         TagType tagType = getTagType(tagEntity);
         List<Question> questions = questionRepository.findQuestionsByTagId(tagId);
         List<QuestionSummaryDto> relatedQuestions = questions.stream()
-                .map(questionService::mapToQuestionSummary)
+                .map(QuestionService::mapToQuestionSummary)
                 .toList();
         Long questionCount = (long) questions.size();
 
