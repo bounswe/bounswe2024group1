@@ -11,16 +11,23 @@ import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { TagDetails } from "@/services/api/programmingForumSchemas";
+
 import {
   useDeleteQuestion as useDeleteQuestionById,
   useDownvoteQuestion,
   useGetQuestionDetails,
   useUpvoteQuestion,
+  useUpdateQuestion,
+  useSearchTags,
 } from "@/services/api/programmingForumComponents";
+import { MultiSelect } from "@/components/multi-select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import useAuthStore from "@/services/auth";
 import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect,useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 export default function QuestionPage() {
@@ -85,15 +92,72 @@ export default function QuestionPage() {
     },
   );
 
+  const { data: tagSearchData } = useSearchTags(
+    { queryParams: { q: "", pageSize: 1000 } },
+    { enabled: true },
+  );
+  
+  useEffect(() => {
+    if (tagSearchData?.data) {
+      const tagsData = (tagSearchData.data as { items: TagDetails[] }).items;
+      setAvailableTags(tagsData);
+    }
+  }, [tagSearchData]);
+  
+
+
+  const question = data! || {};
+  const [isEditing, setIsEditing] = useState(false); // To toggle edit mode
+  const [isPreviewMode, setIsPreviewMode] = useState(false); // Preview toggle for description
+  
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  const [tags, setTags] = useState<number[]>(question.tags?.map((tag) => Number(tag.id)) || []); // Tag IDs state
+  const [availableTags, setAvailableTags] = useState<{ tagId: string; name: string }[]>([]); // Available tags
+
+  const { mutateAsync: updateQuestion, isPending } = useUpdateQuestion({
+    onSuccess: () => {
+      refetch();
+      setIsEditing(false);
+    },
+  });
+  
+
+  const saveChanges = async () => {
+    try {
+      await updateQuestion({
+        pathParams: { questionId: question.id },
+        body: {
+          title: titleRef.current?.value || question.title,
+          content: contentRef.current?.value || question.content,
+          tags: tags,
+        },
+      });
+      toast({
+        variant: "default",
+        title: "Changes saved",
+        description: "The question has been updated successfully.",
+      });
+      setIsEditing(false);
+    } catch (err) {console.error(
+      "Failed to save changes",
+      err
+    );
+      toast({          
+        variant: "destructive",
+        title: "Failed to save changes",
+        description: "An error occurred while updating the question.",
+      });
+    }
+  };
+
   if (isLoading) {
     return <FullscreenLoading overlay />;
   }
   if (error) {
     return <ErrorAlert error={error} />;
   }
-
-  const question = data! || {};
-
   if (!question) {
     return (
       <ErrorAlert
@@ -110,7 +174,15 @@ export default function QuestionPage() {
       {/* Left Column: Question and Answers */}
       <div className="flex-1">
         <div className="mb-4 flex items-center justify-between">
+        {isEditing ? (
+          <Input 
+          defaultValue={question.title} 
+          ref={titleRef} 
+          placeholder="Enter question title..." />
+        ) : (
           <h1 className="text-3xl font-bold">{question.title}</h1>
+        )}
+
           <div className="flex gap-2">
             <Button
               size="icon"
@@ -213,11 +285,27 @@ export default function QuestionPage() {
         <div className="mb-4 grid grid-cols-2 gap-2 py-2">
           <span className="flex items-center gap-4 font-semibold">
             <Flag className="h-6 w-6" />
-            {question.tags.map((s) => (
-              <Link to={`/tag/${s.id}`} key={s.name}>
-                <Badge>{s.name}</Badge>
-              </Link>
-            ))}
+            {isEditing ? (
+              <MultiSelect
+                options={availableTags.map((tag) => ({
+                  value: String(tag.tagId),
+                  label: tag.name || "Loading...",
+                }))}
+                value={tags.map((tag) => String(tag))}
+                onValueChange={(selectedIds) =>{
+                  const selectedTags = selectedIds.map((id) => Number(id)); // Convert back to numbers
+                  setTags(selectedTags);
+                }}
+                placeholder="Select Tags"
+              />
+            ) : (
+              <div>
+                {question.tags.map((tag) => (
+                  <Badge key={tag.id}>{tag.name}</Badge>
+                ))}
+              </div>
+            )}
+
           </span>
           <span className="flex items-center gap-4 font-semibold">
             Asked: {new Date(question.createdAt).toLocaleDateString()}
@@ -225,7 +313,46 @@ export default function QuestionPage() {
         </div>
 
         {/* Question Content */}
-        <ContentWithSnippets content={question.content} />
+        {isEditing ? (
+          <div>
+            <div className="flex gap-2">
+              <Button variant={!isPreviewMode ? "default" : "outline"} onClick={() => setIsPreviewMode(false)}>
+                Write
+              </Button>
+              <Button variant={isPreviewMode ? "default" : "outline"} onClick={() => setIsPreviewMode(true)}>
+                Preview
+              </Button>
+            </div>
+            {isPreviewMode ? (
+              <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
+                <ContentWithSnippets content={contentRef.current?.value || ""} />
+              </div>
+            ) : (
+              <Textarea ref={contentRef} defaultValue={question.content} placeholder="Enter question content..." />
+            )}
+          </div>
+        ) : (
+          <ContentWithSnippets content={question.content} />
+        )}
+
+        {/* Edit and Save Buttons */}
+        {isEditing ? (
+          <div className="flex gap-4">
+            <Button onClick={saveChanges} disabled={isPending}>
+              {isPending ? "Saving..." : "Save"}
+            </Button>
+            <Button variant="outline" onClick={() => setIsEditing(false)}>
+              Cancel
+            </Button>
+          </div>
+        ) : (
+          selfProfile?.id === question.author.id && (
+            <Button variant="default" onClick={() => setIsEditing(true)} >
+              Edit Question
+            </Button>
+          )
+        )}
+
 
         {/* Difficulty Bar */}
         <DifficultyBar

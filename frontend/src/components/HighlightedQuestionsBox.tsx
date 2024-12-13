@@ -17,8 +17,8 @@ export const HighlightedQuestionsBox: React.FC<{
             id={question.id}
             title={question.title}
             content={question.content}
-            likeCount={question.likeCount}
-            commentCount={question.commentCount}
+            upvoteCount={question.upvoteCount}
+            answerCount={question.answerCount}
             author={question.author}
           />
         ))}
