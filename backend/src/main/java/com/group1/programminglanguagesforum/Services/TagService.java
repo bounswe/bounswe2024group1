@@ -24,6 +24,7 @@ import com.group1.programminglanguagesforum.Entities.SoftwareLibraryTag;
 import com.group1.programminglanguagesforum.Entities.Tag;
 import com.group1.programminglanguagesforum.Entities.TagType;
 import com.group1.programminglanguagesforum.Entities.User;
+import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
@@ -38,6 +39,7 @@ public class TagService {
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final UserContextService userContextService;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -72,6 +74,10 @@ public class TagService {
                 .build();
     }
 
+    public boolean isTagFollowed(User user, Long tagId) {
+        return user.getFollowedTags().stream().anyMatch(t -> t.getId().equals(tagId));
+    }
+
     public GetTagDetailsResponseDto getTagDetails(Long tagId) {
         Optional<Tag> tag = tagRepository.findById(tagId);
         if (tag.isEmpty()) {
@@ -85,6 +91,16 @@ public class TagService {
                 .toList();
         Long questionCount = (long) questions.size();
 
+        boolean following = false;
+        try {
+            // userContextService is null when testing
+            if (userContextService != null && userContextService.getCurrentUser() != null) {
+                following = isTagFollowed(userContextService.getCurrentUser(), tagId);
+            }
+        } catch (UnauthorizedAccessException e) {
+            following = false;
+        }
+
         if (tagType == TagType.PROGRAMMING_LANGUAGE) {
             ProgrammingLanguagesTag languageTag = (ProgrammingLanguagesTag) tagEntity;
             GetProgrammingLanguageTagResponseDto responseDto = modelMapper.map(languageTag,
@@ -92,6 +108,7 @@ public class TagService {
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             responseDto.setQuestionCount(questionCount);
+            responseDto.setFollowing(following);
             return responseDto;
         } else if (tagType == TagType.PROGRAMMING_PARADIGM) {
             ProgrammingParadigmTag paradigmTag = (ProgrammingParadigmTag) tagEntity;
@@ -100,6 +117,7 @@ public class TagService {
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             responseDto.setQuestionCount(questionCount);
+            responseDto.setFollowing(following);
             return responseDto;
         }
 
@@ -110,7 +128,7 @@ public class TagService {
                 .tagType(getTagType(tagEntity).toString())
                 .relatedQuestions(relatedQuestions)
                 .questionCount(questionCount)
-
+                .following(following)
                 .build();
 
     }
