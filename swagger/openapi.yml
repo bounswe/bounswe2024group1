@@ -1393,7 +1393,7 @@ components:
         tags:
           type: array
           items:
-            type: string
+            type: number
 
     QuestionDetails:
       type: object
@@ -1407,6 +1407,7 @@ components:
         - tags
         - likeCount
         - dislikeCount
+        - difficulty
         - commentCount
         - selfQuestion
         - difficulty
@@ -1440,6 +1441,8 @@ components:
           type: integer
         dislikeCount:
           type: integer
+        difficulty:
+          $ref: '#/components/schemas/DifficultyLevel'
         commentCount:
           type: integer
         viewCount:
