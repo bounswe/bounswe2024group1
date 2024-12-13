@@ -1,22 +1,35 @@
 package com.group1.programminglanguagesforum.Services;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.*;
-import com.group1.programminglanguagesforum.Entities.*;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetProgrammingLanguageTagResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetProgrammingParadigmResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetTagDetailsResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.TagDto;
+import com.group1.programminglanguagesforum.Entities.ComputerScienceTermTag;
+import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
+import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
+import com.group1.programminglanguagesforum.Entities.Question;
+import com.group1.programminglanguagesforum.Entities.SoftwareLibraryTag;
+import com.group1.programminglanguagesforum.Entities.Tag;
+import com.group1.programminglanguagesforum.Entities.TagType;
+import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +38,7 @@ public class TagService {
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final QuestionService questionService;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -67,8 +81,8 @@ public class TagService {
         Tag tagEntity = tag.get();
         TagType tagType = getTagType(tagEntity);
         List<Question> questions = questionRepository.findQuestionsByTagId(tagId);
-        List<GetQuestionWithTagDto> relatedQuestions = questions.stream()
-                .map(question -> modelMapper.map(question, GetQuestionWithTagDto.class))
+        List<QuestionSummaryDto> relatedQuestions = questions.stream()
+                .map(questionService::mapToQuestionSummary)
                 .toList();
         Long questionCount = (long) questions.size();
 
@@ -101,6 +115,7 @@ public class TagService {
                 .build();
 
     }
+
     public List<SelfProfileResponseDto.FollowedTags> getFollowedTags(Long userId) {
         return tagRepository.findTagByFollowers(userId).stream()
                 .map(tag -> SelfProfileResponseDto.FollowedTags.builder()
