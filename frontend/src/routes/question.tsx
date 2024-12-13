@@ -112,7 +112,6 @@ export default function QuestionPage() {
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
-  const [content, setContent] = useState(question.content || ""); // Controlled content state
   const [tags, setTags] = useState<number[]>(question.tags?.map((tag) => Number(tag.id)) || []); // Tag IDs state
   const [availableTags, setAvailableTags] = useState<{ tagId: string; name: string }[]>([]); // Available tags
 
@@ -140,7 +139,7 @@ export default function QuestionPage() {
         description: "The question has been updated successfully.",
       });
       setIsEditing(false);
-    } catch (err) {
+    } catch (_) {
       toast({
         variant: "destructive",
         title: "Failed to save changes",
