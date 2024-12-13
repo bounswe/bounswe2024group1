@@ -93,7 +93,10 @@ public class TagService {
 
         boolean following = false;
         try {
-            following = isTagFollowed(userContextService.getCurrentUser(), tagId);
+            // userContextService is null when testing
+            if (userContextService != null && userContextService.getCurrentUser() != null) {
+                following = isTagFollowed(userContextService.getCurrentUser(), tagId);
+            }
         } catch (UnauthorizedAccessException e) {
             following = false;
         }
