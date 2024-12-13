@@ -24,7 +24,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
   author,
 }) => {
   return (
-    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
+    <Card className="border-none bg-neutral-100 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-6">
         <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}

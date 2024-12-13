@@ -121,7 +121,7 @@ export type NewQuestion = {
 export type UpdateQuestion = {
   title?: string;
   content?: string;
-  tags?: string[];
+  tags?: number[];
 };
 
 /**
@@ -143,6 +143,7 @@ export type QuestionDetails = {
   tags: TagSummary[];
   likeCount: number;
   dislikeCount: number;
+  difficulty: DifficultyLevel;
   commentCount: number;
   viewCount?: number;
   bookmarked: boolean;
@@ -171,8 +172,9 @@ export type QuestionSummary = {
   createdAt: string;
   difficulty: DifficultyLevel;
   tags: TagSummary[];
-  likeCount: number;
-  commentCount: number;
+  upvoteCount: number;
+  downvoteCount: number;
+  answerCount: number;
   viewCount?: number;
 };
 

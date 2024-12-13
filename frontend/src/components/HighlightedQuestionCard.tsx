@@ -12,9 +12,9 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
   id,
   title,
   content,
-  likeCount,
+  upvoteCount,
   difficulty,
-  commentCount,
+  answerCount,
   author,
 }) => {
   return (
@@ -29,11 +29,11 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
         <div className="flex flex-col gap-3 text-xs text-gray-700">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4" />
-            <span>{likeCount} votes</span>
+            <span>{upvoteCount} votes</span>
           </div>
           <div className="flex items-center gap-1">
             <MessageSquare className="h-4 w-4" />
-            <span>{commentCount} answers</span>
+            <span>{answerCount} answers</span>
           </div>
           {difficulty && (
             <div className="flex items-center gap-1">

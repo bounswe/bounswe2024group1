@@ -25,6 +25,12 @@ const mockTagData = vi.hoisted(
 // Mock the API hook
 vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetTagDetails: vi.fn(() => {}),
+  useFollowTag: vi.fn(() => ({
+    mutateAsync: vi.fn(), // Mock implementation of mutateAsync
+  })),
+  useUnfollowTag: vi.fn(() => ({
+    mutateAsync: vi.fn(), // Mock implementation of mutateAsync
+  })),
   useGetQuestionDetails: vi.fn(() => ({
     data: {
       data: {
@@ -88,34 +94,20 @@ describe("TagPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not render 'Follow' button for unauthenticated users", () => {
-    render(
-      <MemoryRouter initialEntries={["/tag/javascript"]}>
-        <Routes>
-          <Route path="/tag/:tagName" element={<TagPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+  it("renders 'Follow' button for authenticated users", () => {
+    vi.mocked(useAuthStore).mockReturnValue({
+      selfProfile: { id: 1, username: "testuser", profilePicture: "test.jpg" },
+      token: "mock-token",
+    });
 
-    expect(
-      screen.queryByRole("button", { name: /follow/i }),
-    ).not.toBeInTheDocument();
-  });
+     render(
+       <MemoryRouter initialEntries={["/tag/javascript"]}>
+         <Routes>
+           <Route path="/tag/:tagName" element={<TagPage />} />
+         </Routes>
+       </MemoryRouter>,
+     );
 
-  // it("renders 'Follow' button for authenticated users", () => {
-  //   vi.mocked(useAuthStore).mockReturnValue({
-  //     selfProfile: { id: 1, username: "testuser", profilePicture: "test.jpg" },
-  //     token: "mock-token",
-  //   });
-
-  //   render(
-  //     <MemoryRouter initialEntries={["/tag/javascript"]}>
-  //       <Routes>
-  //         <Route path="/tag/:tagName" element={<TagPage />} />
-  //       </Routes>
-  //     </MemoryRouter>,
-  //   );
-
-  //   expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
-  // });
+     expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
+   });
 });

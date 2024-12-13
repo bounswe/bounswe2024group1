@@ -27,7 +27,7 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
   ({ id, title, content, votes, answerCount, author, difficulty }, ref) => {
     return (
       <Card
-        className="flex flex-1 border-none #e5e5e5 px-6 py-8 shadow-sm"
+        className="flex flex-1 border-none bg-neutral-100 px-6 py-8 shadow-sm"
         ref={ref}
       >
         <div className="flex flex-col gap-6">
@@ -65,7 +65,7 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
             )}
             <Link
               to={`/question/${id}`}
-              className="flex items-center text-sm font-medium text-gray-800 hover:underline p-2"
+              className="flex items-center p-2 text-sm font-medium text-gray-800 hover:underline"
             >
               Go to question
               <ArrowRight className="ml-1 h-4 w-4" />

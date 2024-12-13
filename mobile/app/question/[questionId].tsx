@@ -27,7 +27,14 @@ import {
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { ArrowLeftIcon, BookmarkIcon, Flag, MessageSquare, ThumbsUp, Trash } from "lucide-react-native";
+import {
+  ArrowLeftIcon,
+  BookmarkIcon,
+  Flag,
+  MessageSquare,
+  ThumbsUp,
+  Trash,
+} from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 export default function QuestionPage() {
@@ -49,13 +56,15 @@ export default function QuestionPage() {
     }
   );
   const data = result?.data;
-  const question = data! || {}; 
+  const question = data! || {};
 
   const { mutateAsync: deleteQuestion } = useDeleteQuestionById();
   const { selfProfile, token } = useAuthStore();
 
   const [optimisticVotes, setOptimisticVotes] = useState<number | null>(null);
-  const [optimisticBookmarked, setOptimisticBookmarked] = useState<boolean>(question.bookmarked ?? false);
+  const [optimisticBookmarked, setOptimisticBookmarked] = useState<boolean>(
+    question.bookmarked ?? false
+  );
 
   useEffect(() => {
     setOptimisticBookmarked(question.bookmarked ?? false);
@@ -89,21 +98,25 @@ export default function QuestionPage() {
     },
   });
 
-  const { mutateAsync: bookmarkQuestion, isPending: isPendingBookmark } = useBookmarkQuestion({
-    onMutate: async () => {
-      setOptimisticBookmarked(true);
-    },
-    onSuccess: () => {
-      refetch().then(() => {
+  const { mutateAsync: bookmarkQuestion, isPending: isPendingBookmark } =
+    useBookmarkQuestion({
+      onMutate: async () => {
         setOptimisticBookmarked(true);
-      });
-    },
-    onError: () => {
-      setOptimisticBookmarked(false);
-    },
-  });
+      },
+      onSuccess: () => {
+        refetch().then(() => {
+          setOptimisticBookmarked(true);
+        });
+      },
+      onError: () => {
+        setOptimisticBookmarked(false);
+      },
+    });
 
-  const { mutateAsync: unbookmarkQuestion, isPending: isPendingRemoveBookmark} = useRemoveQuestionBookmark({
+  const {
+    mutateAsync: unbookmarkQuestion,
+    isPending: isPendingRemoveBookmark,
+  } = useRemoveQuestionBookmark({
     onMutate: async () => {
       setOptimisticBookmarked(false);
     },
@@ -116,7 +129,6 @@ export default function QuestionPage() {
       setOptimisticBookmarked(true);
     },
   });
-
 
   if (isLoading) {
     return <FullscreenLoading overlay />;
@@ -142,7 +154,7 @@ export default function QuestionPage() {
     } else {
       bookmarkQuestion({ pathParams: { questionId: question.id } });
     }
-  }
+  };
 
   return (
     <VStack className="flex-1 px-2 my-8 mt-8">
@@ -158,7 +170,7 @@ export default function QuestionPage() {
         <Button
           onPress={handleBookmark}
           disabled={isPendingBookmark || isPendingRemoveBookmark}
-          size="sm" 
+          size="sm"
           variant={optimisticBookmarked ? "solid" : "outline"}
           className="self-end mt-5 mr-6"
         >
@@ -316,7 +328,7 @@ export default function QuestionPage() {
           </Text>
         </View>
 
-        <View className="rounded-lg #e5e5e5 p-4">
+        <View className="rounded-lg bg-neutral-100 p-4">
           <Text className="whitespace-pre-wrap">{question.content}</Text>
         </View>
 

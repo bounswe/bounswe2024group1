@@ -20,7 +20,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
   link,
 }) => {
   return (
-    <Card className="flex flex-1 border-none #e5e5e5 px-6 py-8 shadow-sm">
+    <Card className="flex flex-1 border-none bg-neutral-100 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-6">
         <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
@@ -28,7 +28,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         <p className="line-clamp-3 text-sm font-light text-gray-600">
           {description}
         </p>
-        <div className="flex flex-col gap-3 text-xs text-gray-500">
+        <div className="flex flex-col gap-3 text-xs text-gray-800">
           <div className="flex items-center gap-1">
             <span className="font-semibold">Difficulty:</span>
             <span>{difficulty}</span>

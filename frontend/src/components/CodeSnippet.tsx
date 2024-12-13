@@ -25,7 +25,6 @@ const languageUserFriendlyName = {
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
   const executeCode = useExecuteCode();
-
   const handleExecute = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const execution: CodeExecution = {
@@ -81,7 +80,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
       </Button>
       {executeCode.isSuccess && (
         <div className="mt-2 rounded border border-green-300 bg-green-100 p-2">
-          <h4 className="mb-4 text-sm font-bold">Output:</h4>
+          <h4 className="mb-4 text-sm font-bold">Output (in {executeCode.data.data.executionTime}s):</h4>
           <pre className="bg-green-50 p-1">{executeCode.data.data.output}</pre>
         </div>
       )}
