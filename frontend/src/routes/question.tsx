@@ -6,6 +6,7 @@ import { DifficultyBar } from "@/components/DifficultyBar";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
+import BookmarkButton from "@/components/BookmarkButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -138,6 +139,10 @@ export default function QuestionPage() {
                 <Trash className="h-5 w-5" />
               </Button>
             )}
+            {!!token && (
+          <BookmarkButton
+          question = {{questionId: question.id, bookmarked: question.bookmarked, }}
+          />)}
           </div>
         </div>
 
