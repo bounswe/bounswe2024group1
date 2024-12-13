@@ -10,7 +10,7 @@ import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { DifficultyLevel, TagDetails } from "@/services/api/programmingForumSchemas";
+import { TagDetails } from "@/services/api/programmingForumSchemas";
 
 import {
   useDeleteQuestion as useDeleteQuestionById,
@@ -21,19 +21,6 @@ import {
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
 import { MultiSelect } from "@/components/multi-select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Info } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import useAuthStore from "@/services/auth";
