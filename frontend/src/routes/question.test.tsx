@@ -55,6 +55,12 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useDeleteQuestion: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
+  useBookmarkQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useRemoveQuestionBookmark: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
   useVoteQuestion: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
@@ -194,6 +200,22 @@ describe("QuestionPage", () => {
     );
 
     expect(screen.getByRole("button", { name: /delete/i })).toBeInTheDocument();
+  });
+
+  it("renders bookmark button", () => {
+    vi.mocked(useAuthStore).mockReturnValue({
+      selfProfile: { id: 1},
+      token: "mock-token",
+    });
+    render(
+      <MemoryRouter initialEntries={["/question/1"]}>
+        <Routes>
+          <Route path="/question/:questionId" element={<QuestionPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("button", { name: /bookmark/i })).toBeInTheDocument();
   });
 
   it("updates difficulty counts when voting", async () => {
