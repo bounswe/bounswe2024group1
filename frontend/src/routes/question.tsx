@@ -139,8 +139,11 @@ export default function QuestionPage() {
         description: "The question has been updated successfully.",
       });
       setIsEditing(false);
-    } catch (_) {
-      toast({
+    } catch (err) {console.error(
+      "Failed to save changes",
+      err
+    );
+      toast({          
         variant: "destructive",
         title: "Failed to save changes",
         description: "An error occurred while updating the question.",
