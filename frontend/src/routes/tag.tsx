@@ -233,8 +233,8 @@ export default function TagPage() {
                     id={question.id}
                     title={question.title}
                     content={question.content ?? ""}
-                    votes={question.likeCount ?? 0}
-                    answerCount={question.commentCount ?? 0}
+                    votes={question.upvoteCount ?? 0}
+                    answerCount={question.answerCount ?? 0}
                   />
                 ))}
             </div>
