@@ -126,7 +126,7 @@ describe("Profile component", () => {
 
     render(<RouterProvider router={router} />);
 
-    const editButton = screen.getByText("Edit profile");
+    const editButton = screen.getByText("Edit Profile");
     fireEvent.click(editButton);
 
     const bioField = screen.getByPlaceholderText("Bio");
