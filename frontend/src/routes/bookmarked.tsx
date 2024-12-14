@@ -1,20 +1,15 @@
-import { DifficultyFilter } from "@/components/DifficultyFilter";
 import { useGetBookmarkedQuestions } from "@/services/api/programmingForumComponents";
 import {
-  DifficultyLevel,
   QuestionSummary,
 } from "@/services/api/programmingForumSchemas";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import ErrorAlert from "../components/ErrorAlert";
 import InfiniteScroll from "../components/InfiniteScroll";
 import { QuestionCard } from "../components/QuestionCard";
 
 export const BookmarkedQuestions = () => {
-  const [params] = useSearchParams();
   const [pageSize, setPageSize] = useState(20);
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>();
   const [previousData, setPreviousData] = useState<{
     items: QuestionSummary[];
     totalItems: number;
