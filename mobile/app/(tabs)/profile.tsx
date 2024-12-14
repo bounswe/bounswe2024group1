@@ -142,7 +142,7 @@ export function UserProfile({ userId }: { userId: string }) {
         <HStack space="lg" className="items-center justify-between py-4">
           <Image
             source={{
-              uri: "https://placehold.co/640x640",
+              uri: "frontend\src\assets\placeholder_profile.png",
             }}
             alt={`Profile picture of ${profile.username}`}
             style={{ width: 96, height: 96, borderRadius: 48 }}

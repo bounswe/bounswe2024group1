@@ -14,6 +14,7 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { routeConfig } from ".";
 import QuestionPage from "./question";
 import { DifficultyBar } from "@/components/DifficultyBar";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 
 
@@ -29,7 +30,7 @@ const mockQuestionData = vi.hoisted(
         username: "johndoe",
         name: "John Doe",
         reputationPoints: 100,
-        profilePicture: "https://example.com/profile.jpg",
+        profilePicture: placeholderProfile,
       },
       likeCount: 10,
       commentCount: 5,

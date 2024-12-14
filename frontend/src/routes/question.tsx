@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 import {
   useDeleteQuestion as useDeleteQuestionById,
@@ -225,8 +226,7 @@ export default function QuestionPage() {
             className="flex items-center gap-4"
           >
             <img
-              src={
-                question.author.profilePicture || "https://placehold.co/640x640"
+              src={question.author?.profilePicture || placeholderProfile
               }
               alt={"Profile picture"}
               className="h-8 w-8 rounded-full object-cover"

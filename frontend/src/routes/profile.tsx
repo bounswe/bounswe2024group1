@@ -80,7 +80,7 @@ export default function Profile() {
           <Avatar className="h-24 w-24">
             <AvatarImage
               alt={`Profile picture of ${profile.username}`}
-              src="https://placehold.co/640x640"
+              src="frontend\src\assets\placeholder_profile.png"
             />
           </Avatar>
           <div className="flex space-x-4 text-center">

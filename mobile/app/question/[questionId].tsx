@@ -37,6 +37,8 @@ import {
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
+import placeholderProfile from "@/assets/placeholder_profile.png";
+
 export default function QuestionPage() {
   const { questionId } = useLocalSearchParams();
   const router = useRouter();
@@ -259,8 +261,7 @@ export default function QuestionPage() {
               <Image
                 source={{
                   uri:
-                    question.author.profilePicture ||
-                    "https://placehold.co/640x640",
+                    question.author.profilePicture || placeholderProfile,
                 }}
                 alt={question.author.name}
                 width={32}

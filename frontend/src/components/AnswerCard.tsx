@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight, CornerDownRight, Star } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 interface AnswerCardProps {
   id: number;
@@ -48,7 +49,8 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
         <div className="flex items-center justify-between">
           <Link to={`/users/${author.id}`} className="h-10 w-10">
             <img
-              src={author.profilePicture}
+              src={author?.profilePicture ||
+                  placeholderProfile}
               alt={"Profile picture"}
               className="rounded-full object-cover"
             />
