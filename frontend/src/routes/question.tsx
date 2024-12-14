@@ -301,10 +301,11 @@ export default function QuestionPage() {
             ) : (
               <div>
                 {question.tags.map((s) => (
-                  <Link to={`/tag/${s.id}`} key={s.name}>
+                  <Link to={`/tag/${s.id}`} key={s.name}> 
                     <Badge>{s.name}</Badge>
                   </Link>
-                ))}
+                ))// Link to tag page
+                }
               </div>
             )}
 
