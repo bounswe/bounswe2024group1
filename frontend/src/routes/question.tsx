@@ -300,8 +300,10 @@ export default function QuestionPage() {
               />
             ) : (
               <div>
-                {question.tags.map((tag) => (
-                  <Badge key={tag.id}>{tag.name}</Badge>
+                {question.tags.map((s) => (
+                  <Link to={`/tag/${s.id}`} key={s.name}>
+                    <Badge>{s.name}</Badge>
+                  </Link>
                 ))}
               </div>
             )}
