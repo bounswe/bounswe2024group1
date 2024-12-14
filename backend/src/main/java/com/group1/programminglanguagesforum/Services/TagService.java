@@ -101,6 +101,8 @@ public class TagService {
             following = false;
         }
 
+        Long followerCount = (long) tagEntity.getFollowers().size();
+
         if (tagType == TagType.PROGRAMMING_LANGUAGE) {
             ProgrammingLanguagesTag languageTag = (ProgrammingLanguagesTag) tagEntity;
             GetProgrammingLanguageTagResponseDto responseDto = modelMapper.map(languageTag,
@@ -108,6 +110,7 @@ public class TagService {
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             responseDto.setQuestionCount(questionCount);
+            responseDto.setFollowerCount(followerCount);
             responseDto.setFollowing(following);
             return responseDto;
         } else if (tagType == TagType.PROGRAMMING_PARADIGM) {
@@ -117,6 +120,7 @@ public class TagService {
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             responseDto.setQuestionCount(questionCount);
+            responseDto.setFollowerCount(followerCount);
             responseDto.setFollowing(following);
             return responseDto;
         }
@@ -128,6 +132,7 @@ public class TagService {
                 .tagType(getTagType(tagEntity).toString())
                 .relatedQuestions(relatedQuestions)
                 .questionCount(questionCount)
+                .followerCount(followerCount)
                 .following(following)
                 .build();
 
@@ -149,6 +154,7 @@ public class TagService {
         return tags.map(tag -> GetTagDetailsResponseDto.builder()
                 .tagId(tag.getId())
                 .questionCount((long) questionRepository.findQuestionsByTagId(tag.getId()).size())
+                .followerCount((long) tag.getFollowers().size())
                 .name(tag.getTagName())
                 .description(tag.getTagDescription())
                 .tagType(getTagType(tag).toString())
