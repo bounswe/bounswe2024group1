@@ -153,12 +153,12 @@ export default function Profile() {
                 {isPending ? "Saving..." : "Save"}
               </Button>
             ) : (
-              <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
+              <div className="flex gap-4 justify-center items-center">
                 <Button onClick={() => setEditing(true)} variant="outline">
                   Edit Profile
                 </Button>
                 <Button asChild variant="outline">
-                  <Link to="/bookmarkedquestions">Bookmarked Questions</Link>
+                  <Link to="/bookmarks">Bookmarks</Link>
                 </Button>
               </div>
             )

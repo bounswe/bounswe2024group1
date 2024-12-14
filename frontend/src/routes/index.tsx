@@ -12,7 +12,7 @@ import QuestionRoute from "./question";
 import { Search } from "./search";
 import Signup from "./signup";
 import TagPage from "./tag";
-import { BookmarkedQuestions } from "@/routes/bookmarked";
+import { BookmarkedQuestions } from "@/routes/bookmarks";
 
 export const routes: RouteObject[] = [
   {
@@ -28,7 +28,7 @@ export const routes: RouteObject[] = [
     Component: Login,
   },
   {
-    path: "/bookmarkedquestions",
+    path: "/bookmarks",
     Component: BookmarkedQuestions,
   },
   {

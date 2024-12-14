@@ -47,8 +47,8 @@ export const BookmarkedQuestions = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold ">
           {questions.length
-            ? `Last ${resultListData.totalItems} bookmarked questions shown.`
-            : "No questions are bookmarked."}
+            ? `You have ${resultListData.totalItems} bookmarked questions.`
+            : "You haven't bookmarked any questions."}
         </h1>
       </div>
       {!questions.length && (

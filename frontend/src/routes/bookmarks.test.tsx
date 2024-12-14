@@ -15,7 +15,7 @@ import {
   } from "react-router-dom";
   import { beforeEach, describe, expect, it, vi } from "vitest";
   import { routeConfig } from ".";
-  import { BookmarkedQuestions } from "./bookmarked";
+  import { BookmarkedQuestions } from "./bookmarks";
   
   // Mock the useGetBookmarkedQuestions hook
   vi.mock("@/services/api/programmingForumComponents", () => ({
@@ -72,7 +72,7 @@ import {
   
     it("should have no accessibility violations", async () => {
       const router = createMemoryRouter(routeConfig, {
-        initialEntries: ["/bookmarked"],
+        initialEntries: ["/bookmarks"],
       });
   
       await testAccessibility(<RouterProvider router={router} />);
@@ -88,9 +88,9 @@ import {
       } as QueryObserverSuccessResult<unknown, GetBookmarkedQuestionsError>);
   
       render(
-        <MemoryRouter initialEntries={["/bookmarked"]}>
+        <MemoryRouter initialEntries={["/bookmarks"]}>
           <Routes>
-            <Route path="/bookmarked" element={<BookmarkedQuestions />} />
+            <Route path="/bookmarks" element={<BookmarkedQuestions />} />
           </Routes>
         </MemoryRouter>,
       );
