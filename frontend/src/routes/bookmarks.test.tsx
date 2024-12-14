@@ -96,7 +96,7 @@ import {
       );
   
       expect(
-        screen.getByText(`Last ${mockQuestions.length} bookmarked questions shown.`),
+        screen.getByText(`You have ${mockQuestions.length} bookmarked questions.`),
       ).toBeInTheDocument();
   
       mockQuestions.forEach((question) => {
