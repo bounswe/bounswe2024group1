@@ -1101,7 +1101,7 @@ export const fetchRateQuestion = (
     {},
     RateQuestionPathParams
   >({
-    url: "/api/v1/questions/{id}/vote-difficulty",
+    url: "/questions/{id}/vote-difficulty",
     method: "post",
     ...variables,
     signal,

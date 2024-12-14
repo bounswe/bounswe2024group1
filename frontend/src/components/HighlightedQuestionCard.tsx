@@ -4,6 +4,7 @@ import { QuestionSummary } from "@/services/api/programmingForumSchemas";
 import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 function capitalizeString(difficulty: string): React.ReactNode {
   return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
@@ -12,9 +13,9 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
   id,
   title,
   content,
-  likeCount,
+  upvoteCount,
   difficulty,
-  commentCount,
+  answerCount,
   author,
 }) => {
   return (
@@ -29,11 +30,11 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
         <div className="flex flex-col gap-3 text-xs text-gray-700">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4" />
-            <span>{likeCount} votes</span>
+            <span>{upvoteCount} votes</span>
           </div>
           <div className="flex items-center gap-1">
             <MessageSquare className="h-4 w-4" />
-            <span>{commentCount} answers</span>
+            <span>{answerCount} answers</span>
           </div>
           {difficulty && (
             <div className="flex items-center gap-1">
@@ -46,7 +47,7 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
           {author && (
             <Link to={`/users/${author.id}`} className="h-10 w-10">
               <img
-                src={author.profilePicture}
+                src={author?.profilePicture || placeholderProfile}
                 alt={author.name}
                 className="h-full w-full rounded-full object-cover"
               />

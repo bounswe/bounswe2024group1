@@ -8,6 +8,7 @@ import { ThumbsDown, ThumbsUp } from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
 import { ContentWithSnippets } from "./ContentWithSnippets";
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
 
 interface AnswerItemProps {
   answer: AnswerDetails;
@@ -23,7 +24,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
   const { token } = useAuthStore();
 
   return (
-    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
+    <Card className="border-none bg-neutral-100 px-6 py-8 shadow-sm">
       <View className="flex flex-col gap-4">
         <ContentWithSnippets content={answer.content} />
         <HStack className="flex items-center justify-between">
@@ -69,11 +70,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
               className="flex items-center gap-2"
             >
               <Image
-                source={{
-                  uri:
-                    answer.author?.profilePicture ||
-                    "https://placehold.co/100x100",
-                }}
+                source={answer.author.profilePicture ? {uri: answer.author.profilePicture} : placeholderProfile}
                 alt={answer.author?.name}
                 className="h-8 w-8 rounded-full object-cover"
               />

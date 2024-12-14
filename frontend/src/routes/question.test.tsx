@@ -1,4 +1,4 @@
-import { useGetQuestionDetails } from "@/services/api/programmingForumComponents";
+import { useGetQuestionDetails, useSearchTags } from "@/services/api/programmingForumComponents";
 import { QuestionDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { testAccessibility } from "@/utils/test-accessibility";
@@ -14,7 +14,6 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { routeConfig } from ".";
 import QuestionPage from "./question";
 import { DifficultyBar } from "@/components/DifficultyBar";
-
 
 
 
@@ -40,6 +39,7 @@ const mockQuestionData = vi.hoisted(
       createdAt: "2023-01-01T00:00:00Z",
       updatedAt: "2023-01-01T00:00:00Z",
       dislikeCount: 0,
+      difficulty: "EASY",
       bookmarked: false,
       selfVoted: 1,
       selfDifficultyVote: "EASY",
@@ -53,6 +53,12 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetQuestionDetails: vi.fn(() => {}),
   useGetQuestionAnswers: vi.fn(() => ({ data: null, isLoading: true })),
   useDeleteQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useBookmarkQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+  })),
+  useRemoveQuestionBookmark: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
   useVoteQuestion: vi.fn(() => ({
@@ -83,6 +89,16 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
       },
     }),
   })),
+  useSearchTags: vi.fn(() => ({
+    data: { data: { items: [{ tagId: "1", name: "Tag1" }, { tagId: "2", name: "Tag2" }] } },
+    isLoading: false,
+  })),
+  useUpdateQuestion: vi.fn(() => ({
+    mutateAsync: vi.fn().mockResolvedValue({
+      data: { success: true },
+    }),
+    isPending: false,
+  })),
 }));
 
 vi.mock("@/services/exercism", () => ({
@@ -110,9 +126,13 @@ describe("QuestionPage", () => {
       isLoading: false,
       error: null,
     });
+    (useSearchTags as Mock).mockReturnValue({
+      data: { data: { items: [{ tagId: "1", name: "Tag1" }, { tagId: "2", name: "Tag2" }] } },
+      isLoading: false,
+    });
     vi.mocked(useAuthStore).mockReturnValue({
-      selfProfile: null,
-      token: null,
+      selfProfile: { id: mockQuestionData.author.id }, // Ensure the user matches the question's author
+      token: "mock-token",
     });
   });
 
@@ -194,6 +214,22 @@ describe("QuestionPage", () => {
     );
 
     expect(screen.getByRole("button", { name: /delete/i })).toBeInTheDocument();
+  });
+
+  it("renders bookmark button", () => {
+    vi.mocked(useAuthStore).mockReturnValue({
+      selfProfile: { id: 1},
+      token: "mock-token",
+    });
+    render(
+      <MemoryRouter initialEntries={["/question/1"]}>
+        <Routes>
+          <Route path="/question/:questionId" element={<QuestionPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("button", { name: /bookmark/i })).toBeInTheDocument();
   });
 
   it("updates difficulty counts when voting", async () => {

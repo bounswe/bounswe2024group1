@@ -19,6 +19,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 export default function Profile() {
   const { userId = "" } = useParams<{ userId: string }>();
@@ -80,7 +81,7 @@ export default function Profile() {
           <Avatar className="h-24 w-24">
             <AvatarImage
               alt={`Profile picture of ${profile.username}`}
-              src="https://placehold.co/640x640"
+              src={placeholderProfile}
             />
           </Avatar>
           <div className="flex space-x-4 text-center">
@@ -219,8 +220,8 @@ export default function Profile() {
                   id={question.id}
                   title={question.title}
                   content={question.content ?? ""}
-                  votes={question.likeCount}
-                  answerCount={question.commentCount}
+                  votes={question.upvoteCount}
+                  answerCount={question.answerCount}
                   author={question.author}
                 />
               ))}

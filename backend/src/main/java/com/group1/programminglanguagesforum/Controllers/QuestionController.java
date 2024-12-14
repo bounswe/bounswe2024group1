@@ -1,29 +1,43 @@
 package com.group1.programminglanguagesforum.Controllers;
 
-import com.group1.programminglanguagesforum.Constants.EndpointConstants;
-import com.group1.programminglanguagesforum.DTOs.Requests.CreateQuestionRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Requests.DifficultyLevelRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Requests.UpdateQuestionRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.*;
-import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
-import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
-import com.group1.programminglanguagesforum.Entities.Question;
-import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
-import com.group1.programminglanguagesforum.Services.QuestionDifficultyRateService;
-import com.group1.programminglanguagesforum.Services.QuestionService;
-import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.group1.programminglanguagesforum.Constants.EndpointConstants;
+import com.group1.programminglanguagesforum.DTOs.Requests.CreateQuestionRequestDto;
+import com.group1.programminglanguagesforum.DTOs.Requests.DifficultyLevelRequestDto;
+import com.group1.programminglanguagesforum.DTOs.Requests.UpdateQuestionRequestDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.CreateQuestionResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.ErrorResponse;
+import com.group1.programminglanguagesforum.DTOs.Responses.GenericApiResponse;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetQuestionDetailsResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.QuestionRateResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
+import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
+import com.group1.programminglanguagesforum.Entities.Question;
+import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
+import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
+import com.group1.programminglanguagesforum.Services.QuestionDifficultyRateService;
+import com.group1.programminglanguagesforum.Services.QuestionService;
+import com.group1.programminglanguagesforum.Util.ApiResponseBuilder;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -59,7 +73,8 @@ public class QuestionController extends BaseController {
                     .errorMessage(e.getMessage())
                     .stackTrace(Arrays.toString(e.getStackTrace()))
                     .build();
-            GenericApiResponse<GetQuestionDetailsResponseDto> response = ApiResponseBuilder.buildErrorResponse(GetQuestionDetailsResponseDto.class, e.getMessage(), 404, errorResponse);
+            GenericApiResponse<GetQuestionDetailsResponseDto> response = ApiResponseBuilder
+                    .buildErrorResponse(GetQuestionDetailsResponseDto.class, e.getMessage(), 404, errorResponse);
             return buildResponse(response, org.springframework.http.HttpStatus.NOT_FOUND);
         }
     }
@@ -113,7 +128,7 @@ public class QuestionController extends BaseController {
         Page<Question> questionPage = questionService.searchQuestions(query, tags, difficulty, page, pageSize);
 
         List<QuestionSummaryDto> questionSummaries = questionPage.getContent().stream()
-                .map(questionService::mapToQuestionSummary)
+                .map(QuestionService::mapToQuestionSummary)
                 .toList();
 
         Map<String, Object> response = new HashMap<>();
@@ -142,8 +157,7 @@ public class QuestionController extends BaseController {
             return buildResponse(response, org.springframework.http.HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return ExceptionResponseHandler.NoSuchElementException(e);
-        }
-        catch (UnauthorizedAccessException e) {
+        } catch (UnauthorizedAccessException e) {
             return ExceptionResponseHandler.UnauthorizedAccessException(e);
         }
     }

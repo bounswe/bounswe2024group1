@@ -37,6 +37,7 @@ import useAuthStore from "@/services/auth";
 import { Link, router } from "expo-router";
 import { ChevronDownIcon, Plus, Bookmark, MenuIcon, LogOutIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
 
 export default function Profile() {
   return <UserProfile userId="me" />;
@@ -141,9 +142,7 @@ export function UserProfile({ userId }: { userId: string }) {
 
         <HStack space="lg" className="items-center justify-between py-4">
           <Image
-            source={{
-              uri: "https://placehold.co/640x640",
-            }}
+            source={profile.profilePicture ? {uri: profile.profilePicture} : placeholderProfile}
             alt={`Profile picture of ${profile.username}`}
             style={{ width: 96, height: 96, borderRadius: 48 }}
           />

@@ -9,6 +9,7 @@ import {
   Plus,
   SquareStack,
   Tag,
+  BookOpenText,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 // import MeatDish from "@/assets/Icon/Food/MeatDish.svg?react";
@@ -19,6 +20,7 @@ import {
   useSearchQuestions,
 } from "@/services/api/programmingForumComponents";
 // import { Recipe } from "@/components/Recipe";
+import TagFollowButton from "@/components/TagFollowButton";
 import { DifficultyFilter } from "@/components/DifficultyFilter";
 import { HighlightedQuestionsBox } from "@/components/HighlightedQuestionsBox";
 import { QuestionCard } from "@/components/QuestionCard"; // Import your QuestionCard component
@@ -98,6 +100,13 @@ export default function TagPage() {
         <div className="flex items-center gap-2 ">
           <h1>{tag.name}</h1>
         </div>
+        {!!token && (
+          <TagFollowButton
+            tag={{
+              tagId: tagId!,
+              following: tag.following,
+            }}
+          />)}
       </div>
       {tag.logoImage && (
         <img
@@ -125,6 +134,17 @@ export default function TagPage() {
             <span className="text-sm text-gray-500">{tag.fileExtension}</span>
           </div>
         )}
+
+        {tag.author && (
+          <div className="flex items-center gap-2">
+            <BookOpenText className="h-5 w-5" />
+            <span className="text-sm text-gray-500">Author: {tag.author}</span>
+            <span className="sr-only">
+              Author of {tag.name} is {tag.author}
+            </span>
+          </div>
+        )}
+
         {tag.inceptionYear && (
           <div
             className="flex items-center gap-2"
@@ -136,6 +156,7 @@ export default function TagPage() {
             </span>
           </div>
         )}
+
         {tag.officialWebsite && (
           <div
             className="flex items-center gap-2"
@@ -212,8 +233,8 @@ export default function TagPage() {
                     id={question.id}
                     title={question.title}
                     content={question.content ?? ""}
-                    votes={question.likeCount ?? 0}
-                    answerCount={question.commentCount ?? 0}
+                    votes={question.upvoteCount ?? 0}
+                    answerCount={question.answerCount ?? 0}
                   />
                 ))}
             </div>

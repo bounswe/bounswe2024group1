@@ -96,7 +96,7 @@ export type UserProfileUpdate = {
 };
 
 /**
- * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"https://placehold.co/640x640","name":"John Doe"}
+ * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"@/assets/images/placeholder_profile.png","name":"John Doe"}
  */
 export type UserSummary = {
   id: number;
@@ -171,8 +171,9 @@ export type QuestionSummary = {
   createdAt: string;
   difficulty: DifficultyLevel;
   tags: TagSummary[];
-  likeCount: number;
-  commentCount: number;
+  upvoteCount: number;
+  downvoteCount: number;
+  answerCount: number;
   viewCount?: number;
 };
 

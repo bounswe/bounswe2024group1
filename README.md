@@ -1,6 +1,8 @@
 ﻿# Programming Languages Forum
 This is the repository for Group1 of SWE course in Fall'25.
 
+Our deployment URL is here: https://programming-languages-forum-psrb6.ondigitalocean.app/
+
 ## About the Repository
 
 This is the repository for the Group1 of the Software Engineering course in Fall'25. The project is a web application that allows users to browse tags(programming paradigms, frameworks, languages, etc.), questions, and answers. The application has a frontend, backend and mobile application. The frontend is a web application that allows users to browse tags and questions about them. The backend is a REST API that serves the frontend and mobile application. The mobile application is a mobile application that allows users to browse tags and questions about them.
@@ -114,24 +116,24 @@ docker compose build
 
 ```bash
 # for prod
-docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages/web:latest
-docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages/backend:latest
+docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages-2/web:latest
+docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages-2/backend:latest
 
 # for staging
-docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages/web:staging
-docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages/backend:staging
+docker tag bounswe2024group1-451-web:latest registry.digitalocean.com/programming-languages-2/web:staging
+docker tag bounswe2024group1-451-backend:latest registry.digitalocean.com/programming-languages-2/backend:staging
 ```
 
 3. Push images to the registry.
 
 ```bash
 # for prod
-docker push registry.digitalocean.com/programming-languages/web:latest
-docker push registry.digitalocean.com/programming-languages/backend:latest
+docker push registry.digitalocean.com/programming-languages-2/web:latest
+docker push registry.digitalocean.com/programming-languages-2/backend:latest
 
 # for staging
-docker push registry.digitalocean.com/programming-languages/web:staging
-docker push registry.digitalocean.com/programming-languages/backend:staging
+docker push registry.digitalocean.com/programming-languages-2/web:staging
+docker push registry.digitalocean.com/programming-languages-2/backend:staging
 ```
 
 This will trigger a deployment on the DigitalOcean backend.
