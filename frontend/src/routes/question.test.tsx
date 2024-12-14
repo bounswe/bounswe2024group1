@@ -17,7 +17,6 @@ import { DifficultyBar } from "@/components/DifficultyBar";
 
 
 
-
 const mockQuestionData = vi.hoisted(
   () =>
     ({

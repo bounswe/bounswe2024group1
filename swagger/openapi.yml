@@ -1354,7 +1354,7 @@ components:
         - id: 1
           username: "john_doe"
           reputationPoints: 100
-          profilePicture: "frontend\src\assets\placeholder_profile.png"
+          profilePicture: "https://placehold.co/640x640"
           name: "John Doe"
 
     DifficultyLevel:

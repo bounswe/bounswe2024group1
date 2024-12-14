@@ -28,7 +28,7 @@ export const temporaryMocks = {
           id: 2,
           username: "john_doe",
           reputationPoints: 100,
-          profilePicture: "frontend\src\assets\placeholder_profile.png",
+          profilePicture: "@/assets/images/placeholder_profile.png",
           name: "John Doe",
           experienceLevel: "INTERMEDIATE"
         },
@@ -62,7 +62,7 @@ export const temporaryMocks = {
               id: 1,
               username: "jane_doe",
               reputationPoints: 150,
-              profilePicture: "frontend\src\assets\placeholder_profile.png",
+              profilePicture: "@/assets/images/placeholder_profile.png",
               name: "Jane Doe",
               experienceLevel: "EXPERT"
             },
@@ -83,7 +83,7 @@ export const temporaryMocks = {
         id: 2,
         username: "john_doe",
         reputationPoints: 100,
-        profilePicture: "frontend\src\assets\placeholder_profile.png",
+        profilePicture: "@/assets/images/placeholder_profile.png",
         name: "John Doe",
         experienceLevel: "INTERMEDIATE"
       },

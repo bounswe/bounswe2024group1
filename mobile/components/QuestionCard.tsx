@@ -3,7 +3,7 @@ import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 import { Link } from "expo-router";
 import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react-native";
 import React from "react";
-import placeholderProfile from "@/assets/placeholder_profile.png";
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
 
 interface QuestionCardProps {
   id: string;
@@ -63,9 +63,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           <HStack className="flex items-center gap-2">
             <Link href={`/users/${author.id}`} className="h-10 w-10">
               <Image
-                source={{
-                  uri: author?.profilePicture || placeholderProfile,
-                }}
+                source={author.profilePicture ? {uri: author.profilePicture} : placeholderProfile}
                 alt={author.name || "Author"}
                 className="h-full w-full rounded-full object-cover"
               />

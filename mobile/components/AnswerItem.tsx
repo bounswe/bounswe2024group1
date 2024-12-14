@@ -8,7 +8,7 @@ import { ThumbsDown, ThumbsUp } from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
 import { ContentWithSnippets } from "./ContentWithSnippets";
-import placeholderProfile from "@/assets/placeholder_profile.png";
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
 
 interface AnswerItemProps {
   answer: AnswerDetails;
@@ -70,10 +70,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
               className="flex items-center gap-2"
             >
               <Image
-                source={{
-                  uri:
-                    answer.author?.profilePicture || placeholderProfile,
-                }}
+                source={answer.author.profilePicture ? {uri: answer.author.profilePicture} : placeholderProfile}
                 alt={answer.author?.name}
                 className="h-8 w-8 rounded-full object-cover"
               />
