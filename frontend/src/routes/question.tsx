@@ -304,8 +304,7 @@ export default function QuestionPage() {
                   <Link to={`/tag/${s.id}`} key={s.name}> 
                     <Badge>{s.name}</Badge>
                   </Link>
-                ))// Link to tag page
-                }
+                ))}
               </div>
             )}
 
