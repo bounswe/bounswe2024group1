@@ -6,6 +6,7 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { ContentWithSnippets } from "./ContentWithSnippets";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 interface AnswerItemProps {
   answer: AnswerDetails;
@@ -61,8 +62,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
             >
               <img
                 src={
-                  answer.author?.profilePicture ||
-                  "https://placehold.co/100x100"
+                  answer.author?.profilePicture || placeholderProfile
                 }
                 alt={"Profile picture"}
                 className="h-8 w-8 rounded-full object-cover"

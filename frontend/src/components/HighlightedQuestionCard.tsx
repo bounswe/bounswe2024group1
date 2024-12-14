@@ -4,6 +4,7 @@ import { QuestionSummary } from "@/services/api/programmingForumSchemas";
 import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 function capitalizeString(difficulty: string): React.ReactNode {
   return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
@@ -46,7 +47,7 @@ export const HighlightedQuestionCard: React.FC<Partial<QuestionSummary>> = ({
           {author && (
             <Link to={`/users/${author.id}`} className="h-10 w-10">
               <img
-                src={author.profilePicture}
+                src={author?.profilePicture || placeholderProfile}
                 alt={author.name}
                 className="h-full w-full rounded-full object-cover"
               />
