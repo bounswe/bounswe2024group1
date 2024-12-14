@@ -5,6 +5,7 @@ import { ArrowRight, CornerDownRight, Star } from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
 import { ContentWithSnippets } from "./ContentWithSnippets";
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
 
 interface AnswerCardProps {
   id: string;
@@ -26,7 +27,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
   author,
 }) => {
   return (
-    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
+    <Card className="border-none bg-neutral-100 px-6 py-8 shadow-sm">
       <View className="flex flex-col gap-6">
         <Text className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
@@ -46,7 +47,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
         <View className="flex items-center justify-between">
           <Link href={`/users/${author.id}`}>
             <Image
-              source={{ uri: author.profilePicture }}
+              source={author.profilePicture ? {uri: author.profilePicture} : placeholderProfile}
               alt={author.name}
               className="rounded-full object-cover"
             />

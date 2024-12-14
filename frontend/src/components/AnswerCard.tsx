@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight, CornerDownRight, Star } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 interface AnswerCardProps {
   id: number;
@@ -24,7 +25,7 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
   author,
 }) => {
   return (
-    <Card className="border-none #e5e5e5 px-6 py-8 shadow-sm">
+    <Card className="border-none bg-neutral-100 px-6 py-8 shadow-sm">
       <div className="flex flex-col gap-6">
         <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
           {title}
@@ -48,7 +49,8 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
         <div className="flex items-center justify-between">
           <Link to={`/users/${author.id}`} className="h-10 w-10">
             <img
-              src={author.profilePicture}
+              src={author?.profilePicture ||
+                  placeholderProfile}
               alt={"Profile picture"}
               className="rounded-full object-cover"
             />

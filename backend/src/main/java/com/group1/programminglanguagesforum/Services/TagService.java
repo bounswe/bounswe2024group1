@@ -1,22 +1,36 @@
 package com.group1.programminglanguagesforum.Services;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.group1.programminglanguagesforum.DTOs.Requests.CreateTagRequestDto;
-import com.group1.programminglanguagesforum.DTOs.Responses.*;
-import com.group1.programminglanguagesforum.Entities.*;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetProgrammingLanguageTagResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetProgrammingParadigmResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.GetTagDetailsResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
+import com.group1.programminglanguagesforum.DTOs.Responses.TagDto;
+import com.group1.programminglanguagesforum.Entities.ComputerScienceTermTag;
+import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
+import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
+import com.group1.programminglanguagesforum.Entities.Question;
+import com.group1.programminglanguagesforum.Entities.SoftwareLibraryTag;
+import com.group1.programminglanguagesforum.Entities.Tag;
+import com.group1.programminglanguagesforum.Entities.TagType;
+import com.group1.programminglanguagesforum.Entities.User;
+import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Repositories.QuestionRepository;
 import com.group1.programminglanguagesforum.Repositories.TagRepository;
 import com.group1.programminglanguagesforum.Repositories.UserRepository;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +39,7 @@ public class TagService {
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final UserContextService userContextService;
 
     public List<Tag> findAllByIdIn(List<Long> tagIds) {
         return tagRepository.findAllByIdIn(tagIds);
@@ -59,6 +74,10 @@ public class TagService {
                 .build();
     }
 
+    public boolean isTagFollowed(User user, Long tagId) {
+        return user.getFollowedTags().stream().anyMatch(t -> t.getId().equals(tagId));
+    }
+
     public GetTagDetailsResponseDto getTagDetails(Long tagId) {
         Optional<Tag> tag = tagRepository.findById(tagId);
         if (tag.isEmpty()) {
@@ -67,10 +86,20 @@ public class TagService {
         Tag tagEntity = tag.get();
         TagType tagType = getTagType(tagEntity);
         List<Question> questions = questionRepository.findQuestionsByTagId(tagId);
-        List<GetQuestionWithTagDto> relatedQuestions = questions.stream()
-                .map(question -> modelMapper.map(question, GetQuestionWithTagDto.class))
+        List<QuestionSummaryDto> relatedQuestions = questions.stream()
+                .map(QuestionService::mapToQuestionSummary)
                 .toList();
         Long questionCount = (long) questions.size();
+
+        boolean following = false;
+        try {
+            // userContextService is null when testing
+            if (userContextService != null && userContextService.getCurrentUser() != null) {
+                following = isTagFollowed(userContextService.getCurrentUser(), tagId);
+            }
+        } catch (UnauthorizedAccessException e) {
+            following = false;
+        }
 
         if (tagType == TagType.PROGRAMMING_LANGUAGE) {
             ProgrammingLanguagesTag languageTag = (ProgrammingLanguagesTag) tagEntity;
@@ -79,6 +108,7 @@ public class TagService {
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             responseDto.setQuestionCount(questionCount);
+            responseDto.setFollowing(following);
             return responseDto;
         } else if (tagType == TagType.PROGRAMMING_PARADIGM) {
             ProgrammingParadigmTag paradigmTag = (ProgrammingParadigmTag) tagEntity;
@@ -87,6 +117,7 @@ public class TagService {
             responseDto.setTagType(tagType.toString());
             responseDto.setRelatedQuestions(relatedQuestions);
             responseDto.setQuestionCount(questionCount);
+            responseDto.setFollowing(following);
             return responseDto;
         }
 
@@ -97,10 +128,11 @@ public class TagService {
                 .tagType(getTagType(tagEntity).toString())
                 .relatedQuestions(relatedQuestions)
                 .questionCount(questionCount)
-
+                .following(following)
                 .build();
 
     }
+
     public List<SelfProfileResponseDto.FollowedTags> getFollowedTags(Long userId) {
         return tagRepository.findTagByFollowers(userId).stream()
                 .map(tag -> SelfProfileResponseDto.FollowedTags.builder()
