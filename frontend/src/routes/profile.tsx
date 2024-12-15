@@ -153,9 +153,14 @@ export default function Profile() {
                 {isPending ? "Saving..." : "Save"}
               </Button>
             ) : (
-              <Button onClick={() => setEditing(true)} variant="outline">
-                Edit profile
-              </Button>
+              <div className="flex gap-4 justify-center items-center">
+                <Button onClick={() => setEditing(true)} variant="outline">
+                  Edit Profile
+                </Button>
+                <Button asChild variant="outline">
+                  <Link to="/bookmarks">Bookmarks</Link>
+                </Button>
+              </div>
             )
           ) : (
             data?.data && (
