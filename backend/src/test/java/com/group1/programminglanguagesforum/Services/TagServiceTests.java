@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -111,7 +112,7 @@ class TagServiceTest {
                 .reputationPoints(0L)
                 .build();
 
-        Tag mockTag = new Tag(1L, null, "Tag1", "Description1", null);
+        Tag mockTag = new Tag(1L, null, "Tag1", "Description1", new HashSet<>());
 
         Question q1 = Question.builder()
                 .id(1L)
