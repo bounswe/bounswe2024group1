@@ -142,6 +142,7 @@ class TagServiceTest {
 
         when(tagRepository.findById(tagId)).thenReturn(Optional.of(mockTag));
         when(questionRepository.findQuestionsByTagId(tagId)).thenReturn(mockQuestions);
+        when(questionRepository.findQuestionsByDifficultyAndTagId(DifficultyLevel.EASY, tagId)).thenReturn(mockQuestions);
 
         // Mocking modelMapper behavior
         when(modelMapper.map(any(Question.class), eq(GetQuestionWithTagDto.class)))
@@ -161,7 +162,7 @@ class TagServiceTest {
         assertEquals("Description1", response.getDescription());
         assertEquals(2, response.getRelatedQuestions().size());
         verify(tagRepository, times(1)).findById(tagId);
-        verify(questionRepository, times(1)).findQuestionsByTagId(tagId);
+        verify(questionRepository, times(1)).findQuestionsByDifficultyAndTagId(DifficultyLevel.EASY, tagId);
     }
 
     @Test
