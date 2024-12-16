@@ -2,7 +2,6 @@ import { Hash, MessageSquare, Search } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "./ui/button";
-import useAuthStore from "@/services/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +23,6 @@ const searchTypes = [
   { id: "questions", label: "Questions", icon: MessageSquare },
 ] as const;
 
-
 export const SearchBar = () => {
   const id = useId();
   const [params] = useSearchParams();
@@ -36,8 +34,6 @@ export const SearchBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-
-  const { selfProfile } = useAuthStore();
 
   // Get current search type info
   const currentSearchType = searchTypes.find((type) => type.id === searchType);
@@ -101,10 +97,6 @@ export const SearchBar = () => {
     const params = new URLSearchParams();
     params.append("type", searchType);
     params.append("q", search);
-    // Safely append currentUserId only if selfProfile is available
-    if (selfProfile?.id) {
-      params.append("currentUserId", selfProfile.id.toString());
-    }
     params.append("sortBy", "recommended");
     navigate("/search?" + params.toString());
   };

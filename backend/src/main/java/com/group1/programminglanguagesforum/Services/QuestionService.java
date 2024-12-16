@@ -43,7 +43,6 @@ public class QuestionService {
         private final TagService tagService;
         private final BookmarkRepository bookmarkRepository;
         private final VoteRepository voteRepository;
-        private final UserService userService;
         private final QuestionDifficultyRateService questionDifficultyRateService;
 
         public Optional<Question> findById(Long id) {
@@ -221,8 +220,7 @@ public class QuestionService {
                         DifficultyLevel difficulty,
                         int page,
                         int pageSize,
-                        String sortBy,
-                        Long currentUserId) {
+                        String sortBy) {
 
                 List<Long> tagIds = null;
                 if (tagIdsStr != null && !tagIdsStr.isEmpty()) {
@@ -230,12 +228,18 @@ public class QuestionService {
                                         .map(Long::parseLong)
                                         .collect(Collectors.toList());
                 }
+                User currentUser;
+                try {
+                        currentUser = userContextService.getCurrentUser();
+                } catch (UnauthorizedAccessException e) {
+                        currentUser = null;
+                }
 
                 PageRequest pageable = PageRequest.of(page - 1, pageSize);
-                if (Objects.equals(sortBy, "default") || currentUserId == -1) {
+                if (Objects.equals(sortBy, "default") || Objects.equals(currentUser, null)) {
                         return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
                 } else {
-                        User currentUser = userService.getUserById(currentUserId).get();
+                        
                         List<Long> authorIds = currentUser.getFollowing().stream()
                         .map(User::getId) // Map each User to its ID
                         .collect(Collectors.toList()); // Collect the IDs into a List

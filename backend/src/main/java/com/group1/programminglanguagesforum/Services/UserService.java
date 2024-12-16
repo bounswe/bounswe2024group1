@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -109,9 +108,4 @@ public class UserService {
         return user.getFollowing().stream().toList();
     }
 
-    public List<Long> getFollowingIds(User user) {
-        return user.getFollowing().stream()
-                   .map(User::getId) // Map each User to its ID
-                   .collect(Collectors.toList()); // Collect the IDs into a List
-    }
 }

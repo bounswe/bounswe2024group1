@@ -96,7 +96,7 @@ export type UserProfileUpdate = {
 };
 
 /**
- * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"frontend\src\assets\placeholder_profile.png","name":"John Doe"}
+ * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"https://placehold.co/640x640","name":"John Doe"}
  */
 export type UserSummary = {
   id: number;

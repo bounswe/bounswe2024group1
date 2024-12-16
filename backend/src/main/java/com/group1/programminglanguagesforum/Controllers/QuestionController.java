@@ -31,7 +31,6 @@ import com.group1.programminglanguagesforum.DTOs.Responses.QuestionRateResponseD
 import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
 import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 import com.group1.programminglanguagesforum.Entities.Question;
-import com.group1.programminglanguagesforum.Entities.User;
 import com.group1.programminglanguagesforum.Exceptions.ExceptionResponseHandler;
 import com.group1.programminglanguagesforum.Exceptions.UnauthorizedAccessException;
 import com.group1.programminglanguagesforum.Services.QuestionDifficultyRateService;
@@ -125,10 +124,9 @@ public class QuestionController extends BaseController {
             @RequestParam(required = false) DifficultyLevel difficulty,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @RequestParam(defaultValue = "recommended") String sortBy,
-            @RequestParam(defaultValue = "-1") Long currentUserId) {
+            @RequestParam(defaultValue = "recommended") String sortBy) {
 
-        Page<Question> questionPage = questionService.searchQuestions(query, tags, difficulty, page, pageSize, sortBy, currentUserId);
+        Page<Question> questionPage = questionService.searchQuestions(query, tags, difficulty, page, pageSize, sortBy);
 
         List<QuestionSummaryDto> questionSummaries = questionPage.getContent().stream()
                 .map(QuestionService::mapToQuestionSummary)

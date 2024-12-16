@@ -1980,16 +1980,10 @@ export type SearchQuestionsQueryParams = {
   pageSize?: number;
   /**
    * Sorting type
-   * 
-   * @default "recommended"
+   *
+   * @default recommended
    */
   sortBy?: string;
-  /**
-   * Current user Id
-   * 
-   * @default -1
-   */
-  currentUserId?: number;
 };
 
 export type SearchQuestionsError = Fetcher.ErrorWrapper<{
