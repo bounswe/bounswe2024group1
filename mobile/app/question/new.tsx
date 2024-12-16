@@ -120,6 +120,9 @@ export default function NewQuestionPage() {
   return (
     <ScrollView style={{ padding: 32, flex: 1, marginVertical: 16 }}>
       <VStack style={{ gap: 16, flex: 1 }}>
+        <Button onPress={() => router.back()} style={{ alignSelf: "flex-start" }} variant={"outline"} size="sm">
+          <Icon as={X} />
+        </Button>
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>
           Create New Question
         </Text>
