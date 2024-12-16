@@ -1983,15 +1983,13 @@ export type SearchQuestionsQueryParams = {
    * 
    * @default "recommended"
    */
-  sortBy: string;
+  sortBy?: string;
   /**
    * Current user Id
    * 
    * @default -1
    */
   currentUserId?: number;
-
-
 };
 
 export type SearchQuestionsError = Fetcher.ErrorWrapper<{
