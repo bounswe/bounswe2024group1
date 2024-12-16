@@ -196,7 +196,7 @@ export default function Profile() {
             </div>
           </div>
         ) : (
-          <div>No followed tags to show. Follow tags to personalize your feed.</div>
+          <div>No followed tags to show.</div>
         )}
       </div>
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">
