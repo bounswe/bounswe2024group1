@@ -126,12 +126,9 @@ export default function TagPage() {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {tag.fileExtension && (
-          <div
-            className="flex items-center gap-2"
-            aria-label={`File extension for ${tag.name} is ${tag.fileExtension}`}
-          >
+          <div className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-
+            <span className="sr-only">File extension for ${tag.name} is ${tag.fileExtension}</span>
             <span className="text-sm text-gray-500">{tag.fileExtension}</span>
           </div>
         )}
@@ -147,14 +144,12 @@ export default function TagPage() {
         )}
 
         {tag.inceptionYear && (
-          <div
-            className="flex items-center gap-2"
-            aria-label={`Inception year for ${tag.name} is ${tag.inceptionYear}`}
-          >
+          <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             <span className="text-sm text-gray-500">
               Created in {new Date(tag.inceptionYear).toLocaleDateString()}
             </span>
+            <span className="sr-only"> Inception year for ${tag.name} is ${tag.inceptionYear} </span>
           </div>
         )}
 

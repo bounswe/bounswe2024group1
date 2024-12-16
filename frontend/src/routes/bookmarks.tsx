@@ -60,9 +60,11 @@ export const BookmarkedQuestions = () => {
         {isLoading && (
           <div className="col-span-3 flex w-full items-center justify-center">
             <Loader2
-              aria-label="Loading"
               className="h-16 w-16 animate-spin text-primary"
             />
+            <div className="ml-4 text-lg font-normal duration-500 animate-in fade-in">
+              Loading...
+            </div>
           </div>
         )}
       </div>
