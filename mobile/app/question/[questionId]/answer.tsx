@@ -18,14 +18,10 @@ import {
   Popover,
   PopoverBackdrop,
   PopoverContent,
-  PopoverArrow,
-  PopoverHeader,
-  PopoverCloseButton,
-  PopoverBody,
-  PopoverFooter,
 } from "@/components/ui";
 import { X, InfoIcon } from "lucide-react-native";
 import { ContentWithSnippets } from "@/components/ContentWithSnippets";
+import { PostingGuide } from "@/components/PostingGuide";
 
 export default function NewAnswerPage() {
   const { questionId } = useLocalSearchParams<{ questionId: string }>();
@@ -88,23 +84,19 @@ export default function NewAnswerPage() {
               </Button>
             )
           }}
-          onOpen={() => console.log("Popover opened")}
         >
           <PopoverBackdrop />
-          <PopoverContent>
-            <PopoverHeader>
-              <PopoverCloseButton />
-            </PopoverHeader>
-            <PopoverBody>
-              <ContentWithSnippets content="Writing Questions: We use Markdown for formatting questions. You can use standard Markdown syntax for headers, lists, links, etc. For a basic reference, you can check CommonMark." /> 
-            </PopoverBody>
-            <PopoverFooter />
+          <PopoverContent className="w-full max-w-sm p-4 rounded-lg bg-white shadow-lg">
+            <PostingGuide />
           </PopoverContent>
         </Popover>
       </HStack>
       <HStack style={{ gap: 16 }}>
         <Button onPress={() => setPreview(!preview)} variant="outline" size="sm">
           <ButtonText>{preview ? "Edit" : "Preview"}</ButtonText>
+        </Button>
+        <Button onPress={() => setContent(content + "```javascript-exec\n```\n")} variant="outline" size="sm">
+          <ButtonText>Add Code</ButtonText>
         </Button>
       </HStack>
       {preview ? ( 
