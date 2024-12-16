@@ -33,6 +33,7 @@ export const FullscreenLoading = ({
       )}
       {takingLong && (
         <div className="ml-4 text-lg font-normal duration-500 animate-in fade-in">
+          <span className="sr-only">Loading...</span>
           This is taking a while...
         </div>
       )}
