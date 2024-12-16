@@ -236,10 +236,9 @@ public class QuestionService {
                 }
 
                 PageRequest pageable = PageRequest.of(page - 1, pageSize);
-                if (Objects.equals(sortBy, "default") || Objects.equals(currentUser, null)) {
+                if (Objects.equals(sortBy, "default") || Objects.equals(sortBy, null) || Objects.equals(currentUser, null) || ) {
                         return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
                 } else {
-                        
                         List<Long> authorIds = currentUser.getFollowing().stream()
                         .map(User::getId) // Map each User to its ID
                         .collect(Collectors.toList()); // Collect the IDs into a List
