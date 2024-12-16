@@ -53,7 +53,7 @@ describe("Profile component", () => {
 
     render(<RouterProvider router={router} />);
 
-    expect(screen.getByLabelText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
   it("displays user data correctly", async () => {

@@ -55,7 +55,7 @@ describe("Search component", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByLabelText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
   it("renders tags correctly", () => {

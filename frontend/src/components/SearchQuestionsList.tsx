@@ -104,7 +104,9 @@ export const SearchQuestionsList = () => {
             <Loader2
               className="h-16 w-16 animate-spin text-primary"
             />
-            <span className="sr-only">Loading</span>
+            <div className="ml-4 text-lg font-normal duration-500 animate-in fade-in">
+              Loading...
+            </div>
           </div>
         )}
       </div>
