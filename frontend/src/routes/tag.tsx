@@ -106,7 +106,8 @@ export default function TagPage() {
               tagId: tagId!,
               following: tag.following,
             }}
-          />)}
+          />
+        )}
       </div>
       {tag.logoImage && (
         <img
@@ -125,12 +126,9 @@ export default function TagPage() {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {tag.fileExtension && (
-          <div
-            className="flex items-center gap-2"
-            aria-label={`File extension for ${tag.name} is ${tag.fileExtension}`}
-          >
+          <div className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-
+            <span className="sr-only">File extension for ${tag.name} is ${tag.fileExtension}</span>
             <span className="text-sm text-gray-500">{tag.fileExtension}</span>
           </div>
         )}
@@ -146,14 +144,12 @@ export default function TagPage() {
         )}
 
         {tag.inceptionYear && (
-          <div
-            className="flex items-center gap-2"
-            aria-label={`Inception year for ${tag.name} is ${tag.inceptionYear}`}
-          >
+          <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             <span className="text-sm text-gray-500">
               Created in {new Date(tag.inceptionYear).toLocaleDateString()}
             </span>
+            <span className="sr-only"> Inception year for ${tag.name} is ${tag.inceptionYear} </span>
           </div>
         )}
 
@@ -188,12 +184,17 @@ export default function TagPage() {
             </Link>
           </div>
         )}
-        {tag.tagType && (
-          <div className="flex items-center gap-2">
-            <Tag className="h-5 w-5" />
-            <span className="text-sm text-gray-500">{tag.tagType}</span>
-          </div>
-        )}
+        <Link
+          to={`/tagtype/${tag.tagType}`}
+          className="flex items-center text-sm font-medium text-gray-800 hover:underline"
+        >
+          {tag.tagType && (
+            <div className="flex items-center gap-1">
+              <Tag className="h-4 w-4" />
+              <span>{tag.tagType}</span>
+            </div>
+          )}
+        </Link>
       </div>
 
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">

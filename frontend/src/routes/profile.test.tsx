@@ -53,7 +53,7 @@ describe("Profile component", () => {
 
     render(<RouterProvider router={router} />);
 
-    expect(screen.getByLabelText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
   it("displays user data correctly", async () => {
@@ -66,6 +66,7 @@ describe("Profile component", () => {
           answerCount: 5,
           followersCount: 50,
           followingCount: 30,
+          reputationPoints: 75,
           bio: "This is John's bio",
           country: "US",
         },
@@ -87,6 +88,7 @@ describe("Profile component", () => {
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("50")).toBeInTheDocument();
     expect(screen.getByText("30")).toBeInTheDocument();
+    expect(screen.getByText("75")).toBeInTheDocument();
     expect(screen.getAllByText("Questions").length).toBeGreaterThan(1);
     expect(screen.getAllByText("Answers").length).toBeGreaterThan(1);
   });
@@ -126,7 +128,7 @@ describe("Profile component", () => {
 
     render(<RouterProvider router={router} />);
 
-    const editButton = screen.getByText("Edit profile");
+    const editButton = screen.getByText("Edit Profile");
     fireEvent.click(editButton);
 
     const bioField = screen.getByPlaceholderText("Bio");

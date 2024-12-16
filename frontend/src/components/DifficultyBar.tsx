@@ -1,25 +1,33 @@
-import React, {useState} from "react";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { useRateQuestion} from "@/services/api/programmingForumComponents";
-import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useRateQuestion } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
-
+import React, { useState } from "react";
+import { Card } from "./ui/card";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 type DifficultyBarProps = {
   easyCount: number;
   mediumCount: number;
   hardCount: number;
+  selfDifficultyVote: "EASY" | "MEDIUM" | "HARD" | null;
   questionId: number;
+  onVote: () => void;
 };
 
 export const DifficultyBar: React.FC<DifficultyBarProps> = ({
+  selfDifficultyVote,
   easyCount,
   mediumCount,
   hardCount,
   questionId,
+  onVote,
 }) => {
   const { token } = useAuthStore(); // Fetch authentication status
-  const [votedDifficulty, setVotedDifficulty] = useState<string | null>(null); // Track user's vote
   const [localCounts, setLocalCounts] = useState({
     easy: easyCount,
     medium: mediumCount,
@@ -31,7 +39,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
   // Helper to calculate percentage
   const calculatePercentage = (count: number) =>
     totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(1) : "0";
-  
+
   const handleVote = async (difficulty: "EASY" | "MEDIUM" | "HARD") => {
     if (!token) {
       alert("You must be logged in to vote!");
@@ -43,6 +51,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         pathParams: { id: questionId },
         body: { difficulty: difficulty },
       });
+      onVote?.();
 
       const { easyCount, mediumCount, hardCount } = response.data;
 
@@ -51,8 +60,6 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         medium: mediumCount ?? 0,
         hard: hardCount ?? 0,
       });
-
-      setVotedDifficulty(difficulty);
     } catch (error) {
       console.error("Failed to vote:", error);
       alert("There was an issue submitting your vote. Please try again.");
@@ -61,101 +68,126 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
 
   const totalVotes = localCounts.easy + localCounts.medium + localCounts.hard;
 
-  const getHighestVotedDifficulty = () => {
+  const getHighestDifficultyVote = () => {
     const counts = [
       { level: "Easy", count: localCounts.easy },
       { level: "Medium", count: localCounts.medium },
       { level: "Hard", count: localCounts.hard },
     ];
-    const highest = counts.reduce((prev, current) => //any equality -> pick higher difficulty level
-      prev.count > current.count ? prev : current
+    const highest = counts.reduce(
+      (
+        prev,
+        current, //any equality -> pick higher difficulty level
+      ) => (prev.count > current.count ? prev : current),
     );
     return highest.level;
   };
 
   return (
-    <div className="mt-6">
+    <Card className="my-4 border-none bg-neutral-100 px-6 py-8 shadow-sm">
+      <h2 className="text-xl">Difficulty voting</h2>
       <TooltipProvider>
         {/* Voting Form */}
-        <div className="flex flex-col items-center mb-4">
-          <h2 className="text-lg font-semibold mb-2">Vote for Difficulty Level:</h2>
-          <div className="flex flex-row gap-2">
-            <Button
-              variant="outline"
-              onClick={() => handleVote("EASY")}
-              disabled={!token || votedDifficulty === "EASY"}
+        <div className="my-4 flex items-center gap-2">
+          <span className="text-">Vote for Difficulty Level:</span>
+          <ToggleGroup
+            value={selfDifficultyVote || undefined}
+            onValueChange={(val) =>
+              val && handleVote(val as "EASY" | "MEDIUM" | "HARD")
+            }
+            type="single"
+            size="lg"
+            variant="outline"
+          >
+            <ToggleGroupItem
+              value="EASY"
+              aria-label="Vote easy difficulty"
+              className={
+                selfDifficultyVote === "EASY"
+                  ? "data-[state=on]:bg-green-200"
+                  : ""
+              }
             >
               Easy
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleVote("MEDIUM")}
-              disabled={!token || votedDifficulty === "MEDIUM"}
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="MEDIUM"
+              className={
+                selfDifficultyVote === "MEDIUM"
+                  ? "data-[state=on]:bg-yellow-200"
+                  : ""
+              }
+              aria-label="Vote medium difficulty"
             >
               Medium
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleVote("HARD")}
-              disabled={!token || votedDifficulty === "HARD"}
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="HARD"
+              aria-label="Vote hard difficulty"
+              className={
+                selfDifficultyVote === "HARD"
+                  ? "data-[state=on]:bg-red-100"
+                  : ""
+              }
             >
               Hard
-            </Button>
-          </div>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
 
         {/* Difficulty Bar */}
         <div>
           <h2 className="mb-2 text-lg font-semibold">
-            The community finds this question: <strong>{getHighestVotedDifficulty()}</strong> difficulty.
+            The community finds this question:{" "}
+            <strong>{getHighestDifficultyVote()}</strong> difficulty.
           </h2>
-          <div className="text-sm text-gray-600 mb-2">
+          <div className="mb-2 text-sm text-gray-600">
             <span>Easy: {localCounts.easy} votes</span>,{" "}
             <span>Medium: {localCounts.medium} votes</span>,{" "}
             <span>Hard: {localCounts.hard} votes</span>
           </div>
-          <div className="relative flex w-full h-6 rounded border border-gray-300 overflow-hidden">
+          <div className="relative flex h-6 w-full overflow-hidden rounded border border-gray-300">
             {/* Easy Section */}
-            <Tooltip>
+            <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
                 <div
                   className="bg-green-500"
-                  style={{ width: `${calculatePercentage(localCounts.easy)}%` }}
+                  style={{
+                    width: `${calculatePercentage(localCounts.easy)}%`,
+                  }}
                 ></div>
               </TooltipTrigger>
-              <TooltipContent>
-                {localCounts.easy} Easy votes
-              </TooltipContent>
+              <TooltipContent>{localCounts.easy} Easy votes</TooltipContent>
             </Tooltip>
 
             {/* Medium Section */}
-            <Tooltip>
+            <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
                 <div
                   className="bg-yellow-500"
-                  style={{ width: `${calculatePercentage(localCounts.medium)}%` }}
+                  style={{
+                    width: `${calculatePercentage(localCounts.medium)}%`,
+                  }}
                 ></div>
               </TooltipTrigger>
-              <TooltipContent>
-                {localCounts.medium} Medium votes
-              </TooltipContent>
+              <TooltipContent>{localCounts.medium} Medium votes</TooltipContent>
             </Tooltip>
 
             {/* Hard Section */}
-            <Tooltip>
+            <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
                 <div
                   className="bg-red-500"
-                  style={{ width: `${calculatePercentage(localCounts.hard)}%` }}
+                  style={{
+                    width: `${calculatePercentage(localCounts.hard)}%`,
+                  }}
                 ></div>
               </TooltipTrigger>
-              <TooltipContent>
-                {localCounts.hard} Hard votes
-              </TooltipContent>
+              <TooltipContent>{localCounts.hard} Hard votes</TooltipContent>
             </Tooltip>
           </div>
         </div>
       </TooltipProvider>
-    </div>
+    </Card>
   );
 };

@@ -4,6 +4,8 @@ import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import placeholderProfile from "@/assets/placeholder_profile.png";
+
 
 interface QuestionCardProps {
   id: number;
@@ -57,7 +59,8 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
             {author && (
               <Link to={`/users/${author.id}`} className="h-10 w-10">
                 <img
-                  src={author.profilePicture}
+                  src={author?.profilePicture ||
+                      placeholderProfile}
                   alt={author.name}
                   className="h-full w-full rounded-full object-cover"
                 />

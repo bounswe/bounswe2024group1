@@ -42,16 +42,14 @@ public class UserController extends BaseController {
                         List<QuestionSummaryDto> questions = questionService.findByAuthorId(user.getId());
                         List<GetAnswerDtoForProfile> answers = answerService.findByAnsweredBy(user.getId());
                         selfProfileResponseDto.setFollowedTags(
-                                tagService.getFollowedTags(user.getId())
-                        );
+                                        tagService.getFollowedTags(user.getId()));
                         selfProfileResponseDto.setReputationPoints(userService.calculateReputation(user));
                         selfProfileResponseDto.setQuestionCount((long) questions.size());
                         selfProfileResponseDto.setQuestions(
-                                questions);
+                                        questions);
                         selfProfileResponseDto.setAnswerCount((long) answers.size());
                         selfProfileResponseDto.setAnswers(
-                                answers);
-
+                                        answers);
 
                         GenericApiResponse<SelfProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                                         selfProfileResponseDto.getClass(),
@@ -84,10 +82,13 @@ public class UserController extends BaseController {
                                         UserProfileResponseDto.class);
                         userProfileResponseDto.setReputationPoints(userService.calculateReputation(user.get()));
                         userProfileResponseDto.setSelfFollowing(userService.selfFollowing(user.get()));
-                        userProfileResponseDto.setFollowedTags(
-                                tagService.getFollowedTags(user.get().getId())
-                        );
-
+                        List<QuestionSummaryDto> questions = questionService.findByAuthorId(id);
+                        userProfileResponseDto.setQuestions(questions);
+                        userProfileResponseDto.setQuestionCount((long) questions.size());
+                        List<GetAnswerDtoForProfile> answers = answerService.findByAnsweredBy(id);
+                        userProfileResponseDto.setAnswers(answers);
+                        userProfileResponseDto.setAnswerCount((long) answers.size());
+                        userProfileResponseDto.setFollowedTags(tagService.getFollowedTags(id));
 
                         GenericApiResponse<UserProfileResponseDto> response = ApiResponseBuilder.buildSuccessResponse(
                                         userProfileResponseDto.getClass(),

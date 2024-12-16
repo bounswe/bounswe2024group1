@@ -1,8 +1,12 @@
-import { useGetQuestionDetails, useSearchTags } from "@/services/api/programmingForumComponents";
+import { DifficultyBar } from "@/components/DifficultyBar";
+import {
+  useGetQuestionDetails,
+  useSearchTags,
+} from "@/services/api/programmingForumComponents";
 import { QuestionDetails } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { testAccessibility } from "@/utils/test-accessibility";
-import { render, screen, fireEvent} from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import {
   createMemoryRouter,
   MemoryRouter,
@@ -13,10 +17,6 @@ import {
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { routeConfig } from ".";
 import QuestionPage from "./question";
-import { DifficultyBar } from "@/components/DifficultyBar";
-
-
-
 
 const mockQuestionData = vi.hoisted(
   () =>
@@ -91,7 +91,14 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
     }),
   })),
   useSearchTags: vi.fn(() => ({
-    data: { data: { items: [{ tagId: "1", name: "Tag1" }, { tagId: "2", name: "Tag2" }] } },
+    data: {
+      data: {
+        items: [
+          { tagId: "1", name: "Tag1" },
+          { tagId: "2", name: "Tag2" },
+        ],
+      },
+    },
     isLoading: false,
   })),
   useUpdateQuestion: vi.fn(() => ({
@@ -128,7 +135,14 @@ describe("QuestionPage", () => {
       error: null,
     });
     (useSearchTags as Mock).mockReturnValue({
-      data: { data: { items: [{ tagId: "1", name: "Tag1" }, { tagId: "2", name: "Tag2" }] } },
+      data: {
+        data: {
+          items: [
+            { tagId: "1", name: "Tag1" },
+            { tagId: "2", name: "Tag2" },
+          ],
+        },
+      },
       isLoading: false,
     });
     vi.mocked(useAuthStore).mockReturnValue({
@@ -219,7 +233,7 @@ describe("QuestionPage", () => {
 
   it("renders bookmark button", () => {
     vi.mocked(useAuthStore).mockReturnValue({
-      selfProfile: { id: 1},
+      selfProfile: { id: 1 },
       token: "mock-token",
     });
     render(
@@ -230,7 +244,9 @@ describe("QuestionPage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("button", { name: /bookmark/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /bookmark/i }),
+    ).toBeInTheDocument();
   });
 
   it("updates difficulty counts when voting", async () => {
@@ -239,7 +255,7 @@ describe("QuestionPage", () => {
       selfProfile: { id: 2 },
       token: "mock-token",
     });
-  
+
     render(
       <MemoryRouter initialEntries={["/question/1"]}>
         <Routes>
@@ -247,6 +263,8 @@ describe("QuestionPage", () => {
             path="/question/:questionId"
             element={
               <DifficultyBar
+                selfDifficultyVote={"EASY"}
+                onVote={() => {}}
                 questionId={1}
                 easyCount={5}
                 mediumCount={3}
@@ -257,17 +275,14 @@ describe("QuestionPage", () => {
         </Routes>
       </MemoryRouter>,
     );
-  
+
     // Simulate a vote on "Medium"
     const mediumButton = screen.getByText("Medium");
     fireEvent.click(mediumButton);
-  
+
     // Verify the button is disabled after voting
     expect(await screen.findByText("Easy: 0 votes")).toBeInTheDocument();
     expect(await screen.findByText("Medium: 1 votes")).toBeInTheDocument();
     expect(await screen.findByText("Hard: 0 votes")).toBeInTheDocument();
-
   });
-  
-  
 });

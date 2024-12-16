@@ -1,7 +1,7 @@
 import { Answers } from "@/components/Answers";
 
 import ErrorAlert from "@/components/ErrorAlert";
-import FollowButton from "@/components/FollowButton";
+import FollowUserButton from "@/components/FollowUserButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import {
   Button,
@@ -37,6 +37,8 @@ import {
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
+
 export default function QuestionPage() {
   const { questionId } = useLocalSearchParams();
   const router = useRouter();
@@ -257,11 +259,9 @@ export default function QuestionPage() {
               className="flex flex-row items-center gap-4"
             >
               <Image
-                source={{
-                  uri:
-                    question.author.profilePicture ||
-                    "https://placehold.co/640x640",
-                }}
+                source={
+                  question.author.profilePicture ? {uri: question.author.profilePicture} : placeholderProfile
+                }
                 alt={question.author.name}
                 width={32}
                 height={32}
@@ -271,7 +271,7 @@ export default function QuestionPage() {
             </Link>
           </HStack>
           {token && selfProfile?.id !== question.author.id && (
-            <FollowButton profile={question.author} />
+            <FollowUserButton profile={question.author} />
           )}
         </HStack>
 

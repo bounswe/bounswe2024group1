@@ -107,4 +107,5 @@ public class UserService {
     public List<User> getFollowing(User user) {
         return user.getFollowing().stream().toList();
     }
+
 }

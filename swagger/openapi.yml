@@ -844,7 +844,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "200":
           description: Successful response
@@ -873,7 +873,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "200":
           description: Successfully followed the tag
@@ -894,7 +894,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "200":
           description: Successfully unfollowed the tag
@@ -938,6 +938,12 @@ paths:
           schema:
             type: integer
             default: 20
+        - name: sortBy
+          in: query
+          description: Sorting type
+          schema:
+            type: string
+            default: "recommended"
       responses:
         "200":
           description: Successful response
@@ -1622,7 +1628,7 @@ components:
         - officialWebsite
       properties:
         tagId:
-          type: string
+          type: integer
         name:
           type: string
         tagType:
@@ -1665,7 +1671,7 @@ components:
           items:
             $ref: "#/components/schemas/QuestionSummary"
       examples:
-        - tagId: "python"
+        - tagId: 1
           name: "Python"
           description: "Python is a programming language."
           questionCount: 100
@@ -1678,7 +1684,7 @@ components:
           fileExtension: ".py"
           officialWebsite: "https://www.python.org"
           stackExchangeTag: "python"
-        - tagId: "java"
+        - tagId: 2
           name: "Java"
           type: "PROGRAMMING_LANGUAGE"
           description: "Java is a class-based, object-oriented programming language."
@@ -1692,7 +1698,7 @@ components:
           fileExtension: ".java"
           officialWebsite: "https://www.java.com"
           stackExchangeTag: "java"
-        - tagId: "react"
+        - tagId: 3
           name: "React"
           type: "SOFTWARE_LIBRARY"
           description: "React is a JavaScript library for building user interfaces."
@@ -1702,7 +1708,7 @@ components:
           photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/180px-React-icon.svg.png"
           officialWebsite: "https://reactjs.org"
           stackExchangeTag: "reactjs"
-        - tagId: "oop"
+        - tagId: 4
           name: "Object-Oriented Programming"
           type: "PROGRAMMING_PARADIGM"
           description: "OOP is a programming paradigm based on objects containing data and code."
@@ -1727,7 +1733,7 @@ components:
           type: string
           format: url
       examples:
-        - tagId: "python"
+        - tagId: 1
           name: "Python"
           questionCount: 100
           photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/220px-Python-logo-notext.svg.png"

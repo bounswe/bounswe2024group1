@@ -34,7 +34,11 @@ export const Feed = () => {
     isLoading: isQuestionsLoading,
     error: questionsError,
   } = useSearchQuestions({
-    queryParams: { q: params.get("q") ?? "" }, // Fetch default questions
+    queryParams: {
+      pageSize: 9,
+      q: params.get("q") ?? "",
+      sortBy: "recommended",
+    }, // Fetch default questions
   });
 
   // Fetch related exercises using your useExercismSearch hook
@@ -105,7 +109,7 @@ export const Feed = () => {
       {/* Questions Section */}
       <section className="mb-12">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Latest Questions</h2>
+          <h2 className="text-2xl font-bold">Recommended Questions</h2>
         </div>
         {questions.length === 0 ? (
           <Alert variant="default" className="mt-4">

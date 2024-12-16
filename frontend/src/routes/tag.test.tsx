@@ -100,14 +100,14 @@ describe("TagPage", () => {
       token: "mock-token",
     });
 
-     render(
-       <MemoryRouter initialEntries={["/tag/javascript"]}>
-         <Routes>
-           <Route path="/tag/:tagName" element={<TagPage />} />
-         </Routes>
-       </MemoryRouter>,
-     );
+    render(
+      <MemoryRouter initialEntries={["/tag/javascript"]}>
+        <Routes>
+          <Route path="/tag/:tagName" element={<TagPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
 
-     expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
-   });
+    expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
+  });
 });

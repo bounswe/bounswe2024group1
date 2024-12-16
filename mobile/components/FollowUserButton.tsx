@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 import { Button, ButtonText } from "./ui/button";
 
-export default function FollowButton({
+export default function FollowUserButton({
   profile,
 }: {
   profile: { id?: number; selfFollowing?: boolean };

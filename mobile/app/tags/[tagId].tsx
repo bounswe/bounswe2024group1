@@ -1,6 +1,7 @@
 import ErrorAlert from "@/components/ErrorAlert";
+import FollowTagButton from "@/components/FollowTagButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { QuestionList } from "@/components/QuestionsList";
+import { QuestionListSearch } from "@/components/QuestionsList";
 import {
   Button,
   ButtonGroup,
@@ -30,13 +31,14 @@ import useAuthStore from "@/services/auth";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon, ChevronDownIcon, Plus } from "lucide-react-native";
 import { useState } from "react";
+import { SvgUri } from "react-native-svg";
 
 export default function TagPage() {
   const { tagId } = useLocalSearchParams<{ tagId: string }>();
 
   const { data, isLoading, error } = useGetTagDetails(
     {
-      pathParams: { tagId: tagId! },
+      pathParams: { tagId: Number(tagId) },
     },
     {
       enabled: !!tagId,
@@ -68,11 +70,11 @@ export default function TagPage() {
   }
 
   return (
-    <VStack className="flex-1 px-2 my-8 mt-8">
+    <VStack className="flex-1 px-2 my-8">
       <HStack className="flex items-center justify-between">
         <Button
           onPress={() => router.back()}
-          className="self-start mt-4 ml-2"
+          className="self-start mt-12 ml-2"
           variant={"outline"}
           size="sm"
         >
@@ -80,22 +82,31 @@ export default function TagPage() {
         </Button>
       </HStack>
       <ScrollView contentContainerStyle={{ paddingVertical: 32, flexGrow: 1 }}>
+        <View className="flex items-start px-4">
+          {tag?.logoImage && tag.logoImage.endsWith(".svg") && (
+            <SvgUri
+              uri={tag?.logoImage}
+              viewBox="0 0 480 240"
+              width="120px"
+              height= "90px"
+            />
+          )}
+
+          {tag?.logoImage && tag.logoImage.endsWith(".png") && (
+            <Image
+              source={{ uri: tag?.logoImage || "https://placehold.co/400x300" }}
+              style={{ width: 400, height: 300 }}
+            />
+          )}
+        </View>
+
         <View style={{ paddingHorizontal: 16, gap: 16 }}>
           <HStack
             style={{ alignItems: "center", justifyContent: "space-between" }}
           >
             <Text className="text-2xl font-bold">{tag.name}</Text>
+            <FollowTagButton tag={{id: Number(tagId), selfFollowing: tag.following}} />
           </HStack>
-          <Image
-            source={{ uri: tag?.logoImage || "https://placehold.co/400x300" }}
-            alt={tag.name}
-            style={{
-              height: 192,
-              width: "100%",
-              borderRadius: 24,
-              resizeMode: "contain",
-            }}
-          />
           <Text>{tag.description}</Text>
 
           <VStack style={{ marginTop: 16, gap: 16 }}>
@@ -153,9 +164,9 @@ export default function TagPage() {
             </HStack>
 
 
-            <QuestionList 
+            <QuestionListSearch 
               searchQueryParams=""
-              tagFilter={tag.tagId}
+              tagFilter={tag.tagId.toString()}
               {...(difficultyFilter ? { difficultyFilter } : {})}
               sortBy={tab === "top-rated" ? "TOP_RATED" : "RECENT"}
              />

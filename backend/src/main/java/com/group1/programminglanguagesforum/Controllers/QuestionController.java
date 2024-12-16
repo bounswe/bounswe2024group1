@@ -123,9 +123,10 @@ public class QuestionController extends BaseController {
             @RequestParam(required = false) String tags,
             @RequestParam(required = false) DifficultyLevel difficulty,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int pageSize) {
+            @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(defaultValue = "recommended") String sortBy) {
 
-        Page<Question> questionPage = questionService.searchQuestions(query, tags, difficulty, page, pageSize);
+        Page<Question> questionPage = questionService.searchQuestions(query, tags, difficulty, page, pageSize, sortBy);
 
         List<QuestionSummaryDto> questionSummaries = questionPage.getContent().stream()
                 .map(QuestionService::mapToQuestionSummary)

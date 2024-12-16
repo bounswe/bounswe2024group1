@@ -1978,6 +1978,12 @@ export type SearchQuestionsQueryParams = {
    * @default 20
    */
   pageSize?: number;
+  /**
+   * Sorting type
+   *
+   * @default recommended
+   */
+  sortBy?: string;
 };
 
 export type SearchQuestionsError = Fetcher.ErrorWrapper<{

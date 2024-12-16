@@ -19,6 +19,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 
 export default function Profile() {
   const { userId = "" } = useParams<{ userId: string }>();
@@ -80,7 +81,7 @@ export default function Profile() {
           <Avatar className="h-24 w-24">
             <AvatarImage
               alt={`Profile picture of ${profile.username}`}
-              src="https://placehold.co/640x640"
+              src={placeholderProfile}
             />
           </Avatar>
           <div className="flex space-x-4 text-center">
@@ -99,6 +100,10 @@ export default function Profile() {
             <div>
               <div className="font-bold">{profile.followingCount}</div>
               <div className="text-sm text-gray-700">Following</div>
+            </div>
+            <div>
+              <div className="font-bold">{profile.reputationPoints}</div>
+              <div className="text-sm text-gray-700">Reputation Points</div>
             </div>
           </div>
         </div>
@@ -152,9 +157,14 @@ export default function Profile() {
                 {isPending ? "Saving..." : "Save"}
               </Button>
             ) : (
-              <Button onClick={() => setEditing(true)} variant="outline">
-                Edit profile
-              </Button>
+              <div className="flex gap-4 justify-center items-center">
+                <Button onClick={() => setEditing(true)} variant="outline">
+                  Edit Profile
+                </Button>
+                <Button asChild variant="outline">
+                  <Link to="/bookmarks">Bookmarks</Link>
+                </Button>
+              </div>
             )
           ) : (
             data?.data && (

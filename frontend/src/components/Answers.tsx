@@ -69,6 +69,13 @@ export function Answers({ questionId }: AnswersProps) {
           onDownvote={() => handleVote(answer.id, -1)}
         />
       ))}
+      {answers.length === 0 && (
+        <span>
+          {" "}
+          This question doesn't have an answer yet. Contribute to the discussion
+          by answering this question.
+        </span>
+      )}
     </div>
   );
 }

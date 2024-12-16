@@ -33,12 +33,17 @@ export const TagCard = React.forwardRef<HTMLDivElement, TagCardProps>(
               <Hash className="h-4 w-4" />
               <span>{tag.questionCount} questions</span>
             </div>
-            {tag.tagType && (
-              <div className="flex items-center gap-1">
-                <Tag className="h-4 w-4" />
-                <span>{tag.tagType}</span>
-              </div>
-            )}
+            <Link
+              to={`/tagtype/${tag.tagType}`}
+              className="flex items-center text-sm font-medium text-gray-800 hover:underline"
+            >
+              {tag.tagType && (
+                <div className="flex items-center gap-1">
+                  <Tag className="h-4 w-4" />
+                  <span>{tag.tagType}</span>
+                </div>
+              )}
+            </Link>
           </div>
           <div className="flex items-center justify-between">
             {tag.logoImage && (
