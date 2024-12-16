@@ -218,7 +218,9 @@ public class QuestionService {
                         String tagIdsStr,
                         DifficultyLevel difficulty,
                         int page,
-                        int pageSize) {
+                        int pageSize,
+                        String sort,
+                        User currentUser) {
 
                 List<Long> tagIds = null;
                 if (tagIdsStr != null && !tagIdsStr.isEmpty()) {
@@ -228,7 +230,13 @@ public class QuestionService {
                 }
 
                 PageRequest pageable = PageRequest.of(page - 1, pageSize);
-                return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
+                if (Objects.equals(sort, "default") || Objects.equals(currentUser, null)) {
+                        return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
+                } else {
+                        List<Long> authorIds = getFollowingIds(currentUser);
+                        return questionRepository.searchQuestionsByRecommended(query, authorIds, tagIds, difficulty, pageable);
+                }
+                
         }
 
         public static QuestionSummaryDto mapToQuestionSummary(Question question) {
