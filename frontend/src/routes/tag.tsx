@@ -106,7 +106,8 @@ export default function TagPage() {
               tagId: tagId!,
               following: tag.following,
             }}
-          />)}
+          />
+        )}
       </div>
       {tag.logoImage && (
         <img
@@ -188,12 +189,17 @@ export default function TagPage() {
             </Link>
           </div>
         )}
-        {tag.tagType && (
-          <div className="flex items-center gap-2">
-            <Tag className="h-5 w-5" />
-            <span className="text-sm text-gray-500">{tag.tagType}</span>
-          </div>
-        )}
+        <Link
+          to={`/tagtype/${tag.tagType}`}
+          className="flex items-center text-sm font-medium text-gray-800 hover:underline"
+        >
+          {tag.tagType && (
+            <div className="flex items-center gap-1">
+              <Tag className="h-4 w-4" />
+              <span>{tag.tagType}</span>
+            </div>
+          )}
+        </Link>
       </div>
 
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">

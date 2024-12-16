@@ -13,6 +13,8 @@ import { Search } from "./search";
 import Signup from "./signup";
 import TagPage from "./tag";
 import { BookmarkedQuestions } from "@/routes/bookmarks";
+import Glossary from "./glossary";
+import TagTypePage from "@/components/TagType";
 
 export const routes: RouteObject[] = [
   {
@@ -65,6 +67,14 @@ export const routes: RouteObject[] = [
   {
     path: "/tags/new",
     Component: CreateTagPage,
+  },
+  {
+    path: "/glossary",
+    Component: Glossary,
+  },
+  {
+    path: "/tagtype/:typeId",
+    Component: TagTypePage,
   },
 ];
 

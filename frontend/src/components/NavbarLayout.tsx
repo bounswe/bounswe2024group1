@@ -32,6 +32,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 const links = [
   { name: "Home", path: "/" },
+  { name: "Glossary", path: "/glossary" }, //add glossary page to the navbar
   { name: "Tags", path: "/tags" },
 ] as const;
 
