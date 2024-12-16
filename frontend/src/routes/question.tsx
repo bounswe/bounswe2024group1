@@ -27,7 +27,14 @@ import {
 } from "@/services/api/programmingForumComponents";
 import useAuthStore from "@/services/auth";
 import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
-import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
+import {
+  Flag,
+  MessageSquare,
+  Pencil,
+  ThumbsDown,
+  ThumbsUp,
+  Trash,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -112,9 +119,14 @@ export default function QuestionPage() {
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
-  const [tags, setTags] = useState<number[]>(
-    question.tags?.map((tag) => Number(tag.id)) || [],
-  ); // Tag IDs state
+  const [tags, setTags] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!isEditing && question.tags) {
+      setTags(question.tags.map((t) => Number(t.id)));
+    }
+  }, [question?.tags, isEditing]);
+
   const [availableTags, setAvailableTags] = useState<
     { tagId: string; name: string }[]
   >([]); // Available tags
@@ -220,6 +232,15 @@ export default function QuestionPage() {
                 }}
               />
             )}
+            {!isEditing && selfProfile?.id === question.author.id && (
+              <Button
+                variant="default"
+                onClick={() => setIsEditing(true)}
+                aria-label="Edit question"
+              >
+                <Pencil className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
 
@@ -294,6 +315,7 @@ export default function QuestionPage() {
                   value: String(tag.tagId),
                   label: tag.name || "Loading...",
                 }))}
+                defaultValue={tags.map((tag) => String(tag))}
                 value={tags.map((tag) => String(tag))}
                 onValueChange={(selectedIds) => {
                   const selectedTags = selectedIds.map((id) => Number(id)); // Convert back to numbers
@@ -318,8 +340,8 @@ export default function QuestionPage() {
 
         {/* Question Content */}
         {isEditing ? (
-          <div>
-            <div className="flex gap-2">
+          <>
+            <div className="my-4 flex gap-2">
               <Button
                 variant={!isPreviewMode ? "default" : "outline"}
                 onClick={() => setIsPreviewMode(false)}
@@ -334,25 +356,26 @@ export default function QuestionPage() {
               </Button>
             </div>
             {isPreviewMode ? (
-              <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
+              <div className="my-4 min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
                 <ContentWithSnippets
                   content={contentRef.current?.value || ""}
                 />
               </div>
             ) : (
               <Textarea
+                className="my-4"
                 ref={contentRef}
                 defaultValue={question.content}
                 placeholder="Enter question content..."
               />
             )}
-          </div>
+          </>
         ) : (
           <ContentWithSnippets content={question.content} />
         )}
 
         {/* Edit and Save Buttons */}
-        {isEditing ? (
+        {isEditing && (
           <div className="flex gap-4">
             <Button onClick={saveChanges} disabled={isPending}>
               {isPending ? "Saving..." : "Save"}
@@ -361,12 +384,6 @@ export default function QuestionPage() {
               Cancel
             </Button>
           </div>
-        ) : (
-          selfProfile?.id === question.author.id && (
-            <Button variant="default" onClick={() => setIsEditing(true)}>
-              Edit Question
-            </Button>
-          )
         )}
 
         {/* Difficulty Bar */}

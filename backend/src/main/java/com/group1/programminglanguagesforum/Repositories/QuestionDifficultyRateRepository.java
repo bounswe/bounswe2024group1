@@ -15,5 +15,5 @@ public interface QuestionDifficultyRateRepository extends JpaRepository<Question
 
     Optional<QuestionDifficultyRate> findByQuestionAndUser(Question question, User user);
 
-    long countByDifficulty(DifficultyLevel difficultyLevel);
+    long countByDifficultyAndQuestion(DifficultyLevel difficultyLevel, Question question);
 }
