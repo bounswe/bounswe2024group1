@@ -236,7 +236,7 @@ public class QuestionService {
                 }
 
                 PageRequest pageable = PageRequest.of(page - 1, pageSize);
-                if (Objects.equals(sortBy, "default") || Objects.equals(sortBy, null) || Objects.equals(currentUser, null) || ) {
+                if (Objects.equals(sortBy, "default") || Objects.equals(sortBy, null) || Objects.equals(currentUser, null)) {
                         return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
                 } else {
                         List<Long> authorIds = currentUser.getFollowing().stream()
