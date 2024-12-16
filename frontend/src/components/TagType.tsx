@@ -1,11 +1,11 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import ErrorAlert from "@/components/ErrorAlert";
+import InfiniteScroll from "@/components/InfiniteScroll";
 import { TagCard } from "@/components/TagCard";
 import { useSearchTags } from "@/services/api/programmingForumComponents";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
-import ErrorAlert from "@/components/ErrorAlert";
-import InfiniteScroll from "@/components/InfiniteScroll";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function SubtypePage() {
   const { typeId } = useParams<{ typeId: string }>();
@@ -151,7 +151,7 @@ export default function SubtypePage() {
 
           {/* Tags in this type */}
           <h2 className="mb-4 text-2xl font-semibold text-gray-800">
-            Tags in This Category:
+            Tags in Category
           </h2>
 
           {/* Infinite Scroll for displaying Related Tags */}
