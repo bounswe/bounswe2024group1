@@ -13,7 +13,7 @@ const baseUrl =
   process.env.NODE_ENV === "development"
     ? `http://${new URL(Constants.default.experienceUrl).hostname}:5173/api/v1`
     :
-    "https://programming-languages-forum-ahwzj.ondigitalocean.app/api/v1";
+    "https://programming-languages-forum-psrb6.ondigitalocean.app/api/v1";
 
 console.log(baseUrl);
 

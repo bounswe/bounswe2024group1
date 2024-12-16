@@ -1,5 +1,5 @@
 import ErrorAlert from "@/components/ErrorAlert";
-import FollowButton from "@/components/FollowButton";
+import FollowUserButton from "@/components/FollowUserButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { QuestionCard } from "@/components/QuestionCard";
 import {
@@ -254,7 +254,7 @@ export function UserProfile({ userId }: { userId: string }) {
               </Button>
             )
           ) : (
-            data?.data && <FollowButton profile={data?.data} />
+            data?.data && <FollowUserButton profile={data?.data} />
           )}
         </VStack>
         {/*

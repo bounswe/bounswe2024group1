@@ -1,7 +1,7 @@
 import { Answers } from "@/components/Answers";
 
 import ErrorAlert from "@/components/ErrorAlert";
-import FollowButton from "@/components/FollowButton";
+import FollowUserButton from "@/components/FollowUserButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import {
   Button,
@@ -271,7 +271,7 @@ export default function QuestionPage() {
             </Link>
           </HStack>
           {token && selfProfile?.id !== question.author.id && (
-            <FollowButton profile={question.author} />
+            <FollowUserButton profile={question.author} />
           )}
         </HStack>
 
