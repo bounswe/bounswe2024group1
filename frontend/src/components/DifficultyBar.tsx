@@ -80,6 +80,9 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         current, //any equality -> pick higher difficulty level
       ) => (prev.count > current.count ? prev : current),
     );
+    if (counts.reduce((prev, current) => prev + current.count, 0) === 0) {
+      return "-";
+    }
     return highest.level;
   };
 

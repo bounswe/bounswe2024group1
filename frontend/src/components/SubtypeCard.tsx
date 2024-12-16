@@ -18,22 +18,24 @@ export const TagSubtypeCard = React.forwardRef<
 >(({ tagSubtype }, ref) => {
   return (
     <Card
-      className="flex-1 border-none bg-neutral-100 px-6 py-8 shadow-sm"
+      className="flex flex-1 flex-col border-none bg-neutral-100 px-6 py-8 shadow-sm"
       ref={ref}
     >
-      <div className="flex flex-col gap-6">
-        {/* Subtype Name */}
-        <h1 className="text-xl font-semibold text-gray-800">
-          {tagSubtype.typeId}
-        </h1>
+      <div className="flex flex-1 flex-col justify-between ">
+        <div className="flex flex-col gap-6">
+          {/* Subtype Name */}
+          <h1 className="text-xl font-semibold text-gray-800">
+            {tagSubtype.typeId}
+          </h1>
 
-        {/* Description */}
-        <p className="text-sm text-gray-600">{tagSubtype.description}</p>
+          {/* Description */}
+          <p className="text-sm text-gray-600">{tagSubtype.description}</p>
 
-        {/* Number of Tags */}
-        <div className="flex items-center gap-2 text-sm text-gray-700">
-          <Tags className="h-5 w-5" />
-          <span>{tagSubtype.tagCount} tags</span>
+          {/* Number of Tags */}
+          <div className="flex items-center gap-2 text-sm text-gray-700">
+            <Tags className="h-5 w-5" />
+            <span>{tagSubtype.tagCount} tags</span>
+          </div>
         </div>
 
         {/* Navigation Link */}

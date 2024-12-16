@@ -47,7 +47,7 @@ export default function TagPage() {
 
   const tag = data?.data;
   const token = useAuthStore((s) => s.token);
-  const [tab, setTab] = useState<"top-rated" | "recent">("top-rated");
+  const [tab, setTab] = useState<"top_rated" | "recent" | "recommended">("top_rated");
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyLevel>();
 
   if (isLoading) {
@@ -122,23 +122,6 @@ export default function TagPage() {
                   </Button>
                 </Link>
               )}
-            </HStack>
-            <HStack className="flex items-center justify-between">
-              <ButtonGroup className="flex items-center gap-2">
-                <Button
-                  variant={tab === "top-rated" ? "solid" : "outline"}
-                  onPress={() => setTab("top-rated")}
-                >
-                  <ButtonText>Top-Rated</ButtonText>
-                </Button>
-                <Button
-                  variant={tab === "recent" ? "solid" : "outline"}
-                  onPress={() => setTab("recent")}
-                >
-                  <ButtonText>Recent</ButtonText>
-                </Button>
-              </ButtonGroup>
-
               <Select
                 className="w-1/3 ml-auto"
                 selectedValue={difficultyFilter}
@@ -162,13 +145,35 @@ export default function TagPage() {
                 </SelectPortal>
               </Select>
             </HStack>
-
+            <HStack className="flex items-center justify-between">
+              <ButtonGroup className="flex items-center gap-2">
+                <Button
+                  variant={tab === "top_rated" ? "solid" : "outline"}
+                  onPress={() => setTab("top_rated")}
+                >
+                  <ButtonText>Top-Rated</ButtonText>
+                </Button>
+                <Button
+                  variant={tab === "recent" ? "solid" : "outline"}
+                  onPress={() => setTab("recent")}
+                >
+                  <ButtonText>Recent</ButtonText>
+                </Button>
+                <Button
+                  variant={tab === "recommended" ? "solid" : "outline"}
+                  onPress={() => setTab("recommended")}
+                >
+                  <ButtonText>Recommended</ButtonText>
+                </Button>
+              </ButtonGroup>
+            </HStack>
 
             <QuestionListSearch 
               searchQueryParams=""
               tagFilter={tag.tagId.toString()}
               {...(difficultyFilter ? { difficultyFilter } : {})}
-              sortBy={tab === "top-rated" ? "TOP_RATED" : "RECENT"}
+              sortBy={tab}
+              pageSize={300}
              />
           </VStack>
         </View>

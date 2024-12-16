@@ -15,8 +15,13 @@ import {
   Icon,
   Textarea,
   TextareaInput,
+  Popover,
+  PopoverBackdrop,
+  PopoverContent,
 } from "@/components/ui";
-import { X } from "lucide-react-native";
+import { X, InfoIcon } from "lucide-react-native";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
+import { PostingGuide } from "@/components/PostingGuide";
 
 export default function NewAnswerPage() {
   const { questionId } = useLocalSearchParams<{ questionId: string }>();
@@ -24,6 +29,7 @@ export default function NewAnswerPage() {
   const router = useRouter();
 
   const [content, setContent] = useState("");
+  const [preview, setPreview] = useState(false);
   const contentLength = content.length;
   const token = useAuthStore((state) => state.token);
 
@@ -68,15 +74,45 @@ export default function NewAnswerPage() {
         <Icon as={X} />
       </Button>
       <View style={{ gap: 16 }} />
-      <Text style={{ fontSize: 20 }}>Write your answer</Text>
-      <Textarea>
-        <TextareaInput
-          value={content}
-          onChangeText={setContent}
-          placeholder="Write your answer here..."
-          maxLength={1000}
-        />
-      </Textarea>
+      <HStack className="flex items-center justify-between">
+        <Text style={{ fontSize: 20 }}>Write your answer</Text>
+        <Popover
+          trigger={(triggerProps) => {
+            return (
+              <Button {...triggerProps} size="sm" variant="outline">
+                <Icon as={InfoIcon} />
+              </Button>
+            )
+          }}
+        >
+          <PopoverBackdrop />
+          <PopoverContent className="w-full max-w-sm p-4 rounded-lg bg-white shadow-lg">
+            <PostingGuide />
+          </PopoverContent>
+        </Popover>
+      </HStack>
+      <HStack style={{ gap: 16 }}>
+        <Button onPress={() => setPreview(!preview)} variant="outline" size="sm">
+          <ButtonText>{preview ? "Edit" : "Preview"}</ButtonText>
+        </Button>
+        <Button onPress={() => setContent(content + "```javascript-exec\n```\n")} variant="outline" size="sm">
+          <ButtonText>Add Code</ButtonText>
+        </Button>
+      </HStack>
+      {preview ? ( 
+        <ContentWithSnippets content={content} />
+        ) : (
+          <Textarea>
+            <TextareaInput
+              value={content}
+              onChangeText={setContent}
+              placeholder="Write your answer here..."
+              maxLength={1000}
+            />
+          </Textarea>
+        )
+      }
+      
       <Text>{contentLength} / 1000</Text>
       <Button onPress={handleSubmit} disabled={contentLength === 0} style={{ alignSelf: "flex-end" }}>
         <ButtonText>Submit</ButtonText>

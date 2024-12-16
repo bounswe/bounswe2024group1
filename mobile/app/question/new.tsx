@@ -1,10 +1,15 @@
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import ErrorAlert from "@/components/ErrorAlert";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
+import { PostingGuide } from "@/components/PostingGuide";
 import {
   Button,
   ButtonText,
   HStack,
   Icon,
+  Popover,
+  PopoverBackdrop,
+  PopoverContent,
   ScrollView,
   Text,
   Textarea,
@@ -23,7 +28,7 @@ import {
 } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { X } from "lucide-react-native";
+import { InfoIcon, X } from "lucide-react-native";
 import { useState } from "react";
 
 export default function NewQuestionPage() {
@@ -33,6 +38,7 @@ export default function NewQuestionPage() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [preview, setPreview] = useState(false);
   const contentLength = content.length;
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<TagSummary[]>([]);
@@ -120,6 +126,9 @@ export default function NewQuestionPage() {
   return (
     <ScrollView style={{ padding: 32, flex: 1, marginVertical: 16 }}>
       <VStack style={{ gap: 16, flex: 1 }}>
+        <Button onPress={() => router.back()} style={{ alignSelf: "flex-start" }} variant={"outline"} size="sm">
+          <Icon as={X} />
+        </Button>
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>
           Create New Question
         </Text>
@@ -142,18 +151,49 @@ export default function NewQuestionPage() {
 
         {/* Content Input */}
         <VStack style={{ gap: 8, flex: 1 }}>
-          <Text style={{ fontSize: 16 }}>Content</Text>
-          <Textarea>
-            <TextareaInput
-              placeholder="Describe your question"
-              value={content}
-              onChangeText={setContent}
-              size="md"
-              style={{
-                textAlignVertical: "top",
+          <HStack className="flex items-center justify-between">
+            <Text style={{ fontSize: 16 }}>Content</Text>
+            <Popover
+              trigger={(triggerProps) => {
+                return (
+                  <Button {...triggerProps} size="sm" variant="outline">
+                    <Icon as={InfoIcon} />
+                  </Button>
+                )
               }}
-            />
-          </Textarea>
+              onOpen={() => console.log("Popover opened")}
+            >
+              <PopoverBackdrop />
+              <PopoverContent className="w-full max-w-sm p-4 rounded-lg bg-white shadow-lg">
+                <PostingGuide />
+              </PopoverContent>
+            </Popover>
+          </HStack>
+          <HStack className="flex items-center gap-4">
+            <Button onPress={() => setPreview(!preview)} variant="outline" size="sm">
+              <ButtonText>{preview ? "Edit" : "Preview"}</ButtonText>
+            </Button>
+            <Button onPress={() => setContent(content + "```javascript-exec\n```\n")} variant="outline" size="sm">
+              <ButtonText>Add Code</ButtonText>
+            </Button>
+          </HStack>
+
+          { preview ? (
+            <ContentWithSnippets content={content} />
+          ) : (
+            <Textarea>
+              <TextareaInput
+                placeholder="Describe your question"
+                value={content}
+                onChangeText={setContent}
+                size="md"
+                style={{
+                  textAlignVertical: "top",
+                }}
+              />
+            </Textarea>
+          )}
+          
           <Text style={{ fontSize: 12, color: "#888" }}>
             {contentLength} characters
           </Text>

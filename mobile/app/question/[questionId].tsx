@@ -38,6 +38,7 @@ import {
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import placeholderProfile from "@/assets/images/placeholder_profile.png";
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 
 export default function QuestionPage() {
   const { questionId } = useLocalSearchParams();
@@ -329,7 +330,7 @@ export default function QuestionPage() {
         </View>
 
         <View className="rounded-lg bg-neutral-100 p-4">
-          <Text className="whitespace-pre-wrap">{question.content}</Text>
+          <ContentWithSnippets content={question.content} />
         </View>
 
         <Text className="text-2xl font-bold">Answers</Text>
