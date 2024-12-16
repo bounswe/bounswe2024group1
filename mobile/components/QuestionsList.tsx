@@ -6,8 +6,33 @@ import {
   useSearchQuestions,
   SearchQuestionsResponse,
 } from "@/services/api/programmingForumComponents";
+import { QuestionSummary } from "@/services/api/programmingForumSchemas";
 
 interface QuestionListProps {
+  questions: QuestionSummary[];
+}
+
+export const QuestionList: React.FC<QuestionListProps> = ({ questions }) => {
+  return (
+    <View className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {questions.map((question) => (
+        <QuestionCard
+          key={question.id}
+          id={String(question.id)}
+          title={question.title}
+          content={question.content}
+          votes={question.upvoteCount + question.downvoteCount}
+          answerCount={question.answerCount}
+          author={question.author}
+          difficulty={question.difficulty}
+          highlighted={question.difficulty === "EASY"}
+        />
+      ))}
+    </View>
+  );
+}
+
+interface QuestionListSearchProps {
   searchQueryParams?: string;
   pageSize?: number;
   difficultyFilter?: "EASY" | "MEDIUM" | "HARD";
@@ -15,7 +40,7 @@ interface QuestionListProps {
   sortBy?: "RECENT" | "TOP_RATED";
 }
 
-export const QuestionList: React.FC<QuestionListProps> = ({
+export const QuestionListSearch: React.FC<QuestionListSearchProps> = ({
   searchQueryParams = "",
   pageSize = 10,
   difficultyFilter,

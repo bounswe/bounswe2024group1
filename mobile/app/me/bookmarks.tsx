@@ -1,6 +1,6 @@
 import ErrorAlert from "@/components/ErrorAlert";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { QuestionCard } from "@/components/QuestionCard";
+import { QuestionList } from "@/components/QuestionsList";
 import {
   Button,
   HStack,
@@ -55,25 +55,10 @@ export default function BookmarkedQuestionsPage() {
               <Text className="text-2xl font-bold">Bookmarked Questions</Text>
             </HStack>
 
-            <VStack className="mt-4 gap-4">
-              <View className="gap-4">
-                {questions
-                  .sort((a: QuestionSummary, b: QuestionSummary) =>
-                    a.createdAt < b.createdAt ? 1 : -1
-                  )
-                  .map((question: QuestionSummary) => (
-                    <QuestionCard
-                      key={question.id}
-                      id={String(question.id)}
-                      title={question.title}
-                      content={question.content}
-                      votes={question.likeCount}
-                      answerCount={question.commentCount}
-                      author={question.author}
-                    />
-                  ))}
-              </View>
-            </VStack>
+            <QuestionList 
+              questions={ questions as QuestionSummary[] }
+            />
+
           </View>
         </ScrollView>
       )}

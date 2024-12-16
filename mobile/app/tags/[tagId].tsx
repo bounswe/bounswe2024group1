@@ -1,7 +1,7 @@
 import ErrorAlert from "@/components/ErrorAlert";
 import FollowTagButton from "@/components/FollowTagButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { QuestionList } from "@/components/QuestionsList";
+import { QuestionListSearch } from "@/components/QuestionsList";
 import {
   Button,
   ButtonGroup,
@@ -164,7 +164,7 @@ export default function TagPage() {
             </HStack>
 
 
-            <QuestionList 
+            <QuestionListSearch 
               searchQueryParams=""
               tagFilter={tag.tagId.toString()}
               {...(difficultyFilter ? { difficultyFilter } : {})}

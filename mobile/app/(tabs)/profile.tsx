@@ -1,8 +1,9 @@
 import ErrorAlert from "@/components/ErrorAlert";
 import FollowUserButton from "@/components/FollowUserButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
-import { QuestionCard } from "@/components/QuestionCard";
 import {
+  Badge,
+  BadgeText,
   Button,
   ButtonText,
   HStack,
@@ -10,6 +11,7 @@ import {
   Image,
   Input,
   InputField,
+  Pressable,
   ScrollView,
   Select,
   SelectBackdrop,
@@ -32,12 +34,13 @@ import {
   useGetUserProfile,
   useUpdateUserProfile,
 } from "@/services/api/programmingForumComponents";
-import { ExperienceLevel } from "@/services/api/programmingForumSchemas";
+import { ExperienceLevel, QuestionSummary } from "@/services/api/programmingForumSchemas";
 import useAuthStore from "@/services/auth";
 import { Link, router } from "expo-router";
 import { ChevronDownIcon, Plus, Bookmark, MenuIcon, LogOutIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import placeholderProfile from "@/assets/images/placeholder_profile.png";
+import { QuestionList } from "@/components/QuestionsList";
 
 export default function Profile() {
   return <UserProfile userId="me" />;
@@ -123,7 +126,7 @@ export function UserProfile({ userId }: { userId: string }) {
               )
             }}  
           >
-            <MenuItem textValue="bookmark" onPress={() => router.push(`/bookmarks`)}>
+            <MenuItem textValue="bookmark" onPress={() => router.push(`me/bookmarks`)}>
               <Icon as={Bookmark} size="md" color="black" />
               <MenuItemLabel className="ml-2">Bookmarks</MenuItemLabel>
             </MenuItem>
@@ -140,7 +143,7 @@ export function UserProfile({ userId }: { userId: string }) {
         </HStack>
 
 
-        <HStack space="lg" className="items-center justify-between py-4">
+        <HStack space="lg" className="items-center justify-between py-2">
           <Image
             source={profile.profilePicture ? {uri: profile.profilePicture} : placeholderProfile}
             alt={`Profile picture of ${profile.username}`}
@@ -166,7 +169,7 @@ export function UserProfile({ userId }: { userId: string }) {
           </HStack>
         </HStack>
 
-        <VStack space="sm">
+        <VStack space="xs">
           {editing ? (
             <>
               <Input
@@ -224,6 +227,27 @@ export function UserProfile({ userId }: { userId: string }) {
               <Text>
                 Experience: {profile.experienceLevel?.toString() || "Unknown"}
               </Text>
+              <Text>
+                Reputation Points:{" "}
+                <Text
+                  className={
+                    (profile.reputationPoints ?? 0) > 0 ? "text-green-700" : "text-gray-500"
+                  }
+                >
+                  {(profile.reputationPoints ?? 0) > 0 ? `+${profile.reputationPoints ?? 0}` : profile.reputationPoints ?? 0}
+                </Text>
+              </Text>
+
+                <HStack space="md">
+                {profile.followedTags?.map((tag) => (
+                  <Pressable key={tag.id} onPress={() => router.push(`/tags/${tag.id}`)}>
+                  <Badge variant="outline" size="lg" className="bg-neutral-100 my-2">
+                    <BadgeText>{tag.name}</BadgeText>
+                  </Badge>
+                  </Pressable>
+                ))}
+                </HStack>
+
             </>
           )}
 
@@ -257,7 +281,7 @@ export function UserProfile({ userId }: { userId: string }) {
             data?.data && <FollowUserButton profile={data?.data} />
           )}
         </VStack>
-        {/*
+        {
         <HStack space="md">
           <Button
             variant={activeTab === "questions" ? "solid" : "outline"}
@@ -271,7 +295,7 @@ export function UserProfile({ userId }: { userId: string }) {
           >
             <ButtonText>Answers</ButtonText>
           </Button>
-        </HStack> */}
+        </HStack> }
 
         {activeTab === "questions" ? (
           <VStack space="md">
@@ -288,37 +312,23 @@ export function UserProfile({ userId }: { userId: string }) {
                 </Link>
               )}
             </HStack>
-            <VStack space="md">
-              {profile?.questions?.map((question) => (
-                <QuestionCard
-                  key={question.id}
-                  id={String(question.id)}
-                  title={question.title}
-                  content={question.content}
-                  votes={question.likeCount}
-                  answerCount={question.commentCount}
-                  author={question.author}
+            <QuestionList 
+              questions={ profile.questions?.sort((a, b) => {
+                  return (b.upvoteCount - b.downvoteCount) - (a.upvoteCount - a.downvoteCount);
+                }) || []
+              }
                 />
-              ))}
-            </VStack>
           </VStack>
         ) : (
-          <VStack space="md">
-            <Text className="text-xl font-bold">Answers</Text>
-            <VStack space="md">
-              {profile?.answers?.map((answer) => (
-                <QuestionCard
-                  key={answer.id}
-                  id={String(answer.question?.id)}
-                  title={answer.question?.title || ""}
-                  content={answer.content}
-                  votes={answer.rating}
-                  answerCount={0}
-                  author={answer.author}
-                />
-              ))}
-            </VStack>
-          </VStack>
+          <QuestionList 
+            questions={ profile.answers?.map((answer) => ({
+              id: answer.question.id ?? 0,
+              title: answer.question.title ?? "",
+              content: answer.content ?? "",
+              upvoteCount: answer.upvoteCount,
+              downvoteCount: answer.downvoteCount,
+            } as QuestionSummary)) || [] }
+          />
         )}
       </VStack>
     </ScrollView>
