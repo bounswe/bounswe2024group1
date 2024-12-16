@@ -9,7 +9,7 @@ export const Feed = () => {
       <Text className="text-2xl font-bold">Tags</Text>
       <TagList searchQueryParams="" pagesize={3} />
       <Divider />
-      <Text className="text-2xl font-bold">Latest Questions</Text>
+      <Text className="text-2xl font-bold">Recommended Questions</Text>
       <QuestionListSearch pageSize={300} sortBy="recommended"/>
     </VStack>
   );
