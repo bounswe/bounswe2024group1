@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -218,7 +219,8 @@ public class QuestionService {
                         String tagIdsStr,
                         DifficultyLevel difficulty,
                         int page,
-                        int pageSize) {
+                        int pageSize,
+                        String sortBy) {
 
                 List<Long> tagIds = null;
                 if (tagIdsStr != null && !tagIdsStr.isEmpty()) {
@@ -226,9 +228,23 @@ public class QuestionService {
                                         .map(Long::parseLong)
                                         .collect(Collectors.toList());
                 }
+                User currentUser;
+                try {
+                        currentUser = userContextService.getCurrentUser();
+                } catch (UnauthorizedAccessException e) {
+                        currentUser = null;
+                }
 
                 PageRequest pageable = PageRequest.of(page - 1, pageSize);
-                return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
+                if (Objects.equals(sortBy, "default") || Objects.equals(sortBy, null) || Objects.equals(currentUser, null)) {
+                        return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
+                } else {
+                        List<Long> authorIds = currentUser.getFollowing().stream()
+                        .map(User::getId) // Map each User to its ID
+                        .collect(Collectors.toList()); // Collect the IDs into a List
+                        return questionRepository.searchQuestionsByRecommended(query, authorIds, tagIds, difficulty, pageable);
+                }
+                
         }
 
         public static QuestionSummaryDto mapToQuestionSummary(Question question) {

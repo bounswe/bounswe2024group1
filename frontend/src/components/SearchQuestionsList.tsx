@@ -32,6 +32,7 @@ export const SearchQuestionsList = () => {
       q: params.get("q") ?? "",
       pageSize,
       ...(difficulty && { difficulty }),
+      sortBy: params.get("sortBy") ?? "recommended"
     },
   });
 

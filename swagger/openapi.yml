@@ -938,6 +938,12 @@ paths:
           schema:
             type: integer
             default: 20
+        - name: sortBy
+          in: query
+          description: Sorting type
+          schema:
+            type: string
+            default: "recommended"
       responses:
         "200":
           description: Successful response

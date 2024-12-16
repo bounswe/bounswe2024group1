@@ -97,6 +97,7 @@ export const SearchBar = () => {
     const params = new URLSearchParams();
     params.append("type", searchType);
     params.append("q", search);
+    params.append("sortBy", "recommended");
     navigate("/search?" + params.toString());
   };
 

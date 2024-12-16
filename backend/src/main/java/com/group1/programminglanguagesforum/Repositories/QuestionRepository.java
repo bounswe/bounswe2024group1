@@ -31,6 +31,22 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             @Param("difficulty") DifficultyLevel difficulty,
             Pageable pageable);
 
+    @Query("SELECT DISTINCT q FROM Question q " +
+           "LEFT JOIN q.tags t " +
+           "WHERE (:query IS NULL OR " +
+           "      LOWER(q.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+           "      LOWER(q.questionBody) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+           "AND (:tagIds IS NULL OR t.id IN :tagIds) " +
+           "AND (:difficulty IS NULL OR q.difficulty = :difficulty) " +
+           "ORDER BY " +
+           "    CASE WHEN :authorIds IS NOT NULL AND q.askedBy.id IN :authorIds THEN 1 ELSE 0 END DESC")
+    Page<Question> searchQuestionsByRecommended(
+            @Param("query") String query,
+            @Param("authorIds") List<Long> authorIds,
+            @Param("tagIds") List<Long> tagIds,
+            @Param("difficulty") DifficultyLevel difficulty,
+            Pageable pageable);
+
     @Query("SELECT q FROM Question q WHERE q.askedBy.id = :author")
     List<Question> findByAuthorId(@Param("author") Long authorId);
 
