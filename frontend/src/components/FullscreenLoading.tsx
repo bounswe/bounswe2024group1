@@ -24,9 +24,9 @@ export const FullscreenLoading = ({
       )}
     >
       <Loader2
-        aria-label="Loading"
         className="h-16 w-16 animate-spin text-primary"
       />
+      <span className="sr-only">Loading</span>
       {takingLong && (
         <div className="ml-4 text-lg font-normal duration-500 animate-in fade-in">
           This is taking a while...

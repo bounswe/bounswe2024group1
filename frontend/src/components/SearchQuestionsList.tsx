@@ -102,9 +102,9 @@ export const SearchQuestionsList = () => {
         {isLoading && (
           <div className="col-span-3 flex w-full items-center justify-center">
             <Loader2
-              aria-label="Loading"
               className="h-16 w-16 animate-spin text-primary"
             />
+            <span className="sr-only">Loading</span>
           </div>
         )}
       </div>
