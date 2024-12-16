@@ -37,7 +37,7 @@ interface QuestionListSearchProps {
   pageSize?: number;
   difficultyFilter?: "EASY" | "MEDIUM" | "HARD";
   tagFilter?: string;
-  sortBy?: "RECENT" | "TOP_RATED";
+  sortBy?: "recommended" | "recent" | "top_rated";
 }
 
 export const QuestionListSearch: React.FC<QuestionListSearchProps> = ({
@@ -45,7 +45,7 @@ export const QuestionListSearch: React.FC<QuestionListSearchProps> = ({
   pageSize = 10,
   difficultyFilter,
   tagFilter = "",
-  sortBy = "RECENT",
+  sortBy = "recommended",
 }) => {
   const [page, setPage] = useState(1);
 
@@ -97,10 +97,12 @@ export const QuestionListSearch: React.FC<QuestionListSearchProps> = ({
         <View className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {questions
             .sort((a, b) => { 
-              if (sortBy === "RECENT") {
+              if (sortBy === "recent") {
                 return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-              } else {
+              } else if (sortBy === "top_rated") {
                 return (b.upvoteCount - b.downvoteCount) - (a.upvoteCount - a.downvoteCount);
+              } else {
+                return 0;
               }
             })
             .map((question) => (

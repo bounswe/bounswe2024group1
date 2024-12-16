@@ -96,7 +96,7 @@ export type UserProfileUpdate = {
 };
 
 /**
- * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"@/assets/images/placeholder_profile.png","name":"John Doe"}
+ * @example {"id":1,"username":"john_doe","reputationPoints":100,"profilePicture":"https://placehold.co/640x640","name":"John Doe"}
  */
 export type UserSummary = {
   id: number;
@@ -121,7 +121,7 @@ export type NewQuestion = {
 export type UpdateQuestion = {
   title?: string;
   content?: string;
-  tags?: string[];
+  tags?: number[];
 };
 
 /**
@@ -143,6 +143,7 @@ export type QuestionDetails = {
   tags: TagSummary[];
   likeCount: number;
   dislikeCount: number;
+  difficulty: DifficultyLevel;
   commentCount: number;
   viewCount?: number;
   bookmarked: boolean;

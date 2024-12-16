@@ -10,7 +10,7 @@ export const Feed = () => {
       <TagList searchQueryParams="" pagesize={3} />
       <Divider />
       <Text className="text-2xl font-bold">Latest Questions</Text>
-      <QuestionListSearch pageSize={3} />
+      <QuestionListSearch pageSize={300} sortBy="recommended"/>
     </VStack>
   );
 };
