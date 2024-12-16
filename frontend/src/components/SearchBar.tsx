@@ -105,6 +105,7 @@ export const SearchBar = () => {
     if (selfProfile?.id) {
       params.append("currentUserId", selfProfile.id.toString());
     }
+    params.append("sortBy", "recommended");
     navigate("/search?" + params.toString());
   };
 
