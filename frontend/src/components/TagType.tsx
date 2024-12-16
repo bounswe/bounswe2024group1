@@ -95,10 +95,10 @@ export default function SubtypePage() {
             about and solving problems in software development.
           </p>
         );
-      case "Computer Science Term":
+      case "Computer Science Topic":
         return (
           <p>
-            A computer science term is a word or phrase that is part of the
+            A computer science topic is a word or phrase that is part of the
             technical vocabulary of computer science. These terms represent
             concepts, theories, tools, or techniques that are essential to
             understanding the field. Examples include terms like algorithm, data
@@ -134,40 +134,39 @@ export default function SubtypePage() {
 
   return (
     <div className="container py-8">
-          {/* Header */}
-          <h1 className="mb-4 text-4xl font-bold text-gray-800">{tagTypeId}</h1>
+      {/* Header */}
+      <h1 className="mb-4 text-4xl font-bold text-gray-800">{tagTypeId}</h1>
 
-          {/* Render the description based on typeId */}
-          <div className="mb-6 text-lg text-gray-700">{description}</div>
+      {/* Render the description based on typeId */}
+      <div className="mb-6 text-lg text-gray-700">{description}</div>
 
-          {/* Tags in this type */}
-          <h2 className="mb-4 text-2xl font-semibold text-gray-800">
-            Tags in Category
-          </h2>
+      {/* Tags in this type */}
+      <h2 className="mb-4 text-2xl font-semibold text-gray-800">
+        Tags in Category
+      </h2>
 
-          {/* Infinite Scroll for displaying Related Tags */}
-          <div className="grid grid-cols-3 gap-4">
-            <InfiniteScroll
-              next={next}
-              hasMore={
-                searchResultData.totalItems
-                  ? searchResultData.totalItems > pageSize
-                  : false
-              }
-              isLoading={isLoading}
-            >
-                {tags?.map((tag) => <TagCard key={tag.tagId} tag={tag} />)
-              }
-            </InfiniteScroll>
-            {isLoading && (
-            <div className="col-span-3 flex w-full items-center justify-center">
-              <Loader2
-                aria-label="Loading"
-                className="h-16 w-16 animate-spin text-primary"
-              />
-            </div>
-          )}
+      {/* Infinite Scroll for displaying Related Tags */}
+      <div className="grid grid-cols-3 gap-4">
+        <InfiniteScroll
+          next={next}
+          hasMore={
+            searchResultData.totalItems
+              ? searchResultData.totalItems > pageSize
+              : false
+          }
+          isLoading={isLoading}
+        >
+          {tags?.map((tag) => <TagCard key={tag.tagId} tag={tag} />)}
+        </InfiniteScroll>
+        {isLoading && (
+          <div className="col-span-3 flex w-full items-center justify-center">
+            <Loader2
+              aria-label="Loading"
+              className="h-16 w-16 animate-spin text-primary"
+            />
           </div>
+        )}
+      </div>
     </div>
   );
 }
