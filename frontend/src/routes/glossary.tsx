@@ -1,3 +1,4 @@
+//glossary page to display tag types
 import { TagSubtypeCard } from "@/components/SubtypeCard";
 import { useSearchTags } from "@/services/api/programmingForumComponents";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
