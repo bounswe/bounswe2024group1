@@ -89,16 +89,20 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           {content}
         </Text>
         <HStack className="flex flex-row gap-3 text-xs text-gray-700 justify-center items-center">
-          <View className="flex items-center gap-1">
-            <Star className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`} />
-            <Text>{votes} votes</Text>
-          </View>
-          <View className="flex items-center gap-1">
-            <MessageSquare
-              className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`}
-            />
-            <Text>{answerCount} answers</Text>
-          </View>
+          {votes !== undefined && (  
+            <View className="flex items-center gap-1">
+              <Star className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`} />
+              <Text>{votes} votes</Text>
+            </View>
+            )}
+          {answerCount !== undefined && (
+            <View className="flex items-center gap-1">
+              <MessageSquare
+                className={`h-4 w-4 ${highlighted ? "text-blue-600" : ""}`}
+              />
+              <Text>{answerCount} answers</Text>
+            </View>
+          )}
           {difficulty && (
             <View className="flex items-center gap-1">
               <StarsIcon className="h-4 w-4" />
