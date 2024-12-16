@@ -142,7 +142,7 @@ class TagServiceTest {
 
         when(tagRepository.findById(tagId)).thenReturn(Optional.of(mockTag));
         when(questionRepository.findQuestionsByTagId(tagId)).thenReturn(mockQuestions);
-        when(questionRepository.findQuestionsByDifficultyAndTagId(tagId)).thenReturn(mockQuestions);
+        when(questionRepository.findQuestionsByDifficultyAndTagId(DifficultyLevel.EASY, tagId)).thenReturn(mockQuestions);
 
         // Mocking modelMapper behavior
         when(modelMapper.map(any(Question.class), eq(GetQuestionWithTagDto.class)))
