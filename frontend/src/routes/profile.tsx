@@ -101,6 +101,10 @@ export default function Profile() {
               <div className="font-bold">{profile.followingCount}</div>
               <div className="text-sm text-gray-700">Following</div>
             </div>
+            <div>
+              <div className="font-bold">{profile.reputationPoints}</div>
+              <div className="text-sm text-gray-700">Reputation Points</div>
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-between">
