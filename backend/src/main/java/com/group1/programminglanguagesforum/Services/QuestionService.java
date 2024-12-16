@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -233,7 +234,9 @@ public class QuestionService {
                 if (Objects.equals(sort, "default") || Objects.equals(currentUser, null)) {
                         return questionRepository.searchQuestions(query, tagIds, difficulty, pageable);
                 } else {
-                        List<Long> authorIds = getFollowingIds(currentUser);
+                        List<Long> authorIds = currentUser.getFollowing().stream()
+                        .map(User::getId) // Map each User to its ID
+                        .collect(Collectors.toList()); // Collect the IDs into a List
                         return questionRepository.searchQuestionsByRecommended(query, authorIds, tagIds, difficulty, pageable);
                 }
                 
