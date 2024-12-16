@@ -134,15 +134,6 @@ export default function SubtypePage() {
 
   return (
     <div className="container py-8">
-      {isLoading ? (
-        <div className="flex items-center justify-center">
-          <Loader2
-            aria-label="Loading"
-            className="h-16 w-16 animate-spin text-primary"
-          />
-        </div>
-      ) : (
-        <>
           {/* Header */}
           <h1 className="mb-4 text-4xl font-bold text-gray-800">{tagTypeId}</h1>
 
@@ -165,17 +156,18 @@ export default function SubtypePage() {
               }
               isLoading={isLoading}
             >
-              {tags.length > 0 ? (
-                tags.map((tag) => <TagCard key={tag.tagId} tag={tag} />)
-              ) : (
-                <p className="col-span-3 text-center text-gray-600">
-                  No related tags found for this tag type.
-                </p>
-              )}
+                {tags?.map((tag) => <TagCard key={tag.tagId} tag={tag} />)
+              }
             </InfiniteScroll>
+            {isLoading && (
+            <div className="col-span-3 flex w-full items-center justify-center">
+              <Loader2
+                aria-label="Loading"
+                className="h-16 w-16 animate-spin text-primary"
+              />
+            </div>
+          )}
           </div>
-        </>
-      )}
     </div>
   );
 }
