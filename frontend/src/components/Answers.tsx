@@ -67,11 +67,11 @@ export function Answers({ questionId }: AnswersProps) {
           answer={answer}
           onUpvote={() => handleVote(answer.id, 1)}
           onDownvote={() => handleVote(answer.id, -1)}
+          onDelete={() => refetch()}
         />
       ))}
       {answers.length === 0 && (
         <span>
-          {" "}
           This question doesn't have an answer yet. Contribute to the discussion
           by answering this question.
         </span>

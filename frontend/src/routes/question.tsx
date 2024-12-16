@@ -123,7 +123,6 @@ export default function QuestionPage() {
 
   useEffect(() => {
     if (!isEditing && question.tags) {
-      console.log("set tags", question.tags);
       setTags(question.tags.map((t) => Number(t.id)));
     }
   }, [question?.tags, isEditing]);

@@ -21,6 +21,9 @@ vi.mock("@/services/api/programmingForumComponents", () => ({
   useGetQuestionAnswers: vi.fn(),
   useUpvoteAnswer: vi.fn(),
   useDownvoteAnswer: vi.fn(),
+  useDeleteAnswer: vi.fn().mockReturnValue({
+    mutateAsync: vi.fn(),
+  }),
 }));
 
 // Mock the auth store
