@@ -149,7 +149,7 @@ export default function SubtypePage() {
           {/* Render the description based on typeId */}
           <div className="mb-6 text-lg text-gray-700">{description}</div>
 
-          {/* Tags in this Category Section */}
+          {/* Tags in this type */}
           <h2 className="mb-4 text-2xl font-semibold text-gray-800">
             Tags in This Category:
           </h2>
