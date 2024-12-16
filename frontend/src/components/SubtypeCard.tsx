@@ -3,6 +3,7 @@ import { ArrowRight, Tags } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
+//new card component for tag types to display in glossary
 interface TagSubtypeCardProps {
   tagSubtype: {
     typeId: string;

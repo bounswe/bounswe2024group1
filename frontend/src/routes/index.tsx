@@ -69,11 +69,11 @@ export const routes: RouteObject[] = [
     Component: CreateTagPage,
   },
   {
-    path: "/glossary",
+    path: "/glossary", //added glossary route
     Component: Glossary,
   },
   {
-    path: "/tagtype/:typeId",
+    path: "/tagtype/:typeId", //added tagtype pages' routes
     Component: TagTypePage,
   },
 ];
