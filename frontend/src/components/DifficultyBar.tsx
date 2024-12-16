@@ -14,17 +14,20 @@ type DifficultyBarProps = {
   easyCount: number;
   mediumCount: number;
   hardCount: number;
+  selfDifficultyVote: "EASY" | "MEDIUM" | "HARD" | null;
   questionId: number;
+  onVote: () => void;
 };
 
 export const DifficultyBar: React.FC<DifficultyBarProps> = ({
+  selfDifficultyVote,
   easyCount,
   mediumCount,
   hardCount,
   questionId,
+  onVote,
 }) => {
   const { token } = useAuthStore(); // Fetch authentication status
-  const [votedDifficulty, setVotedDifficulty] = useState<string | null>(null); // Track user's vote
   const [localCounts, setLocalCounts] = useState({
     easy: easyCount,
     medium: mediumCount,
@@ -48,6 +51,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         pathParams: { id: questionId },
         body: { difficulty: difficulty },
       });
+      onVote?.();
 
       const { easyCount, mediumCount, hardCount } = response.data;
 
@@ -56,8 +60,6 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         medium: mediumCount ?? 0,
         hard: hardCount ?? 0,
       });
-
-      setVotedDifficulty(difficulty);
     } catch (error) {
       console.error("Failed to vote:", error);
       alert("There was an issue submitting your vote. Please try again.");
@@ -66,7 +68,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
 
   const totalVotes = localCounts.easy + localCounts.medium + localCounts.hard;
 
-  const getHighestVotedDifficulty = () => {
+  const getHighestDifficultyVote = () => {
     const counts = [
       { level: "Easy", count: localCounts.easy },
       { level: "Medium", count: localCounts.medium },
@@ -89,7 +91,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         <div className="my-4 flex items-center gap-2">
           <span className="text-">Vote for Difficulty Level:</span>
           <ToggleGroup
-            value={votedDifficulty || undefined}
+            value={selfDifficultyVote || undefined}
             onValueChange={(val) =>
               val && handleVote(val as "EASY" | "MEDIUM" | "HARD")
             }
@@ -101,7 +103,9 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
               value="EASY"
               aria-label="Vote easy difficulty"
               className={
-                votedDifficulty === "EASY" ? "data-[state=on]:bg-green-200" : ""
+                selfDifficultyVote === "EASY"
+                  ? "data-[state=on]:bg-green-200"
+                  : ""
               }
             >
               Easy
@@ -109,7 +113,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
             <ToggleGroupItem
               value="MEDIUM"
               className={
-                votedDifficulty === "MEDIUM"
+                selfDifficultyVote === "MEDIUM"
                   ? "data-[state=on]:bg-yellow-200"
                   : ""
               }
@@ -121,7 +125,9 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
               value="HARD"
               aria-label="Vote hard difficulty"
               className={
-                votedDifficulty === "HARD" ? "data-[state=on]:bg-red-100" : ""
+                selfDifficultyVote === "HARD"
+                  ? "data-[state=on]:bg-red-100"
+                  : ""
               }
             >
               Hard
@@ -133,7 +139,7 @@ export const DifficultyBar: React.FC<DifficultyBarProps> = ({
         <div>
           <h2 className="mb-2 text-lg font-semibold">
             The community finds this question:{" "}
-            <strong>{getHighestVotedDifficulty()}</strong> difficulty.
+            <strong>{getHighestDifficultyVote()}</strong> difficulty.
           </h2>
           <div className="mb-2 text-sm text-gray-600">
             <span>Easy: {localCounts.easy} votes</span>,{" "}

@@ -375,6 +375,8 @@ export default function QuestionPage() {
           mediumCount={question.mediumCount}
           hardCount={question.hardCount}
           questionId={question.id}
+          selfDifficultyVote={question.selfDifficultyVote}
+          onVote={refetch}
         />
 
         {/* Answers Section */}
