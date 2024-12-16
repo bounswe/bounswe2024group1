@@ -17,6 +17,7 @@ import com.group1.programminglanguagesforum.DTOs.Responses.QuestionSummaryDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.SelfProfileResponseDto;
 import com.group1.programminglanguagesforum.DTOs.Responses.TagDto;
 import com.group1.programminglanguagesforum.Entities.ComputerScienceTermTag;
+import com.group1.programminglanguagesforum.Entities.DifficultyLevel;
 import com.group1.programminglanguagesforum.Entities.ProgrammingLanguagesTag;
 import com.group1.programminglanguagesforum.Entities.ProgrammingParadigmTag;
 import com.group1.programminglanguagesforum.Entities.Question;
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TagService {
+
     private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
@@ -85,7 +87,7 @@ public class TagService {
         }
         Tag tagEntity = tag.get();
         TagType tagType = getTagType(tagEntity);
-        List<Question> questions = questionRepository.findQuestionsByTagId(tagId);
+        List<Question> questions = questionRepository.findQuestionsByDifficultyAndTagId(DifficultyLevel.EASY, tagId);
         List<QuestionSummaryDto> relatedQuestions = questions.stream()
                 .map(QuestionService::mapToQuestionSummary)
                 .toList();
@@ -141,11 +143,11 @@ public class TagService {
     public List<SelfProfileResponseDto.FollowedTags> getFollowedTags(Long userId) {
         return tagRepository.findTagByFollowers(userId).stream()
                 .map(tag -> SelfProfileResponseDto.FollowedTags.builder()
-                        .id(tag.getId())
-                        .name(tag.getTagName())
-                        .tagType(getTagType(tag))
-                        .description(tag.getTagDescription())
-                        .build())
+                .id(tag.getId())
+                .name(tag.getTagName())
+                .tagType(getTagType(tag))
+                .description(tag.getTagDescription())
+                .build())
                 .toList();
     }
 
