@@ -1,11 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 
+import placeholderProfile from "@/assets/placeholder_profile.png";
 import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import placeholderProfile from "@/assets/placeholder_profile.png";
-
 
 interface QuestionCardProps {
   id: number;
@@ -29,10 +28,10 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
   ({ id, title, content, votes, answerCount, author, difficulty }, ref) => {
     return (
       <Card
-        className="flex flex-1 border-none bg-neutral-100 px-6 py-8 shadow-sm"
+        className="flex w-full flex-1 border-none bg-neutral-100 px-6 py-8 shadow-sm"
         ref={ref}
       >
-        <div className="flex flex-col gap-6">
+        <div className="flex w-full flex-col gap-6">
           <h3 className="line-clamp-2 text-xl font-semibold text-gray-800">
             {title}
           </h3>
@@ -59,8 +58,7 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
             {author && (
               <Link to={`/users/${author.id}`} className="h-10 w-10">
                 <img
-                  src={author?.profilePicture ||
-                      placeholderProfile}
+                  src={author?.profilePicture || placeholderProfile}
                   alt={author.name}
                   className="h-full w-full rounded-full object-cover"
                 />
