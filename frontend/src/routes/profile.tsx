@@ -177,7 +177,7 @@ export default function Profile() {
             )
           )}
         </div>
-        {profile.followedTags && (
+        {profile.followedTags && profile.followedTags.length > 0 ? (
           <div className="flex flex-col">
             <div className="flex flex-wrap gap-2">
               <span className="flex items-center gap-2">
@@ -189,13 +189,14 @@ export default function Profile() {
                     </Link>
                   ))
                   .slice(0, 3)}
-                {profile.followedTags?.length &&
-                  profile.followedTags?.length > 3 && (
-                    <span>+ {profile.followedTags?.length - 3} more</span>
-                  )}
+                {profile.followedTags?.length > 3 && (
+                  <span>+ {profile.followedTags?.length - 3} more</span>
+                )}
               </span>
             </div>
           </div>
+        ) : (
+          <div>No followed tags to show.</div>
         )}
       </div>
       <div className="mt-4 flex flex-col gap-4 px-4 py-2">

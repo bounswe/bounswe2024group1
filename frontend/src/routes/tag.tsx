@@ -114,7 +114,7 @@ export default function TagPage() {
           src={tag?.logoImage || "https://placehold.co/400x300"}
           alt={`${tag.name} logo`}
           title={`alt:The logo image of ${tag.name}`}
-          className="h-48 w-full rounded-3xl object-contain lg:h-96"
+          className="h-20 w-full rounded-3xl object-contain lg:h-40"
         />
       )}
       <div className="mb-4 flex items-center justify-between px-1">
