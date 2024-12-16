@@ -1,4 +1,5 @@
 package com.group1.programminglanguagesforum.DTOs.Responses;
+
 import com.group1.programminglanguagesforum.Entities.ExperienceLevel;
 import lombok.*;
 
@@ -25,5 +26,7 @@ public class UserProfileResponseDto {
     private ExperienceLevel experienceLevel;
     @Builder.Default
     private List<SelfProfileResponseDto.FollowedTags> followedTags = new ArrayList<>();
-
+    private Long questionCount;
+    private List<QuestionSummaryDto> questions;
+    private List<GetAnswerDtoForProfile> answers;
 }
