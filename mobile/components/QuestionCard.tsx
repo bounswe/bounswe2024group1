@@ -1,9 +1,14 @@
+import placeholderProfile from "@/assets/images/placeholder_profile.png";
 import { Card, HStack, Icon, Image, Text, View } from "@/components/ui";
 import { DifficultyLevel } from "@/services/api/programmingForumSchemas";
 import { Link } from "expo-router";
-import { ArrowRight, MessageSquare, Star, StarsIcon } from "lucide-react-native";
+import {
+  ArrowRight,
+  MessageSquare,
+  Star,
+  StarsIcon,
+} from "lucide-react-native";
 import React from "react";
-import placeholderProfile from "@/assets/images/placeholder_profile.png";
 
 interface QuestionCardProps {
   id: string;
@@ -36,11 +41,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 }) => {
   return (
     <Card
-      className={`rounded-lg border-none text-card-foreground flex flex-1 px-6 py-8 shadow-sm ${
+      className={`rounded-lg border-none text-card-foreground flex flex-1 w-full px-6 py-8 shadow-sm ${
         highlighted ? "bg-blue-100 border-blue-500" : "bg-neutral-150"
       }`}
     >
-      <View className="flex flex-col gap-6">
+      <View className="flex flex-col gap-6 w-full">
         {(highlighted || answerCount === 0) && (
           <HStack className="gap-4">
             {highlighted && (
@@ -48,7 +53,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                 Beginner Friendly
               </Text>
             )}
-            
+
             {/* Unanswered notification with background */}
             {answerCount === 0 && (
               <Text className="text-xs font-semibold text-red-600 bg-red-200 p-1 rounded-lg">
@@ -56,19 +61,25 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               </Text>
             )}
           </HStack>
-          )
-        }
+        )}
 
         {author && (
           <HStack className="flex items-center gap-2">
             <Link href={`/users/${author.id}`} className="h-10 w-10">
               <Image
-                source={author.profilePicture ? {uri: author.profilePicture} : placeholderProfile}
+                source={
+                  author.profilePicture
+                    ? { uri: author.profilePicture }
+                    : placeholderProfile
+                }
                 alt={author.name || "Author"}
                 className="h-full w-full rounded-full object-cover"
               />
             </Link>
-            <Link href={`/users/${author.id}`} className="text-sm font-semibold">
+            <Link
+              href={`/users/${author.id}`}
+              className="text-sm font-semibold"
+            >
               {author?.name}
             </Link>
           </HStack>
