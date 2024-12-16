@@ -1,34 +1,34 @@
 import LinkIcon from "@/assets/Icon/General/Link.svg?react";
+import placeholderProfile from "@/assets/placeholder_profile.png";
 import { Answers } from "@/components/Answers";
+import BookmarkButton from "@/components/BookmarkButton";
 import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import { CreateAnswerForm } from "@/components/CreateAnswerForm";
 import { DifficultyBar } from "@/components/DifficultyBar";
 import ErrorAlert from "@/components/ErrorAlert";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import FollowButton from "@/components/FollowButton";
-import BookmarkButton from "@/components/BookmarkButton";
 import { FullscreenLoading } from "@/components/FullscreenLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
-import placeholderProfile from "@/assets/placeholder_profile.png";
 
+import { MultiSelect } from "@/components/multi-select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   useDeleteQuestion as useDeleteQuestionById,
   useDownvoteQuestion,
   useGetQuestionDetails,
-  useUpvoteQuestion,
-  useUpdateQuestion,
   useSearchTags,
+  useUpdateQuestion,
+  useUpvoteQuestion,
 } from "@/services/api/programmingForumComponents";
-import { MultiSelect } from "@/components/multi-select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import useAuthStore from "@/services/auth";
 import { convertTagToTrack, useExercismSearch } from "@/services/exercism";
 import { Flag, MessageSquare, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
-import { useEffect,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 export default function QuestionPage() {
@@ -97,25 +97,27 @@ export default function QuestionPage() {
     { queryParams: { q: "", pageSize: 1000 } },
     { enabled: true },
   );
-  
+
   useEffect(() => {
     if (tagSearchData?.data) {
       const tagsData = (tagSearchData.data as { items: TagDetails[] }).items;
       setAvailableTags(tagsData);
     }
   }, [tagSearchData]);
-  
-
 
   const question = data! || {};
   const [isEditing, setIsEditing] = useState(false); // To toggle edit mode
   const [isPreviewMode, setIsPreviewMode] = useState(false); // Preview toggle for description
-  
+
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
-  const [tags, setTags] = useState<number[]>(question.tags?.map((tag) => Number(tag.id)) || []); // Tag IDs state
-  const [availableTags, setAvailableTags] = useState<{ tagId: string; name: string }[]>([]); // Available tags
+  const [tags, setTags] = useState<number[]>(
+    question.tags?.map((tag) => Number(tag.id)) || [],
+  ); // Tag IDs state
+  const [availableTags, setAvailableTags] = useState<
+    { tagId: string; name: string }[]
+  >([]); // Available tags
 
   const { mutateAsync: updateQuestion, isPending } = useUpdateQuestion({
     onSuccess: () => {
@@ -123,7 +125,6 @@ export default function QuestionPage() {
       setIsEditing(false);
     },
   });
-  
 
   const saveChanges = async () => {
     try {
@@ -141,11 +142,9 @@ export default function QuestionPage() {
         description: "The question has been updated successfully.",
       });
       setIsEditing(false);
-    } catch (err) {console.error(
-      "Failed to save changes",
-      err
-    );
-      toast({          
+    } catch (err) {
+      console.error("Failed to save changes", err);
+      toast({
         variant: "destructive",
         title: "Failed to save changes",
         description: "An error occurred while updating the question.",
@@ -175,14 +174,15 @@ export default function QuestionPage() {
       {/* Left Column: Question and Answers */}
       <div className="flex-1">
         <div className="mb-4 flex items-center justify-between">
-        {isEditing ? (
-          <Input 
-          defaultValue={question.title} 
-          ref={titleRef} 
-          placeholder="Enter question title..." />
-        ) : (
-          <h1 className="text-3xl font-bold">{question.title}</h1>
-        )}
+          {isEditing ? (
+            <Input
+              defaultValue={question.title}
+              ref={titleRef}
+              placeholder="Enter question title..."
+            />
+          ) : (
+            <h1 className="text-3xl font-bold">{question.title}</h1>
+          )}
 
           <div className="flex gap-2">
             <Button
@@ -213,9 +213,13 @@ export default function QuestionPage() {
               </Button>
             )}
             {!!token && (
-          <BookmarkButton
-          question = {{questionId: question.id, bookmarked: question.bookmarked, }}
-          />)}
+              <BookmarkButton
+                question={{
+                  questionId: question.id,
+                  bookmarked: question.bookmarked,
+                }}
+              />
+            )}
           </div>
         </div>
 
@@ -226,8 +230,7 @@ export default function QuestionPage() {
             className="flex items-center gap-4"
           >
             <img
-              src={question.author?.profilePicture || placeholderProfile
-              }
+              src={question.author?.profilePicture || placeholderProfile}
               alt={"Profile picture"}
               className="h-8 w-8 rounded-full object-cover"
             />
@@ -292,7 +295,7 @@ export default function QuestionPage() {
                   label: tag.name || "Loading...",
                 }))}
                 value={tags.map((tag) => String(tag))}
-                onValueChange={(selectedIds) =>{
+                onValueChange={(selectedIds) => {
                   const selectedTags = selectedIds.map((id) => Number(id)); // Convert back to numbers
                   setTags(selectedTags);
                 }}
@@ -301,13 +304,12 @@ export default function QuestionPage() {
             ) : (
               <div>
                 {question.tags.map((s) => (
-                  <Link to={`/tag/${s.id}`} key={s.name}> 
+                  <Link to={`/tag/${s.id}`} key={s.name}>
                     <Badge>{s.name}</Badge>
                   </Link>
                 ))}
               </div>
             )}
-
           </span>
           <span className="flex items-center gap-4 font-semibold">
             Asked: {new Date(question.createdAt).toLocaleDateString()}
@@ -318,19 +320,31 @@ export default function QuestionPage() {
         {isEditing ? (
           <div>
             <div className="flex gap-2">
-              <Button variant={!isPreviewMode ? "default" : "outline"} onClick={() => setIsPreviewMode(false)}>
+              <Button
+                variant={!isPreviewMode ? "default" : "outline"}
+                onClick={() => setIsPreviewMode(false)}
+              >
                 Write
               </Button>
-              <Button variant={isPreviewMode ? "default" : "outline"} onClick={() => setIsPreviewMode(true)}>
+              <Button
+                variant={isPreviewMode ? "default" : "outline"}
+                onClick={() => setIsPreviewMode(true)}
+              >
                 Preview
               </Button>
             </div>
             {isPreviewMode ? (
               <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
-                <ContentWithSnippets content={contentRef.current?.value || ""} />
+                <ContentWithSnippets
+                  content={contentRef.current?.value || ""}
+                />
               </div>
             ) : (
-              <Textarea ref={contentRef} defaultValue={question.content} placeholder="Enter question content..." />
+              <Textarea
+                ref={contentRef}
+                defaultValue={question.content}
+                placeholder="Enter question content..."
+              />
             )}
           </div>
         ) : (
@@ -349,12 +363,11 @@ export default function QuestionPage() {
           </div>
         ) : (
           selfProfile?.id === question.author.id && (
-            <Button variant="default" onClick={() => setIsEditing(true)} >
+            <Button variant="default" onClick={() => setIsEditing(true)}>
               Edit Question
             </Button>
           )
         )}
-
 
         {/* Difficulty Bar */}
         <DifficultyBar
@@ -365,7 +378,7 @@ export default function QuestionPage() {
         />
 
         {/* Answers Section */}
-        <h1 className="mb-4 text-2xl font-bold">Answers</h1>
+        <h1 className="mb-4 mt-4 text-2xl font-bold">Answers</h1>
         {questionId && <Answers questionId={Number(questionId)} />}
 
         {/* Answer Create Form */}
