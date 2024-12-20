@@ -12,10 +12,15 @@
 | **tags** | [**List**](TagSummary.md) |  | [default to null] |
 | **likeCount** | **Integer** |  | [default to null] |
 | **dislikeCount** | **Integer** |  | [default to null] |
+| **difficulty** | [**DifficultyLevel**](DifficultyLevel.md) |  | [default to null] |
 | **commentCount** | **Integer** |  | [default to null] |
 | **viewCount** | **Integer** |  | [optional] [default to null] |
-| **bookmarked** | **Boolean** |  | [optional] [default to null] |
-| **selfVoted** | **Integer** |  | [optional] [default to null] |
+| **bookmarked** | **Boolean** |  | [default to null] |
+| **selfVoted** | **Integer** |  | [default to null] |
+| **selfDifficultyVote** | [**DifficultyLevel**](DifficultyLevel.md) |  | [default to null] |
+| **easyCount** | **Integer** |  | [default to null] |
+| **mediumCount** | **Integer** |  | [default to null] |
+| **hardCount** | **Integer** |  | [default to null] |
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -11,7 +11,7 @@ All URIs are relative to *http://localhost:5173/api/v1*
 
 <a name="searchQuestions"></a>
 # **searchQuestions**
-> searchQuestions_200_response searchQuestions(q, tags, difficulty, page, pageSize)
+> searchQuestions_200_response searchQuestions(q, tags, difficulty, page, pageSize, sortBy)
 
 Search questions
 
@@ -24,6 +24,7 @@ Search questions
 | **difficulty** | [**DifficultyLevel**](../Models/.md)| Filter by difficulty level | [optional] [default to null] [enum: EASY, MEDIUM, HARD] |
 | **page** | **Integer**| Page number | [optional] [default to 1] |
 | **pageSize** | **Integer**| Number of items per page | [optional] [default to 20] |
+| **sortBy** | **String**| Sorting type | [optional] [default to recommended] |
 
 ### Return type
 
