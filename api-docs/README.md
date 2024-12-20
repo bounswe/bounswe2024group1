@@ -20,12 +20,14 @@ All URIs are relative to *http://localhost:5173/api/v1*
 *AuthApi* | [**verifyEmail**](Apis/AuthApi.md#verifyemail) | **POST** /auth/verify-email | Verify user's email |
 | *CodeExecutionApi* | [**executeCode**](Apis/CodeExecutionApi.md#executecode) | **POST** /execute-code | Execute a code snippet |
 | *FeedApi* | [**getUserFeed**](Apis/FeedApi.md#getuserfeed) | **GET** /feed | Get user feed |
-| *QuestionsApi* | [**bookmarkQuestion**](Apis/QuestionsApi.md#bookmarkquestion) | **POST** /questions/{questionId}/bookmark | Bookmark a question |
+| *QuestionsApi* | [**bookmarkQuestion**](Apis/QuestionsApi.md#bookmarkquestion) | **POST** /questions/{questionId}/bookmarks | Bookmark a question |
 *QuestionsApi* | [**createQuestion**](Apis/QuestionsApi.md#createquestion) | **POST** /questions | Create a new question |
 *QuestionsApi* | [**deleteQuestion**](Apis/QuestionsApi.md#deletequestion) | **DELETE** /questions/{questionId} | Delete a question |
 *QuestionsApi* | [**downvoteQuestion**](Apis/QuestionsApi.md#downvotequestion) | **POST** /questions/{questionId}/downvote | Downvote a question |
+*QuestionsApi* | [**getBookmarkedQuestions**](Apis/QuestionsApi.md#getbookmarkedquestions) | **GET** /questions/bookmarked | Get bookmarked questions |
 *QuestionsApi* | [**getQuestionDetails**](Apis/QuestionsApi.md#getquestiondetails) | **GET** /questions/{questionId} | Get question details |
-*QuestionsApi* | [**removeQuestionBookmark**](Apis/QuestionsApi.md#removequestionbookmark) | **DELETE** /questions/{questionId}/bookmark | Remove bookmark from a question |
+*QuestionsApi* | [**rateQuestion**](Apis/QuestionsApi.md#ratequestion) | **POST** /questions/{id}/vote-difficulty | Rate a question's level of difficulty. |
+*QuestionsApi* | [**removeQuestionBookmark**](Apis/QuestionsApi.md#removequestionbookmark) | **DELETE** /questions/{questionId}/bookmarks | Remove bookmark from a question |
 *QuestionsApi* | [**updateQuestion**](Apis/QuestionsApi.md#updatequestion) | **PUT** /questions/{questionId} | Update a question |
 *QuestionsApi* | [**upvoteQuestion**](Apis/QuestionsApi.md#upvotequestion) | **POST** /questions/{questionId}/upvote | Upvote a question |
 | *SearchApi* | [**searchQuestions**](Apis/SearchApi.md#searchquestions) | **GET** /search/questions | Search questions |
@@ -51,6 +53,7 @@ All URIs are relative to *http://localhost:5173/api/v1*
  - [AuthToken](./Models/AuthToken.md)
  - [CodeExecution](./Models/CodeExecution.md)
  - [DifficultyLevel](./Models/DifficultyLevel.md)
+ - [DifficultyLevelRequestDto](./Models/DifficultyLevelRequestDto.md)
  - [Error](./Models/Error.md)
  - [ErrorResponseObject](./Models/ErrorResponseObject.md)
  - [ExecutionResult](./Models/ExecutionResult.md)
@@ -60,6 +63,7 @@ All URIs are relative to *http://localhost:5173/api/v1*
  - [NewTag](./Models/NewTag.md)
  - [Profile](./Models/Profile.md)
  - [QuestionDetails](./Models/QuestionDetails.md)
+ - [QuestionRateResponseDto](./Models/QuestionRateResponseDto.md)
  - [QuestionSummary](./Models/QuestionSummary.md)
  - [SuccessResponseObject](./Models/SuccessResponseObject.md)
  - [SuccessResponseObject_data](./Models/SuccessResponseObject_data.md)
@@ -78,10 +82,12 @@ All URIs are relative to *http://localhost:5173/api/v1*
  - [createQuestion_201_response](./Models/createQuestion_201_response.md)
  - [createTag_201_response](./Models/createTag_201_response.md)
  - [executeCode_200_response](./Models/executeCode_200_response.md)
+ - [getBookmarkedQuestions_200_response](./Models/getBookmarkedQuestions_200_response.md)
  - [getQuestionAnswers_200_response](./Models/getQuestionAnswers_200_response.md)
  - [getQuestionAnswers_200_response_allOf_data](./Models/getQuestionAnswers_200_response_allOf_data.md)
  - [getUserFollowers_200_response](./Models/getUserFollowers_200_response.md)
  - [getUserProfile_200_response](./Models/getUserProfile_200_response.md)
+ - [rateQuestion_200_response](./Models/rateQuestion_200_response.md)
  - [resetPassword_request](./Models/resetPassword_request.md)
  - [searchQuestions_200_response](./Models/searchQuestions_200_response.md)
  - [searchQuestions_200_response_allOf_data](./Models/searchQuestions_200_response_allOf_data.md)

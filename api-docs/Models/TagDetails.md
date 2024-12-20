@@ -3,7 +3,7 @@
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-| **tagId** | **String** |  | [default to null] |
+| **tagId** | **Integer** |  | [default to null] |
 | **name** | **String** |  | [default to null] |
 | **tagType** | [**TagType**](TagType.md) |  | [optional] [default to null] |
 | **description** | **String** |  | [default to null] |

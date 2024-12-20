@@ -1,12 +1,9 @@
-# NewQuestion
+# DifficultyLevelRequestDto
 ## Properties
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-| **title** | **String** |  | [default to null] |
-| **content** | **String** |  | [default to null] |
-| **tagIds** | **List** |  | [optional] [default to null] |
-| **difficulty** | [**DifficultyLevel**](DifficultyLevel.md) |  | [default to null] |
+| **difficulty** | **String** |  | [optional] [default to null] |
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

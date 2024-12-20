@@ -5,6 +5,7 @@
 |------------ | ------------- | ------------- | -------------|
 | **id** | **String** |  | [optional] [default to null] |
 | **name** | **String** |  | [optional] [default to null] |
+| **tagType** | [**TagType**](TagType.md) |  | [optional] [default to null] |
 | **questionCount** | **Integer** |  | [optional] [default to null] |
 | **photo** | **String** |  | [optional] [default to null] |
 

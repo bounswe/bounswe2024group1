@@ -4,12 +4,14 @@ All URIs are relative to *http://localhost:5173/api/v1*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**bookmarkQuestion**](QuestionsApi.md#bookmarkQuestion) | **POST** /questions/{questionId}/bookmark | Bookmark a question |
+| [**bookmarkQuestion**](QuestionsApi.md#bookmarkQuestion) | **POST** /questions/{questionId}/bookmarks | Bookmark a question |
 | [**createQuestion**](QuestionsApi.md#createQuestion) | **POST** /questions | Create a new question |
 | [**deleteQuestion**](QuestionsApi.md#deleteQuestion) | **DELETE** /questions/{questionId} | Delete a question |
 | [**downvoteQuestion**](QuestionsApi.md#downvoteQuestion) | **POST** /questions/{questionId}/downvote | Downvote a question |
+| [**getBookmarkedQuestions**](QuestionsApi.md#getBookmarkedQuestions) | **GET** /questions/bookmarked | Get bookmarked questions |
 | [**getQuestionDetails**](QuestionsApi.md#getQuestionDetails) | **GET** /questions/{questionId} | Get question details |
-| [**removeQuestionBookmark**](QuestionsApi.md#removeQuestionBookmark) | **DELETE** /questions/{questionId}/bookmark | Remove bookmark from a question |
+| [**rateQuestion**](QuestionsApi.md#rateQuestion) | **POST** /questions/{id}/vote-difficulty | Rate a question&#39;s level of difficulty. |
+| [**removeQuestionBookmark**](QuestionsApi.md#removeQuestionBookmark) | **DELETE** /questions/{questionId}/bookmarks | Remove bookmark from a question |
 | [**updateQuestion**](QuestionsApi.md#updateQuestion) | **PUT** /questions/{questionId} | Update a question |
 | [**upvoteQuestion**](QuestionsApi.md#upvoteQuestion) | **POST** /questions/{questionId}/upvote | Upvote a question |
 
@@ -114,6 +116,28 @@ null (empty response body)
 - **Content-Type**: Not defined
 - **Accept**: application/json
 
+<a name="getBookmarkedQuestions"></a>
+# **getBookmarkedQuestions**
+> getBookmarkedQuestions_200_response getBookmarkedQuestions()
+
+Get bookmarked questions
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**getBookmarkedQuestions_200_response**](../Models/getBookmarkedQuestions_200_response.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
 <a name="getQuestionDetails"></a>
 # **getQuestionDetails**
 > createQuestion_201_response getQuestionDetails(questionId)
@@ -137,6 +161,32 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: application/json
+
+<a name="rateQuestion"></a>
+# **rateQuestion**
+> rateQuestion_200_response rateQuestion(id, DifficultyLevelRequestDto)
+
+Rate a question&#39;s level of difficulty.
+
+### Parameters
+
+|Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **Long**|  | [default to null] |
+| **DifficultyLevelRequestDto** | [**DifficultyLevelRequestDto**](../Models/DifficultyLevelRequestDto.md)|  | |
+
+### Return type
+
+[**rateQuestion_200_response**](../Models/rateQuestion_200_response.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 <a name="removeQuestionBookmark"></a>
