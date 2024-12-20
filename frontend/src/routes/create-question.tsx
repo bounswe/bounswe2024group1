@@ -1,3 +1,4 @@
+import { ContentWithSnippets } from "@/components/ContentWithSnippets";
 import { MultiSelect } from "@/components/multi-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,23 +9,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import {
   useCreateQuestion,
   useSearchTags,
 } from "@/services/api/programmingForumComponents";
-import { Info } from "lucide-react";
 import { queryKeyFn } from "@/services/api/programmingForumContext";
 import { TagDetails } from "@/services/api/programmingForumSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
+import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { z } from "zod";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { ContentWithSnippets } from "@/components/ContentWithSnippets";
+import { z } from "zod";
 
 // Schema validation for the form
 const newQuestionSchema = z.object({
@@ -119,8 +123,8 @@ export default function QuestionCreationPage() {
   return (
     <div className="container flex flex-col gap-4 py-16">
       <div className="flex items-center gap-2">
-      <h1>Create a new question</h1>
-      <Popover>
+        <h1>Create a new question</h1>
+        <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -165,7 +169,6 @@ export default function QuestionCreationPage() {
         </Popover>
       </div>
 
-
       <Form {...form}>
         <form
           onSubmit={handleSubmit(async (values) => {
@@ -186,7 +189,10 @@ export default function QuestionCreationPage() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Enter question title..." {...field} />
+                  <label>
+                    Title
+                    <Input placeholder="Enter question title..." {...field} />
+                  </label>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -217,16 +223,19 @@ export default function QuestionCreationPage() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                {isPreviewMode ? (
-                  <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
-                    <ContentWithSnippets content={field.value} />
-                  </div>
-                ) : (
-                  <Textarea 
-                    placeholder="Describe your question..."
-                    {...field}
-                  />
-                )}
+                  {isPreviewMode ? (
+                    <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4">
+                      <ContentWithSnippets content={field.value} />
+                    </div>
+                  ) : (
+                    <label>
+                      Content
+                      <Textarea
+                        placeholder="Describe your question..."
+                        {...field}
+                      />
+                    </label>
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -282,7 +291,10 @@ export default function QuestionCreationPage() {
             name="difficulty"
             render={({ field }) => (
               <FormItem>
-                <label htmlFor="difficulty-select" className="font-semibold mb-2 block">
+                <label
+                  htmlFor="difficulty-select"
+                  className="mb-2 block font-semibold"
+                >
                   Difficulty Level
                 </label>
                 <FormControl>
@@ -294,7 +306,7 @@ export default function QuestionCreationPage() {
                   >
                     <option value="EASY">Easy</option>
                     <option value="MEDIUM">Medium</option>
-                    <option value="HARD">Hard</option>  
+                    <option value="HARD">Hard</option>
                   </select>
                 </FormControl>
                 <FormMessage />

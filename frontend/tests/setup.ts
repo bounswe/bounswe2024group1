@@ -58,6 +58,12 @@ afterEach(() => {
   cleanup();
 });
 
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+Element.prototype.scrollIntoView = vi.fn();
 // happy-dom doesn't support submit events on buttons, so we need to
 // dispatch a submit event when a button is clicked
 const originalDispatchEvent = HTMLElement.prototype.dispatchEvent;
