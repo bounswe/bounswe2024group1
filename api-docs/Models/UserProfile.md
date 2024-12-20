@@ -19,6 +19,7 @@
 | **answerCount** | **Integer** |  | [optional] [default to null] |
 | **answers** | [**List**](AnswerDetails.md) |  | [optional] [default to null] |
 | **questions** | [**List**](QuestionSummary.md) |  | [optional] [default to null] |
+| **followedTags** | [**List**](TagSummary.md) |  | [optional] [default to null] |
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

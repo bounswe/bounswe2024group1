@@ -65,7 +65,7 @@ export default function TagsPage() {
           size="icon"
           className="rounded-full bg-red-500 text-white"
         >
-          <Link to="/tags/new">
+          <Link to="/tags/new" aria-label="Create tag">
             <Plus />
           </Link>
         </Button>
@@ -87,9 +87,7 @@ export default function TagsPage() {
           </InfiniteScroll>
           {isLoading && (
             <div className="col-span-3 flex w-full items-center justify-center">
-              <Loader2
-                className="h-16 w-16 animate-spin text-primary"
-              />
+              <Loader2 className="h-16 w-16 animate-spin text-primary" />
               <div className="ml-4 text-lg font-normal duration-500 animate-in fade-in">
                 Loading...
               </div>

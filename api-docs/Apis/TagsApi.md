@@ -45,7 +45,7 @@ Follow a tag
 
 |Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **tagId** | **String**|  | [default to null] |
+| **tagId** | **Integer**|  | [default to null] |
 
 ### Return type
 
@@ -70,7 +70,7 @@ Get tag details
 
 |Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **tagId** | **String**|  | [default to null] |
+| **tagId** | **Integer**|  | [default to null] |
 
 ### Return type
 
@@ -95,7 +95,7 @@ Unfollow a tag
 
 |Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **tagId** | **String**|  | [default to null] |
+| **tagId** | **Integer**|  | [default to null] |
 
 ### Return type
 

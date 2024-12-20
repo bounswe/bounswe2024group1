@@ -39,6 +39,7 @@ export const Tag = ({
             {!!token && (
               <Link
                 to={`/questions/new?tagIds=` + encodeURIComponent(tagId || "")}
+                aria-label="Create question"
               >
                 <Plus className="h-4 w-4" />
               </Link>
